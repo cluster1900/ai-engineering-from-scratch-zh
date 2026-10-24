@@ -125,7 +125,7 @@ mm-agent-loop
 ## 使用它
 `code/main.py` 是 capstone scaffold：
 
-- Action schema 的 JSON 定义（10 个 actions）。
+- Action schema 的 JSON 定义（10 个 actions：上面列出的九个，加上 crop + zoom 工具 `screenshot_region`）。
 - 作为 dict 的 mock browser state。
 - Agent loop skeleton：receive state、emit action、apply、loop。
 - 10-task mini-benchmark（synthetic pages），用于衡量 end-to-end success rate。
@@ -135,7 +135,7 @@ mm-agent-loop
 本 lesson 生成 `outputs/skill-multimodal-agent-designer.md`。给定一个 computer-use product（domain、action set、evaluation target），设计完整 agent loop、memory strategy、grounding mode 和 expected benchmark score。
 
 ## 练习
-1. 使用 `screenshot_region` tool（crop + zoom）扩展 action schema。哪些 tasks 会受益？
+1. 代码中的 schema 在九个核心 actions 之外加入了 `screenshot_region` tool（crop + zoom）。哪些 tasks 会受益？
 
 2. 阅读 AgentVista（arXiv:2602.23166）。描述最难的 task category，以及为什么 frontier models 仍然失败。
 

@@ -1,6 +1,6 @@
 # LLaVA 与 Visual Instruction Tuning
 
-> LLaVA（2023 年 4 月）是地球上被复制最多的 Multimodal 架构。它用 2-layer MLP 替代了 BLIP-2 的 Q-Former，用朴素的 Token concatenation 替代了 Flamingo 的 gated cross-attention，并在 158k 条 visual-instruction turns 上训练，这些数据由 GPT-4 从纯文本 captions 生成。任何在 2023 到 2026 年间构建 VLM 的实践者，都构建过某种 LLaVA 变体。LLaVA-1.5 加入了 AnyRes。LLaVA-NeXT 提高了分辨率。LLaVA-OneVision 用一个 recipe 统一了 image、multi-image 和 video。本课会阅读这个 recipe，实现 projector，并解释为什么 “simpler won”。
+> LLaVA（2023 年 4 月）是地球上被复制最多的 Multimodal 架构。它用 2-layer MLP 替代了 BLIP-2 的 Q-Former，用朴素的 Token concatenation 替代了 Flamingo 的 gated cross-attention，并在 158k 条 visual-instruction turns 上训练，这些数据由 GPT-4 从纯文本 captions 生成。任何在 2023 到 2026 年间构建 VLM 的实践者，都构建过某种 LLaVA 变体。LLaVA-1.5 换上了 MLP projector 和 336px encoder。LLaVA-NeXT 加入了 AnyRes tiling，用于高分辨率输入。LLaVA-OneVision 用一个 recipe 统一了 image、multi-image 和 video。本课会阅读这个 recipe，实现 projector，并解释为什么 “simpler won”。
 
 **类型：** 构建
 **语言：** Python（stdlib、projector + instruction-template builder）
@@ -32,10 +32,10 @@ LLaVA 的答案简单到令人尴尬：取 ViT 的 576 个 patch Token，让每�
 
 ### 架构
 
-LLaVA-1.5 at 13B：
+LLaVA-1.5 at 7B：
 - Vision encoder：CLIP ViT-L/14 @ 336（stage 1 冻结，stage 2 可选解冻）。
 - Projector：带 GELU activation 的 2-layer MLP，`1024 → 4096 → 4096`。
-- LLM：Vicuna-13B（后来是 Llama-3.1-8B）。
+- LLM：Vicuna-7B v1.5（13B 变体使用 Vicuna-13B；后来的 fork 改用 Llama-3.1-8B）。
 
 图像 + 文本 prompt 的 forward pass：
 
@@ -83,7 +83,8 @@ instruction data 是关键技巧。Liu et al. 的生成方式：
 LLaVA-1.5（2023 年 10 月）加入：
 - 将 academic-task data（VQA、OKVQA、RefCOCO）混入 instruction tuning。
 - 更好的 system prompt。
-- 2048 → 32k context。
+- 用 2-layer MLP projector 替代最初的单个 linear layer，用 336px 的 CLIP ViT-L/14（576 个 Token）替代 224px（256 个 Token）。训练序列仍为 2048 个 Token。
+- 论文中的 grid-splitting HD 变体，后来由 LLaVA-NeXT 以 AnyRes 的形式发布。
 
 LLaVA-NeXT（2024 年 1 月）加入：
 - AnyRes：把高分辨率图像切成 2x2 或 1x3 网格的 336x336 crops，再加一个 global low-res thumbnail。每个 crop 变成 576 个 Token；每张图像总计约 2880 个 visual Token。OCR 和 chart 任务大幅提升。
@@ -99,7 +100,7 @@ Lesson 12.08 会深入讲 OneVision。简短版本：同一个 projector，但�
 | | Q-Former（BLIP-2） | MLP（LLaVA） |
 |---|---|---|
 | 每张图像的 visual Token | 32 | 576（base）或 2880（AnyRes） |
-| 可训练参数 | 188M + LM | 40M + LM |
+| 可训练参数 | 188M + LM | ~22M（7B）+ LM |
 | Stage 1 loss | ITC+ITM+ITG | 仅 LM |
 | LLM drop-in | 需要重新训练 | 最小重新训练即可替换 |
 | Multi-image | 别扭 | 自然（concat） |

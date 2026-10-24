@@ -1,6 +1,6 @@
 # Video-Language Models：Temporal Tokens 与 Grounding
 
-> Video 不是一叠照片。一个 5 秒 clip 有因果顺序、动作动词和事件时序，这些是 image model 无法表示的。Video-LLaMA（Zhang et al., June 2023）发布了第一个具备 audio-visual grounding 的开放 video-LLM。VideoChat 和 Video-LLaVA 扩展了这一模式。到 2025 年，Qwen2.5-VL 的 TMRoPE 缩小了与 frontier proprietary models 的差距。每个系统都以不同方式解决 temporal tokens：Q-former per clip、concat-pool per frame、TMRoPE per token。本课会解读这些模式，构建 uniform-vs-dynamic frame sampler，并在 temporal grounding tasks 上评估。
+> Video 不是一叠照片。一个 5 秒 clip 有因果顺序、动作动词和事件时序，这些是 image model 无法表示的。Video-LLaMA（Zhang et al., June 2023）发布了第一个具备 audio-visual grounding 的开放 video-LLM。VideoChat 和 Video-LLaVA 扩展了这一模式。到 2025 年，Qwen2.5-VL 的 time-aligned M-RoPE 缩小了与 frontier proprietary models 的差距。每个系统都以不同方式解决 temporal tokens：Q-former per clip、concat-pool per frame、time-aligned M-RoPE per token。本课会解读这些模式，构建 uniform-vs-dynamic frame sampler，并在 temporal grounding tasks 上评估。
 
 **Type:** Build
 **Languages:** Python (stdlib, frame sampler + temporal-grounding evaluator)
@@ -10,7 +10,7 @@
 ## 学习目标
 - 解释为什么 temporal positional encoding 会独立于 vision encoder 改变 video VLM performance。
 - 比较 uniform、dynamic-FPS 和 event-driven frame sampling 在 tokens-per-second 与 grounding accuracy 之间的取舍。
-- 描述 Q-former-per-clip（Video-LLaMA）、pooled-per-frame（Video-LLaVA）和 M-RoPE-per-token（Qwen2.5-VL）设计。
+- 描述 Q-former-per-clip（Video-LLaMA）、pooled-per-frame（Video-LLaVA）和 time-aligned M-RoPE per token（Qwen2.5-VL）设计。
 - 说出四个 video benchmarks：VideoMME、TempCompass、EgoSchema、Video-MMMU。
 
 ## 问题
@@ -24,7 +24,7 @@
 
 每种取舍不同。Subsampling 会丢失 temporal detail。Pooling 会丢失 spatial detail。Q-former 两者都会稍微丢一些，但节省 tokens。
 
-Temporal position encoding 是另一个维度：模型如何知道 frame 5 发生在 frame 6 之前？选项包括简单的 1D temporal RoPE（Video-LLaMA）、learned temporal embeddings（Video-LLaVA）和 TMRoPE（Qwen2.5-VL，完整 3D）。
+Temporal position encoding 是另一个维度：模型如何知道 frame 5 发生在 frame 6 之前？选项包括简单的 1D temporal RoPE（Video-LLaMA）、learned temporal embeddings（Video-LLaVA）和 time-aligned M-RoPE（Qwen2.5-VL，完整 3D）。
 
 ## 概念
 ### Video-LLaMA：每个 clip 一个 Q-former + audio branch
@@ -43,17 +43,17 @@ VideoChat 保留了 Video-LLaMA 的思路，但去掉 audio 并简化。Video-LL
 
 二者都无法处理 long video。二者都是 8-16 frame systems。
 
-### Qwen2.5-VL and TMRoPE
+### Qwen2.5-VL and time-aligned M-RoPE
 
-Qwen2.5-VL 引入了 TMRoPE，即 Temporal-Modality Rotary Position Embedding。每个 patch token 携带一个 (t, h, w) 位置，其中 t 是实际 timestamp（不是 frame index）。
+Qwen2.5-VL 沿用 Qwen2-VL 的 M-RoPE（Multimodal Rotary Position Embedding），并把它的时间轴与绝对时间对齐。每个 patch token 携带一个 (t, h, w) 位置，其中 t 跟随实际 timestamp（不是 frame index）。Qwen2.5-Omni（第 12.20 课）后来把同一思路的音频与视频版本命名为 TMRoPE，即 Time-aligned Multimodal RoPE。
 
 与简单 temporal embedding 的关键区别：
 
 - 绝对时间，而不是 index。模型看到的是“at 4.2 seconds”，不是“at frame 15”。
 - Per-token rotation，而不是 per-clip。每个 visual token 都按自己的 timestamp 独立旋转。
-- 兼容 dynamic FPS。如果这里以 2 FPS 采样、那里以 4 FPS 采样，TMRoPE 可以原生处理这种不均匀间隔。
+- 兼容 dynamic FPS。如果这里以 2 FPS 采样、那里以 4 FPS 采样，time-aligned M-RoPE 可以原生处理这种不均匀间隔。
 
-TMRoPE 支持“猫在第几秒跳起来？”这类查询。模型可以输出“at 4.2 seconds”。Video-LLaMA 只能说“early in the clip”。
+Time-aligned M-RoPE 支持“猫在第几秒跳起来？”这类查询。模型可以输出“at 4.2 seconds”。Video-LLaMA 只能说“early in the clip”。
 
 ### Frame sampling strategies
 
@@ -67,7 +67,7 @@ Keyframe + context：在 shot boundaries + 若干 adjacent frames 采样。用�
 
 ### Pooling per frame
 
-在 1 FPS 且每 frame 576 tokens 时，一个 5 分钟 clip 是 172,800 tokens。Qwen2.5-VL-72B 的 128k context 可以勉强处理，但成本高。
+在 1 FPS 且每 frame 576 tokens 时，一个 5 分钟 clip 是 172,800 tokens。这会超出 Qwen2.5-VL-72B 的 128k context，所以必须先降低帧率或对每帧做 Token pooling。
 
 3x3 bilinear pool 将每 frame 降到 64 tokens -> 5 分钟为 19,200 tokens。对大多数任务来说是 sweet spot。
 
@@ -96,7 +96,7 @@ Token-based 对 downstream use 最准确。Qwen2.5-VL 的 JSON output format 可
 
 2026 年 video VLMs 的 best practice：
 
-- Encoder：带 M-RoPE 或 TMRoPE 的 SigLIP 2（Qwen2.5-VL）。
+- Encoder：SigLIP 2 或原生分辨率 ViT，LLM 中使用 time-aligned M-RoPE（Qwen2.5-VL）。
 - Frame sampling：dynamic FPS（根据 motion 使用 1-4），带 max-frame cap。
 - Per-frame pooling：3x3 bilinear。
 - Output：包含 time + event 字段的结构化 JSON。
@@ -112,7 +112,7 @@ video-temporal-patches
 
 - Uniform 和 dynamic-FPS frame sampler。
 - 一个 toy temporal-grounding evaluator：给定 time T 处的 "ground truth" event 和 model output，在 tolerance 内评分 accuracy。
-- Video-LLaMA（16 frames，Q-former）、Video-LLaVA（8 frames，MLP）、Qwen2.5-VL（dynamic FPS + TMRoPE）之间的比较。
+- Video-LLaMA（16 frames，Q-former）、Video-LLaVA（8 frames，MLP）、Qwen2.5-VL（dynamic FPS + time-aligned M-RoPE）之间的比较。
 
 ## 交付它
 本课会产出 `outputs/skill-video-vlm-frame-planner.md`。给定一个 video task（monitoring、action recognition、temporal grounding、summarization），它会选择 frame sampler、pooling factor、output format 和 expected accuracy tier。
@@ -120,7 +120,7 @@ video-temporal-patches
 ## 练习
 1. 对一个 3 分钟 cooking demo，选择 uniform 还是 dynamic FPS。用 token count 说明理由。
 
-2. TMRoPE 具体增加了什么，是简单 temporal embedding table 做不到的？
+2. Time-aligned M-RoPE 具体增加了什么，是简单 temporal embedding table 做不到的？
 
 3. 写一个 VLM 可学习输出的 temporal grounding JSON schema。包含 error cases。
 
@@ -132,7 +132,7 @@ video-temporal-patches
 | Term | What people say | What it actually means |
 |------|-----------------|------------------------|
 | Temporal grounding | "Time-localized answers" | VLM 会为事件发生时间输出具体 timestamp range |
-| TMRoPE | "Time-Multimodal RoPE" | 带绝对 timestamps 的 3D rotary position，由 Qwen2.5-VL 使用 |
+| Time-aligned M-RoPE | "TMRoPE" | 时间轴跟随绝对 timestamps 的 3D rotary position；Qwen2.5-VL 用于视频，Qwen2.5-Omni 把其音频与视频形式命名为 TMRoPE |
 | Dynamic FPS | "Motion-aware sampling" | 在 high-motion segments 采样更多 frames，在 static segments 采样更少 |
 | Frame pooling | "Spatial compress per frame" | 在进入 LLM 前用 bilinear interpolation 减少每个 frame 的 patches |
 | Video Q-former | "Clip compressor" | 将 N frames 映射到 K learned queries 的 cross-attention bottleneck |

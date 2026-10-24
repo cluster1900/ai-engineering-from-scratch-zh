@@ -95,10 +95,10 @@ ColPali-v1 在 ViDoRe 上约为 80% nDCG@5；同一批 documents 上的 text-RAG
 
 一份 50-page financial report，每页 729 patches，128-dim embeddings：
 
-- ColPali：50 * 729 * 128 * 4 bytes = ~18 MB raw，PQ 后 ~4 MB。
+- ColPali：50 * 729 * 128 * 4 bytes = ~18 MB raw，8x PQ 后 ~2.3 MB。
 - Text-RAG：50 chunks * 768-dim * 4 bytes = ~150 kB。
 
-ColPali 每个 document 的 storage 约多 30x。在规模化场景中，OPQ / PQ 可将其降到约 5-10x，通常可以接受。
+ColPali 每个 document 的原始 storage 约多 120x。在规模化场景中，8x 的 OPQ / PQ 可将其降到约 15x，通常可以接受。
 
 ### Text-RAG 仍然胜出的场景
 

@@ -74,7 +74,7 @@ LayoutLMv3 是基于 OCR 的文档理解巅峰。它在表单和发票上很强�
 
 ### DocLLM (2023)
 
-DocLLM（Wang et al., arXiv:2401.00908）是 LayoutLM 的生成式 sibling。它基于 layout tokens 条件生成 free-form answers。更适合文档 QA；仍依赖 OCR 输入。
+DocLLM（Wang et al., arXiv:2401.00908，2023 年 12 月 31 日提交，因此 ID 带有 2024 年 1 月的前缀）是 LayoutLM 的生成式 sibling。它基于 layout tokens 条件生成 free-form answers。更适合文档 QA；仍依赖 OCR 输入。
 
 ### Era 3 — VLM-native（2024+）
 
@@ -83,7 +83,7 @@ DocLLM（Wang et al., arXiv:2401.00908）是 LayoutLM 的生成式 sibling。它
 - LLaVA-NeXT 336-tile AnyRes 适用于小型文档。
 - Qwen2.5-VL dynamic-resolution 原生处理 2048+ pixels。
 - Claude Opus 4.7 支持 2576px 文档。
-- PaliGemma 2（2025 年 4 月）专门针对文档 + 手写训练。
+- PaliGemma 2（2024 年 12 月）专门针对文档 + 手写训练。
 
 VLM-native 与 OCR-pipeline 之间的差距快速缩小。到 2026 年，VLM-native 在以下方面胜出：
 

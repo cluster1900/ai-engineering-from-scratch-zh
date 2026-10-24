@@ -9,7 +9,7 @@
 
 ## 学习目标
 - 计算不同 FPS 和 pooling 下长视频的总 visual-token 数量。
-- 解释三条扩展路径：brute context（Gemini 1.5）、ring attention（LWM）、token compression（LongVILA / Video-XL）。
+- 解释四条扩展路径：brute context（Gemini 1.5）、ring attention（LWM）、token compression（LongVILA / Video-XL）、agentic retrieval（VideoAgent）。
 - 在准确率和延迟上比较 raw-context video VLMs 与 agentic-retrieval video VLMs（VideoAgent）。
 - 为 30 分钟视频设计一个 needle-in-a-haystack 测试，并测量特定分钟处的召回率。
 
@@ -18,7 +18,7 @@ Qwen2.5-VL 尺寸的 patch 在 384 原生分辨率下，单帧约为 729 个 Tok
 
 一部 2 小时电影按 1 FPS 是 583k Token。超出多数 2026 年开放模型能力；需要 Gemini 2.5 Pro，或更激进地 pooling。
 
-出现了三条扩展路径。
+出现了四条扩展路径。
 
 ## 概念
 ### Path 1: brute context（Gemini 1.5, Claude Opus）
@@ -33,7 +33,7 @@ Gemini 1.5 Pro 发布时支持 1M Token；Gemini 1.5 Ultra 达到 10M；2026 年
 
 Ring attention 把长序列分布到多个设备上，形成一个“ring”，每个设备持有一个 chunk。对完整序列的 attention 通过 ring 模式完成：每个设备把自己的 chunk 发送给下一个设备，计算 partial attention，并进行聚合。
 
-LWM（Liu et al., 2024）用这种方式训练了一个 1M-Token context 模型。训练计算量随 context 线性扩展，而不是平方扩展，因为 attention 的平方成本被分摊到了 ring 中的设备上。
+LWM（Liu et al., 2024）用这种方式训练了一个 1M-Token context 模型。每个设备的内存随它所持有的 chunk 扩展，因此增加设备可以让 context 大致线性延长。Attention 的总计算量仍是 context 的平方；ring 把这部分工作分摊到各设备上，并让 key/value 的传递与计算重叠。
 
 LongVILA（arXiv:2408.10188）把该模式适配到 VLMs。1400 帧视频，每帧 192 个 Token = 268k context，并使用 8-way parallelism 的 ring attention 训练。
 
@@ -113,7 +113,7 @@ mm-video-token-budget
 
 3. 在 1 小时视频上比较 brute-context Qwen2.5-VL-72B（80k context）与 VideoAgent（Claude 3.5 + retrieval）。哪个在召回上胜出？哪个在延迟上胜出？
 
-4. Ring attention 的内存成本随序列长度线性扩展，也随设备数量线性扩展。解释为什么，以及如果去掉 ring-rotation 阶段会失败在哪里。
+4. Ring attention 每个设备的内存随序列长度除以设备数扩展，而 attention 总计算量仍是平方级。解释为什么，以及如果去掉 ring-rotation 阶段会失败在哪里。
 
 5. 阅读 Gemini 1.5 第 5 节关于 needle-in-a-haystack 的内容。论文对 1M 与 10M Token 边界处的召回有什么发现？
 

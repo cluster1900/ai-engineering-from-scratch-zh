@@ -39,7 +39,7 @@ Chameleon 拒绝这个前提：图像只是来自共享词表的离散 Token 序
 
 训练：VAE reconstruction loss + commitment loss + codebook loss。Codebook indices 构成图像的离散 alphabet。
 
-对 Chameleon 来说：一张图像变成 32*32 = 1024 个 Token，来自大小为 8192 的词表。与文本 Token（来自 LLM 的 BPE 词表，例如 32000）拼接。最终词表：40192。Transformer 看到的是一个序列、一个 loss。
+对 Chameleon 来说：一张图像变成 32*32 = 1024 个 Token，来自大小为 8192 的词表。把这些图像 ID 放进与文本 BPE Token 相同的 ID 空间。Chameleon 的单一 Tokenizer 有 65,536 个条目，这个数已经包含 8192 个图像 code 以及图像分隔符等特殊 Token。Transformer 看到的是一个序列、一个 loss。
 
 ### 共享词表
 

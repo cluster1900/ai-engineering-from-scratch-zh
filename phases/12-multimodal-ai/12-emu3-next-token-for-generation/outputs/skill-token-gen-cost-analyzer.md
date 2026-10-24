@@ -11,7 +11,7 @@ tags: [emu3, next-token-prediction, video-gen, diffusion, cfg]
 
 产出：
 
-1. Token 数量。在所选 Tokenizer 降采样比例下的单图 Token 数（图像通常是每个维度 8x）。使用 3D VQ 的单视频 Token 数（通常是 4x4x4 时空压缩）。
+1. Token 数量。在所选 Tokenizer 降采样比例下的单图 Token 数（图像通常是每个维度 8x）。使用 3D VQ 的单视频 Token 数（通常每个 Token 覆盖 4 frames x 8x8 pixels）。
 2. 推理延迟。Emu3-family 使用 Tokens / throughput（tokens-per-second）；diffusion 使用 denoise-steps * step-time。引用具体的 A100 / H100 范围。
 3. 质量上限。Tokenizer 重建 PSNR（IBQ-class 为 30-32 dB）、MJHQ-30K 上的 FID 预期、视频的 FVD。
 4. CFG 配置。按任务推荐 guidance weight（gamma）；标准生成通常为 3.0，强 prompt 遵循通常为 5-7。

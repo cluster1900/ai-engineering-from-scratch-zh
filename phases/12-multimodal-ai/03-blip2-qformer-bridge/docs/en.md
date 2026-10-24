@@ -1,6 +1,6 @@
 # 从 CLIP 到 BLIP-2 — Q-Former 作为 Modality Bridge
 
-> CLIP 对齐图像和文本，但不能生成 caption、回答问题或进行对话。BLIP-2 (Salesforce, 2023) 用一个小型可训练桥接解决了这个问题：32 个可学习 query Vector 通过 cross-attention 关注 frozen ViT 的 features，然后直接插入 frozen LLM 的输入流。188M 参数的桥接把一个 11B LLM 连接到 ViT-g/14。到 2026 年为止，每个基于 adapter 的 VLM —— MiniGPT-4、InstructBLIP、LLaVA 的近亲 —— 都是它的后代。本课阅读 Q-Former 的架构，解释它的两阶段训练，并构建一个 toy 版本，把 visual Token 输入到 frozen text decoder 中。
+> CLIP 对齐图像和文本，但不能生成 caption、回答问题或进行对话。BLIP-2 (Salesforce, 2023) 用一个小型可训练桥接解决了这个问题：32 个可学习 query Vector 通过 cross-attention 关注 frozen ViT 的 features，然后直接插入 frozen LLM 的输入流。188M 参数的桥接把 ViT-g/14 连接到最大可达 11B（Flan-T5-XXL）的 frozen LLM。到 2026 年为止，每个基于 adapter 的 VLM —— MiniGPT-4、InstructBLIP、LLaVA 的近亲 —— 都是它的后代。本课阅读 Q-Former 的架构，解释它的两阶段训练，并构建一个 toy 版本，把 visual Token 输入到 frozen text decoder 中。
 
 **Type:** Build
 **Languages:** Python (stdlib, cross-attention + learnable-query demo)
@@ -112,7 +112,7 @@ modality-projection
 
 4. 阅读 BLIP-2 paper（arXiv:2301.12597）Section 3.2，了解 Q-Former 如何初始化。解释为什么从 BERT-base 初始化（而不是随机初始化）会加速收敛。
 
-5. 对一个 10 分钟视频，以 1 FPS 采样到 60 帧，计算每帧 Token 成本：(Q-Former → 32 tokens/frame) vs (MLP projector → 576 tokens/frame)。哪一个能放进 128k-Token LLM context window？
+5. 对一个 10 分钟视频，以 1 FPS 采样到 60 帧，计算每帧 Token 成本：(Q-Former → 32 tokens/frame) vs (MLP projector → 576 tokens/frame)。在 prompt 文本还没占用任何空间之前，每种桥接能把多少帧放进 128k-Token LLM context window？
 
 ## 关键术语
 | Term | What people say | What it actually means |
@@ -126,7 +126,7 @@ modality-projection
 | Two-stage pretraining | "Representation then generative" | Stage 1 单独训练 Q-Former（ITC/ITM/ITG）；Stage 2 接入 frozen LLM，并且只训练 projection + Q-Former |
 | Frozen backbone | "Do not finetune" | vision encoder 和 LLM weights 固定；只训练 bridge |
 | Projection head | "Linear to LLM dim" | 将 Q-Former 输出映射到 LLM Embedding dimension 的最终 linear layer |
-| Perceiver resampler | "Flamingo's version" | 类似的 learnable-query cross-attention，由 Flamingo 在每一层使用，而不是作为单个 bridge |
+| Perceiver resampler | "Flamingo's version" | 类似的 learnable-query cross-attention；Flamingo 对每张图像运行一次，生成固定数量的 latents，再在每个 LLM 层通过 gated cross-attention 读取它们 |
 
 ## 延伸阅读
 - [Li et al. — BLIP-2 (arXiv:2301.12597)](https://arxiv.org/abs/2301.12597) — 核心 paper。

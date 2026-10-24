@@ -10,7 +10,7 @@
 ## 学习目标
 - 解释 masked discrete diffusion：一种先均匀 mask Tokens、再让 Transformer 恢复它们的 schedule。
 - 从速度和质量上比较并行 image decoding（Show-o, MaskGIT）与 autoregressive image decoding（Chameleon, Emu3）。
-- 说出 Show-o 在一个 checkpoint 中处理的三类任务：T2I、VQA、image inpainting。
+- 说出 Show-o 在一个 checkpoint 中处理的四类任务：文本生成、VQA、T2I、image inpainting。
 - 选择一种 masking schedule（cosine、linear、truncated），并推理它对 sample quality 的影响。
 
 ## 问题

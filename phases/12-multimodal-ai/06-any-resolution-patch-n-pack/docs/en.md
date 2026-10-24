@@ -1,6 +1,6 @@
 # 任意分辨率 Vision：Patch-n'-Pack 和 NaFlex
 
-> 真实图像不是 224x224 的正方形。收据是 9:16，图表是 16:9，医学扫描可能是 4096x4096，手机截图是 9:19.5。2024 年之前的 VLM 答案——把所有内容 resize 成固定正方形——丢掉了让 OCR、文档理解和高分辨率场景解析真正可用的信号。NaViT（Google，2023）展示了可以用 block-diagonal masking 将可变分辨率 patches 打包进单个 transformer batch。Qwen2-VL 的 M-RoPE（2024）完全去掉了绝对位置表。LLaVA-NeXT 的 AnyRes 将高分辨率图像切成 base + sub-images。SigLIP 2 的 NaFlex 变体（2025）现在是 open VLM 的默认 encoder，用于让单个 checkpoint 支持所有 aspect ratio。本课端到端实现 patch-n'-pack。
+> 真实图像不是 224x224 的正方形。收据是 1:3，图表是 16:9，医学扫描可能是 4096x4096，手机截图是 9:19.5。2024 年之前的 VLM 答案——把所有内容 resize 成固定正方形——丢掉了让 OCR、文档理解和高分辨率场景解析真正可用的信号。NaViT（Google，2023）展示了可以用 block-diagonal masking 将可变分辨率 patches 打包进单个 transformer batch。Qwen2-VL 的 M-RoPE（2024）完全去掉了绝对位置表。LLaVA-NeXT 的 AnyRes 将高分辨率图像切成 base + sub-images。SigLIP 2 的 NaFlex 变体（2025）现在是 open VLM 的默认 encoder，用于让单个 checkpoint 支持所有 aspect ratio。本课端到端实现 patch-n'-pack。
 
 **Type:** Build
 **Languages:** Python (stdlib, patch packer + block-diagonal mask)
@@ -52,7 +52,7 @@ LLaVA-NeXT 的 AnyRes 是务实替代方案。给定一张高分辨率图像和�
 
 对于一张 672x672 图像，使用 2x2 grid 加 thumbnail：4 * 576 + 576 = 2880 个 visual Token。昂贵但有效——LLM 同时看到局部细节和全局上下文。
 
-当你的 encoder 是 frozen 且只支持一种分辨率时，AnyRes 是首选路线。它会让大图像的 Token 数爆炸（一张 1344x1344 图像使用 4x4 grid 时是 9216 + 576 ≈ 9800 Token，会占满 8k LLM context 的大部分）。
+当你的 encoder 是 frozen 且只支持一种分辨率时，AnyRes 是首选路线。它会让大图像的 Token 数爆炸（一张 1344x1344 图像使用 4x4 grid 时是 9216 + 576 ≈ 9800 Token，在任何文本进入之前就已经超出 8k LLM context）。
 
 ### M-RoPE (Qwen2-VL)
 
