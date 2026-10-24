@@ -112,7 +112,7 @@ STRATUS（NeurIPS 2025）报告称，当你部署以下角色时，mitigation-su
 
 ### The failure-mode audit
 
-2026 年的 best practice 是每年（或每次 major release）进行一次 failure-mode audit：
+2026 年的 best practice 是每季度（以及每次 major release）进行一次 failure-mode audit：
 
 1. **Trace sample。** 收集约 1000 条真实 execution traces。
 2. **Categorize。** 对每条 trace 的失败，映射到 MAST + Groupthink categories。

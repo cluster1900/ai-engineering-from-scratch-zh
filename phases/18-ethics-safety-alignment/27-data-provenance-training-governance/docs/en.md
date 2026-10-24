@@ -48,7 +48,7 @@ Irish DPC（2025 年 5 月 21 日）：在 EDPB 意见之后，Meta 使用第一
 
 趋同原则：legitimate interest 可以为基于公开可用第一方内容并提供 opt-out 的训练提供正当理由。不需要 consent。
 
-### Brazilian ANPD（2024 年 6 月）
+### Brazilian ANPD（2024 年 7 月）
 
 因信息透明度不足，暂停 Meta 处理 Brazilian 用户数据用于 AI 训练。其结果不同于 EU DPA——ANPD 优先考虑透明度，而不是 legitimate-interest 可采纳性。
 

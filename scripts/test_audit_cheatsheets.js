@@ -49,7 +49,10 @@ test('a fact that is not in the from files fails', () => {
 
 test('an evidence line past the end of the file fails', () => {
   const dir = tree();
-  const file = path.join(dir, 'cheatsheets', 'evidence', firstSheet(dir));
+  // Pick a sheet whose evidence cites a full `path.md:line` (some use only abbreviations).
+  const evDir = path.join(dir, 'cheatsheets', 'evidence');
+  const name = fs.readdirSync(evDir).sort().find(n => /\.md:\d+/.test(fs.readFileSync(path.join(evDir, n), 'utf8')));
+  const file = path.join(evDir, name);
   const text = fs.readFileSync(file, 'utf8');
   fs.writeFileSync(file, text.replace(/(\.md):(\d+)/, '$1:999999'));
   const r = run(dir);
