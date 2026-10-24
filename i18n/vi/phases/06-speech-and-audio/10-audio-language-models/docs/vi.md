@@ -130,17 +130,18 @@ class AudioProjector(nn.Module):
 
 ```python
 from datasets import load_dataset
-mmau = load_dataset("MMAU/MMAU-Pro")
+mmau = load_dataset("gamma-lab-umd/MMAU-Pro", split="test")
+mcq = mmau.filter(lambda item: len(item["choices"] or []) > 1)
 
 correct = 0
-for item in mmau["test"]:
-    answer = call_model(item["audio"], item["question"], item["choices"])
-    if answer == item["correct_choice"]:
+for item in mcq:
+    answer = call_model(item["audio_path"], item["question"], item["choices"])
+    if answer == item["answer"]:
         correct += 1
-print(f"Accuracy: {correct / len(mmau['test']):.3f}")
+print(f"Accuracy: {correct / len(mcq):.3f}")
 ```
 
-分別報告每个类别(khás/ âm thanh/ âm nhạc/ đa âm thanh) ――聚合数字会掩盖模型在哪里失败──
+`audio_path`指向 dữ liệu trong kho `data.zip`(khoảng 47 GB),评分前需要先下载并解压. Chuyển này phù hợp chính xác chỉ là kiểm tra tâm lý, không phải là đánh giá chính thức của tiêu chuẩn, vì vậy số của nó không thể so sánh với kết quả MMAU-Pro đã được phát hành.`model_output`列, rồi运行 [MMAU-Pro 仓库](https://github.com/sonalkum/MMAUPro)Trung `evaluate_mmau_pro_comprehensive.py`分别 báo cáo mỗi `category`(speech, sound, music, multi, and its remaining categories) ◊聚合数字会掩盖模型在哪里失败──
 
 ## Sử dụng nó
 
