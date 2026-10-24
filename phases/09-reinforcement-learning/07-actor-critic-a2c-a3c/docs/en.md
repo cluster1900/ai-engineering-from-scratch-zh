@@ -179,7 +179,7 @@ tags: [rl, actor-critic, gae]
 
 ## Exercises
 
-1. **Easy。** 在 4×4 GridWorld 上使用 MC advantage$(G_t - V(s_t))$训练 actor-critic。与 Lesson 06 中 REINFORCE-with-running-mean-baseline 的 sample efficiency 对比。
+1. **Easy。** 在 4×4 GridWorld 上使用 MC advantage $(G_t - V(s_t))$ 训练 actor-critic。与 Lesson 06 中 REINFORCE-with-running-mean-baseline 的 sample efficiency 对比。
 2. **Medium。** 切换到 TD-residual advantage$(r + \gamma V(s') - V(s))$。测量 advantage batches 的 variance。它下降了多少？
 3. **Hard。** 实现 GAE(λ)。扫描 $\lambda \in \lbrace 0, 0.5, 0.9, 0.95, 1.0 \rbrace$。绘制 final return vs sample efficiency。这个 task 的 bias/variance sweet spot 在哪里？
 
