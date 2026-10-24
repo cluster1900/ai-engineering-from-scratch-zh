@@ -19,7 +19,7 @@ Bölüm 19 ve 20  dersler laboratuvar içindeki ölçeklendirme politikalarını
 
 ### CAIS  AI Güvenliği Merkezi
 
-- 创立时间:2022年, San Francisco, Dan Hendrycks 及同事 tarafından kurulmuştur.
+- 创立时间:2022年, San Francisco, Dan Hendrycks 和 Oliver Zhang 创立──Hendrycks 担任执行与研究总监; Zhang 担任管理总监──
 - 状态:501 ((c) ((3) olmayan kuruluşlar
 - 2023 yılındaki önemli sonuçlar: Yüzlerce araştırmacı ve CEO tarafından ortak olarak imzalanan, yok olma riskine ilişkin açıklama:  AI'nin yok olma riskini azaltmak, salgın hastalıklar ve nükleer savaşlar gibi diğer toplumsal risklerle birlikte küresel önceliklere dönüşmelidir.
 - 2026 yılının sonuçları: Sınır modeli için kullanılır  değerlendirme AI Dashboard  Uzaktan İş İndeksi  birlikte yayınlanan Skala AI ile birlikte yayınlanan) Super zeka Stratejisi Kağıdı  AI Sınırları haber bültenı 

