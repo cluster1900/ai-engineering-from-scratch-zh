@@ -1,45 +1,45 @@
-# Decide between vLLM and SGLang
+# 在 vLLM 和 SGLang 之间做选择
 
-> With a fixed number of users, the engines tied on throughput on our machines, and the shape of the traffic decided latency.
+> 在固定用户数下，两个引擎在我们机器上的吞吐打平，而流量的形状决定了延迟。
 
-You are choosing a serving engine and you want a measurement, not a reputation. When you finish this section, you can match your traffic to one of our side-by-side runs and say how far the result goes.
+你在选一个推理引擎，想要的是测量结果，而不是口碑。读完本节后，你能把你的流量对应到我们的某一组并排运行上，并说清这个结果能推广到多远。
 
-**Our result:** on our L4, throughput matched within 3 percent up to 32 users. On our DGX Spark, the worst token gap of vLLM was about twice that of SGLang from 32 users.
+**我们的结果：** 在我们的 L4 上，32 个用户以内吞吐相差不超过 3%。在我们的 DGX Spark 上，从 32 个用户起，vLLM 最差的 token 间隔约为 SGLang 的两倍。
 
-## Know what we compared
+## 了解我们比较了什么 {#s-decide-between-vllm-and-sglang-know-what-we-compared}
 
-We ran vLLM 0.31.0 and SGLang 0.5.22 with their defaults on two machines:
+我们在两台机器上用默认设置运行了 vLLM 0.31.0 和 SGLang 0.5.22：
 
-- An NVIDIA L4 with `Qwen/Qwen3-8B` in BF16, in [the full-clock session](#l4-sessions). Both pools held about 24,100 tokens. The load runs were on 2026-10-17, and the rate and waves runs on 2026-10-18.
-- A DGX Spark with `Qwen/Qwen3-30B-A3B-Instruct-2507` in BF16. The pools held 234,960 tokens for vLLM and between 233,303 and 251,910 tokens for SGLang. Each SGLang run was on the same day as its vLLM run, 2026-10-21.
+- 一块 NVIDIA L4，在[满频会话](#l4-sessions)中运行 BF16 的 `Qwen/Qwen3-8B`。两个池都约有 24,100 token。负载运行在 2026-10-17，速率和波次运行在 2026-10-18。
+- 一台 DGX Spark，运行 BF16 的 `Qwen/Qwen3-30B-A3B-Instruct-2507`。vLLM 的池有 234,960 token，SGLang 的池在 233,303 到 251,910 token 之间。每次 SGLang 运行都和对应的 vLLM 运行在同一天，即 2026-10-21。
 
-Each point is the median of three seeds, from [one benchmark client](#s-benchmark-your-server-in-15-minutes) for both engines. This is two models on two cards. Treat the results as a guide to what you should measure, not as a rule.
+每个点都是三个种子的中位数，两个引擎都用[同一个基准测试客户端](#s-benchmark-your-server-in-15-minutes)。这是两块卡上的两个模型。请把结果看作该测量什么的指南，而不是规律。
 
-## Read the result for your traffic
+## 按你的流量读结果 {#s-decide-between-vllm-and-sglang-read-the-result-for-your-traffic}
 
-| Your traffic | What we measured | Pick |
+| 你的流量 | 我们测得的结果 | 选择 |
 |---|---|---|
-| Many users at once, near the pool limit | Throughput tied within 3 percent up to 32 users on the L4. vLLM gave the first token sooner, SGLang gave a smoother stream. | vLLM for the first token, SGLang for the stream |
-| A fixed request rate past what the GPU can serve | At 4 requests per second, vLLM gave 11 percent more output on the L4 | vLLM |
-| Prompts of mixed length, 16 users at once | vLLM had the lower P99 ITL on both machines | vLLM by default |
-| Prompts of the same length, 16 users at once | SGLang had the lower P99 ITL on both machines | SGLang |
-| Long prompts of mixed length at a fixed rate, DGX Spark | vLLM had the lower P99 ITL at 0.5 requests per second, SGLang at 2 | measure at your rate |
-| Repeated prefixes that fit the pool | Both caches gave the first token within about 100 ms of each other | either one |
-| A mixture-of-experts model on a DGX Spark, many users | Throughput tied. The vLLM P99 ITL was about twice the SGLang value from 32 users. | SGLang for the stream |
+| 同时有很多用户，接近池的上限 | 在 L4 上，32 个用户以内吞吐相差不超过 3%。vLLM 的首 token 更快，SGLang 的流式输出更平稳。 | 看重首 token 选 vLLM，看重流式输出选 SGLang |
+| 固定请求速率，超过 GPU 能承受的水平 | 在每秒 4 个请求时，vLLM 在 L4 上的输出多 11% | vLLM |
+| 长度混合的 prompt，同时 16 个用户 | 两台机器上都是 vLLM 的 P99 ITL 更低 | 默认选 vLLM |
+| 长度相同的 prompt，同时 16 个用户 | 两台机器上都是 SGLang 的 P99 ITL 更低 | SGLang |
+| 固定速率下长度混合的长 prompt，DGX Spark | 每秒 0.5 个请求时 vLLM 的 P99 ITL 更低，每秒 2 个时 SGLang 更低 | 按你的速率测量 |
+| 能放进池里的重复前缀 | 两者的 cache 给出的首 token 时间相差约 100 ms 以内 | 都可以 |
+| DGX Spark 上的 mixture-of-experts 模型，很多用户 | 吞吐打平。从 32 个用户起，vLLM 的 P99 ITL 约为 SGLang 的两倍。 | 看重流式输出选 SGLang |
 
-## See the numbers behind each row
+## 看每一行背后的数字 {#s-decide-between-vllm-and-sglang-see-the-numbers-behind-each-row}
 
-**Many users at once, L4.** At 32 users, vLLM gave 273.9 tok/s and SGLang 271.3. The median first token took 1,813 ms on vLLM and 2,871 ms on SGLang. The P99 ITL was 619 ms on vLLM and 102 ms on SGLang. At 64 users the output differed by 6 percent. The vLLM run had a lower median clock, 1,013 against 1,215 MHz, so we do not count that gap.
+**同时很多用户，L4。** 在 32 个用户时，vLLM 与 SGLang 分别给出 273.9 和 271.3 tok/s。中位首字时间分别是 1,813 和 2,871 ms，P99 ITL 分别是 619 和 102 ms。在 64 个用户时，输出相差 6%。vLLM 那次运行的中位时钟更低，1,013 对 1,215 MHz，所以我们不计这个差距。
 
-These runs did not reset the prefix cache. We ran them again with a reset at 900 MHz on 2026-10-23, and the direction held. At 32 users the median first token was 2.0 to 2.1 s on vLLM and 3.2 s on SGLang. The P99 ITL was 668 to 964 ms on vLLM and 105 to 106 ms on SGLang. At 16 users it was 522 ms against 82 ms.
+这些运行没有重置 prefix cache。2026-10-23 我们在 900 MHz 下重置后又跑了一遍，方向不变。在 32 个用户时，vLLM 与 SGLang 的中位首字时间分别是 2.0 到 2.1 s 和 3.2 s，P99 ITL 分别是 668 到 964 ms 和 105 到 106 ms。在 16 个用户时是 522 对 82 ms。
 
-**A fixed rate, L4.** At 4 requests per second, vLLM gave 286.6 tok/s and SGLang 257.5. The seed ranges did not overlap. At 8 requests per second the ranges overlapped. The runs at 16 requests per second ran below our clock floor, the lowest clock we accept for a run, so we left them out.
+**固定速率，L4。** 在每秒 4 个请求时，vLLM 给出 286.6 tok/s，SGLang 给出 257.5。种子范围不重叠。在每秒 8 个请求时范围重叠。每秒 16 个请求的运行低于我们的时钟下限，也就是我们接受一次运行的最低时钟，所以我们把它们排除了。
 
-**Mixed and equal lengths, both machines.** Our waves workload sent 64 prompts at 16 users, with a length ratio that sets how much the prompt and output lengths vary. [The lab notes](#s-ref-lab-notes) define it. With mixed lengths on the L4, the P99 ITL was 191 ms on vLLM and 363 ms on SGLang. With equal lengths it was 502 ms on vLLM and 81 ms on SGLang. The DGX Spark showed the same direction: 188 against 198 ms with mixed lengths, and 394 against 159 ms with equal lengths.
+**混合长度与相同长度，两台机器。** 我们的波次负载以 16 个用户发送 64 个 prompt，用一个长度比例设定输入和输出长度的变化幅度。[实验笔记](#s-ref-lab-notes)给出了它的定义。在 L4 上长度混合时，vLLM 与 SGLang 的 P99 ITL 分别是 191 和 363 ms。长度相同时分别是 502 和 81 ms。DGX Spark 显示了同样的方向：长度混合时 188 对 198 ms，长度相同时 394 对 159 ms。
 
-**Mixture of experts, DGX Spark.** At 64 users, vLLM gave 239.3 tok/s and SGLang 245.1, inside the seed spread. The P99 ITL was 528 ms on vLLM and 271 ms on SGLang, and 478 against 220 ms at 32 users. The seed ranges did not overlap. The median first token was also longer on vLLM at every load from 2 users.
+**混合专家，DGX Spark。** 在 64 个用户时，vLLM 与 SGLang 分别给出 239.3 和 245.1 tok/s，落在种子差距之内。P99 ITL 分别是 528 和 271 ms，32 个用户时是 478 对 220 ms。种子范围不重叠。从 2 个用户起，每种负载下 vLLM 的中位首字时间也都更长。
 
-**Long prompts at a low rate, DGX Spark.** With prompts of about 1,000 to 4,000 tokens at 0.5 requests per second, vLLM had the lower P99 ITL, 571 against 922 ms. At 1 and 2 requests per second, SGLang had the lower one. For this sweep the SGLang pool was 7 percent larger than the vLLM pool, so read this row with care.
+**低速率下的长 prompt，DGX Spark。** prompt 约 1,000 到 4,000 token、每秒 0.5 个请求时，vLLM 的 P99 ITL 更低，571 对 922 ms。在每秒 1 个和 2 个请求时，SGLang 更低。这次扫描中 SGLang 的池比 vLLM 的大 7%，所以读这一行时要小心。
 
 ```figure
 id: fig-5-3
@@ -57,21 +57,21 @@ claim: On our DGX Spark, the 99th percentile token gap of vLLM was more than twi
 caption: A higher line is a choppier stream. Bands span three runs. From capture/gpu/summary/gb10.json.
 ```
 
-## Decide
+## 做出决定 {#s-decide-between-vllm-and-sglang-decide}
 
-Pick on the things that do not change with tuning first:
+先根据那些调优改变不了的因素来选：
 
-1. **Model support.** Check that your model and its quantization run on the engine and the version you pin.
-2. **Startup time.** On our DGX Spark, vLLM took 330 seconds to load the 57 GiB of weights.
-3. **Your hardware.** A result on an L4 or a GB10 does not carry over to a datacenter GPU without a test.
+1. **模型支持。** 检查你的模型及其量化方式能在你锁定的引擎和版本上运行。
+2. **启动时间。** 在我们的 DGX Spark 上，vLLM 加载 57 GiB 的权重花了 330 秒。
+3. **你的硬件。** L4 或 GB10 上的结果，不经测试不能推广到数据中心 GPU。
 
-Then run [the sweep](#s-benchmark-your-server-in-15-minutes) on your own traffic with both engines. Use one benchmark client and equal pools.
+然后用两个引擎在你自己的流量上跑[扫描](#s-benchmark-your-server-in-15-minutes)。用同一个基准测试客户端和相同大小的池。
 
 ```takeaways
-- With a fixed number of users, the engines tied on throughput within a few percent on both machines. At a fixed rate past capacity, vLLM gave 11 percent more on the L4.
-- vLLM gave the smoother stream with mixed prompt lengths, and SGLang with equal lengths.
-- On the DGX Spark with a mixture-of-experts model, SGLang gave the smoother stream at high load.
-- Pick on model support, startup, and hardware first, then measure your own traffic.
+- 在固定用户数下，两个引擎在两台机器上的吞吐相差都在几个百分点以内。在超过容量的固定速率下，vLLM 在 L4 上多出 11%。
+- prompt 长度混合时 vLLM 的流式输出更平稳，长度相同时 SGLang 更平稳。
+- 在 DGX Spark 上运行 mixture-of-experts 模型时，SGLang 在高负载下的流式输出更平稳。
+- 先根据模型支持、启动时间和硬件来选，再测量你自己的流量。
 ```
 
 Sources: capture/gpu/summary/l4.json (load, rate, waves, and prefix for vllm and sglang), capture/gpu/summary/gb10.json (load, mixed, and waves for vllm and sglang), capture/gpu/out-l4/server-h2h-vllm.log, capture/gpu/out-gb10/server-load-vllm.log, capture/gpu/out-l4/load-flushed-vs-unflushed.txt.

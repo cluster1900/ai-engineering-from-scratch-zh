@@ -235,9 +235,9 @@
     },
     {
       "number": 5,
-      "title": "Measure",
-      "thesis": "A benchmark tells you something only when it matches your traffic and records its conditions.",
-      "summary": "Benchmark your own server, watch it in production, and decide between vLLM and SGLang for one workload.",
+      "title": "测量",
+      "thesis": "只有当基准测试与你的流量相符并记录了测试条件时，它才能告诉你一些东西。",
+      "summary": "为你自己的服务器做基准测试，在生产环境中监控它，并针对某个负载在 vLLM 和 SGLang 之间做选择。",
       "accent": "olive",
       "sections": [
         {
