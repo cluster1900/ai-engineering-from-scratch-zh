@@ -42,12 +42,12 @@
       "stage": "check",
       "question": "为什么为了 cache hit 进行 cross-region routing 并不总是优于 regional routing？",
       "options": [
-        "所有 hyperscalers 都禁止 inter-region routing",
-        "GORGO research 发现 cache hits 对 latency 没有帮助",
         "Network RTT 会吃掉大部分节省下来的 prefill，例如 220 ms 的 US-APAC RTT 会把 720 ms 的节省削减到约 500 ms",
+        "GORGO research 发现 cache hits 对 latency 没有帮助",
+        "所有 hyperscalers 都禁止 inter-region routing",
         "跨 region 无法进行 cache-aware routing"
       ],
-      "correct": 2,
+      "correct": 0,
       "explanation": ""
     },
     {
