@@ -10,7 +10,7 @@
 ## Objectivo de aprendizagem
 
 - 描述 Claude uso do computador:输入截图,输出键盘/鼠标命令,不使用可访问性API。
-- Explique estes três modelos em OSWorld / WebArena / Online-Mind2Web Número de referência
+- Recordo este curso citação de lançamento de referência Número:OpenAI CUA em OSWorld / WebArena / WebVoyager 上的数字, bem como Gemini 2.5 Computador Usar em Online-Mind2Web 上的数字──
 - 解释 Gemini 2.5 Uso de computador 文档中的逐步安全模式──
 - 总结 these three models co-execution of incrédulo
 

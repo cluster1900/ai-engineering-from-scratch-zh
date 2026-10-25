@@ -109,7 +109,7 @@ Há três modelos que podem diferenciar um conjunto de regras que pode durar um 
 
 **规则过期作为强制机制。**Cada regra está com ele.`expires_at`Quando uma lei não expirar durante 60 dias sem qualquer violação, o inspector emitirá um aviso; na próxima avaliação de trimestre, ele irá explicar os motivos para a retenção ou para a sua redução.`info`Data da Revisão do Código de Produção de AI da Cloudflare (data de 5169 repo operação 131.246 vezes revisão) mostra que, com regras de prazo definidas, o mecanismo de expiração pode permanecer dentro de cada repo 30 条 条 条 条 条 条                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 
-**Markdown 作为 source，JSON 作为 cache。** `agent-rules.md`É autor de documentos de manutenção;`agent-rules.lock.json`É um sistema de controle em um caminho quente.`package.json`- Não .`package-lock.json`和 `Cargo.toml`- Não .`Cargo.lock`É o mesmo.
+**Markdown 作为 source，JSON 作为 cache。** `agent-rules.md`É autor de documentos de manutenção;`agent-rules.lock.json`É um sistema de análise em um caminho quente. É um sistema de análise que só pode ser carregado com um pequeno formato JSON.`package.json`- Não .`package-lock.json`和 `Cargo.toml`- Não .`Cargo.lock`É o mesmo.
 
 ## Use-o
 

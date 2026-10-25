@@ -3,7 +3,7 @@
 > A CrewAI é um framework multi-agente baseado em papéis de 2026: quatro componentes básicos: Agente, tarefa, tripulação, processo, duas formas de topo: equipes, autônoma, colaboração baseada em papéis e fluxos.
 
 **类型：**学习 + 构建
-**语言：**Python (stdlib)
+**语言：**Python(User numpy)
 **先修：**Fase 14 · 12 (Patrões de Fluxo de Trabalho), Fase 14 · 14 (Modelo de ator)
 **时间：**Cerca de 75 minutos
 
@@ -14,8 +14,8 @@
 - 区分 Crews (basado em funções de autônomos) e Flow (Flows) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxos) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Flu) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Fluxes) (Flu) (Fluxes) (Flu
 - Utilização `@tool`decorador 和 `BaseTool`Subclasse 接入 tools; compreender as saídas estruturadas e a utilização de texto livre.
 - Explique quatro tipos de memória CrewAI, bem como cada um em que momento vale a pena usar.
-- 实现一个工作三 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 经纪人团队 报告 报告
-- 识别三种 CrewAI fail modes:immediato-bloat, gerente-LLM tax, brilhantes entregas,
+- Usando Python normal  implementar um 3 Agente tripulação  pesquisador  escritor  editor), produzir um breve 
+- Identificar quatro tipos de modos de falha da tripulação: imposto de inundação imediata, gerente, LLM, transferências frágeis, tripulação como produtor.
 
 ## 问题
 
@@ -120,7 +120,7 @@ Em tripulação`memory=True`Ou por tipo de configuração  Enable. 支(Defecto O
 - 亚秒级延迟预算──hierárquico 会增加 round-trip──即使序列化也会包含背景故事和前输出的提示──
 - Loops de agente único.
 
-Lição 17 ((Agente Framework Tradeoffs) usando Matrix  demonstrou este ponto.
+Lição 28 ((Orchestration Patterns) 把这些拓学并排比较──简短版本:CrewAI 位于合作角色角落──
 
 ### Forma de dependência
 
@@ -129,7 +129,7 @@ Lição 17 ((Agente Framework Tradeoffs) usando Matrix  demonstrou este ponto.
 ### Este padrão vai estar em erro.
 
 - **Backstories 导致 prompt-bloat。**Cada agente Uma história de 2000 palavras, mais cinco membros da equipe de agentes, vão na primeira chamada da ferramenta Pre-burn掉 context budget──把 backstories 控制在 200 词以内──跨代理 复用短语;不要把房子风格重复五遍──
-- **Manager-LLM token tax。**Processo hierárquico Realizado em cada chamada especialista 前增加一个经理LLM电话――五个任务 工作人员 会从五次LLM电话 变成六次,而且经理电话 携带完整任务列表加上前输出――除非路由依赖输出,否则切换到序列――
+- **Manager-LLM token tax。**Processo hierárquico Realizado em cada chamada especialista 前增加一个经理LLM电话──五个任务 工作人员 会从五次LLM电话 变成十次,而且经理电话 携带完整任务列表加上前输出──除非路由依赖输出,否则切换到序列──
 - **Brittle handoffs。**A tarefa N `expected_output`É um esboço. A tarefa N+1 é colocá-lo como um.`context`读取,并尝试 parse 三个节目──LLM 生成四个──下游 Agente 即兴处理──修复方式是任务 N 上使用 `output_pydantic`,让Task N+1 读取 typed object, em vez de texto livre。
 - **Crew-as-prod。**Freedom Forma Crew em caso de não haver envoltura de fluxo é lançado para produção.
 
@@ -140,7 +140,7 @@ ae-crew-vs-flow
 
 ## Construí-lo
 
-`code/main.py`Realizou duas versões de STDlib, bem como uma tripulação de três agentes.
+`code/main.py`Usando Python comum, realizou duas formas, bem como uma tripulação de três agentes. A única dependência fora da biblioteca é a de um tipo de similaridade ridicularizada.
 
 形态:
 

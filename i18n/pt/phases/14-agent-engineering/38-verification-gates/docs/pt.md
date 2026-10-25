@@ -84,7 +84,7 @@ python3 code/main.py
 
 ## Modelo de produção em real
 
-Quatro padrões vão mudar a porta de um outro trabalho de linho para a ponta decisiva.
+5 padrões que vão fazer a porta de outro trabalho de linho para a ponta decisiva
 
 **Defense-in-depth，而不是 single gate。**Análise de status do CI → Análise de status do CI → Análise de status do CI → Análise de status do authz do instrumento → Porta de pre-mergimento. Cada camada é determinada, portanto, falha do nível 1 será capturada.
 

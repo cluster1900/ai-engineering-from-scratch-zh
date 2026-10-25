@@ -19,7 +19,7 @@ Os agentes podem passar por demonstrações. Eles falham na produção de forma 
 ## 概念
 ### Três níveis de avaliação
 
-1. **Static benchmarks** Utilizado para código de SWE-bench Verificado(Lessão 19) 、 para browsing / 桌面的 WebArena/OSWorld(Lessão 20) 、 para GAIA generalista(Lessão 19) 、 para uso de ferramentas de BFCL V4(Lessão 06)  Para usar através de modelos comparativos e de regressão por portas。 contaminação é real existência:SWE-bench+ 发现 32.67% de solução fugação。始终报告 Verificado / +-auditado 分数。
+1. **Static benchmarks** Usado para código de SWE-bench Verified(Lessão 19) 、 para browsing / 桌面的 WebArena/OSWorld(Lessão 20) 、 para GAIA generalista(Lessão 19) 、 para uso de ferramentas de BFCL V4(Lessão 06)  Usado para através de modelos comparativos e retrospectiva por gateing。 contaminação é real existência:SWE-bench+  encontrou 32,67% de solução vazamento。始终报告SWE-bench Verified 上的分数,或SWE-bench+ 这类经过泄漏分分分的审计数据集上的数量──
 
 2. **Custom offline evals** Seu produto forma:
    - LLM como juiz ((Langfuse、Fenix、Opik  Lição 24)。
@@ -51,7 +51,7 @@ Os agentes podem passar por demonstrações. Eles falham na produção de forma 
 
 ### Vai fazer a fase 14
 
-Cada aula da fase 14 gerará casos de avaliação:
+A maioria das aulas da fase 14 geram casos de avaliação.
 
 | Lesson | 它生成的 Eval case |
 |--------|------------------------|
@@ -74,7 +74,7 @@ Cada aula da fase 14 gerará casos de avaliação:
 | 28 Orchestration | Supervisor 路由到正确 specialist |
 | 29 Runtime Shapes | DLQ 处理 N% failure |
 
-Se a sua suite de avaliação cobre cada um dos itens, já cobriu a Fase 14.
+Se a sua suite de avaliação estiver pronta para cada caso, já cobriu o núcleo da Fase 14.
 
 ### Eval  Drive Development Conference em que falha
 

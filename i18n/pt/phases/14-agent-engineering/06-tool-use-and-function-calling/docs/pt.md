@@ -76,7 +76,7 @@ Cada falha de validação deve retornar à observação estruturada, permitindo 
 
 ### Sandboxing
 
-A execução de ferramentas é o limite da caixa de areia.`run_shell(cmd)`É um sinal de perigo;`git_status()`Mais seguro.
+Execução de ferramentas é limite de caixa de areia.`run_shell(cmd)`É um sinal de perigo;`git_status()`Mais seguro.
 
 
 ```figure
