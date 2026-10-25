@@ -92,7 +92,7 @@ python3 code/main.py
 
 **交叉编码器不对称。** `rerank(q, d)`et `rerank(d, q)`Si vous ne changez pas d'avis, les souvenirs se brisent.
 
-**N 太低，无法暴露该 bug。**Si la mise en place N = K, le codeur de croisement ne peut pas être réarrangé; il ne peut être réarrangé que par le nombre de charges.
+**N 太低，无法暴露该 bug。**Si la configuration N = K, le codeur de croisement peut être réorganisé pour K 个候选人, mais ne peut pas mettre de nouveaux candidats en haut de K.
 
 **训练数据泄漏到评估中。**Si l'entraînement de la marque manuelle est lié à la recherche d'évaluation, il est très curieux de revoir le classement.
 

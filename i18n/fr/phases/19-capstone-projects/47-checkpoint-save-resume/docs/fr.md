@@ -16,7 +16,7 @@
 
 ##  problématique
 
-Vous avez mis en place une tâche de formation, prévue pour 18 heures. Le temps de fonctionnement est de 4 heures. Le cluster est redémarré, car un autre plus haut niveau de rémunération que vous a approuvé la mise à niveau du noyau.
+Vous avez mis en place une tâche de formation, prévue pour 18 heures de fonctionnement. Un programmeur met chaque affectation à 4 heures, donc cette fois-ci, c'est une série de travaux repris. Puis, pendant la 11e heure de la course, le cluster est redémarré, car quelqu'un de plus haut niveau de rémunération que vous a approuvé la mise à niveau du noyau.
 
 L'artéfact exact est un seul document, dans lequel il est conservé tout ce dont vous avez besoin pour continuer à vous entraîner: paramètres de modèle, état optimisateur, état planificateur, utilisé pour tracer l'histoire de perte, étape actuelle et époque ainsi que les compteurs de lot-en-epoque, ainsi que chaque casualité source de l'état RNG.
 

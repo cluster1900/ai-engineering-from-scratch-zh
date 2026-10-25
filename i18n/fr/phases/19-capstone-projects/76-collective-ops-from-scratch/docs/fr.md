@@ -16,7 +16,7 @@
 
 ##  problématique
 
-N 级上的简单 allreduce 将张量 N 次发送到根并广播 N 次。$O(N)$, la racine devient un bouteille, et le niveau de la chaîne est le plus lent de la chaîne multiplié par N.$T/N$de la$2(N-1)$块, donc chaque rang字节 descend à$2T(N-1)/N$, avec le groupe de taille non lié. L'arbre allreducer dans le petit N et le haut retard de la chaîne de gain, parce que la profondeur est$\log_2(N)$跳 plutôt que $2(N-1)$◊ Pour le cluster de sélection de la surface, le GPU le plus lent décide le temps de la phase de sélection.
+N 级上的简单 allreduce 将张量 N 次发送到根并广播 N 次。$O(N)$, la racine devient un bouteille, et le niveau de la chaîne est le plus lent de la chaîne multiplié par N.$T/N$de la$2(N-1)$块, donc chaque rang字节 descend à$2T(N-1)/N$, avec la croissance et la tendance$2T$且永远不会超过它,无论集群大小如何―― Tree allreduce 在小N 和高延迟链路上胜胜,因为深度是$\log_2(N)$跳 plutôt que $2(N-1)$◊ Pour le cluster de sélection de la surface, le GPU le plus lent décide le temps de la phase de sélection.
 
 Le système de formation de la TDP est basé sur les quatre premiers mots. Le système de formation de la TDP est basé sur la TDP. Le système de formation de TDP est basé sur la TDP. Le système de formation de TDP est basé sur la TDP.
 

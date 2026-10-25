@@ -132,7 +132,7 @@ webhook: alert.pagerduty.com -> checkout-api SLO breach, error rate 14%
 | MTTR | "Time to resolution" | 从 alert 触发到 SLO recovery 的 wall-clock |
 
 ## 延伸阅读
-- [AWS DevOps Agent GA](https://aws.amazon.com/blogs/aws/aws-devops-agent-helps-you-accelerate-incident-response-and-improve-system-reliability-preview/) Références canoniques pour l'année 2026
+- [AWS DevOps Agent GA](https://aws.amazon.com/blogs/mt/announcing-general-availability-of-aws-devops-agent/):2026 année de référence canonique
 - [Resolve AI K8s troubleshooting](https://resolve.ai/blog/kubernetes-troubleshooting-in-resolve-ai) 竞品参考
 - [NeuBird semantic monitoring](https://www.neubird.ai) graphique sémantique 方法
 - [Metoro AI SRE](https://metoro.io) Cadrage de la production par SLO

@@ -89,7 +89,7 @@ Tracer ou UI peut être traduit par la mise en évidence des étapes supprimées
 
 ## ∆ deux budget
 
-`max_steps`limitation de l'ensemble des étapes d'exécution de la session, y compris les réplans 默认是十二──一线性的五步计划, si le réplan 两次并每次增加三步, atteindra les 16 fois d'exécution, dépassant ainsi le budget──l'exécuteur 会拒绝该计划,并返回 FAILED──
+`max_steps`limitation de l'ensemble des étapes d'exécution de la session, y compris les réplans. 默认是十二──失败的尝试也计入──一个在最后一步失败的五步计划 已经花了五次执行. 已花了五次执行. 已花了五次执行. 已花了五次执行. 已花了五次执行. 已花了五次执行. 已花了五次执行. 已花了五次执行. 已花了五次执行. 已花了五次执行. 已花了五次执行. 已花了五次执行. 已改编. 已改编. 已改编. 已改编. 已改编. 已改编. 已改编. 已改编. 已改编. 已改编. 已改编. 已改编. 已改编. 已改编. 已改编. 已改编. 已改编. 已改编. 已改编. 已改编. 已改编. 已改编. 已改编. 已改编. 已改编. 已改编. 已改编.`step_budget`Retour échoué.
 
 `max_replans`限制第一次计划 后规划师 被调用次数──默认是五──这是更重要的限制──一个连续五次回归同一个破碎的计划规划师,否则会一直循环,直到步骤预算 抓获它──限制重规划会让失败更快发生,原因也更清楚──
 

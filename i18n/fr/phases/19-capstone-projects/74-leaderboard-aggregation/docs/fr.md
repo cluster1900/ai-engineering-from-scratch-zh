@@ -132,4 +132,4 @@ De haut en bas`main.py` Les données`EvalRun`- Je suis là.`LeaderboardRow`) 
 
 ## Plus loin
 
-La prochaine étape naturelle est l'importance de la tâche de partage, et non la guidance de l'erreur de partage. Si les modèles A et B fonctionnent sur les mêmes centaines de tâches, le test approprié est le partage de la différence de tâche par tâche que nous avons réalisé.
+Chaque modèle est différent, mais la comparaison entre les modèles doit être différente. Si les modèles A et B exécutent les mêmes 100 tâches, le test approprié est un programme de parallèle pour guider les différences de tâches individuelles.`bootstrap_pairwise_diff`已实现它──除此之外, vous avez également besoin d'un programme de guidage de la série de tâches de respect. Les problèmes mathématiques ne sont pas indépendants les uns des autres; les mathématiques sont fausses.

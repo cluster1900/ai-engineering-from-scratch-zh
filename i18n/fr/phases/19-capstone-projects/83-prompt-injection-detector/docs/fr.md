@@ -82,4 +82,4 @@ Le testeur génère un rapport JSON, qui contient chaque catégorie de précisio
 
 ##  ultérieur
 
-Le test est l'un des trois signaux de la formation du terminal à la porte.
+Le test est l'un des quatre signaux composés du terminal à la porte, les trois autres sont le filtre de jeton, le classifiant et le moteur de règles.

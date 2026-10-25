@@ -71,7 +71,7 @@ l'évaluateur 运行三个独立计算, et le verdict 路径中把它们合并�
 
 La perplexité par rapport aux pertes est une relation de l'indice. La perte est inférieure à 0,1 et la perplexité est très faible.
 
-Le cours sera suivi`scale`字段为 `"log"`De toute métrique dans le calcul amélioration de la précédente prendre log. seuil.`log(28) - log(32) = -0.133`, bien au-dessus du seuil de deux pour cent.
+Le cours sera suivi`scale`字段为 `"log"`Toutes les mesures sont améliorées dans le calcul avant de prendre le log. le seuil.`log(32) = 3.466`Pour le reste`log(28) = 3.332`: : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : :`(3.466 - 3.332) / 3.466 = 0.039`Il a dépassé le seuil de deux pour cent.
 
 ```text
 if scale == "log":

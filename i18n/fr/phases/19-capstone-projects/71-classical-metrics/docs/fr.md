@@ -28,7 +28,7 @@ Le plus difficile est de choisir des jetons et de s'y concentrer.
 
 ## synonymisation
 
-Le mot est `re.findall(r"\w+", text.lower())`◊小写、字母数字运行、删除标点符号── dans ce cours, chaque indicateur utilise cet égal分词器── courant n'a pas le droit de choisir── si vous échangez des mots, vous effectuerez différents tests de base──
+Le mot est `re.findall(r"\w+", text.lower())`◊小写,保留连续的单词字符(字母、数字和下划线), supprimer tous les autres caractères。 dans ce cours, chaque indicateur utilise cet épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais épais é
 
 ```python
 TOKEN_RE = re.compile(r"\w+", re.UNICODE)
@@ -67,7 +67,7 @@ Pour les tâches à plusieurs objectifs, nous avons choisi la meilleure F1 dans 
 
 ## Le projet de loi
 
-BLEU est un indicateur de traduction automatique de la norme, il est toujours présent dans le travail de résumé. La formule que nous utilisons est BLEU-4, de la classe de base de mots, avec un système de punition standard et un système de calcul de n'anciennes langues modifiées pour une augmentation de la valeur de l'équivalent, de sorte que les 4 langues qui manquent ne seront pas réduites à zéro.
+BLEU est un indicateur de traduction automatique de la norme, il est toujours présent dans le travail de résumé. La formule que nous utilisons est BLEU-4, de catégorie de phrase, pour chaque prédiction et référence à un partage séparé, avec une punition de caractère simple standard et un équivoque de n'expression de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur.
 
 Pour chaque candidat-référencement, nous avons calculé l'exactitude de n n n équivaut à 1、2、3、4 heures de modification. La précision de n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équivaut à n équiva.
 
@@ -110,7 +110,7 @@ Numpy 表使实现清晰易读; Pure Python 列表也可以工作──选择 RO
 
 ## 准确度
 
- Pour les tâches de classe multi-objectifs, la précision est réduite à une correspondance précise avec les objectifs de normalisation uniques.`metric_name`Il n'y a pas besoin de faire des comparaisons en ligne.
+Pour les tâches de catégorie, la précision se réduit à une correspondance précise: si la prédiction correspond à l'objectif de normalisation de la liste, on obtient 1 point.`metric_name`Il n'y a pas besoin de faire des comparaisons en ligne.
 
 ## 派遣合同
 

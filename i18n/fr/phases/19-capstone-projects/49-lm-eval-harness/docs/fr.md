@@ -20,7 +20,7 @@ Chaque semaine, un nouveau modèle de langage apparaît. Le marketing dit qu'il 
 
 Si votre repo n'a pas de harnais, vous ne pouvez que comparer deux modèles avec un harnais. Si vous avez un harnais, vous pouvez comparer des tâches fixes avec des métriques fixes, et obtenir des résultats JSON différents.
 
-陷是让harness 过适合单个模型──修复方式是反过来使用同一个陷:harness 小到十五分钟能读完,任务小到可以随随 repo 发布, métriques de zéro编写以便同事审计,而适配器是唯一放置模型特定代码的地方──替代适配器,leaderboard 会变;替代任务,leaderboard 会变――其他一切不应该变──
+陷是让harness 过适合单个模型──修复方式是让所有模型特定的选择都留在harness 之外:harness 小到十五分钟能读完,任务小到可以随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随,                                                                                                                              
 
 ## 概念
 

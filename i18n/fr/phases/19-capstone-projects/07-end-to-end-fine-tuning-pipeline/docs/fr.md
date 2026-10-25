@@ -1,6 +1,6 @@
 # Capstone 07  端到端 Fine-Tuning Pipeline(Données à SFT à DPO à Serve)
 
-> Un modèle 8B basé sur votre propre entraînement de données, basé sur vos propres préférences pour terminer DPO pour Z, terminer la quantification, décoder spéculatif, et avec des jetons de 1 million de dollars mesurables 成本提供服务.
+> Un modèle de niveau 8B basé sur votre propre entraînement de données, basé sur vos propres préférences pour terminer DPO pour la mise en conformité, terminer la quantification ‒ décoding spéculatif, et avec des jetons de 1 M $ mesurables 成本提供服务.
 
 **Type:** Capstone
 **Languages:** Python (pipeline), YAML (configs), Bash (scripts)
@@ -11,7 +11,7 @@
 ##  problématique
 En 2026, chaque équipe d'IA sérieuse sera toujours prête à un pipeline de réglage de la fine-tuning. Non pas parce qu'ils doivent publier un modèle de base frontalier, mais parce que la mise en œuvre de la base de base de la base de l'IA est en train de se faire.
 
-Vous allez mettre une base 8B(Llama 3.3、Qwen3 ou Gemma 3) dans les données spécifiques à la tâche 上依次完成 SFT 和 DPO, puis pour servir faire la quantification,并使用 lm-évaluation-harness、RewardBench-2、MT-Bench-v2 和 MMLU-Pro 衡量升级──you allez basé 2026 Model Openness Framework 产出一个模型卡──重点是可复现性:出端命令到端重跑整条管道──
+Vous allez mettre une base de 8B à 14B ((Llama 3.1 8B、Qwen3 14B ou Gemma 3 12B) dans les données spécifiques à la tâche 上依次完成 SFT 和 DPO, puis pour servir faire la quantification,并使用 lm-évaluation-harness、RewardBench-2、MT-Bench-v2 和 MMLU-Pro 衡量升级──you allez basé sur le 2026 Model Openness Framework 产出一个模型卡──重点是可复现性:一个命令到端重跑整条管道──
 
 ## 概念
 Ce pipeline a cinq étapes.**Data**:dedup(MinHash / Datatrove) ‧filtre de qualité(Nemotron-CC 风格) ‧PII scrub、 contrôle de l'hygiène partagée de la contamination par les indices de référence publics―**SFT**Le modèle de ZERO 3 est le modèle de ZERO 3 et le modèle de ZERO 3 est le modèle de ZERO 3 et le modèle de ZERO 3 est le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO 3 et le modèle de ZERO.**DPO or GRPO**:TRL configuration ∞1 époque ∞pares de préférences peuvent provenir d'étiquettes artificielles ou de réglages bêta jugés par le modèle ∞**Quantize**:GPTQ + AWQ + GGUF, garantie de la flexibilité du déploiement**Serve**:vLLM 0.7 + EAGLE-3 tête spéculative(ou SGLang + SpecForge) 、K8s déploiement、 basé sur la HPA de l'attente en file d'attente。
@@ -52,7 +52,7 @@ model card (2026 MOF) + safety eval (Llama Guard 4)
 
 ## 技术
 - Données: Datatrove pour déduire, Nomotron-CC classifiateur pour la qualité, Presidio pour les PII
-- Base: Llama 3.3 8B、Qwen3 14B ou Gemma 3 12B
+- Base: Llama 3.1 8B、Qwen3 14B ou Gemma 3 12B
 - SFT: Axolotl v0.8, avec ZeRO-3 ✓ Attention flash 3 ✓ séquences emballées
 - TRL 0.15 utilise pour le DPO ou le GRPO; Unsloth utilise pour l'itération à GPU unique
 - Quantification: GPTQ (Marlin) 、AWQ、 par llama.cpp 生成 GGUF
@@ -113,7 +113,7 @@ $ ./pipeline.sh config/llama3.3-8b-domainX.yaml
 ## 练习
 1. Dans le même benchmark spécifique à la tâche, il est possible de calculer les taux de référence de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur de la valeur.
 
-2. Pour le modèle Llama 3.3 8B  remplacement pour Qwen3 14B ⋅ en correspondance avec la qualité des jetons $/1M ⋅
+2. Pour le modèle Llama 3.1 8B  remplacement pour Qwen3 14B ⋅ en correspondance avec la qualité des jetons $/1M ⋅
 
 3. ∆ mesure des données de domaine avec le taux d'acceptation EAGLE-3 générique ShareGPT ∞.
 
@@ -139,5 +139,5 @@ $ ./pipeline.sh config/llama3.3-8b-domainX.yaml
 - [DeepSeek R1 paper (arXiv:2501.12948)](https://arxiv.org/abs/2501.12948) GRPO 方法
 - [vLLM + EAGLE-3 documentation](https://docs.vllm.ai) 参考 pile de service
 - [SGLang SpecForge](https://github.com/sgl-project/SpecForge)  Un autre formateur de décoding spéculatif
-- [Model Openness Framework 2026](https://isocpp.org/) libération ouverte 评分标准
+- [Model Openness Framework (arXiv:2403.13784)](https://arxiv.org/abs/2403.13784): libération ouverte 评分标准
 - [lm-evaluation-harness](https://github.com/EleutherAI/lm-evaluation-harness) coureur d'évaluation canonique

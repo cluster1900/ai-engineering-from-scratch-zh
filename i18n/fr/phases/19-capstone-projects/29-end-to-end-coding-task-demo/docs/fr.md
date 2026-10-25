@@ -21,7 +21,7 @@ La plupart des démo d'agents sont isolés: un seul sable, un seul harnais d'év
 
 La chaîne de porte  a donné l'autorisation, mais la boîte à sable Parce que la chaîne  n'a pas prévu de raison de rejet                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
 
-Ce cours est un test d'intégration de toute la piste. L'agent doit effectuer en ordre quatre choses: lire le projet, exécuter les tests, éviter l'échec des tests, identifier les bugs, réécrire les fichiers, réexécuter les tests, puis arrêter.
+Ce cours est un test d'intégration de toute la piste. L'agent doit effectuer six choses en ordre: lire le projet, exécuter les tests, éviter l'échec des tests, identifier les bugs, réécrire les tests, puis arrêter.
 
 ## Le concept
 

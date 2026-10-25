@@ -16,7 +16,7 @@ Vous allez construire un agent, il reçoit un Java 8 repo (ou Python 2 repo), et
 ## 概念
 Le pipeline a deux niveaux.**deterministic substrate**(Java avec OpenRewrite, Python avec libcst) effectuer en toute sécurité une grande quantité de machines à réécrire: importations, signatures de méthode, modifications sans sécurité, essais avec des ressources, remplacements d'API dépréciés, et la rapidité et la différence de contrôle sont produites.**agent layer**(OpenAI Agents SDK ou LangGraph, basé sur Claude Opus 4.7 et GPT-5.4-Codex) traitement des recettes 无法覆盖的情况:build-file upgrades(Maven/Gradle/pyproject) ]]
 
-Chaque repo obtient un pré-installation objectif de l'exécution de Daytona sandbox──agent 代执行:运行构建分类失败、应用修正、重新运行──硬性限制: chaque repo 30 分钟、每个 repo $8、20 个代理转──如果所有测试 通过且覆盖率 delta 不为负,就打开PR──如果没有通过,就把该 repo 按失败类归档并附上证据──
+Chaque repo obtient un objectif de mise en œuvre préalable de la boîte à sable Daytona.
 
 失败分类体系是交付物品. Dans 50 repo, qu'est-ce qui est mal? Depositions transitives? Annotations personnalisées? Construire une version d'outil?
 
@@ -73,7 +73,7 @@ ce-migration-funnel
 
 4. **Budget caps.**Chaque repo 30 minutes de temps, 8 $, 20 agents se retournent. Toutes les limites sont arrêtées, et sont classées dans le "budget_exhausted".
 
-5. **Test + coverage gate.**Si la couverture dépasse 2%, le dossier est "couverture_régrésion" (en anglais: "coverage_regression").
+5. **Test + coverage gate.**Si la couverture dépasse 2 points de pourcentage, le dossier est "couverture_régrésion"
 
 6. **PR open.**Après succès, poussez, ouvrez les relations publiques, complétez les différences, ainsi que les recettes appliquées, les engagements de l'agent.
 

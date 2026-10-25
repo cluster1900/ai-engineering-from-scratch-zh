@@ -44,7 +44,7 @@ stateDiagram-v2
     DONE --> [*]
 ```
 
-`IDLE`C'est le seul point d'entrée légal.`DONE`C'est la seule exportation légale.`AWAITING_TOOL`C'est le seul état qui produira un point de traction. Toutes les autres transitions sont internes.
+`IDLE`C'est le seul point d'entrée légal.`DONE`C'est la seule exportation légale.`AWAITING_TOOL`C'est le seul état qui produira automatiquement un point de tirage.`on_pause`Non: lorsque le budget est utilisé à bout ou à un certain niveau, il est à partir de l'état actif.
 
 Cette machine d'état est déterminante. Donnée à un même journal d'événements, la connexion sera réintégrée dans le même état. Cette nature vous permet de refaire des séances pour tester, sans avoir à réutiliser le modèle.
 

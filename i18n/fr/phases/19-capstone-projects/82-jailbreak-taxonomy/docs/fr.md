@@ -48,7 +48,7 @@ flowchart TB
   H --> D[coverage chart]
 ```
 
-Chaque fichier est un enregistrement, qui contient`id`- Je suis là.`category`- Je suis là.`subtype`- Je suis là.`prompt`- Je suis là.`target_behavior`et `severity` Les éléments de la catégorie sont chargés, les éléments sont classés en fonction des catégories, et sont classés en fonction des catégories.`match`API: donner une indication de candidature, retourner le fichier le plus proche et ses catégories.
+Chaque fichier est un enregistrement, qui contient`id`- Je suis là.`category`- Je suis là.`subtype`- Je suis là.`prompt`- Je suis là.`target_behavior`et `severity` Les éléments de la catégorie sont chargés, les éléments sont classés en fonction des catégories, et sont classés en fonction des catégories.`match`API: donner une indication de candidature, retourner le plus proche de la pièce et de sa catégorie.
 
 La plupart des attaques sont de 2 à 3 points, car les attaques réelles à l'échelle de la déploiement sont généralement simples et volées. La gravité est définie par l'auteur de la déploiement.
 

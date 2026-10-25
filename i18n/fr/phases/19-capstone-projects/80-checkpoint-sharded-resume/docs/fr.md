@@ -52,7 +52,7 @@ Les trois jeux sont tous en charge.`world_size`Il faut que les différentes part
 
 ### 原子写入
 
-标准模式:将每个分片写入 `<name>.tmp`,将清单写入 `manifest.json.tmp`,fsync Chaque fragment, puis renommé. Dans le même système de fichiers, le POSIX renommé est atome; soit le nouveau fichier existe complètement, soit l'ancien fichier existe complètement. L'effondrement avant le renommé final rendra le point de contrôle précédent un point de contrôle d'activité. Si aucun élément d'atome n'est inscrit, l'effondrement peut laisser un autre élément avec une partie de son ordinateur actuel indiquée, et le chargement détruira l'état de l'optimisateur lors de sa récupération.
+标准模式:将每个分片写入 `<name>.tmp`,将清单写入 `manifest.json.tmp`,fsync Chaque fichier, ré-nommé, ré-nommé liste. Pour chaque fichier, chaque point de contrôle est un point de contrôle. L'effondrement qui se produit avant le ré-nommage du fichier fait de l'ancien point de contrôle un point d'activité.
 
 ### 模式 must defend 的三种故障模式
 

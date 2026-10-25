@@ -119,7 +119,7 @@ python3 -m unittest code/test_main.py
 
 4. Dans le cas d'un projecteur, ajoutez un petit L2 à la charge du punteur, et observez comment il interagit avec le reste du string.
 
-5. Garder le poids du projecteur, puis le charger et le faire fonctionner, sans avoir besoin d'un éditeur vidéo pour le transmettre, pour vérifier la mise en service.
+5. 保存 le poids du projecteur, puis les recharger avec le codeur visuel qui les a connectés, et les faire fonctionner sans réaction de propagation ⋅ validation ⋅ projecteur est le seul nouvel artefact que vous devez livrer; le codeur doit encore fonctionner avant la propagation ⋅ déploiement
 
 ## 关键术语
 

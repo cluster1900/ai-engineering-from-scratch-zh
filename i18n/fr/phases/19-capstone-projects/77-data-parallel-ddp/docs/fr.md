@@ -57,7 +57,7 @@ Le transformateur a des milliers de paramètres de volume. Pour chaque volume, u
 
 ### Pourquoi fixer les graines ?
 
-Chaque rang doit être ajusté`torch.manual_seed(seed + rank)` faire la baignade, mais调用`torch.manual_seed(seed)` effectuer des paramètres initialization.  Un seul partage de semences signifie que chaque classe voit la même séquence de lots.  Battre les données de même ordre.  Les semences de paramètres spécifiques à la classe signifient que les paramètres initiaux ne correspondent pas à l'epsilon flottant.  Le gradient ne fait plus de copies identiques.  Obtenir le modèle de semence correct, sinon le test d'équivalence des paramètres échouera à l'étape 1.
+Chaque rang doit être ajusté`torch.manual_seed(seed + rank)` faire la baignade, mais调用`torch.manual_seed(seed)`Pour les paramètres, la diffusion de la position 0 est la seule raison pour laquelle la diffusion de la position 0 est la même, elle couvre chaque rangée la valeur de la mise en place de soi. La diffusion de la diffusion de la diffusion est la suivante: si la diffusion est sautée ou échoue, la mise en place de la classe spécifique permettra à chaque copie d'avoir un poids de départ différent, tandis que la seule échelle et les étapes ne peuvent jamais les traiter ensemble.
 
 
 ```figure

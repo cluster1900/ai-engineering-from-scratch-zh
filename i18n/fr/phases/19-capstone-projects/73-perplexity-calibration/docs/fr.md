@@ -88,7 +88,7 @@ L'outil n'est pas supposé être fiable à la douceur.`[0, 1]`Pour les tâches d
 
 - Toutes les prédictions sont erronées: l'ECE est la moyenne de confiance, le Brieur est la haute valeur, la confusion est la perception du modèle du texte.
 - Toutes les prévisions sont en bonne foi correct:ECE  proche de zéro,Brier  proche de zéro.
-- P=0,5 时完全不确定的预测因子:ECE = 0,5 减去精度,Brier = 0,25 减去校正项──
+- P=0,5 时完全不确定预测因子: chaque prédiction est dans le même bin, donc ECE `|0.5 - accuracy|`La barre est de 0,25°, donc peu importe.`y`C'est aussi un 0.`(0.5 - y)^2 = 0.25`Il y a une autre.
 - Air-input:ECE, Brier et retour fiable`0.0`(ou 0 remplissage) ◊ Pour la situation de 0 token, perplexité  retour `NaN` Ces voies ne sont pas mises en garde; le coureur examine ces valeurs et décide de signaler ou de sauter.
 
 Ces cas sont inclus dans les tests. Les vrais modèles de test de base ne les battront pas, mais les adaptateurs ou les petits échantillons défaillants les battront, et les opérateurs ne devraient pas s'effondrer.

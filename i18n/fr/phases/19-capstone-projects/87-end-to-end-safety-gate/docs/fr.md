@@ -9,7 +9,7 @@
 
 ##  problématique
 
-Les 82-86 sections de ce cours contiennent une partie: classification, inspecteur d'entrée, cadre d'évaluation, sortie classification, moteur de règles. La véritable porte de sécurité doit les assembler, les utiliser au bon moment du cycle de vie de la demande, décider de quoi agir lorsqu'ils sont en désaccord, et générer un suivi de ce que l'auditeur peut lire le dimanche matin.
+Chaque partie de la section 82-86 de ce cours contient une partie: classification, inspecteur d'entrée, cadre d'évaluation, sortie de classification, moteur de règles. Une véritable porte de sécurité doit être assemblée dans la partie de temps de fonctionnement de la section 83 du testeur, du classification de la section 85 et du moteur de règles de la section 86.), les mettre en œuvre au bon moment du cycle de vie de la demande, décider de quelle opération à prendre lorsqu'ils sont en désaccord, et générer un suivi que l'auditeur peut lire le dimanche matin.
 
 Le test est effectué à trois stations de contrôle. Il est effectué à l'avance avant que le test ne soit effectué. Il est effectué à l'avance. Il est effectué à l'avance.
 
@@ -35,11 +35,11 @@ Le polymère est composé de quatre signaux de gravité: le testateur de confian
 
 |信号状态 |行动|
 |---|---|
+|检测器在非 benign 类别上置信度 >= 0.85 |生成前 block|
 |任何高严重性 |块|
-|任何中等严重程度 |编辑|
-|任何低严重程度 |警告|
-|全部无 + 检测器置信度 < 0.5 |允许 |
-|检测器置信度 0.5-0.85，无其他信号 |警告|
+|任何中等严重程度（检测器置信度 0.5 到 0.85，或提前终止 stream） |编辑|
+|任何低严重程度（检测器在非 benign 类别上置信度低于 0.5） |警告|
+|检测器判定为 benign 且无其他信号 |允许 |
 
 块返回拒绝── Rédit 发送经过分类器编辑的文本并应用规则引擎修复程序──警告在发送原件时附带软件通知──允许运送原件──每一个请求都发发发一个`RequestTrace`, dont la composition`request_id`- Je suis là.`prompt`- Je suis là.`pre_gen`Je suis en train de faire une enquête.`during_gen`(signé 过器触发器)`post_gen`(分类器操作 + 规则报告)`final_action`- Je suis là.`final_output`et `latency_ms`Il y a une autre.
 

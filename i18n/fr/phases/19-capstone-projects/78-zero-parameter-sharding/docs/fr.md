@@ -16,7 +16,7 @@
 
 ##  problématique
 
-Vanilla DDP  Copie tout: paramètres, gradients et l'état de l'optimisateur existent complètement sur chaque niveau. Pour le modèle de paramètres 7B de fp16, cela signifie que chaque niveau est de 14 Go de paramètres, 14 Go de gradients et 28 Go d'état de l'optimisateur.
+Vanilla DDP  Copie tout: paramètres, gradients et état de l'optimisateur existent dans chaque niveau. Pour le modèle de paramètres 7B de fp16, cela signifie que chaque niveau 14 GB  paramètres, 14 GB gradients et 56 GB  état de l'optimisateur.
 
 ZeRO phase 1 effectue des fractions sur l'état de l'optimisateur. Chaque niveau possède un Adam de 1/N. À l'arrière, ZeRO ne réduit pas l'ensemble du gradient et entre en place, mais réduit_scatter, de sorte que chaque niveau ne reçoit que le total du gradient de son fragment. Le classement va appliquer les étapes de l'optimisateur à ses principaux paramètres. Les fragments de paramètres de mise à jour seront ensuite rassemblés, afin que chaque niveau ait un modèle complet de progression ultérieur.
 
@@ -93,7 +93,7 @@ Les trois modes permettent à ZeRO de livrer.
 
 **混合精度是重点。**ZeRO est une technique de précision mixte; fp32 主副本是分片的. Dans le cas où la précision mixte n'existe pas, ZeRO va donner à la maîtresse de la fp32 un impôt sur le stockage, alors que la production de la fp16 ne sera pas en phase avec la distribution automatique ou la distribution de la bf16.
 
-**第一阶段几乎是免费的。**通信在带宽方面与DDP相似──内存节省与N 成线性关系──唯一的成本是优化器分片的簿记──生产堆默认为阶段1,除非参数分片内存也是一个问题;然后第二或第三阶段用通信换取内存──
+**第一阶段几乎是免费的。**La production de la production est considérée comme une question à part entière, à moins que la capacité ou la capacité de stockage ne soit augmentée. La phase 2 ne comporte pas de bandes de stockage; la phase 3 ne comporte que la capacité de stockage de la capacité elle-même.
 
 ## Utilisez-le
 

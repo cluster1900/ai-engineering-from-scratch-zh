@@ -18,7 +18,7 @@
 
 Le modèle de langage visuel a besoin de deux compétences. Il doit être classé: un titre donné, trouver une image correcte dans de nombreuses images. Il doit être généré: un image donné, écrire un titre.
 
-InfoNCE  responsable du classement de la moitié ⋅ pour un groupe de N ⋅, le modèle sera N ⋅ correspondant à la vue en tant que cas, sera ⋅`N^2 - N`Il ne correspond pas à l'exemple négatif, puis à celui généré.`(N, N)`La moitié de la production de LM est de la même taille que la moyenne de la production de LM. Les deux types de pertes sont de taille réduite et peuvent être partagées entre les éditeurs, les projecteurs et les éditeurs.
+InfoNCE  responsable du classement de la moitié ⋅ pour un groupe de N ⋅, le modèle sera N ⋅ correspondant à la vue en tant que cas, sera ⋅`N^2 - N`Il ne correspond pas à l'exemple négatif, puis à celui généré.`(N, N)`La moitié de la production de LM est en train de se détériorer. Les deux types de perte sont de taille réduite, et partagent le poids du programmeur et du projecteur.
 
 ## 概念
 
@@ -54,7 +54,7 @@ L'écran de l'écran est un écran de l'écran de l'écran de l'écran de l'écr
 
 ### 合并损失
 
-`total = contrastive + lm_weight * lm`, parmi lesquels `lm_weight`Il s'agit d'un ensemble de multiples tâches utilisées par CoCa et BLIP, avec un poids différent. SigLIP ne conserve que des contrastes, et ne remplace pas la perte de paire sigmoïde par la douceur.
+`total = contrastive + lm_weight * lm`, parmi lesquels `lm_weight`Il est utilisé pour la compression de plusieurs tâches, avec un poids différent. SigLIP ne conserve que des contrastes, et ne remplace pas la perte de paire sigmoïde par la perte de la douceur.
 
 |组件|损失面|影响|
 |-----------|--------------|---------|

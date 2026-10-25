@@ -38,7 +38,7 @@ flowchart LR
 
 BM25                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            `k1`控制词频和度;默认值 1.5 是已发布的建议, vous ne devriez pas le déplacer en l'absence de fondation.`b`控制文档长度的重要性;默认值 0.75 Indique que les documents plus longs seront punis, mais pas liés à la nature.
 
-IDF 公式使用平滑的Robertson 和 Spark Jones 定义,即 `log((N - df + 0.5) / (df + 0.5) + 1)`◊ Quand un terme apparaît dans plus de la moitié des archives de langage, l'ajout dans le journal permet à l'armée israélienne de maintenir une valeur normale.
+IDF 公式使用平滑的Robertson 和 Spark Jones 定义,即 `log((N - df + 0.5) / (df + 0.5) + 1)` Lorsque plus de la moitié des termes apparaissent dans les archives de langage, l'ajout dans le journal permet à l'armée israélienne de maintenir une valeur normale.
 
 字段加权可让你告诉 BM25, la correspondance sur le nom des symboles est plus importante que la correspondance dans le texte réel. La mise en œuvre est le nombre de fois du nombre de termes dans le processus d'indexation, et non le nombre de termes lors de l'évaluation. Ainsi, on peut garder la même mathématique, et éviter que chaque domaine ait des scores distincts.
 

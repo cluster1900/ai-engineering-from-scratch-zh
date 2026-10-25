@@ -69,7 +69,7 @@ ViT-Base est un codeur de paramètres 86M. Selon les normes de 2026, cette valeu
 
 ### Il y a des produits de la cuisine ?
 
-Vision Transformer ne contient que le codeur et est à deux faces:`i`Vous pouvez participer à n'importe quel token.`j` Pas de facettes.  L'attention du codeur dans la section 61 sera centrée sur le cache des causes, mais à l'intérieur du codeur visuel, l'attention est entièrement connectée.
+Vision Transformer ne contient que le codeur et est à deux faces:`i`Vous pouvez participer à n'importe quel token.`j` Pas de masque. Le texte du codeur utilise le cache-effet.
 
 ### CLS token a appris à quoi ?
 
