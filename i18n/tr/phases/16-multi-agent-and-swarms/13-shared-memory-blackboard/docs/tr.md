@@ -68,7 +68,7 @@ Sorun kendi içinde paylaşım durumunda değil, paylaşım durumunda.**没有 p
 
 1. **每次写入都标注 provenance。**共享状态中的每一个条目都记录是谁写入、何时写入、在什么提示下写入,以及(如适用) Ajan 引用了什么来源──下游 Ajan 根据来源──带着怀疑读取──
 2. **对写入做 versioning；把它们视为 append-only。**修正 yeni bir girişdir, eski giriş yerine yeni bir giriş kullanılır.
-3. **至少保留一个无法写入共享状态的 Agent。**Sadece okuyucu doğrulayıcı ajanı 抽样入口、重新获取源,并标记不一致──因为它不能写入池,所以它不会被池毒──
+3. **至少保留一个无法写入共享状态的 Agent。**Sadece okuyucu doğrulayıcı ajanı 抽样入口、重新获取源,并标记不一致──它仍将读取池,因此可能被一条坏入口误导; ancak her girişini orijinal kaynakla 核对,并且不能写入,因此它的判断永远不会把被毒的事实反回共享状态──
 
 ### Karayolu ön örnek (Hayes-Roth, 1985)
 

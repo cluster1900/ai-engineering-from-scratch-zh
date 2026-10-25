@@ -42,7 +42,7 @@ Neden CTDE kullanıyoruz: Eğitim sırasında, biz herkesin eylemini biliyoruz; 
 
 ### QMIX (2018)  değer parçalanması
 
-僅適用於協同組合──Global reward is 之和:
+ Sadece kooperatiflere uygundur.`Q_tot`Her ajanın Q değerinin monoton karışım fonksiyonu:
 
 ```math
 Q_{\text{tot}}(\tau, a) = f\big(Q_1(\tau_1, a_1), \ldots, Q_n(\tau_n, a_n)\big), \quad \frac{\partial f}{\partial Q_i} \ge 0

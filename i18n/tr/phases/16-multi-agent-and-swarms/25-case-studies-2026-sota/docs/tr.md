@@ -57,7 +57,7 @@ Bu rol uzmanlaşması (Fase 16 · 08) ve yapılandırılmış topoloji (Fase 16 
 Üretim nüfus ölçeği 案例──时间线:
 
 - **Nov 2025:**Clawdbot (Peter Steinberger'ın yerel ReAct-loop kodlama ajanı) yayınladı.
-- **Dec 2025 – Mar 2026:**两次更名(Clawdbot → OpenClaw → 继续以 OpenClaw 运行) 』
+- **Jan 2026:**Bir hafta içinde iki kez daha adı: [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]
 - **Feb 2026:**Moltbook  Aynı primitif bir kitle üzerine kurulmuş  Sadece ajanlar içerikli ağ olarak yayınlanmıştır; birkaç gün içinde yaklaşık 2.3M ajan hesapları vardır。
 - **Mar 2026 (2026-03-10):**Meta 收购 Moltbook。
 - **Mar 2026:**Çin sınırlı hükümet bilgisayar kullanmak OpenClaw。
