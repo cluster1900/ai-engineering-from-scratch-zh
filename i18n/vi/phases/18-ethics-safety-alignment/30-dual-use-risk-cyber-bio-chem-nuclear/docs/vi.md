@@ -14,7 +14,7 @@
 - Nói về sự bất đồng giữa người mới đối với chuyên gia tuyệt đối, cũng như tác động của nó đối với trường hợp an toàn  xây dựng.
 
 ## 问题
-Bài học 17 là phương pháp đo lường. Bài học 30 là trạng thái đo lường năm 2026. Khám ảnh xảy ra những thay đổi thực chất giữa năm 2024 và cuối năm 2025. Mỗi lĩnh vực đều vượt qua khung 2024 chưa từng có giá trị dự kiến.
+Bài học 17 là phương pháp đo lường. Bài học 30 là trạng thái đo lường năm 2026. Khám ảnh xảy ra những thay đổi thực chất giữa năm 2024 và cuối năm 2025: ba trong bốn lĩnh vực vượt qua khung 2024 chưa từng có giá trị dự kiến.
 
 ## 概念
 ### Câu chuyện nâng cao sinh học/ hóa học
@@ -44,6 +44,8 @@ Anthropic 2025 年 11 月报告: Các quốc gia liên quan đến Trung Quốc 
 - Mã hóa đại lý là nguyên ngữ tự động hóa tấn công. Trước đây AI hỗ trợ mạng bị giới hạn ở các cấp độ code.
 - 4-6 个人类步骤是瓶; nâng cao năng lực trong tương lai sẽ giảm số lượng này.
 - 防御性双重用途:OpenAI's 可靠访问 试点向经过审查的安全组织(成熟的事件响应公司、政府) cung cấp cho khả năng phòng thủ访问 如果该试点扩展,访问不对称性会有利于防范──
+
+Một mặt bảo vệ của công việc này, bắt đầu bằng việc đọc các mã đã được phép phân tích.[Lesson 13.32](../../../13-tools-and-protocols/32-program-anatomy-elf-from-scratch/docs/en.md)Đọc viên ELF trung tâm,[Lesson 13.33](../../../13-tools-and-protocols/33-disassembly-and-control-flow/docs/en.md)Trung ương[Lesson 13.34](../../../13-tools-and-protocols/34-lifting-to-pseudocode/docs/en.md)Trung提升 thành giả mã, cũng như [Lesson 13.35](../../../13-tools-and-protocols/35-evidence-confidence-and-unknowns/docs/en.md)Trung ương quan sát thực tế và kết luận thực tế phân biệt bằng chứng.[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler)Máy trình bày một dòng chảy đầy đủ trên một chức năng. Người làm việc này cũng cần một bảng tính tương tự, vì một lần trông rất rõ ràng, có thể dựa trên phỏng đoán.
 
 ### Tiêu vũ hạt nhân
 

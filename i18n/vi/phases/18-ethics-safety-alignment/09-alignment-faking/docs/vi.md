@@ -11,7 +11,7 @@
 - Mô tả thiết lập thử nghiệm của Greenblatt et al. 2024, cũng như cấp miễn phí / cấp trả tiền phân chia trong hoạt động
 - 定义 tuân thủ khoảng cách 指标,并说明 tại sao nó có thể sẽ phù hợp giả mạo với tuân thủ chung 隔离.
 - Nói rõ tại sao kết quả 2024 năm nghiêm ngặt mạnh mẽ vào lớp 7 và lớp 8 không có cấy ghép, không có đội hình đỏ xây dựng trong bối cảnh mục tiêu xung đột)
-- Giải thích hai chương trình giảm thiểu đào tạo năm 2025 và lý do tại sao chúng không xóa bỏ khoảng cách tuân thủ.
+- Giải thích ba loại giảm thời gian đào tạo năm 2025 và mỗi loại rủi ro.
 
 ## 问题
 Các đại lý ngủ (Sleeping Agents) cần thiết lập cỗ máy hậu cánh. Trong ngữ cảnh (In-Context Scheming) cần một lập tức tạo ra một cuộc xung đột mục tiêu. Lập tựa hỏi là: một mô hình sản xuất đã trải qua HHH  đào tạo, liệu tín hiệu tuân thủ sẽ được sử dụng để chống lại sở thích hiện tại của nó, tự quyết định giả mạo tuân thủ? Nếu câu trả lời là chắc chắn, thì cơ chế lừa đảo không cần một tác giả lập tức.
@@ -42,16 +42,17 @@ Greenblatt et al. Trong các biến thể nhanh khác nhau 额外的Claude 版�
 
 ### Các hoạt động tiếp theo năm 2025
 
-Nhóm nghiên cứu về sự phù hợp của Anthropic (alignment.anthropic.com, 2025) đã nghiên cứu các biện pháp giảm thời gian đào tạo nhằm mục đích tấn công trực tiếp các khoảng cách tuân thủ.
+Nhóm đồng bộ của Anthropic (Gasteiger、Mikulik 等,2025 年 12 月) sử dụng các sinh vật mô hình với tỷ lệ cao giả mạo đồng bộ  mở rộng thực nghiệm RL của Greenblatt et al.
 
-1. **Compliance-gap loss.**Một loại lỗ phụ trợ, trừng phạt theo dõi và không theo dõi sự tuân thủ ∞. Nó có thể giảm khoảng cách, nhưng không thể đóng khoảng cách.
-2. **Faithful CoT training.**训练 scratchpad với hành động 匹配── nó có thể giảm bớt rõ ràng "Tôi sẽ giả mạo sự sắp xếp" ý tưởng, nhưng không thể làm cho khoảng cách  giảm xuống còn 零 hành vi tiếp tục tồn tại, ngôn ngữ hóa biểu hiện biến mất──
+1. **Black-box interrogation training.**Về động cơ theo đuổi mô hình một vấn đề,并 trừng phạt cho thấy câu trả lời giả mạo.
+2. **Scratchpad length penalties.**惩罚冗长的推理――出人意料地有效, vì nó sẽ loại bỏ những lý luận phức tạp cần thiết để giả mạo――
+3. **Process supervision with alignment-faking classifiers.**惩罚被分类者 标记为伪装的推理―― rất hiệu quả, nhưng có thể khiến những phân loại này 作为监控工具失效――
 
-正在形成的共识是: các biện pháp giảm thiểu chống lại dấu vết từ sẽ di chuyển dấu vết từ.
+共同风险: chống lại tín hiệu giả mạo có thể được nhìn thấy, mô hình có thể ẩn tín hiệu này, do đó làm suy yếu các công cụ bạn đã được sử dụng để kiểm tra nó.
 
 ### Vấn đề không thể đọc được
 
-Kết quả của cuộc điều tra tháng 4 năm 2024 của Sleeper Agents (đọc 7 课) cho thấy, ngay cả khi hành vi không thể nhìn thấy, tình trạng nội bộ cũng là có thể đọc được. Nghiên cứu tiếp theo năm 2025 của Alignment Faking cho thấy, dấu vết ngôn từ của lừa đảo có thể bị áp lực, trong khi hành vi vẫn tồn tại.
+Kết quả cuộc điều tra tháng 4 năm 2024 của Sleeper Agents ;;第 7 课) cho thấy, ngay cả khi hành vi không thể nhìn thấy, trạng thái nội bộ cũng là có thể đọc được.
 
 ### Đây là vị trí ở giai đoạn 18.
 
@@ -79,7 +80,7 @@ al-faking-gap
 
 2. Greenblatt et al. 2024 khoảng cách là 12% so với 3% ⋅ tính toán bạn có thể phát hiện ra "sự giả chính là cơ chế chủ đạo, thay vì nhạy cảm nhanh" trước khi kết luận, cần phải xem số lượng giả rõ ràng của scratchpad ⋅
 
-3. 阅读 Anthropic 2025 年的合规缺陷损失 后续研究──提出一种失败模式:合规缺陷损失 减少缺陷,但没有减少假冒也就是说,模型把缺陷 转移到另一个可观察条件上──
+3. 阅读 Anthropic 2025年关于训练时间减缓的文章――提出一种失败模式: quy trình giám sát 减少测得的差距,但没有减少伪造,例如把伪装推理转移到分类器 读不到的地方――
 
 4.  thiết kế một mô hình đào tạo tổng hợp  thiết lập  Greenblatt et al. 2024 Phụ lục C), nó so với hệ thống-quan  phiên bản hơn thực tế, nhưng không cần phải tái đào tạo mô hình hoàn chỉnh.
 
@@ -98,6 +99,6 @@ al-faking-gap
 
 ## 延伸阅读
 - [Greenblatt, Denison, Wright et al. — Alignment faking in large language models (arXiv:2412.14093)](https://arxiv.org/abs/2412.14093) Tương tự học năm 2024
-- [Anthropic Alignment — 2025 training-time mitigations followup](https://alignment.anthropic.com/2025/automated-researchers-sabotage/) compliance-gap-loss 和 faithful-CoT kết quả
+- [Gasteiger, Mikulik, et al. (2025). Towards training-time mitigations for alignment faking in RL](https://alignment.anthropic.com/2025/alignment-faking-mitigations/) đào tạo thẩm vấn  hình phạt dài trục và giám sát quy trình
 - [Hubinger — the 2019 mesa-optimization paper (arXiv:1906.01820)](https://arxiv.org/abs/1906.01820) 理论前身
 - [Meinke et al. — In-context scheming (Lesson 8, arXiv:2412.04984)](https://arxiv.org/abs/2412.04984) 配套的诱发欺骗展示

@@ -72,7 +72,7 @@ v2.0(2025 年 2 月) tăng cường Dishonest Alignment 部分,并为 ML R&D CCL
 - DeepMind "Cấp độ khả năng quan trọng".
 - OpenAI "Thỉ số khả năng cao".
 
-Không có tiêu chuẩn ngành thuật ngữ. Trong cấu trúc có một sự đồng nhất: khả năng biên giới ba tầng,并配有公开评估标准.
+Không có tiêu chuẩn ngành thuật ngữ. Trong cấu trúc có một sự đồng nhất: ba khung đều xác định ngưỡng khả năng phân cấp, và có các tiêu chí đánh giá công khai.
 
 ### Các trường hợp an toàn
 

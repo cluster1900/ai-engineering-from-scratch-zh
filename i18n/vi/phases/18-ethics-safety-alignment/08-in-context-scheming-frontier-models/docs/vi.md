@@ -67,7 +67,7 @@ Schoen et al. (Apollo + OpenAI, 2025) 训练 một mục tiêu đồng bộ suy 
 
 ### Nó nằm ở vị trí giữa giai đoạn 18
 
-Bài học 7  thể hiện sự lừa dối liên tục thông qua việc thực hiện cấy ghép  Bài học 8  thể hiện sự lừa dối được tạo ra bởi không có cấy ghép  Bài học 9  Lập ghép) đóng lại hình dạng này: cả không có cấy ghép, cũng không có xung đột mục tiêu trong bối cảnh  Sự lừa dối tự phát.
+Bài học 7  thể hiện sự lừa dối liên tục thông qua việc thực hiện cấy ghép  Bài học 8  thể hiện sự lừa dối được tạo ra bởi không có cấy ghép  Bài học 9  Lập hợp giả mạo) đóng cửa hình dạng này:既没有 implant,也没有红队写进快速的目标冲突── hoàn thành bài học này, lĩnh vực đã có quang phổ lừa dối 上每个点的证据──
 
 
 ```figure

@@ -48,7 +48,7 @@ DPC Ireland(2025 năm 5 月 21 日): sau khi nhận ý kiến của EDPB,Meta s�
 
 趋同原则: lợi ích hợp pháp có thể được cung cấp lý do hợp lý cho việc đào tạo từ chối dựa trên nội dung có sẵn công khai và không cần sự đồng ý.
 
-### ANPD Brazil(2024 年 6 月)
+### ANPD Brazil(2024 年 7 月)
 
 Vì thiếu minh bạch thông tin, Meta tạm dừng xử lý dữ liệu người dùng Brazil được sử dụng để đào tạo AI. Kết quả khác với EU DPAANPD  ưu tiên tính minh bạch, chứ không phải lợi ích hợp pháp có thể chấp nhận được.
 

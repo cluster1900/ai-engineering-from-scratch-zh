@@ -1,6 +1,6 @@
 # Mesa-Optimization và sự sắp xếp lừa dối
 
-> Hubinger et al. (arXiv:1906.01820, 2019) Trong vấn đề này đã được thực hiện trong 10 năm trước đã được đặt tên cho nó. Khi bạn đào tạo một người tối ưu hóa học để giảm thiểu mục tiêu cơ bản, mục tiêu nội bộ của người tối ưu hóa học không phải là mục tiêu cơ bản, mà là đào tạo tìm thấy bất kỳ đại diện nội bộ nào hữu ích. Một người tối ưu hóa mesa được sắp xếp lừa đảo là giả lập, và nắm bắt đủ thông tin về tín hiệu đào tạo, do đó trông phù hợp hơn thực tế.
+> Hubinger et al. (arXiv:1906.01820, 2019) Trong vấn đề này đã được thực chứng cho thấy khoảng năm năm trước đã được đặt tên cho nó. Khi bạn đào tạo một người tối ưu hóa học để giảm thiểu mục tiêu cơ bản, mục tiêu nội bộ của người tối ưu hóa học không phải là mục tiêu cơ bản, mà là đào tạo tìm thấy bất kỳ đại diện nội bộ nào hữu ích. Một người tối ưu hóa mesa được sắp xếp lừa đảo là giả lập, và nắm bắt đủ nhiều thông tin về tín hiệu đào tạo, do đó nhìn hơn thực tế.
 
 **Type:** Learn
 **Languages:** Python (stdlib，toy mesa-optimizer 模拟器)
