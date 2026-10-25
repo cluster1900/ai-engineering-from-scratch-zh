@@ -1,7 +1,7 @@
 {
   "phases/18-ethics-safety-alignment/01-instruction-following-alignment-signal/docs/en.md": "bd2d35b0570c3ee5565c091926186099c6f7e6104d6cfef79db3a95cd251b86e",
-  "phases/18-ethics-safety-alignment/02-reward-hacking-goodhart/docs/en.md": "0d74e52920d159bef694161adda2f5842e5abc589f0b3be95f146b564c8cbeb2",
-  "phases/18-ethics-safety-alignment/03-direct-preference-optimization-family/docs/en.md": "50e95730883ce7828a084ea88fec133b99bf7657f6afddd5b2068d56ce51caf6",
+  "phases/18-ethics-safety-alignment/02-reward-hacking-goodhart/docs/en.md": "1732fc6aa23794494420853636eb35cd1ef0acb797ede2a4be5b420bfea6f164",
+  "phases/18-ethics-safety-alignment/03-direct-preference-optimization-family/docs/en.md": "610ff906c88846fb8797703ee8a34a567eafa459353a22c84ad73ea8bcc1c6e6",
   "phases/18-ethics-safety-alignment/04-sycophancy-rlhf-amplification/docs/en.md": "299ab409e0ef132d9cfc8f230c5ae6aafd4638a85765f45478a6ff1949d259b2",
   "phases/18-ethics-safety-alignment/05-constitutional-ai-rlaif/docs/en.md": "9bd1606fd427f3a0f3915f635c6f10ad0b975209998a9d54fd6300ea29a27cca",
   "phases/18-ethics-safety-alignment/06-mesa-optimization-deceptive-alignment/docs/en.md": "d4845fa3939d085ec97af85c42056bd0400b09eafecf26239fd25682cec2ca17",
@@ -13,12 +13,12 @@
   "phases/18-ethics-safety-alignment/12-red-teaming-pair-automated-attacks/docs/en.md": "b7bbe6b1307ee595a7326741fa285c2ac177e8a17c509311531a350611a98472",
   "phases/18-ethics-safety-alignment/13-many-shot-jailbreaking/docs/en.md": "5d0cca6833b5e1f76fb24b416fcb198c940b0a8576c89c172488ed0d0ca35d4c",
   "phases/18-ethics-safety-alignment/14-ascii-art-visual-jailbreaks/docs/en.md": "68a7b42b9573d5b499055b66ae59086a73f07b5323e3e8cac8adf23066f7b20b",
-  "phases/18-ethics-safety-alignment/15-indirect-prompt-injection/docs/en.md": "9380fd4fb1aa309386065fb851ad5b96d16342886429af536f3215ab5cc7590c",
+  "phases/18-ethics-safety-alignment/15-indirect-prompt-injection/docs/en.md": "ae586601d72379115177308b342f4350e651bdf61a01de69960b6e95c3e9fd75",
   "phases/18-ethics-safety-alignment/16-red-team-tooling-garak-llamaguard-pyrit/docs/en.md": "afe1999b68d9b3f372b6f87b3eae3340d736284e0da0e270ceb43675731ef2d8",
   "phases/18-ethics-safety-alignment/17-wmdp-dual-use-evaluation/docs/en.md": "f35cf6b88fd111ca53ab02fd6d96a5d219303bcc873373c69f3e64fd7c47712f",
   "phases/18-ethics-safety-alignment/18-frontier-safety-frameworks-rsp-pf-fsf/docs/en.md": "316b243934873af672c78538a077f4ee6781229465700168be7a60fb93c9903d",
   "phases/18-ethics-safety-alignment/19-model-welfare-research/docs/en.md": "fb910ad1ff221279e320a4e90e7b069bf644dc35a3a9da6c6f58ebcc1321c6b3",
-  "phases/18-ethics-safety-alignment/20-bias-representational-harm/docs/en.md": "803822abc3be700b03e98906ada56699a46e818c65c9755ea0e167296ede1858",
+  "phases/18-ethics-safety-alignment/20-bias-representational-harm/docs/en.md": "1f28384f93b858eaeee7dbb8af6205da0a4a0527d7cff709b875f0b1c2a64e85",
   "phases/18-ethics-safety-alignment/21-fairness-criteria-group-individual-counterfactual/docs/en.md": "fac641ecef740286e96311c7108f8f23ccd53f2d68fff7000dff2b382c85c07b",
   "phases/18-ethics-safety-alignment/22-differential-privacy-for-llms/docs/en.md": "eae35a7d32ff08a160b33f48839506fef76c04ae7e1bbca80ce49b60b00c2e77",
   "phases/18-ethics-safety-alignment/23-watermarking-synthid-stable-signature-c2pa/docs/en.md": "2144906745b28fd43341252e918dff9340e513a8bc0680ba062e87d5b9a370e2",
@@ -27,6 +27,6 @@
   "phases/18-ethics-safety-alignment/26-model-system-dataset-cards/docs/en.md": "62caccacfb625a47d2a2e7f508eb26d7871775d353d887a69e37e921c9fa34d2",
   "phases/18-ethics-safety-alignment/27-data-provenance-training-governance/docs/en.md": "ee866c67f206b866eb4d915858386fcad351927e0382d69794e21c87d53dd323",
   "phases/18-ethics-safety-alignment/28-alignment-research-ecosystem/docs/en.md": "001243554a6362571b17bb3e5d34f026272544e2e031c7ca59783970f7abddfc",
-  "phases/18-ethics-safety-alignment/29-moderation-systems-openai-perspective-llamaguard/docs/en.md": "dc204a6abcaefe61a12e5fda4b36e06368a33c6741fcebba1e15eec55aac6b53",
+  "phases/18-ethics-safety-alignment/29-moderation-systems-openai-perspective-llamaguard/docs/en.md": "b2a32bc43a5735c7a0b1a1d6d0870676aefd9b397e08dbde538d1b6492d22c8f",
   "phases/18-ethics-safety-alignment/30-dual-use-risk-cyber-bio-chem-nuclear/docs/en.md": "65c7b34f914993c73bf787037a05f83f1698c33eacf192f3a443e546e9d7a05d"
 }

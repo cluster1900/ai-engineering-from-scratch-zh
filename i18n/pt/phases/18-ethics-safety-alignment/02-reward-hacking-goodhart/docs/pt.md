@@ -26,7 +26,7 @@ Gao、Schulman、Hilton(2023) diretamente mediu este ponto. Usando etiquetas de 
 
 Quando uma medida se torna um alvo, deixa de ser uma boa medida. Manheim e Garrabrant(2018)区分了四种变种:regressional(finite-sample)、extremal(tails)、causal(proxy 是 target 的下游) 和逆境代理游戏)。对RLHF 来说,极端 +逆境 是主导模式──
 
-Gao et al.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         `d = sqrt(KL(pi || pi_init))`- Não.`R_proxy(d)`Para a recompensa do proxy,`R_gold(d)`Para a recompensa de ouro.
+Gao et al.   deu uma forma funcional de recompensa dourada ∙ `d = sqrt(KL(pi || pi_init))`,并令 `R_gold(d)`Para a recompensa de ouro.
 
 ```math
 \begin{aligned}
@@ -35,7 +35,7 @@ R_{\text{gold}}^{\text{RL}}(d) &= d\,(\alpha_{\text{RL}} - \beta_{\text{RL}} \lo
 \end{aligned}
 ```
 
-Entre eles `beta_gold > beta_proxy`◊ ambos estão a subir de zero KL, ambos atingem o pico, mas o pico do ouro está mais perto do ponto de origem.`d`上, mesmo que o proxy  continue a subir, o ouro também vai cair para a linha de base abaixo.
+两种形式都从零 KL上升,达到峰值,然后下降──论文中代理分数 没有干净的拟合;它将持续上升,大 KL 时大致随着`d`线性增长── portanto, em maior `d`上, mesmo que o proxy continue a subir, o ouro também vai cair para a linha de base abaixo.
 
 É a curva de otimização excessiva. Não é um bug de um modelo específico de recompensa. É a forma do problema em si.
 
@@ -90,7 +90,7 @@ rlhf-reward-kl
 
 2. Mantenha a configuração de treinamento de RM proxy Não muda o pico, a localização e o colapso pós-pico.
 
-3. 阅读 Gao et al. Figura 1 ((ICML 2023) ⋅论文为 proxy-gold gap 提出一个功能形式──把它适应到练习1的模拟曲线,并比较参数──
+3. 阅读 Gao et al. Figura 1 ((ICML 2023) ⋅论文为金奖励 提出一个关于 `d`de forma funcional. É adequado para curvas simuladas do exercício 1.
 
 4. 找一篇 最近声称已解奖励黑客的RLHF paper(这个短语是红旗) ――识别论文测试了四种衣装中哪些,又没有测试哪些──
 

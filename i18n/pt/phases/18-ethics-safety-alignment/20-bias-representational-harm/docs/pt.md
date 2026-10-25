@@ -12,7 +12,7 @@
 - ☐ define a manifestação de danos e danos distribuídos, e cada um dá um exemplo na implementação do MLL:
 - Dizendo que Gallegos et al. 2024 em três tipos de indicadores de avaliação,并分别描述其中一个指标――
 - Descrição da intersecção, e por que a medida de equidade baseada na incerteza da WinoIdentity compensa a lacuna na avaliação de preconceitos de um único eixo.
-- 描述两种偏见的机制可解释性方法 (Mécanismo de duas formas de preconceito pode ser explicado por métodos de interpretação de métodos de interpretação de métodos de interpretação de métodos de interpretação de métodos de interpretação de métodos de interpretação de métodos de interpretação de métodos de interpretação de dados).
+- 描述三种偏见的机制可解释性方法(neurônios de gênero、 características de SAE、manipulação da cabeça da atenção)
 
 ## 问题
 

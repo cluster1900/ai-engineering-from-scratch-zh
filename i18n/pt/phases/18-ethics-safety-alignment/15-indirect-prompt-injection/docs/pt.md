@@ -1,6 +1,6 @@
 # Injeção direta imediata  生产攻击面
 
-> Injeção de prompt indireta (IPI) vai instruir a inserção de conteúdo externo em páginas web, e-mails, documentos compartilhados, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, em inglês, em inglês, em inglês, em inglês, em inglês, em inglês, e-e.
+> Injeção de prompt indireta (IPI) vai instruir a inserção de conteúdo externo em páginas web, e-mails, documentos compartilhados, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, email, e-mail, email, email, e-mail, email, e-mail, email, e-email, e-email, e-mail, e-email, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-mail, e-e-mail, e-mail, e-e-mail, e-mail, e-e-mail, e-e-mail, e-e-e-mail, em inglês, em inglês, em inglês, em inglês, e-e.
 
 **类型：**Construir
 **语言：**Python (stdlib, ataque IPI + arame de defesa)
@@ -40,7 +40,7 @@ CaMeL (Microsoft 2025)、ConfAIde (Stanford 2024) 和 NDSS 2026 IPI-defense pape
 
 ### O atacante se move em segundo lugar
 
-Nasr et al. (outubro 2025) Usando ataques adaptativos ((gradiente busca、RL políticas、random search、72 horas red-team humano) testaram 12 defesas IPI já publicadas。 cada relatório inicial de defesa ASR quase zero foram atingidos por >90% ASR。
+Nasr et al. (outubro 2025) Usando ataques adaptativos ((gradiente busca, políticas de RL, busca aleatória, 72 horas de equipe humana vermelha) testou 12 defesas IPI já publicadas, cada defesa foi contornada, a maioria das quais ASR > 90%, enquanto a maioria delas inicialmente relatou ser quase zero ASR。
 
  metodologia: apenas em que contenha avaliação de ataque adaptativo 时才发布防御──static-attack benchmarks 不是强度的证据;攻击者会知道防御──
 

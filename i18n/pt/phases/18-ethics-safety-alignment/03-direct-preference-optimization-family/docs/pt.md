@@ -53,7 +53,7 @@ Pode estar errado:
 
 - diferença de recompensa implícita `beta * (log(pi/pi_ref)_w - log(pi/pi_ref)_l)`É um pouco mais fácil de usar.
 - Esta perda vai ser escolhida e rejeitada de log-probos 往相反方向推.
-- As preferências fora da distribuição (exceto em espécies raras) geram recompensas implícitas arbitrárias.
+- As duas respostas em política de referência (Não-de-distribuição) geram recompensas implícitas arbitrárias.
 
 ### O IPO (Azar et al., 2024)
 
