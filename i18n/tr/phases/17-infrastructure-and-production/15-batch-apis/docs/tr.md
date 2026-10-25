@@ -49,7 +49,7 @@ Satış 24 saat içinde geri dönmeye söz veriyor. Bu 24 saatte geri dönmeye s
 
 **Semi-interactive** Kullanıcı gönderme görevi, birkaç dakika sonra geri dönüp bakmak.
 
-**Batch** User expect results by morning or next hour──Content pipelines、大规模分類、オフライン分析──始终批,始终叠加缓存──
+**Batch** User expect results by morning or by the end of the day──Content pipelines、 large scale Classification、offline analysis──始终批,始终叠加缓存──
 
 常见错误: çünkü boru hattı üretimdir, her şeyi etkileşimli olarak sınıflandırıyoruz.
 

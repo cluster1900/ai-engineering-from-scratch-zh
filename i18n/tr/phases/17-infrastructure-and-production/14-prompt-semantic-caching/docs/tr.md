@@ -2,7 +2,7 @@
 
 > **Pricing snapshot 日期为 2026-04。**Aşağıdaki değer açıklaması bu dersin yayınlandığında toplanan satıcı oran kartlarını yansıtır; aşağıdaki derslerden önce, lütfen önce kontrol edin
 
-> Kaşlama 发生在两层──L2(provider-level)prompt/prefix caching 会为重复 prefix 复用注意 KV  Anthropic 的 prompt-caching dosyaları 宣称,在长提示上最高可降低90% 成本、降低85% latency;对于Claude 3.5 Sonnet,cache reads 为$0.30/M，而 fresh 为 $3.00/M,TTL için 5 dakika, 1 saat TTL seçeneği 2x yazma ödemesi vardır(docs.anthropic.com,2026-04)。OpenAI prompt caching 会 otomatik olarak ≥1024 jetonlarındaki isteklere uygulanır,并将缓存输入 定价为相对新鲜约90%折扣(platform.openai.com,2026-04);精确的每模型缓存率 取决于现金率卡──L1app-level) 语义缓存会在嵌入式相似性中完全跳转LLM──Vendor 95%精度指的是匹配正确性,而不是打卡率  报告的打卡率从10%开封聊) 升级到结构化FAQ) 不等;((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+> Kaşlama 发生在两层──L2(provider-level)prompt/prefix caching 会为重复 prefix 复用注意 KV  Anthropic 的 prompt-caching dosyaları 宣称,在长提示上最高可降低90% 成本、降低85% latency;对于Claude 3.5 Sonnet,cache reads 为$0.30/M，而 fresh 为 $3.00/M,TTL için 5 dakika, 1 saat TTL seçeneği 2x yazma ödemesi vardır(docs.anthropic.com,2026-04)。OpenAI prompt caching 会 otomatik olarak ≥1024 jetonlarındaki isteklere uygulanır, cached giriş  fiyatı yeniye göre yaklaşık %90 indirim platform.openai.com,2026-04); model başına kesin cached oranı  live rate kartına bağlıdır。L1 app-level) semantik caching 会在嵌入式的相似性命中完全跳转LLM。Vendor 95% doğruluk    hit rate    报告的成功率    报告的成功率    报告的成功率     报告的成功率                                                                                                                                                          
 
 **Type:** Learn
 **Languages:** Python (stdlib, toy two-layer cache simulator)
@@ -52,7 +52,7 @@ Satıcı doğruluk iddiaları, geri dönüşün önbelleğe alınan yanıtını 
 
 Ajanınız ve 10 araç çağrısı gönderir. Onlardan 10'unun aynı 4K-token sistemini kullanması istenmektedir. Antropik önbelleği yazma istekleri uyarınca yapılır. İlk önbelleği yazma, sağlayıcı tarafından yapılmaktadır.
 
-修复:batch with sequential-first  单独发起请求 1,然后在1 的缓存 已填充后再触发 2-10──给第一个工具调用 增加300 ms;节省 5-10x 账单──
+修复:batch with sequential-first  单独发起请求 1,然后在1的缓存 已经填充后再触发 2-10──给第一个工具调用 增加300 ms;避免 5-10x 的账单膨胀──
 
 ### Dinamik içeriği anti-önemli
 
@@ -88,7 +88,7 @@ Fiyat noktaları, bağlantı sağlayıcı belgeleri üzerinden toplanan 2026-04 
 - Antropik önbelleği okuyucu:Claude 3.5 Sonnet 上 $0.30/M, yaklaşık yeni giriş 便宜 10x(docs.anthropic.com) ⋅
 - Antropik cache yazma primesi:1.25x(5-min TTL) veya 2x(1-saat TTL)。
 - OpenAI otomatik önbelleği: ≥1024 jetonların isteklerine uygundur; ⇒% 10 yeni giriş için önbelleğe girilen giriş 定价约为10% (platform.openai.com) ⋅
-- Semantik önbelleği isabet oranı(halk tarafından bildirilen):açık sohbet 约 ~10%; yapılandırılmış FAQ 最高约 ~70%──
+- Semantik önbelleği isabet oranı(halk tarafından bildirilen):açık sohbet 约 ~ 10%; yapılandırılmış FAQ maksimum 约 ~ 70%; sabit istek set 上的语音代理 为 50-80%──不是供应商文档基线──
 - ProjeDiscovery: 通过将动态移出前,hit rate from 7% → 74%
 - Paralelleşme karşıtı örneği: tipik rapor gösterir, N 个 paralel istekler 错过第一次缓存写时,账单会膨胀 510x。
 

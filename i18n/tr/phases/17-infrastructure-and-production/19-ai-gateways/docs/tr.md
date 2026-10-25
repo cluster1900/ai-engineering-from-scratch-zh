@@ -8,7 +8,7 @@
 **Time:** ~60 minutes
 
 ## Öğrenme hedefi
-- 列举六个核心 gateway 功能 路由,倒退,倒退, geri çekilme, hız sınırları, sırlar, gözlemlenebilirlik, koruma) 
+- 列举七个核心 gateway 功能 路由,倒退,倒退, 速率限制,秘密,可观性, guardrails)
 - 4 2026 kapısı olacak. LITELM, Portkey, Kong AI, Bifrost.
 - 引用 Kong referansı ((相比Portkey 228%,相比LiteLLM 859%),并解释为什么对 >500 RPS 很重要──
 - Verilen veri oturum ve operasyon bütçesi durumunda kendi kendine barındırılmış veya yönetilen seçin.
@@ -19,7 +19,7 @@ Bu nedenle, bu ürünler için bir diğer ürün de kullanılabilir. Bu ürünle
 Bu uygulama katmanında, her hizmetin her sağlayıcıyla 合 olmasına izin verir.Gateway katmanı, bir sürece birleştirir, bir API sağlar, genellikle OpenAI uyumlu), her sağlayıcıya yeniden dağıtır.
 
 ## 概念
-### Altı temel özellik
+### Yedi temel özellik
 
 1. **Provider routing** OpenAI  Antropik  Gemini  Self-hosted 等等 API 后面に置く
 2. **Fallback** 遇到429、5xx 或质量故障 时,在别处重试──
@@ -104,7 +104,7 @@ mx-gateway-fallback
 
 ## 练习
 1. 运行  İşlem`code/main.py` Configuration OpenAI→Anthropic→self-hosted 的 fallback──在 5% sağlayıcı hata oranı 下,预期 hit rate 是多少?
-2. SLA'nın TTFT P99 < 200 ms, temel 300 ms. Hangi geçitler bütçede hala var?
+2. SLA'nın TTFT P99 < 320 ms, model ise P99 < 300 ms.
 3. Bir sağlık müşteri  auto hosted + PII redaksiyonu + denetim  seç Portkey OSS ̆̆ da Kong ̆
 4. LiteLLM ile Kong: Ekip hangi RPS tavanına taşınmalı?
 5. Çoklu kiracı SaaS  tasarım oran- sınırı politikası: ücretsiz katman  deneme katman  ödeme katman  seç token-bucket veya kaydırıcı pencere?

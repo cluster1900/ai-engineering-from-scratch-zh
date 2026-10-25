@@ -10,7 +10,7 @@
 ## Öğrenme hedefi
 - KV kasesi tahsiscisi:bloks, blok tabloları ve neden üretim yükünün altında parçacıklık %4'te kalması açıklanıyor.
 - Sürekli serileme çizimleri: tamamlanmış diziler nasıl bir seriyi terk eder, yeni diziler nasıl eklenir, boşaltılması gerekmez.
-- Bir cümle kullanarak parçalanmış prefill'i tanımlayın,并表示它保护的是哪个延迟度度度 (TTFT) 
+- Bir cümle kullanarak parçalanmış prefill'i tanımlayın ve bunun hangi gecikme metrikini koruduğunu belirtin.
 - 2026 yılında vLLM v0.18.0'un, tüm optimizasyon takımlarının bir kez etkinleştirilmesine etkisi olacak.
 
 ## 问题
@@ -41,7 +41,7 @@ Sürekli serileme, her dekodlama aşamasında 之间运行──把正在运行�
 
 Satır boyutu  asla sabit bir rakamda doldurulacak değil                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               `V1 scheduler`❖ Key invariant:scheduler ⇒ her dekode tekrarlaması ⇒ her istek yerine ⇒ bir kez ⇒
 
-### Parçalama prefill  protecting TTFT tail
+### Çıkılmış prefill  ITL kuyruklarını korumak
 
 Prefill is computation-bound of──Llama 3.3 70B 上的 32k-token prompt 在单张 H100 上需要约800 ms的纯预填──prefill 运行时,batch 中所有其他序列的解码代码代码代码都在等待──在服务循环中,长长提示的第一代码延迟(TTFT) birkaç diğer kullanıcıların 互代码延迟(ITL) 动──
 
@@ -124,7 +124,7 @@ tensor-parallel
 | Chunked prefill | “prefill splitting” | 将长 prefill 拆成 512-token 切片并与 decode 交错 |
 | TTFT | “first token time” | Prefill + queue + network；在长 prompts 下由 prefill 主导 |
 | ITL | “inter-token latency” | 连续 decode tokens 之间的时间；由 batch size 主导 |
-| Goodput | “满足 SLO 的 throughput” | 每个 request 仍命中 TTFT 和 ITL targets 时的 tokens/sec |
+| Goodput | “满足 SLO 的 throughput” | 仍命中 TTFT 和 ITL targets 的 requests/sec（Phase 17 · 08 将其报告为 requests 的占比） |
 | V1 scheduler | “new scheduler” | vLLM 的 2026 scheduler；N-gram spec decode 是与 chunked-prefill 兼容的路径 |
 | `--gpu-memory-utilization` | “memory knob” | 在 weights 和 activations 之后为 KV blocks 预留的 HBM 比例 |
 

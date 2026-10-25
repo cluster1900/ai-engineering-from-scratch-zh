@@ -31,7 +31,7 @@ Bu ders
 
 ### Sizmi Altındaki Gecikme  fark
 
-Yapay Analiz 运行持续基准──在等效的 Llama 3.1 405B 部署上(shared on demand),Azure OpenAI ortalama ilk token gecikmesi 约为50 ms;Bedrock 约为75 ms── bu fark AWS 失败  它是容量模型差异──Azure 销售 PTUs (Provided Throughput Units),为您的租户 预留 GPU 容量──Bedrock 等价格──Bedrock 提供通过) 也存在,但每单位 起价约$21/小时,大多数共享客户仍然停留在需求上的──
+Yapay Analiz 运行持续基准──在等效的Llama 3.1 405B 部署上,PTU'ların Azure ortalama ilk token gecikmesi 约50 ms; Shared on-demand Bedrock 约75 ms;; bu fark AWS 失败         容量模型差异── Azure 销售 PTU'ları (Provided Throughput Units),为您租户 预留 GPU 容量──Bedrock 等价格──                                                                                                                                                                                                   
 
 İstek üzerine paylaşılan kapasite 会与其他客户的流量竞争──専用容量 不会── Eğer ürününüzün SLA'sı P99'da TTFT < 100 ms ise, o zaman ya Azure'daki PTU'ları satın almak, ya da Bedrock Provisioned Throughput satın almak, ya da kabul kabul etmek gerekir──
 
@@ -91,7 +91,7 @@ i4-platform-lanes
 2. Ürünleriniz Claude 3.7 Sonnet ve GPT-4o'yu gerektiriyor. İki tedarikçiyle bir uygulama tasarlıyor.
 3. Bir Üye İzlenen Sağlık 客户要求 BAAs、US-East data residency 和 sub-100ms P99 TTFT── seçin bir platform,并用三个具体功能来论证──
 4. Bu ayda Bedrock'un hesapları trafik değişiminin olmadığı bir ortamda 4 kat arttı.
-5. Azure OpenAI ve Bedrock fiyatlama sayfalarını okuyun. 100M-token/ay Claude iş yükü için, hangisi daha uygun?
+5. 阅读Anthropic API 和 Bedrock fiyatlama sayfaları。 100M-token/ay Claude iş yükü için, 哪个更便宜  doğrudan Antropic API、Bedrock on demand, yoksa Bedrock Provided Throughput mı?
 
 ## 关键术语
 | Term | What people say | What it actually means |

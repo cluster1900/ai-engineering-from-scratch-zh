@@ -1,6 +1,6 @@
 # Serversiz LLM'lerin Soğuk Başlangıç Yenginleme
 
-> Bir 20 GB model görüntüsü soğuktan servise kadar 需要 5-10 分钟(7B) 〜 20+ 分钟(70B) 〜在真正的无服务器世界里,这不是加热,而是停电──Mitigations 作用在五层:预种种节点图像(AWS 上的瓶块、双体弧) 、模型流播(NVIDIA Run:ai Model Streamer,vLLM 原生支持)、GPU hafıza anişeleri(Modal kontrol noktaları,resetart 最多快 10x)、热池(`min_workers=1`)、Layered loading(ServerlessLLM'nin NVMe→DRAM→HBM borusu, gecikme  düşüşü 10-200x), ayrıca KV cache yerine KB giriş Token ⋅GB'nin canlı göçü。Modal 发布的 2-4s cold starts is down limit;Baseten 默认 5-10s,配合预加热可达子秒──本课教你测量、预算并叠加这五层──
+> Büyük model soğuktan servisine kadar 需要数分钟:一个70B模型在全新节点上大约需要 3-8分才能产出第一个代币──在真正的无服务器世界里,这不是加热,而是停电──Mitigations 作用在五层:预种子节点图像(AWS 上的瓶块、双体弧) 模型流程(NVIDIA Run:ai Model Streamer,vLL、M 存储支持) GPU bellek anişeleri(Modal kontrol noktaları,重启 最多快 10x) 热池(`min_workers=1`)、Layered loading(ServerlessLLM'nin NVMe→DRAM→HBM boru hattı, gecikme                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
 
 **Type:** Learn
 **Languages:** Python (stdlib, toy cold-start path simulator)

@@ -20,7 +20,7 @@ Ayrıca, kullanıcı sorguları 包含My SSN is 123-45-6789.
 
 Ayrıca, EKS kümesindeki LLM podunuz herhangi bir internet makinesine ulaşabilir. DNS arama yoluyla birileri verileri saldırganın kontrol ettiği alanlara gönderebilir.
 
-LLM hizmetlerinin Güvenliği 必須処理この三類ベクト──バルト temin edilen yetenekler──PII temizleme──ネットワーク çıkış filtrasyonu──Audit güncellikleri──
+LLM hizmetlerinin Güvenliği 必須処理この三類ベクトル,并能在事後証明この点──バルト temin edilen tanıklıklar──PII scrubbing──ネットワーク出口フィルタリング──監査ログ──作为证据链──
 
 ## 概念
 ### 集中式 vault + IAM rol çekimi

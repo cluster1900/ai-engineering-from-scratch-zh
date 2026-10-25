@@ -1,6 +1,6 @@
 # Blackwell'de FP8 ve NVFP4 kullanılarak TensorRT-LLM
 
-> TensorRT-LLM sadece NVIDIA ile sınırlı, ancak Blackwell'de üstesinden geliyor.$0.012，而 H100 + vLLM 为 $0.09/M, 7x'lik ekonomik fark oluşturur. Bu yığın, üç çeşit bir浮点精度体系 üslemelidir:FP8 KV kasesi ve dikkat çekirdeklerine yönelik olarak hala önemli, çünkü ihtiyaç duydukları hareketli aralığı vardır.NVFP4(4-bit mikroskalılaması) işleme ağırlığı ve etkinleştirme değeri;Multi-token tahmin (MTP) ve ayrıştırılmış prefill/decode ayrıca bunun üzerine 2-3x daha fazla artırmak.
+> TensorRT-LLM sadece NVIDIA ile sınırlı, ancak Blackwell'de üstesinden geliyor.$0.012，而 H100 + vLLM 为 $0.09/M, 7x'lik ekonomik fark oluşturur. Bu yığın iki farklı yuvarlak biçimi ve iki hizmet  tekniği üzerine kurulmuştur:FP8 KV kasesi ve dikkat çekirdeklerine göre hala önemli, çünkü ihtiyaç duydukları hareketli aralığı vardır;NVFP4(4-bit mikroskalyeleme) işlemleme ve etkinleştirme değeri;Multi-token tahmin (MTP) ve ayrıştırılmış prefill / dekod ayrıca bunun üzerine 2-3x daha fazla artırmak.
 
 **Type:** 学习
 **Languages:** Python (stdlib，玩具级 FP8/NVFP4 内存与成本计算器)

@@ -131,7 +131,7 @@ i4-spend-ladder
 1. 运行  İşlem`code/main.py`❖ Öldürme anahtarı 触发?
 2. Bir kiracılık ödemesi tablosu tasarlayın.
 3. • En büyük kiracı, birim ekonomisi-negatif.
-4. Desteği destekleme ürünü  çözülmüş bilet başına maliyet hesaplama:3M Token/ticket, günde yaklaşık 800 bilet, GPT-5 önbelleğe alınan oranı
+4. Çözümlü bilet başına maliyet hesaplama için destek ürünü: 3M Token/ticket, yaklaşık 800 bilet/gün, tüm girişler GPT-5 önbelleğe alınmış oranına göre $0.125/M 计(
 5. 论证 Geriye dönük etiketleme yapılması mümkün müdür?
 
 ## 关键术语

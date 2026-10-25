@@ -16,7 +16,7 @@
 
 ## 问题
 
-Dekode etmek hafıza bağlıdır. Bir bir çalışma süresi Llama 3.3 70B FP8'in H100'inde, her dekode edilmiş token 会读取约140 GB/s'in权重并输出一个 token──GPU hesaplama sırasında dekode 期间几乎空,瓶是HBM bant genişliği,而不是 matmul throughput──
+Dekode etmek hafıza bağlıdır. Bir bir çalışma süresi Llama 3.3 70B FP8'in H100'inde, her dekode adım HBM'den yaklaşık 70 GB 权重,并为每序列 输出一个代币──GPU hesaplama.
 
 Speküel dekodlama bu farkı kullanıyor. Ucuz bir taslak modeli kullanarak K 个候选 代号 (K 个候选 代号) üretir, sonra hedef modelini bir kez ileriye geçerek tüm K 个的验证中验证中验证中.
 

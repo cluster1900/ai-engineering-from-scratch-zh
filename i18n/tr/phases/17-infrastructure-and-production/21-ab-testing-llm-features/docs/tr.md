@@ -103,7 +103,7 @@ mx-sequential-test
 2. Sağlık hizmetleri için                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 3. Bir A/B tasarlayın, test GPT-4 vs GPT-3.5 Üst performansın çözülmüş bilet fiyatı için.
 4. Kanary'nin ızdıracağı, ancak A/B'nin %1.2 dönüşümünü gösterdi.
-5. CUPED'i bir ön dönem dönem oranı %60'lık bir sonraki dönem oranı için kullanmak için kullanmak için kullanılır.
+5. 应用 CUPED, using a能解释 60% 后期方差的前期 covariate(相关系数平方为 0.6) ――计算有效样本大小增量──
 
 ## 关键术语
 | Term | What people say | What it actually means |

@@ -18,7 +18,7 @@ Senin takım Kubernetes'te bir LLM servisi yayınladı.`DCGM_FI_DEV_GPU_UTIL`作
 
 Ayrıca, Cluster Autoscaler'ı kullanıyorsun 管理节点──凌晨2点来一个M-Token提示; cluster花了3分供给节点,请求超时──
 
-Ayrıca, 8 GPU'nın 70B modelini kullanarak 2 noktayı geçmek zorunda olduğunu bir GPU'yu dağıtmak için 7 boş GPU' var. Bir GPU'yu 3 noktaya dağıtmak için daha 1 GPU'yu dağıtmak gerekiyor.
+Ayrıca, siz 8 GPU'nın 70B modelini kullanarak 2 noktayı geçmek için bir GPU'yu dağıtıyorsunuz. 7 boş GPU' var, 3 noktaya dağılmış ve 1'den daha az.
 
 Üç kat, üç farklı başarısızlık modeli. 2026 yılının GPU-açık otomobil ölçeklemesi HPA ︎-ı açmak için değil.
 

@@ -48,7 +48,7 @@ Bölgelerarası RTT:
 - US-East-1  eu-West-1: ~75 ms。
 - US-East-1  ap-southeast-1: ~ 220 ms。
 
-Eğer yönlendirme, US-East-1 送到 ap-southeast-1 的热序列,节省的预填(800 → 80 ms) tarafından 440 ms dönüş yolculuğu tarafından 抵消──GORGO(2026 araştırma) 把这一点显式化:联合最小化`prefill_time + network_latency`, sadece en az doldurulmasını değil. Cevap genellikle bölgesel yönlendirmeyi sürdürmek, büyük çok MB önlemeyi ele alan prefill dışında.
+Eğer yönlendirme, US-East-1 送到 ap-southeast-1 省的热序列,节省的预填(800 → 80 ms,即 720 ms) 后缩小到500 ms; eğer uzak uç bölgeler 让请求排队,或已经驱逐该序列,这点余量就会消失──GORGO(2026 araştırma) 把这一点显式化:联合最小化`prefill_time + network_latency`, sadece en az doldurulmasını değil. Cevap genellikle bölgesel yönlendirmeyi sürdürmek, büyük çok MB önlemeyi ele alan prefill dışında.
 
 ### 商业 "kısası bölge sonucu" burada yardımcı olmaktan fazla meşgul
 

@@ -77,7 +77,7 @@ Eğer bu yükünüzün yeniden dağıtılması gerekiyorsa, bunu başlatmadan ö
 
 ### Metrikler kadansı
 
-Kanar Geçidi, her 5-15 dakikada bir kez kontrol edilir. Trafik hacminin %1'ine ve 10 rek/minte, her pencerede 50-150 veri noktası vardır.
+Kanarya kapıları Her 5-15 dakika bir kez kontrol edilir, özellikle trafiğin hacmine bağlıdır. 1.000 rek/min %1 ((yani Kanarya  10 rek/min) alındığında, her 5-15 dakika penceresinde 50-150 ı veri noktası vardır.  Gecikme  yeterince, ancak kullanıcı yanıtlarına göre gürültü daha büyük olacaktır.
 
 ### A/B 步骤是可选的
 

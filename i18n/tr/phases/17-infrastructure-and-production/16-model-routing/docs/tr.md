@@ -1,6 +1,6 @@
 # Modelleme yönlendirme  maliyetleri azaltma için temel araç olarak
 
-> Bir dinamik broker her talebi değerlendirecek, görev tipi, token uzunluğu, embed etme benzerliği, güven), basit sorguyu gönderir, ucuz modellere gönderir, karmaşık sorguyu sınır modeline yükseltir, model kaskadörlüğü de denir. Üretim vaka çalışmaları gösterir ki, ABD/AB/AB'de, kalite aşağı maliyetinde %20-60 oranında düşebilir; yüksek akımlı SaaS'de %30 oranında yönlendirme verimliliği iyileşebilir.$20/M 降到约 $%40/M── %40'ın büyük kısmı daha iyi servis pillerinden geliyor(Fase 17 · 04-09), donanımlı değil── Routing ise ürün gerilemeyi neden etmemekte, bu fiyatı marjine dönüştürmek için bir yöntemdir── başarısızlık modusu ucuz model sürüşüdür: rota %40'ı daha zayıf modellere, mantıklama görevlerine, yüksek kaliteli aşağıya %3-5, bir dönem içinde dikkat çekmek için kullanmak için online kalite ölçümlerini kullanın ırmaklar için ırmaklar kurmak yerine sadece çevrimdışı değerlendirme ayarlarına güvenmek için kullanın──
+> Bir dinamik broker her talebi değerlendirecek, görev tipi, token uzunluğu, embed etme benzerliği, güven), basit sorguyu gönderecek, ucuz modellere gönderecek, karmaşık sorguyu sınır modeline yükseltecek, model kaskadyalama olarak da adlandırılacak. Üretim vaka çalışmaları göstermektedir ki, ABD/AB/AB'de, kalite aşağı maliyetinde %20-60 oranında düşebilir; yüksek akımlı SaaS'de %30 oranında yönlendirme verimliliği iyileştirilmesi, değişiminin altı rakamlı yıllık bir bölüme düşeceğini belirtiyor.$20/M 降到约 $%40/M (%50 civarında) ∼ %40 ∼ %50 ∼ %50 ∼ %50 ∼ %50 ∼ %50 ∼ %50 ∼ %50 ∼ %50 ∼ %50 ∼ %50 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5 ∼ %5      %5      %5        %5      %5      %5            %5                                                                                                                                                                                         
 
 **Type:** Learn
 **Languages:** Python (stdlib, toy cascading router simulator)
@@ -44,7 +44,7 @@ Eğer %70'i ucuz modellere, %30'u pahalı modellere koyarsanız, aynı ürün ka
 
 AI geçitleri(17 · 19) açıklama yönlendirme.`router`Yapılandırma.Portkey, koruyucu var + yönlendirme. Kong AI Gateway, eklenti tabanlı yönlendirme. OpenRouter'ın model pazarı.
 
-Açık kaynaklı:RouteLLM (LMSYS)、Diamanti değil (ticari)、Prompt Mule。
+Açık kaynaklı:RouteLLM (LMSYS) Prompt Mule──商业产品:Not Diamond──
 
 ### 2026 价格曲线
 
@@ -69,7 +69,7 @@ Yol açılış kapısı için online kalite ölçümleri kullan:
 ### Hatırlamalı olduğun bir sayı var.
 
 - 2026 yıl iso-kalite aşağı yönlendirme tasarruf: vaka çalışmaları %20-60
-- LLM fiyatlarının düşüşü 2022-2026: toplam yılda yaklaşık 10 katı
+- 固定能力水平 altında LLM fiyat düşüşü: yaklaşık yıllık 10x;
 - GPT-4 seviyesinde 2022 vs. 2026:~$20/M → ~$0.40/M:
 - Kaskadalı gecikme etkisi: ortalama ≈1,2x, artış ≈2x ≈10% trafiği)
 
