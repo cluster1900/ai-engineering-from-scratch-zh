@@ -42,7 +42,7 @@ critic update:   TD on Q_i(x, a_1..n) given next-state joint estimate
 
 ### QMIX (2018)  मूल्य विघटन
 
- केवल सहकारी के लिए उपयुक्त है वैश्विक पुरस्कार प्रत्येक एजेंट के Q-मूल्य के एकतरफा फ़ंक्शन 之和:
+केवल सहकारी के लिए उपयुक्त  संयुक्त कार्य-मूल्य `Q_tot`प्रत्येक एजेंट के Q-मूल्य का एकतरफा मिश्रण समारोहः
 
 ```math
 Q_{\text{tot}}(\tau, a) = f\big(Q_1(\tau_1, a_1), \ldots, Q_n(\tau_n, a_n)\big), \quad \frac{\partial f}{\partial Q_i} \ge 0
