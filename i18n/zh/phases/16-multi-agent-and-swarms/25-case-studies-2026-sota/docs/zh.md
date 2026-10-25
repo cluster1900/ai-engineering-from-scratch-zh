@@ -57,7 +57,7 @@
 产量人口规模 案例──时间线:
 
 - **Nov 2025:**鱼机器人 (Peter Steinberger的本地 ReAct-loop编码代理) 发布.
-- **Dec 2025 – Mar 2026:**两次更名(Clawdbot → OpenClaw → 继续以 OpenClaw 运行) 』
+- **Jan 2026:**一周内两次更名 由于商标投诉,于 1 月 27 日由Clawdbot更名为Moltbot,三天后由Moltbot更名为OpenClaw) 〔
 - **Feb 2026:**基于相同的原始模式,作为只代理社交网络,
 - **Mar 2026 (2026-03-10):**收购Moltbook──
 - **Mar 2026:**中国限制政府计算机使用OpenClaw──
