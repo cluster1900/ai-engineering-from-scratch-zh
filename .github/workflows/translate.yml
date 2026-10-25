@@ -25,6 +25,9 @@ on:
       - "languages.json"
       - "site/ui-strings.json"
       - "scripts/translate_ui_strings.py"
+      - "scripts/translate_lessons.py"
+      - ".github/translate-requirements.txt"
+      - "scripts/translation_freshness.py"
       # Publisher fixes must be able to bootstrap a missing translations branch
       # even when no English lesson changed in the same merge.
       - ".github/workflows/translate.yml"
