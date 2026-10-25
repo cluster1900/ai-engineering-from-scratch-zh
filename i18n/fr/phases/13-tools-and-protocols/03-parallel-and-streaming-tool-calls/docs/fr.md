@@ -66,7 +66,7 @@ chaque mode d'utilisation a un modèle`id`◊ chaque résultat du retour de l'h�
 
 L'hôte se trouve dans son propre filet, une routine ou un ouvrier à distance, et il utilise chaque utilisateur.`asyncio.gather`Ou une concurrence structurée, ou une concurrence structurée, ou une concurrence structurée, ou une concurrence structurée, ou une concurrence structurée, ou une concurrence structurée, ou une concurrence structurée, ou une concurrence structurée, ou une concurrence structurée, ou une concurrence structurée, ou une concurrence structurée, ou une concurrence structurée, ou une concurrence structurée, ou une concurrence structurée, ou une concurrence structurée, ou une concurrence structurée, ou une concurrence structurée, ou une concurrence structurée, ou une concurrence structurée, ou une concurrence structurée, ou une concurrence structurée, ou une concurrence structurée, ou une concurrence structurée, ou une concurrence structurée, ou une concurrence, ou une autre.
 
-Un bug habituel: selon la liste d'appels 顺序回复结果, plutôt que selon la finition 顺序回复──`tool_call_id`, mais si un résultat est perdu ou répété, le décompte de l'ordre rendra le décompte plus difficile.
+Un bug habituel: selon la liste d'appels 顺序回复结果, plutôt que selon la finition 顺序回复──`tool_call_id`, mais si un résultat est perdu ou répété, un résultat déviant atteint l'ordre et réorganisé dans la liste de réponses, ce qui rendra cette lacune plus difficile à trouver dans les journaux.
 
 ### Appels d' outils de diffusion
 

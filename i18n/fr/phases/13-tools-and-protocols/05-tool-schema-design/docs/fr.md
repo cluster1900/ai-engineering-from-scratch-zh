@@ -81,7 +81,7 @@ Chacun a une description et un schéma typé.`action`La corde
 ### Conception des paramètres
 
 - **每个封闭集合都使用 Enum。** `units: "celsius" | "fahrenheit"`Ne l' utilisez pas .`units: string`Les enum seront en mesure de donner une valeur acceptable à la conception.
-- **Required vs optional。**标记最低限需要的字段──其他全部可选──OpenAI strict mode 要求每个字段都在 `required`Dans votre code, ajouter`is_default: true`convention,并让模型 省略它──
+- **Required vs optional。**标记最低限需要的字段──其他全部可选──OpenAI strict mode 要求每个字段都在 `required`Le modèle ne peut donc pas éviter tout type de champ optionnel.`null`La même chose est vraie.`null`Il y a une autre.
 - **Typed IDs。** `note_id: string`Oui, mais en ajouter un.`pattern`(le secteur de l'énergie)`^note-[0-9]{8}$`Pour capturer des id hallucinés.
 - **不要使用过度灵活的 types。**viter `type: any`Les modèles seront hallucinés.
 - **描述 field。** `{"type": "string", "description": "ISO 8601 date in UTC, e.g. 2026-04-22"}`◊ description est une partie du modèle prompt.

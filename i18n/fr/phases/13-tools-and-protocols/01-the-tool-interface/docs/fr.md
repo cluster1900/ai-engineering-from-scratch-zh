@@ -10,7 +10,7 @@
 ## Objectif de l'apprentissage
 - Expliquer pourquoi un LLM qui ne peut produire que du texte ne peut pas agir seul dans le monde réel.
 - 画出四步工具-call loop (descrivez → décidez → exécutez → observez),并说出每一步由谁负责──
-- Pour une description d'outil, vous pouvez utiliser la fonction d'exécution de la définition.
+- Pour définir un outil, vous devez définir une fonction d'exécution de la définition JSON.
 - 区分纯工具和副作用工具,并说明为什么这种分类对安全很重要.
 
 ##  problématique
@@ -25,7 +25,7 @@ Le cycle de quatre étapes est l'invariabilité de ces systèmes. Le reste de la
 ## 概念
 ### Étape 1: décrire
 
-Host avec trois déclarations pour chaque outil.
+L'exécuteur reste à côté de l'hôte, ne parviendra jamais au modèle.
 
 - **Name.**Un identifiant à lire à la machine.`get_weather`, plutôt que la chose météo 🏼
 - **Description.**Une section naturel de la langue est utilisée lorsque les utilisateurs posent des questions sur la situation météorologique actuelle d'une ville spécifique.
@@ -109,7 +109,7 @@ tp-tool-loop
 
 需要关注的内容:
 
-- Registre d'outils Pour chaque outil 持有三个字段:nom、description、schéma, ainsi que référence de l'exécuteur。
+- Registre d'outils Pour chaque outil 持有四字段:nom、描述、方案,以及执行器引用──只有前三会发送给模型──
 - Le validateur est un sous-ensemble minimal de JSON Schema (types, requises, enum, minutes/max), uniquement avec stdlib 编写。Phase 13 · 04 会提供更完整的版本。
 - Le nombre d'itérations de cycle est limité à 5 fois.
 

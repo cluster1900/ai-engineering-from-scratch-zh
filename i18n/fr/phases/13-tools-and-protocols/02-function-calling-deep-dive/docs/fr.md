@@ -49,12 +49,12 @@ Chaque fournisseur a besoin de cinq choses:
 | Result block | role `tool`, `tool_call_id` | 带 `tool_result`, `tool_use_id` 的 `user` | 带匹配 `id` 的 `functionResponse` |
 | Force-a-tool | `tool_choice: {type: "function", function: {name}}` | `tool_choice: {type: "tool", name}` | `tool_config: {function_calling_config: {mode: "ANY"}}` |
 | Forbid tools | `tool_choice: "none"` | `tool_choice: {type: "none"}` | `mode: "NONE"` |
-| Strict schema | `strict: true` | schema-is-schema（始终 enforce） | request level 的 `responseSchema` |
+| Strict schema | `strict: true` | 每个 tool 上的 `strict: true`（opt-in） | request level 的 `responseSchema` |
 
 ### Vous rencontrerez réellement des limites
 
 - **OpenAI.**Chaque requête maximum 128 outils ⋅ Profondeur du schéma 5⋅ Chaîne d'arguments <= 8192 octets ⋅ Mode strict                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `$ref`Il n' y a pas de chevauchement .`oneOf`- Je suis là.`anyOf`- Je suis là.`allOf`, chaque propriété est en place`required`Dans le centre.
-- **Anthropic.**Chaque demande, maximum 64 outils. La profondeur du schéma n'a pas de limite, mais la limite pratique est de 10.
+- **Anthropic.**Chaque requête, maximum 64 outils  La profondeur du schéma   en fait, il n'y a pas de limite, mais la limite pratique est de 10  L'utilisation stricte des outils  La définition des outils  La mise en place  La définition des outils  La définition des outils  La définition des outils  La définition des outils  La définition des outils  La définition des outils  La définition des outils  La définition des outils  La définition des outils  La définition des outils  La définition des outils  La définition des outils  La définition des outils  La définition des outils  La définition des outils  La définition des outils  La définition des outils  La définition des outils  La définition des outils  La définition des outils  La définition des outils  La définition des outils `strict: true`Pour les autres, le modèle est généralement le contrat de conformité, et non la garantie.
 - **Gemini.**Chaque requête maximal 64 个函数──Types de schéma sont un sous-ensemble OpenAPI 3.0(par rapport au schéma JSON 2020-12 略有差异)──自 Gemini 3 起,appels parallèles 使用 unique-id──
 
 ### `tool_choice`comportement
@@ -91,7 +91,7 @@ Les erreurs d'argumentation invalide sont également différentes.
 
 - **OpenAI (non-strict).**Modèle  retour `arguments: "{bad json}"`, votre JSON parse  défaut, vous avez inséré un message d'erreur et réappeler 
 - **OpenAI (strict).**Validation pendant le décoding  survenue; JSON non valide ne peut pas apparaître, mais peut apparaître `refusal`Il y a une autre.
-- **Anthropic.** `input`Peut contenir des champs inattendus; le schéma est conseillé.
+- **Anthropic（non-strict）。** `input`Peut contenir des champs inattendus; schéma est conseiller.`strict: true`L'échantillonnage sera lié à l'ensemble du schéma.
 - **Gemini.**OpenAPI 3.0 quirk: champs d'objet 上的 `enum`Il faut que tu te valides.
 
 ### Le modèle de traducteur
