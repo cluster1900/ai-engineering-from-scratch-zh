@@ -70,7 +70,7 @@ Nós passamos por cima.`import sys`E um passo em frente.`os.system`O candidato �
 
 Cada processo tem um orçamento padrão de três segundos.`subprocess.run(..., timeout=t)`Se superar, o corredor será capturado.`TimeoutExpired`, Terminar o processo, e registrar as tarefas `timeout`退出原因──该任务分数为零──runner继续进──
 
-Cada missão pode passar por cima do tempo .`task.metadata.timeout_s` para a configuração                                                                                                                                                                                                                                                           
+- Não .`run_candidate`de `timeout_s`参数; 第 75 课的跑者 通过 `code_exec_timeout_s`Para cada operação, uma vez.`run_candidate`O valor será limitado entre 0,1 e 30 segundos, para manter a borda do conjunto.
 
 ##  输出上限
 
@@ -84,7 +84,7 @@ Pass-at-k é um calculador humano e amigo de uso imparcial.`n`独立样本和其
 pass_at_k(n, c, k) = 1 - C(n - c, k) / C(n, k)
 ```
 
-- Não .`n - c < k`时, molécula não definida, valor为 `1` Realizar o tratamento direto da situação da margem.`pass_at_k(n, c, k)`供排行榜层使用──
+- Não .`n - c < k`时, segundo o normal, molécula `C(n - c, k)`Não podes ser menos do que isso.`k`个失败中选出 `k`个), por isso vale `1` Realizar o tratamento direto da situação da margem.`pass_at_k(n, c, k)`供排行榜层使用──
 
 ```mermaid
 flowchart LR

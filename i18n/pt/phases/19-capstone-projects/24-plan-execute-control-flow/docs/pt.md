@@ -89,7 +89,7 @@ O tracer ou UI pode transformá-lo em um destaque de passos removidos, bem como 
 
 ##  2 orçamento
 
-`max_steps`limitar a sessão inteira de execuções de todos os passos, incluindo replans. 默认是十二──一线性的五步计划, se o replán 两次并且每次增加三步,将达到十六次执行,从而超过预算.
+`max_steps`limitando toda a sessão de execuções de todos os passos, incluindo replans. 默认是十二──失败的尝试也计入. 已花了五次执行. 已花了五次执行.  Se cada replaneamento tiver repetido esse passo e não tiver sido renovado três passos, e o último passo da primeira revisão novamente falhar, a contagem é nove, a segunda revisão também precisa de quatro vezes:`step_budget`返回 FAILED.
 
 `max_replans`限制第一次计划 后规划师 被调用次数――默认是五――这是更重要的限制――一个连续五次回归同一个破碎的计划规划师,否则会一直循环,直到步骤预算 抓获它――限制重规划会让失败更快发生,原因也更清楚――
 

@@ -71,7 +71,7 @@ evaluador 运行三个独立计算,并在判决 路径中把它们合并──�
 
 Perplexidade em relação à perda é uma relação de índice. Perde diminuiu em 0,1%, fazendo com que a perplexidade apareça em maior diminuição.
 
-Este curso vai para o`scale`字段为 `"log"`Qualquer métrica em cálculo melhoramento Antes de obter log.o natural.o limiar.`log(28) - log(32) = -0.133`, muito acima do limiar de 100% de 2..
+Este curso vai para o`scale`字段为 `"log"`Qualquer métrica em cálculo melhoramento Antes de obter log.o natural. limiar.`log(32) = 3.466`Em relação a`log(28) = 3.332`在低是更好的表表 上,相对改善 是 `(3.466 - 3.332) / 3.466 = 0.039`, superou o limiar de 2% .
 
 ```text
 if scale == "log":

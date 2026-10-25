@@ -119,7 +119,7 @@ python3 -m unittest code/test_main.py
 
 4. Em projector de peso adicionar um pequeno L2 惩罚, observe como ele se interage com o restringido em conjunto.
 
-5. Manter o peso do projeto, depois recarregar e executar o processo, sem necessidade de um programador de vídeo para a posterior transmissão, para verificar a implantação, apenas o projeto é necessário.
+5. 保存投影仪权重, then reload them together with the 结视觉编码器, and run without reverse propagation 推理──验证投影仪是你唯一需要交付的新文物;部署时编码器仍需运行前向传播──
 
 ## 关键术语
 

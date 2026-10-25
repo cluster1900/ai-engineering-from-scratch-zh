@@ -52,7 +52,7 @@ Três jogos são todos de peso.`world_size`Para que o seu grande e grande livro 
 
 ### 原子写入
 
-標準模式:将每个分片写入 `<name>.tmp`,将清单写入 `manifest.json.tmp`,fsync Cada fragmento, então renomeado. POSIX no mesmo sistema de arquivos renomeado é de átomos; quer o novo arquivo esteja completamente presente, quer o antigo arquivo esteja completamente presente. A queda anterior à renomeada final tornará o primeiro ponto de verificação em um ponto de verificação de atividade. Se não houver inscrição de átomos, o colapso pode deixar um outro com uma parte de sua lista atual, e a carga irá danificar o estado do optimizador ao recuperar.
+標準模式:将每个分片写入 `<name>.tmp`,将清单写入 `manifest.json.tmp`,fsync Cada documento, re-nomear fragmentos, última re-nomear lista. , em um único POSIX no mesmo sistema de documentos, o re-nomeamento é atômico: quer o novo documento esteja completamente presente, quer o antigo documento esteja completamente presente. , um grupo de renomeamento não é uma transação, então o re-nomeamento da lista é um ponto de submissão, o carregador irá verificar cada fragmento de acordo com o hash da lista.
 
 ### 模式 must defend ên três tipos de falhas
 

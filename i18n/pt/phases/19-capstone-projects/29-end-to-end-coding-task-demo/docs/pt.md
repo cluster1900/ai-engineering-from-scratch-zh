@@ -21,7 +21,7 @@ A maioria dos agentes demo são isolados: um único armazém de areia, um único
 
 A cadeia de portas  deu permissão, mas caixa de areia, pois a cadeia  não tinha previsão de que a causa fosse rejeitada   arnesamento de arco  registro passar, mas OTel span  mostrar a porta  rejeitou o agente  alegadamente usado ferramenta  Prometheus counter 本应增加一次,但增加两次── observation budget 已经超出,但代理 继续运行,因为预算只在链中追踪,而沙盒 不知道──
 
-Este curso é um teste de integração de toda a pista. O agente deve completar em ordem quatro coisas: ler o projeto, executar os testes, não conseguir identificar erros, escrever, corrigir os testes e então parar. Cada operação passa pela cadeia de portas.
+Este curso é um teste de integração de toda a pista. O agente deve completar seis coisas em ordem: ler o projeto, executar os testes, não conseguir identificar erros, escrever, corrigir os testes e então parar. Cada operação passa pela cadeia de portas.
 
 ## O conceito
 

@@ -92,7 +92,7 @@ Output mostra o top-N do duplo programador 交叉编码器的 top-K以及时间�
 
 **交叉编码器不对称。** `rerank(q, d)`和 `rerank(d, q)`É diferente. Sempre primeiro, se não tiveres trocado de memória, a memória vai cair.
 
-**N 太低，无法暴露该 bug。**Se a configuração N = K, o crossover codeador não pode reorganizar; ele só pode reorganizar o peso. Elevador parece para zero.
+**N 太低，无法暴露该 bug。**Se a configuração N = K, o crossover codeador pode reorganizar o candidato K, mas não pode colocar o novo candidato no topo K. Recorde que o K não vai mudar, então elevação parece ser zero.
 
 **训练数据泄漏到评估中。**Se o treinamento do token manual contém uma consulta de avaliação, o re-requisito parece muito estranho.
 

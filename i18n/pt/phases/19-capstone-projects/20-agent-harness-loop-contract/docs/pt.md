@@ -44,7 +44,7 @@ stateDiagram-v2
     DONE --> [*]
 ```
 
-`IDLE`É o único ponto de entrada legal.`DONE`É a única exportação legal.`AWAITING_TOOL`É o único estado que produz ponto de atracção. Todas as outras transições são internas.
+`IDLE`É o único ponto de entrada legal.`DONE`É a única exportação legal.`AWAITING_TOOL`É o único que produz automaticamente um ponto de atracção.`on_pause`Não é estado: quando o orçamento usar o máximo ou um gancho Peça revisão, ele vai de qualquer estado ativo 触发. Todas as outras transições são internas.
 
 Esta máquina de estado é de certeza. Dá-se o mesmo registro de eventos, o arness vai reentrar no mesmo estado. Esta natureza permite que você possa reproduzir sessões para tentar, sem precisar re-reproduzir o modelo.
 

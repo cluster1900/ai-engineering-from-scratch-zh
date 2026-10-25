@@ -82,4 +82,4 @@ Para alguns dispositivos (especialmente para o teste), o testeiro é intencional
 
 ##  weiterlesen
 
-O teste de esta aula, de 84 a 87, é um dos três sinais que compõem a porta de entrada e saída.
+O teste de esta aula, de 84 a 87 anos, é um dos quatro sinais que compõem o terminal a terminal, além dos três que são o filtro de tokens, as divisões e o motor de regras.

@@ -16,7 +16,7 @@ Você vai construir um agente, ele recebe um repo Java 8 (((ou Python 2 repo), e
 ## 概念
 O oleoduto tem dois níveis.**deterministic substrate**(Java us OpenRewrite, Python us libcst) segurança executar um grande número de máquinas reescrever: importações, assinaturas de método, edições de segurança nula, tentativa de recursos, substituição de API depreciadas.**agent layer**(OpenAI Agents SDK ou LangGraph, baseado no Claude Opus 4.7 e GPT-5.4-Codex) processar receitas 无法覆盖的情况:build-file upgrades(Maven/Gradle/pyproject) 过渡性依存性冲突、测试片、定制注释──
 
-Cada repo recebe uma pré-construção de um objetivo de execução Daytona sandbox──agente 代执行:运行 build、分类失败、应用fix、重新运行──硬性限制: cada repo 30 分钟、 cada repo $8、20 个代理转──如果所有测试 通过且覆盖 delta 不为负,就打开PR──如果没有通过,就把该 repo 按失败类归档并附上证据──
+Cada repo recebe uma pré-construção de um objetivo de execução Daytona sandbox. Agente 代执行:运行构建分类失败,应用修正,重新运行.
 
 失败分类体系是交付物品. Em 50 repo, que mal aconteceu? Depositivos transitivos? Anotativas personalizadas?Construir versão de ferramenta? Flascas de teste sem relação com migração? Cada classe precisa ter conta e exemplar diferença.
 
@@ -73,7 +73,7 @@ ce-migration-funnel
 
 4. **Budget caps.**Cada repo 30 minutos de relógio de parede ≈ $8 成本、20 代理转──任何超限都会停止,并以当前差 归档到"预算_尽尽"──
 
-5. **Test + coverage gate.**Se a cobertura baixar mais do que 2%, é registo a "cobreza_regressão" (Coverage_regression).
+5. **Test + coverage gate.**Se a cobertura baixar acima de 2%, é regressão.
 
 6. **PR open.**Depois de sucesso, empurrar, abrir relações públicas, juntar, além de quais receitas são aplicadas, quais compromissos são feitos por um agente.
 

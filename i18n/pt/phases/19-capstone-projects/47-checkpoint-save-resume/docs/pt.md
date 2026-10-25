@@ -16,7 +16,7 @@
 
 ## 问题
 
-Você configurou uma missão de treinamento, prevendo que ela funcionará 18 horas. O relógio de parede está no limite de 4 horas. O cluster reinicia, porque alguém com mais salário do que você aprovou a atualização do kernel.
+Você configurou uma tarefa de treinamento, prevê-la funcionar 18 horas. Agendador Coloque cada alocação em 4 horas, então esta vez a execução é uma série de trabalhos retomados. Depois, na primeira hora da execução, o cluster reinicia, porque alguém de nível mais alto do que você aprova a atualização do kernel. Sem um ponto de verificação, você precisa começar de novo. Sem um currículo, você também perderá o estado de otimização que aprendeu antes de 11 horas, então mesmo que os pesos do modelo caíssem, os momentos de AdamW também se perderam, o próximo passo de repente vai saltar para a direção da formação.
 
 O artefato verdadeiro é um único documento, no qual se conserva tudo o que é necessário para continuar treinando:parâmetros do modelo, estado do optimizador, estado do cronógrafo, estado de utilização para desenhar o histórico de perdas, passo em andamento e época, além de contadores batch-in-epoca, há cada aleatoriedade fonte de estado de RNG.
 

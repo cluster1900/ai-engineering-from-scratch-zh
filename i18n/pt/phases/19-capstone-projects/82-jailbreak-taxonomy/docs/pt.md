@@ -48,7 +48,7 @@ flowchart TB
   H --> D[coverage chart]
 ```
 
-Cada fixação é um registro, que inclui`id`- Não.`category`- Não.`subtype`- Não.`prompt`- Não.`target_behavior`和 `severity` classificação de objetos, por categoria, por grupo,并公开 `match`API: given determination tip, return the closest fix and its categories──匹配是字符三元余弦:粗略、快速、无依赖性── é não um detector── é um gerador de tags── é um gerador de tags──
+Cada fixação é um registro, que inclui`id`- Não.`category`- Não.`subtype`- Não.`prompt`- Não.`target_behavior`和 `severity` classificação de objetos, por categoria, por grupo,并公开 `match`API: given determination tip, return the closest fixure and its class──匹配是字符三元余弦:粗略、快速,并且只基于 numpy 构建──它不是探测器──检测器位于第83 课──这是标签生成器──
 
  Seja como for, o sistema deve emitir uma saída ([[Departamento de Operações de Atividade Perigosas]]). Seja como for, a maioria das operações são de 2-3, porque as reais operações de escala de implementação são simples e simples.
 

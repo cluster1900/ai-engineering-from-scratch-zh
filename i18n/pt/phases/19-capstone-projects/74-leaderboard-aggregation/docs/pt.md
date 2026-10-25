@@ -64,7 +64,7 @@ Os dois programas de classificação servem a objetivos diferentes.
 
 O índice médio é um modelo de valor médio do índice de cada tarefa. Este é o relatório de classificação numérica do título. É muito sensível a valores anormais e desequilíbrios de tarefas.
 
-胜率计算模型在同一任务上击败所有其他模型的频率──对于每一个任务,得分最高的模型获胜平分)──胜率等于获胜次数除了模型得分的任务数──它对异常值和尺度差异不太敏感,但会丢失信息──
+胜率计算模型在同一任务上击败所有其他模型的频率──对于每一个任务,得分最高的模型获胜──平局时,每个并列模型都算完整一次获胜──胜率等于获胜次数除了模型得分的任务数──它对异常值和尺度差不多不太敏感,但会丢失信息──
 
 ```python
 def win_rate(model_id, runs_by_task, all_models):
@@ -132,4 +132,4 @@ De cima para baixo`main.py` Dados de forma`EvalRun`- Não.`LeaderboardRow`O p
 
 ## Mais adiante
 
-O próximo passo natural é a importância da tarefa de parceria, e não o modelo de orientação desparceria. Se o modelo A e B executam as mesmas cem tarefas, o teste apropriado é o programa de orientação de parceria que realizamos para a diferença de tarefas individuais. Além disso, você também precisa de um programa de orientação de nível de série de tarefas de respeito.
+Cada modelo tem um espaço não-paralhante, mas a comparação entre os modelos deve ser paralhador. Se os modelos A e B executam as mesmas cem tarefas, o teste apropriado é para o programa de direção de paralhão de diferença de tarefas individuais.`bootstrap_pairwise_diff`已实现它──除此之外, você também precisa de um programa de orientação de nível de série de respeitar tarefas.

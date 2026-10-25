@@ -88,7 +88,7 @@ A ferramenta não é de confiança, mas é de softmax.`[0, 1]`Para muitas tarefa
 
 - Todas as previsões são erradas: a ECE é a confiança média, a Brier é o alto valor, a confusão é a visão do modelo sobre o texto.
 - Propostas de avaliação de desempenho:
-- P=0,5 时完全不确定的预测因子:ECE为0.5 减去准确度,Brier为0.25 减去校正项──
+- P=0,5 时完全不确定预测因子: cada pré-conhecimento está no mesmo bin, então ECE é `|0.5 - accuracy|`O limite é de 0,25 por ano, porque é o que quer que seja.`y`É 0 ou é 1,`(0.5 - y)^2 = 0.25`- Não.
 - 空输入:ECE、Brier 和可靠性返回 `0.0`(或零填充数组) ∼ Para a situação de zero tokens, Perplexidade  retornar `NaN` Estes caminhos não emitem alertas; o corredor verifica estes valores e decide se o relatório ou o salto.
 
 Estes casos foram incluídos em testes. Os modelos reais no teste de base real não os atingem, mas os adaptadores ou pequenos amostras defeituosos os atingem, e os operadores não devem cair.

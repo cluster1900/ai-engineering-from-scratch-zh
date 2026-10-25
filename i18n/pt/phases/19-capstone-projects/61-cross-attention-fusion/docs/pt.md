@@ -64,7 +64,7 @@ Antes de gerar qualquer texto, primeiro observe completamente a imagem.`t`Pode-s
 
 ### 块组成
 
-解码器块运行:预 LN -> 自注意力 -> 残差 -> 预 LN -> 交叉注意力 -> 残差 -> 预 LN -> 前 -> 残差──三子层, cada subcampaíno tem sua própria camadaNorm。 Flamingo 论文添加一个关于交叉注意力的学习门,因此模型可以在训练时稳定性为代价选择退出图像路径;规范基线(这里使用)没有门──
+解码器块运行:预 LN -> 自注意力 -> 残差 -> 预 LN -> 交叉注意力 -> 残差 -> 预 LN -> 前 -> 残差──三子层, cada sub层有自己的层Norm。 Flamingo 论文在交叉注意力上添加了一个可学习的门,初始化为零,因此结的语言模型一开始保持不变,训练也保持稳定;规范基线在此使用)没有门──
 
 ```python
 class DecoderBlock:

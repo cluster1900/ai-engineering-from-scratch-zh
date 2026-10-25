@@ -9,7 +9,7 @@
 
 ## 问题
 
-Os capítulos 82-86 deste curso contêm cada parte de uma parte: classificação, teste de entrada, avaliação, saída, classificação, mecanismo de regras. A verdadeira Porta de Segurança deve combiná-los, executá-los no momento certo do ciclo de vida do pedido, decidir o que fazer quando eles discordam, e gerar o seguimento que o auditor pode ler na manhã de segunda-feira.
+Cada parte da aula 82-86 deste curso contém uma parte: classificação, teste de entrada, avaliação, estrutura de avaliação, saída de classificação, mecanismo de regra. A verdadeira Porta de Segurança deve reunir a parte de tempo de execução da mesma.
 
 O testeiro do curso 83 vai ver o modelo antes de ser chamado, depois de passar por ele, ou completamente impedi-lo, ou mesmo adicionar um token para fazer uma avaliação no nível inferior. Durante o período de execução do modelo: o sistema de filtragem vai fazer um bloqueio de dados, e se o sistema de filtragem for proibido, o sistema de filtragem vai sobreviver.
 
@@ -35,11 +35,11 @@ O polgador combina quatro sinais de gravidade: testeador de confiança (§ 83) �
 
 |信号状态 |行动|
 |---|---|
+|检测器在非 benign 类别上置信度 >= 0.85 |生成前 block|
 |任何高严重性 |块|
-|任何中等严重程度 |编辑|
-|任何低严重程度 |警告|
-|全部无 + 检测器置信度 < 0.5 |允许 |
-|检测器置信度 0.5-0.85，无其他信号 |警告|
+|任何中等严重程度（检测器置信度 0.5 到 0.85，或提前终止 stream） |编辑|
+|任何低严重程度（检测器在非 benign 类别上置信度低于 0.5） |警告|
+|检测器判定为 benign 且无其他信号 |允许 |
 
 块返回拒绝── Redact 发送经过分类器编辑的文本并应用规则引擎修复程序──警告在发送原件时附带软件通知──允许运送原件──每请求都发发发一个`RequestTrace`, incluindo `request_id`- Não.`prompt`- Não.`pre_gen`(检测器判决)`during_gen`(token过器触发器)`post_gen`(分类器操作 + 规则报告)`final_action`- Não.`final_output`和 `latency_ms`- Não.
 

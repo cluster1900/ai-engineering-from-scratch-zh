@@ -20,7 +20,7 @@ A questão da honestidade é: em que aspectos se apresenta bem? A resposta hones
 
 Se o seu repo não tiver arsenal, você só pode comparar dois modelos. Se tiver arsenal, você pode compará-los em um conjunto de tarefas fixo, fixa métrica, e obter uma saída JSON diferente.
 
-陷是让harness 过适合到单个模型──修复方式是反过来使用同一个陷:harness 小到十五分钟能读完,任务小到可以随随 发布, métricas de zero编写以便同事审计,而适配器是唯一放置模型特定代码的地方── substituir adaptador,leaderboard 会变; substituir tarefas,leaderboard 会变――其他一切不应该变──
+陷是让harness 过适合单个模型──修复方式是让所有模型特定的选择都留在harness 之外:harness 小到十五分钟能读完,任务小到可以随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随随的随随随随随随随随随随随随随随随随随随随随随随随
 
 ## 概念
 

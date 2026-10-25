@@ -18,7 +18,7 @@
 
 O modelo de linguagem visual requer duas habilidades. Deve ser classificado: um título dado, encontrar imagens corretas em inúmeras imagens. Deve ser gerado: uma imagem dada, escrever um título.
 
-Informações sobre a NCE  responsável pela classificação  para um grupo de N , o modelo  N  se adequará ao visual como o caso, `N^2 - N`Não correspondem ao visual como exemplo negativo, e depois ao gerado.`(N, N)`A comparação entre a matriz de operação e a perda de dados é a metade da produção de LM.
+Informações sobre a NCE  responsável pela classificação  para um grupo de N , o modelo  N  se adequará ao visual como o caso, `N^2 - N`Não correspondem ao visual como exemplo negativo, e depois ao gerado.`(N, N)`A comparação entre a matriz de operação e a perda de recursos LM: metade da produção de perda de recursos LM: apenas a perda de recursos LM é compartilhada.
 
 ## 概念
 
@@ -54,7 +54,7 @@ O sistema de código de código de código de código de código de código de c
 
 ### 合并损失
 
-`total = contrastive + lm_weight * lm`, entre os `lm_weight`É uma forma de combinação de múltiplas tarefas, com diferentes pesos. SigLIP apenas retém contrastes, e não utiliza a perda de pares sigmoides em substituição à suavidade.
+`total = contrastive + lm_weight * lm`, entre os `lm_weight`É um dos dois tipos de perda de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divisão de divis
 
 |组件|损失面|影响|
 |-----------|--------------|---------|

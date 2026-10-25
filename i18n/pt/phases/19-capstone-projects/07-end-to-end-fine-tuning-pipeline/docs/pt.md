@@ -1,6 +1,6 @@
 # Capstone 07  端到端 Fine-Tuning Pipeline ((Data até SFT até DPO até Serve)
 
-> Um modelo 8B baseado em seu próprio treinamento de dados, baseado em suas próprias preferências para completar DPO para齐, completar quantização ̊ descodificação especulativa,并以可衡量的$/1M tokens 成本提供服务. Em 2026 ano, a pilha aberta é Axolotl v0.8、TRL 0.15、 para usar na geração anterior Unsloth、 para quantização GPTQ/AWQ/GGUF, bem como para servir vLLM 0.7 + EAGLE-3.
+> Um modelo de nível 8B baseado em seu próprio treinamento de dados, baseado em suas próprias preferências para completar DPO para齐, completar quantização ̊ descodificação especulativa,并以可衡量的 $/1M tokens 成本提供服务. Em 2026 ano, a pilha aberta é Axolotl v0.8、TRL 0.15、 para usar na geração anterior Unsloth、 para quantização GPTQ/AWQ/GGUF, bem como para servir vLLM 0.7 + EAGLE-3.
 
 **Type:** Capstone
 **Languages:** Python (pipeline), YAML (configs), Bash (scripts)
@@ -11,7 +11,7 @@
 ## 问题
 Em 2026, cada equipe de IA rigorosa estará sempre pronta para um pipeline de ajuste fino. Não porque eles publiquem um modelo base de fronteira, mas porque o domínio SFT seja adaptado, é o caso de DPO direcionado a marcas preferentes, para decodificação especulativa, e usar a versão EAGLE-3, apenas onde se pode medir o lucro realmente surgiu.
 
-Você vai colocar uma base 8B ((Llama 3.3、Qwen3 ou Gemma 3) em dados específicos de tarefa 上依次完成 SFT 和 DPO, em seguida, para servir fazer quantização,并使用lm-evaluation-harness、RewardBench-2、MT-Bench-v2 和 MMLU-Pro 衡升级── você vai medir a melhoria── você vai produzir um modelo de cartão de acordo com o 2026 Model Openness Framework──重点是可复现性:出端命令到端重跑整条管eline──
+Você vai colocar uma base de 8B a 14B ((Llama 3.1 8B、Qwen3 14B ou Gemma 3 12B) em dados específicos de tarefa 上依次完成 SFT 和 DPO, em seguida, para servir fazer quantização,并使用lm-evaluation-harness、RewardBench-2、MT-Bench-v2 和 MMLU-Pro 衡量升级── você vai produzir um modelo de cartão de trabalho em base ao 2026 Model Openness Framework──重点是可复现性:一命令到端重跑整条管道──
 
 ## 概念
 Este gasoduto tem cinco etapas.**Data**A Comissão Europeia, em nome da Comissão, propõe que a Comissão adopte um novo regulamento que estabelece as regras de segurança para os consumidores.**SFT**Axiolotl YAML、8xH100 上的ZERO-3、cosine schedule、packed sequences、2-3 épocas──**DPO or GRPO**:TRL configuração ∞1 época ∞ pares de preferências podem ser provenientes de etiquetado artificial ou de modelagem ∞beta sintonização ∞**Quantize**:GPTQ + AWQ + GGUF, garantia de flexibilidade de implantação。**Serve**:vLLM 0,7 + EAGLE-3 cabeças especulativas(or SGLang + SpecForge)、K8s implantação、 baseada em HPA de espera na fila。
@@ -52,7 +52,7 @@ model card (2026 MOF) + safety eval (Llama Guard 4)
 
 ## 技术
 - Dados: Datatrove para dedup, Nemotron-CC classificador para qualidade, Presidio para PII
-- Base: Llama 3.3 8B、Qwen3 14B ou Gemma 3 12B
+- Base: Llama 3.1 8B、Qwen3 14B ou Gemma 3 12B
 - SFT: Axolotl v0.8, com ZERO-3 ✓ Flash Attention 3 ✓ sequências embaladas
 - Preferência de sintonização: TRL 0,15 Utilizado para DPO ou GRPO; Unsloth Utilizado para iteração de GPU único
 - Quantização: GPTQ (Marlin) 、AWQ、 através de llama.cpp 生成 GGUF
@@ -113,7 +113,7 @@ $ ./pipeline.sh config/llama3.3-8b-domainX.yaml
 ## 练习
 1. Em um mesmo índice de referência específico de tarefa, é possível obter informações sobre o método de preferência 胜出,以及领先多少──
 
-2. Em vez disso, o valor de Llama 3.3 8B é de US$ 1 milhão.
+2. Llama 3.1 8B  substituir por Qwen3 14B ⋅ em conformidade
 
 3. ∆o mensuração dos dados de domínio com a taxa de aceitação da EAGLE-3 da ShareGPT geral  ∆o relatório diferencial, bem como o que significa para os orçamentos de latência
 
@@ -139,5 +139,5 @@ $ ./pipeline.sh config/llama3.3-8b-domainX.yaml
 - [DeepSeek R1 paper (arXiv:2501.12948)](https://arxiv.org/abs/2501.12948) GRPO 方法
 - [vLLM + EAGLE-3 documentation](https://docs.vllm.ai) 参考 estaca de servir
 - [SGLang SpecForge](https://github.com/sgl-project/SpecForge)  outro treinador de descodificação especulativa
-- [Model Openness Framework 2026](https://isocpp.org/) liberação aberta 评分标准
+- [Model Openness Framework (arXiv:2403.13784)](https://arxiv.org/abs/2403.13784): liberação aberta 评分标准
 - [lm-evaluation-harness](https://github.com/EleutherAI/lm-evaluation-harness) canônico avaliador runner

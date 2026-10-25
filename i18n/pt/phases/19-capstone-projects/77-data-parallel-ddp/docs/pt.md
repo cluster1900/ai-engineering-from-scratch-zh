@@ -57,7 +57,7 @@ O transformador tem milhares de parâmetros de volume. Por cada volume, uma úni
 
 ### Por que fixar a semente?
 
-Cada rank deve ser ajustado`torch.manual_seed(seed + rank)` fazer lavagem, mas调用`torch.manual_seed(seed)` fazer inicialização de parâmetros.                                                                                                                                                                                                                                                          
+Cada rank deve ser ajustado`torch.manual_seed(seed + rank)` fazer lavagem, mas调用`torch.manual_seed(seed)`Para fazer inicialização de parâmetros. O uso de sementes compartilhadas individuais significa que cada nível vê a mesma ordem de lote. Para os parâmetros, a distribuição de classificação 0 é a única razão para fazer a mesma cópia, que cobre cada nível. Se a distribuição for saltada ou errada, a inicialização específica da classe permitirá que cada cópia tenha um peso de partida diferente, enquanto que apenas a escala e a escala nunca poderão ser reajustadas. Obter um modelo subterrâneo correto, caso contrário, o teste de eficiência da distribuição falhará no passo 1.
 
 
 ```figure

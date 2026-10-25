@@ -28,7 +28,7 @@ A F1 é um conjunto de tokens. A parte mais difícil é selecionar tokens e esfo
 
 ## Tokenization
 
-O que é que é ?`re.findall(r"\w+", text.lower())`◊小写、字母数字运行、删除标点符号──each indicator in this class uses this precise分词器──runner has no choice──se você trocar分词器, você executará diferentes基准测试──
+O que é que é ?`re.findall(r"\w+", text.lower())`──小写,保留连续的单词字符(字母、数字和下划线), eliminar todos os outros caracteres──每个标标识都使用这个精确的分词器──runner没有选择权──如果您交换分词器,您将运行不同的基准测试──
 
 ```python
 TOKEN_RE = re.compile(r"\w+", re.UNICODE)
@@ -67,7 +67,7 @@ Para as tarefas multi-objectivos, nós escolhemos a melhor F1 na lista de objeti
 
 ## BLEU-4
 
-BLEU é um indicador de tradução automática de normas, que ainda aparece no trabalho de resumo. A fórmula que usamos é a BLEU-4, com padrão de simplificação e aumento de número de linguagens em termos de revisão, por isso, as 4 linguagens que faltam não serão reduzidas a zero.
+O BLEU é um indicador de tradução automática de normas, que ainda aparece no trabalho de resumo. A fórmula que usamos é o BLEU-4, de categoria de frase, para cada previsão e referência a divisão de frações, com padrões de simplificação e para o número de n 元语法计数 posteriores a modificações.
 
 Para cada candidato-referência, nós contamos a n igual a 1、2、3、4 horas de precisão de gramática após a modificação. A precisão de modificação é efetuada através de qualquer referência.
 
@@ -110,7 +110,7 @@ Numpy 表使实现清晰易读;纯Python 列表也可以工作──选择ROUGE-
 
 ## 准确度
 
- Para tarefas de categorização de múltiplos objetivos, a precisão será reduzida a uma correspondência precisa com os objetivos de padronização individuais.`metric_name`Não é necessário fazer uma comparação de caracteres dentro do corredor.
+Para classificação de tarefas, a precisão diminui para a precisão de correspondência: se a previsão coincide com o primeiro objetivo padronizado da lista, obtemos 1 分.`metric_name`Não é necessário fazer uma comparação de caracteres dentro do corredor.
 
 ## 派遣合同
 
