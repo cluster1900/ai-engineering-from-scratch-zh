@@ -58,7 +58,7 @@ Le programme de gestion des agents de Microsoft couvre le Top 10 des agents de l
 
 ###  observé $1,200 → $4 800 cas
 
-Un cas réel dans le dossier Microsoft: un agent de commerce électronique a ajouté de nouveaux outils, le coût mensuel a doublé de trois fois. Cet outil permet à l'agent de consulter l'état des commandes en chaque session. Il n'y a pas de cycle de vérification. Il n'y a pas de limite pour chaque outil. Il n'y a pas de limite pour chaque semaine.
+Un exemple réel dans le dossier Microsoft: un agent de commerce électronique a ajouté de nouveaux outils, le coût de la production a doublé de deux fois. Cet outil permet à l'agent de demander l'état des commandes à chaque session. Il n'y a pas de cycle de vérification. Il n'y a pas de limite pour chaque outil. Il n'y a pas de limite pour chaque outil.
 
 
 ```figure

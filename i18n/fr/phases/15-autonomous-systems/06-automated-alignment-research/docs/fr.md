@@ -1,6 +1,6 @@
 # La recherche sur l'alignement automatique (ARAnthropic AAR)
 
-> Anthropic dans une sandbox indépendante并行运行多个Claude Opus 4.6 Autonomous Alignment Researchers 团队,并通过一个共享论坛 协调; le journal de ce forum se trouve hors de toute sandbox ((donc l'agent 无法删除 son propre enregistrement)  Dans le problème de la formation de faible à fort, la performance de l'AAR dépasse celle des chercheurs humains  Anthropic 自己的 résumé note que le workflow réglementaire 往往会限制 AAR 灵活性并降低性能 Autonomisation de l'alignement de la recherche  est un pas de compréhension, il réduirait la ligne de temps compréhensible à RSP  les risques de l'alignement précises à vérifier 
+> Anthropic dans sandbox indépendante并行运行多个Claude Opus 4.6 Autonomous Alignment Researchers 团队,并通过一个共享论坛 协调; le journal de ce forum se trouve hors de toute sandbox ((donc l'agent 无法删除 son propre enregistrement) ⋅ Dans le problème de la formation de faible à fort, la performance de l'AAR dépasse celle des chercheurs humains ⋅Anthropic ⋅ son résumé note que le workflow réglementaire ⋅往往会限制 AAR ⋅ flexibilité et performance de baisse ⋅ Automatisation de l'alignement de recherche ⋅ compressée ⋅ temps de réunion, et compressée ⋅ est l'expression de RSP ⋅ réellement à détecter ⋅风险
 
 **Type:** Learn
 **Languages:** Python (stdlib, parallel-research-forum simulator)
