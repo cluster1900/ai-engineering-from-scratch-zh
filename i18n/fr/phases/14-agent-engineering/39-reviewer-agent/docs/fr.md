@@ -40,7 +40,7 @@ flowchart LR
 | Verification quality | acceptance command 是否真的证明了目标，还是只证明了一个更弱的版本？ |
 | Handoff readiness | 下一个 session 是否能从当前状态干净地接手？ |
 
-总分 10 分──低于 7 分是软失败;低于 5 分是硬失败──
+总分 10 分──低于 7 分是软失败;低于 5 分,或任一维度为 0 分,是硬失败──
 
 ### Le critique est un rôle indépendant, pas un modèle indépendant.
 

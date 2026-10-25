@@ -3,7 +3,7 @@
 > CrewAI est un cadre multi-agent de 2026 basé sur des rôles. Il comporte quatre composantes de base: Agent, Tasque, Crew, Processus.
 
 **类型：**apprendre + construire
-**语言：**Python (stdlib)
+**语言：**Python( utiliser numpy)
 **先修：**Phase 14 · 12 (Patrons de flux de travail), phase 14 · 14 (Modèle d'acteur)
 **时间：**À environ 75 minutes.
 
@@ -14,8 +14,8 @@
 - 区分 Crews (basé sur le rôle de l'équipage) et Flows (détermination des événements),并解释文档中的生产建议──
 - Utilisation `@tool`décorateur`BaseTool`sous-classe 接入 tools; comprendre les sorties structurées et le libre texte 取舍──
 - Déclarer quatre types de mémoire CrewAI, ainsi que chacun des types qui méritent d'être utilisés.
-- 实现一个工作三 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作人员 工作
-- 识别三种 CrewAI modes de défaillance: implémentation rapide, gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la gestion de la
+- Avec Python ordinaire, vous pouvez créer un brief.
+- 识别四种 CrewAI fail mode:immédiatement-bloat, gestionnaire-LLM tax, détournements fragiles, équipage-comme-produit,
 
 ##  problématique
 
@@ -120,7 +120,7 @@ Dans l' équipage`memory=True`Ou selon le type de configuration  activation 支(
 - 亚秒级延迟预算──hierarchical 会增加回路旅行──即使序列化也会包含背景故事和前输出的提示──
 - Les boucles à agent unique, le cadre de saut, une boucle d'agent, lecteur 1 - Registre d'outils, plus court.
 
-Leçon 17 (Lecture 17 ((Agent Framework Tradeoffs) avec Matrix) ont démontré ce point.
+Leçon 28 ((Patrons d'orchestration)) mettre ces topologies et les classer dans une position de rôle collaboratif.
 
 ### Forme de dépendance
 
@@ -140,7 +140,7 @@ ae-crew-vs-flow
 
 ## - Je le construis.
 
-`code/main.py`Il y a deux versions de stdlib, ainsi qu'une équipe de trois agents.
+`code/main.py`Avec Python ordinaire, il a réalisé deux formes, ainsi qu'un trio d'agents.
 
 形态:
 

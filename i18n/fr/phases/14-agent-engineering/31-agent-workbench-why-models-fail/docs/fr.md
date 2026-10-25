@@ -121,7 +121,7 @@ Le point n'est pas de l'harness 永远胜出── le modèle absorbera avec le 
 
 C'est une partie de ça que tu n'as pas besoin de client.
 
-- LangChain's *Anatomy of an Agent Harness* énumère dix composants  prompts, outils, crochets, boîtes à sable, orchestration, mémoire, compétences, sous-boîtes, ainsi qu'une boucle de temps de course stupide── elle ne présente pas de files d'attente nommées ‒ en tant qu'unité de déploiement de travailleurs ‒ sémantique de déclenchement ‒ en tant que persistance de session de point de concentration indépendant, ou politique d'autorisation── elle considère le harness comme un objet que vous configurez, et non un système que vous déployez──
+- LangChain's *Anatomy of an Agent Harness* 逐一介绍了核心 harness 组件:prompts,tools,hooks, sandboxes, orchestration, mémoire, compétences, sous-boîtes, ainsi qu'une boucle de fonctionnement dumb loop── elle n'a pas de files d'attente nommées ‒ en tant qu'unité de déploiement de travailleurs ‒ trigger semantics ‒ en tant que persistance de session de point de concentration indépendant, ou politique d'autorisation── elle considère le harness comme un objet que vous configurez, et non un système que vous déployez──
 - Addy Osmani a proposé l' ingénierie de l' harnais des agents`Agent = Model + Harness`Le cadre et le motif de la ciseau, mais sans plus de précision, explique ce qu'est le harnais.
 - L'annonce de la séparation de l'harness-compute du KSD en avril 2026 est la première confirmation de l'avion de contrôle / data-plane séparé de la pièce de fournisseur.
 - Le harnais sera utilisé pour le contrôle de l'objet de configure (Jaymin West's *Agentic Engineering*, chapitre 6), dont la phrase la plus puissante est que le harnais est la principale limite de sécurité dans un système d'agence.
@@ -185,7 +185,7 @@ Pour décider si un concept doit être adopté, il faut d'abord le traduire en f
 Les cadres du fournisseur:
 
 - [Addy Osmani, Agent Harness Engineering](https://addyosmani.com/blog/agent-harness-engineering/) `Agent = Model + Harness`Et le modèle de la rachetée; la partie de l'infrastructure est plus faible
-- [LangChain, The Anatomy of an Agent Harness](https://blog.langchain.com/the-anatomy-of-an-agent-harness/) 十一个组件: commandes, outils, crochets, orchestration, boîtes à sable, mémoire, compétences, sous-systèmes, temps de fonctionnement,
+- [LangChain, The Anatomy of an Agent Harness](https://blog.langchain.com/the-anatomy-of-an-agent-harness/) 核心 harness 组件:prompts, outils, crochets, orchestration, boîtes à sable, mémoire, compétences, sous-réserves, temps de fonctionnement,省略 queues, déploiement, autorité
 - [OpenAI, Harness engineering: leveraging Codex in an agent-first world](https://openai.com/index/harness-engineering/) Le Codex 团队 sur son temps de fonctionnement  Surfaces environnantes
 - [OpenAI, Unrolling the Codex agent loop](https://openai.com/index/unrolling-the-codex-agent-loop/) 将 agent loop 归约为函数调用 上一个 `while`
 - [Anthropic, Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)Surfaces à long horizon dans un temps de fonctionnement spécifique

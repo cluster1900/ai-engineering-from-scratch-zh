@@ -109,7 +109,7 @@ Il existe trois modèles qui distinguent un ensemble de règles qui peut durer u
 
 **规则过期作为强制机制。**Chaque règle est en vigueur.`expires_at`Le jour où un article n'a pas été rédigé, pendant 60 jours, sans aucune infraction, le contrôleur émet un avertissement; la prochaine période d'évaluation indique les raisons de sa rétention ou de sa diminution.`info`Les données de la production d'IA Code Review de Cloudflare (en anglais seulement) montrent que les règles du mécanisme de repo sont maintenues dans chaque repo à 30 articles, et que les règles du mécanisme de repo ne sont pas atteintes de 80 ans.
 
-**Markdown 作为 source，JSON 作为 cache。** `agent-rules.md`est l'auteur du document;`agent-rules.lock.json`Il est utilisé pour la mise en cache de l'application JSON.`package.json`- Je suis là .`package-lock.json`et `Cargo.toml`- Je suis là .`Cargo.lock`C'est comme ça.
+**Markdown 作为 source，JSON 作为 cache。** `agent-rules.md`est l'auteur du document;`agent-rules.lock.json`Le détecteur est en train de passer par le cache. Il est bloqué par le crochet de précommande.`package.json`- Je suis là .`package-lock.json`et `Cargo.toml`- Je suis là .`Cargo.lock`C'est comme ça.
 
 ## Utilisez-le
 

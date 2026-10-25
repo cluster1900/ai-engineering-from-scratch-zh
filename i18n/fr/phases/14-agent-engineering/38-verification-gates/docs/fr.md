@@ -84,7 +84,7 @@ python3 code/main.py
 
 ## Mode de production dans le réel
 
-Quatre modèles vont passer de l'autre poste à l'autre.
+5 types de motifs qui vont faire passer la porte d'un autre poste de plomb à un autre.
 
 **Defense-in-depth，而不是 single gate。**Le jeu de jeu de 2026 de 3 mois de micro-services.io note 明确: le jeu de jeu de pré-engagement est inévitable, car il ne dépend pas de l'agent suivant les instructions.
 

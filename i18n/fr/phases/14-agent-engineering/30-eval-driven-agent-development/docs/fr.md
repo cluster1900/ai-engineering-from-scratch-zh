@@ -19,7 +19,7 @@ Les agents peuvent passer par la démo. Ils échouent de manière imprévisible 
 ## 概念
 ### 3 niveaux d'évaluation
 
-1. **Static benchmarks** Utilisé dans le code SWE-bench Verified(Létion 19) 、 pour la navigation / 桌面的 WebArena/OSWorld(Létion 20) 、 pour le GAIA généraliste(Létion 19) 、 pour l'utilisation d'outils BFCL V4(Létion 06) ⋅ pour le cross-model comparation et le retrait de la porte。 contamination est réelle:
+1. **Static benchmarks** Utilisé dans le code de la SWE-bench Verified(Létion 19) 、 pour la navigation / 桌面 de la WebArena/OSWorld(Létion 20) 、 pour le GAIA généraliste(Létion 19) 、 pour l'utilisation d'outils de la BFCL V4(Létion 06) ⋅ pour le traitement des modèles de comparaison et de régression ⋅ contamination est réelle:
 
 2. **Custom offline evals** Votre produit:
    - Leur rôle est de faire preuve de respect envers les autres.
@@ -51,7 +51,7 @@ C'est la réflexion de l'auto-réfinition post-pénétisation. Tout flux d'agent
 
 ### La phase 14 se lève
 
-Chaque cours de la phase 14 génère des cas d'évaluation:
+La majorité des cours de la phase 14 génèrent des cas d'évaluation.
 
 | Lesson | 它生成的 Eval case |
 |--------|------------------------|
@@ -74,7 +74,7 @@ Chaque cours de la phase 14 génère des cas d'évaluation:
 | 28 Orchestration | Supervisor 路由到正确 specialist |
 | 29 Runtime Shapes | DLQ 处理 N% failure |
 
-Si votre suite d'évaluation couvre chaque élément, vous couvrez la phase 14.
+Si votre suite d'évaluation est prête pour chaque cas, vous avez déjà couvert le cœur de la phase 14.
 
 ### Eval 驱动开发会在哪里失败
 

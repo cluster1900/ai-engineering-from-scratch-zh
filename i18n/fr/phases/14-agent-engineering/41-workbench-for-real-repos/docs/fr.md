@@ -1,6 +1,6 @@
 # Dans la réalité réelle, utilisez le bureau
 
-> Si les cours sur la surface ne peuvent pas être testés avec une base de code réelle, ils n'ont aucune valeur.
+> Si les cours sur la surface du bureau ne peuvent pas être testés avec une base de code réelle, ils n'ont aucune valeur.
 
 **Type:** Build
 **Languages:** Python (stdlib)

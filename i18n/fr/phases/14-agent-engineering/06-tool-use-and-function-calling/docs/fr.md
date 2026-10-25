@@ -76,7 +76,7 @@ Chaque défaillance de validation doit être reprise par une observation structu
 
 ### La boîte à sable
 
-L'exécution des outils est la limite de la boîte à sable.`run_shell(cmd)`Il s'agit d'un signal de danger.`git_status()`Plus sûr.
+L'exécution de l'outil est la limite de la boîte à sable.`run_shell(cmd)`Il s'agit d'un signal de danger.`git_status()`Plus sûr.
 
 
 ```figure
