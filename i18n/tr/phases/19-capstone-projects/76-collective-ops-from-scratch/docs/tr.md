@@ -102,7 +102,7 @@ python3 code/main.py
 
 ## 练习
 
-1. Ek ağaç tüm değişimleri azaltır, ve haberlere göre büyük bir değişim.
+1. 添加tree allreduce变体,并根据消息大小在环和树之间切换──测量交叉──
 2. 添加 `recv_timeout_ms`Bu yüzden, durgunluk sıralaması sonsuza dek kalmak yerine son tarih hatası ortaya çıkacaktır.
 3. Dört orijinal dil`multiprocessing.Queue`替换为 TCP 套接字──相同的测试,真线──
 4. 添加带宽检测挂, böylece her sırada bir metraj hesaplayıcı JSONL olarak kaydedilebilir.

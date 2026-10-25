@@ -137,7 +137,7 @@ Bölüm 69  Dersindeki Track F 端到端 RAG 系统 bu bölümde seçilen bölge
 1. 添加第六种策略: kullanmak`tiktoken`Bu, simge sayımının simge penceresi değil.
 2. %30'u bir kod bloğunun içine sokulması, bu tabloyu yeniden çalıştırması ve yeniden çalıştırılması.
 3. Bu, bir proje gerçek tedarikçisi tarafından belirlenmiş belirlenme yerleştirme yerine değiştirilmektedir.
-4. her blok için bir ekle`summary`字段: 一句质心描述── 再运行 eval,并将摘要附加到块主体──测量召回提升──
+4. Her bir parça için bir ekle`summary`字段: 一句质心描述── 再运行 eval,并将摘要附加到块主体──测量召回提升──
 
 ## 关键术语
 

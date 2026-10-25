@@ -61,7 +61,7 @@ Her imzası sabit olduğunda, birleştirme çok basit.`Pipeline`Klas beş aşama
 
 Üretim sırasında, gerçek LLM için değiştirmek için bir tip modules kullanabilirsiniz:
 
-```text
+```
 You are answering a question using only the snippets below.
 Cite every claim with the anchor in parentheses.
 If the snippets do not answer the question, say "I do not know".

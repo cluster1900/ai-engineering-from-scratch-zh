@@ -107,8 +107,8 @@ python3 code/main.py
 
 1. Büyük bir dereceli kutu ekleyip, daha derin bir modelde ölçümle her bir parametreyle tümüyle azaltılan hızlandırma oranını oluşturur.
 2. - Ben de .`no_sync()`实现为上下文管理器,并验证梯度累积与K 个微批次单进程基线相相相相相相相相.
-3. Ekle`find_unused_parameters`模式, içinde önceden bazen MLP katmanlarından birini atlar; eğer bu işaret yoksa, yürüyüş 局 a düşecek.
-4. çölde değişecek`torch.distributed.barrier()`- Sadece eşzamanlı, her şeyi azaltmak ve engelleme ile ilişkin bir farkı hissederken.
+3. 添加`find_unused_parameters`模式, içinde önceden bazen MLP katmanlarından birini atlar; eğer bu işaret yoksa, yürüyüş 局 a düşecek.
+4. Çıkarıp`torch.distributed.barrier()`- Sadece eşzamanlı, her şeyi azaltmak ve engelleme ile ilişkin bir farkı hissederken.
 5. 量批量大小为 1、16、256 的梯度同步开销作为步长时间的一部分,并解释缩小比例──
 
 ## 关键术语

@@ -49,6 +49,10 @@ Birincisi:`file_equals`◊ ajan  çalıştırıldıktan sonra, belirlenen dosya 
 
 Harness her görevi yürütmek için`k`İkinci. Geçit.`1 - (1 - p)^k`, içinden p is experience pass rate;harness ayrıca raw counts rapor eder, facilitate you find variance;; latency is each sample's wall-clock;; Cost is agent 自行報告的任何内容;;token count、USD,或两者);harness 会跨样品 求和,并呈现逐任务和聚合数字──
 
+```figure
+pass-at-k
+```
+
 ## Mimarlık
 
 ```mermaid
@@ -100,7 +104,3 @@ python3 -m pytest code/tests/ -v
 ```
 
 demo 以 JSON 打印 EvalReport,包括pass@1、pass@5、mean latency 和逐任务 breakdown──exit code 为零──teses 覆盖 verifier functions、pass@k math、fixture loading,以及 harness 针对捆绑引用候选人的端到端 行为──
-
-```figure
-pass-at-k
-```

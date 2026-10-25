@@ -80,7 +80,7 @@ Son süreçler standart çıkışları altında batırır, tüm başlıklı kayd
 
 Geç-at-k, insan değerleri ve arkadaşların kullandığı bir değerlendirme makinesi.`n`独立样本和其中的 `c`- Evet, evet.`n`Büyüklükte`k`Örnekler en az bir çözümün geçerli olma olasılığını içerir:
 
-```text
+```
 pass_at_k(n, c, k) = 1 - C(n - c, k) / C(n, k)
 ```
 

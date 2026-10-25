@@ -90,7 +90,7 @@ cc-gpt-assembly
 python3 code/main.py
 ```
 
-输出:parameter sayısı ile 124M 参考值对照、随机随机 生成的代币 id, yanı sıra 打开时 LM başı 和 Token Embedding 共享存储的确认信息──
+输出:parameter sayısı ile 124M 参考值对照、 sabit istekten 生成のトークン idleri, yanı sıra 打開時 LM başı 和 Token Embedding 共享 depolama bilgisi onaylama bilgileri
 
 为了让demo 保持快速,脚本还会端到端运行一个小组配置(`d_model=64`- Evet.`num_layers=2`),并 inline 打印生成的代码序列──124M yapılandırma yapılandırılır, ancak sadece parametrelerin sayısını ve bir kez ileriye geçiş yapılır──
 

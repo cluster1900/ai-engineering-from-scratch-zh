@@ -101,6 +101,8 @@ cc-atomic-checkpoint
 
 `save_checkpoint`RNG'yi bir dikte bağlamak için bir model, optimizer, programcı, tren durumu,`load_checkpoint`Geri dönüp geri dön.`TrainState`◊ schema alanı = yükseltme hok: futurformate变化会递增版本 string,而 loader 会进行发送──
 
+`load_checkpoint`调用 `torch.load(..., weights_only=True)`- Evet.`.pt`Bir çikolata, kullan.`weights_only=False`Anti-seriesization: Bir inanılmaz dosya, dosyada belirtilen herhangi bir kodunu yerine getirecek. Sadece ağırlıklı yükleyici sadece tensorları ve temel konteynerleri kabul eder, diğer her şeyi reddeder. Bu Adım 1. RNG durumunu tutmak.`ValueError`Kullanmak yerine`assert`Çünkü ...`python -O`Bu versiyonun öncesinde,`weights_only=True`Bu nedenle, bu ders güvencesi sadece 2.6'den başlayan bir güvenlik açığı vardır.
+
 ### 4. adım: parçalanmış variant
 
 `save_sharded_checkpoint`E-shaping  modu, parametreler anahtarlarını N 个 shards arasında bölünerek, kendi atomlarını kullanarak 写入每个 shard,写入一个包含优化器、调度器和火车状态的元文件,并写入包含 shard sha256 的 JSON索引.`load_sharded_checkpoint`Birleştirilme süreci.
@@ -121,8 +123,9 @@ Tek bir dosya ve parçalanmış demolar , tüm yorumlar , büyük farklar , kü�
 
 生产训练会把检查点 作为教练的一部分交付──形状相同:model + Optimizer + scheduler + counters + RNG,以原子方式写入,并按步名,便于找到最新文件──Sharded layouts 通过并行阅读 支持大型模型加载;`index.json`Bu işin gerçekleşmesinin bir parçası.
 
-Üç modü zorla gerçekleştirmek:
+Dört modül zorla uygulanmalı:
 
+- **用 `weights_only=True` 加载。**Paylaşılan Satır veya indirilen kontrol noktası, sadece ağırlıklı yüklemeci olarak kullanılabilir.
 - **Schema 是 payload 中的一个 string。**Göçmenlik, onun ayrılığıdır.
 - **对每个 shard 计算 Sha256。**静默截断的下载是最糟糕的 bug; yükleyici ya hızlı başarısız, ya da geç geç başarısız.
 - **让 checkpoint cadence 保持诚实。**Her N adım  bir kez kaydetir, ve her birkaç ayda bir kaç dakikada  bir kez kaydetir, daha kısa bir kişi alır.

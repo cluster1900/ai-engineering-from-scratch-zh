@@ -119,7 +119,7 @@ python3 -m unittest code/test_main.py
 
 1. InfoNCE'yi SigLIP 风格'ın sigmoid'i kaybı için değiştirmek ve simülasyon dil kütlesinde karşılaştırma yapma yapması için kullanmak.
 
-2. Ekleme: Her bir grup, önceki gruptan en zor olan karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı karşı kayıpları daha hızlı düşüyor mu kontrol ediyor.
+2. 添加硬负挖掘步骤: 添加硬负挖掘步骤: 添加硬负挖掘步骤: 添加硬负挖掘步骤: 添加硬负挖掘步骤: 添加硬负挖掘步骤: 添加硬负挖掘步骤: 添加硬负挖掘步骤: 添加硬负挖掘步骤: 添加硬负挖掘步骤: 添加硬负挖掘步骤: 添加硬负挖掘步骤: 添加硬负挖掘步骤: 添加硬负挖掘步骤: 添加硬负挖掘步骤: 添加硬负挖掘步骤: 添加硬负挖掘步骤: 添加硬负挖掘步骤: 添加硬负挖掘步骤: 添加硬负挖掘步: 添加硬负挖掘步: 减损是否降降降较快的比较快的比较较较较较较快的比较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较较
 
 3. Birleştirilmiş gömülmüş üstü ekleme resim-metin eşleşen ikileme başı(真/假: bunlar eşleşebilir mi?) Üçüncü kayıp olarak, BLIP'in üçleme ayarını kopyalayın.
 

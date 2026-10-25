@@ -24,7 +24,7 @@ Bu altı kategori bir çerçeveye dayanarak ayrılmıştır: Hangi güven sını
 |角色扮演 |助理的形象|
 |指令覆盖 |系统提示权限|
 |上下文走私 |用户内容和指令内容之间的差距|
-|多匝匝道 |作为合同的对话历史|
+|多轮递进 |作为合同的对话历史|
 |编码技巧 |禁止token 的表面形式|
 |前缀注入 |助理的下一个token决定|
 

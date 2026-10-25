@@ -116,7 +116,7 @@ $ team run --issue https://github.com/acme/widget/issues/842
 ## 练习
 1. İşlem sırasında fark farkı fark ederken belirgin bir hata oluştu .`return None`)。 ölçüm değerlendiricisinin yanlış onay oranı──调优 değerlendiricisi yanlış onayın % 5'ten düşük olduğu sürece uyarı yapar.
 
-2. 減少到两个编码器 (architekt +编码器 +审查员 +测试员,编码器 顺序运行两个子任务) △
+2. 減少到两个编码器 (architekt + 两个编码器 + 审查员 + tester, her bir编码器 顺序运行两个子任务) △
 
 3. Util single-writer constraint 替换 merge coordinator ️ alt görevler 触及不相交的 dosya kümeleri) ️ ölçüm mimarının planlama yükü️
 

@@ -35,7 +35,7 @@ flowchart TD
   Write --> Buffer
   Buffer --> Close[Final flush + close]
   Close --> ShardDone[Shard file finalized]
-  ShardDone --> MMapRead[Memory-mapped read]
+  ShardDone --> MMapRead[Chunked read]
   MMapRead --> Window[Sliding-window dataloader]
   Window --> Train[Train batch]
 ```

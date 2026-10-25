@@ -47,6 +47,10 @@ EXPORTER 写 JSONL。每行一个 JSON对象──这是下游工具 可以流�
 
 Metrikler ve izler yok. Her araç çağrısı bir hesaplayıcıyı artırır.`tools_called_total{tool="read_file"}`◊histogram 记录观察到的延迟:`tool_latency_ms{tool="read_file"}`△ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △                                                                          
 
+```figure
+trace-spans
+```
+
 ## Mimarlık
 
 ```mermaid
@@ -73,15 +77,15 @@ Metrik kayıtları iki diptedir.`{(name, frozen_labels): int}`❖Histogramlar ç
 6. 发发发期并更新的指标 `wrap_tool_call(name)`Dekorasyoncı.
 7. Demo: sintet一次完整代理调用 (),写入 traces.jsonl,打印 Prometheus exposition,并以零 退出。
 
-Uçuş id 和 iz id 16 byte hex ipler, `os.urandom`生成── bu OTel'in W3C iz bağlamına uygun olarak--- ihracatçı 永不抛出;IO hataları 会被浮现, ancak harness 会继续运行──
+Trace id 16 byte  değeri   32 个 hex 字符), span id 8 byte  değeri  16 个 hex 字符),都截取自随机的 `uuid4`Hex. ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞ ∞
 
-Histogram has a set of fixed buckets(OTel for millisecond latency default value:5、10、25、50、100、250、500、1000、2500、5000、10000、+Inf) ⋅ Örnekler listeden 保存; exposition 会按需计算每个 bucket's counts──
+histogram has a set of fixed millisecond latency buckets:5、10、25、50、100、250、500、1000、2500、5000、10000、+Inf。
 
 ## Neden yazmak yerine Openetry-SDK kullanmak?
 
-OTel Python SDK gerçek bir bağımlılıktır. Ayrıca binlerce kod satırı vardır. OTLP ihracatçısının çoklu süreçleri de vardır. Ayrıca, bir bölümden bir sınıf bütçesi çalıştırma masrafını boğar.
+OTel Python SDK gerçek bir bağımlılıktır. Ayrıca binlerce kod var, OTLP ihracatçısının bir arka planı da var ve bu da bir bölümünü besleyecektir.
 
-Konvansiyonlar sabitdir. Bu dersler 2030 yılına kadar çözülebilir olmaya devam edecek. Çünkü OTel GenAI özelliği isimlerini yok etmez.
+GenAI'nin konvansiyonları, özellikler içinde gelişme için işaretlenmektedir ve daha önce özelliği değiştirilmiştir:`gen_ai.usage.prompt_tokens`Değişmiş .`gen_ai.usage.input_tokens`❖ Semi-konvensiyonları  versiyonları sabitleyip ⇒ kontrol et.
 
 ## Nasıl A'nın kalan kısmıyla birleşti ?
 
@@ -96,7 +100,3 @@ python3 -m pytest code/tests/ -v
 ```
 
 Bu derste bir çalışma toplantısı yaparak bir tane çıkarttım.`traces.jsonl`(最后清理), sonra üç uzantı örneğini, yeniden yazdırma saylayıcılarını, proometheus açıklamasını ve histogramlarını, testleri, test uzantısını, geri dönüş yolculuğu, sıralanma, kanonik GenAI özelliklerini, eksistensiyeleri, saylayıcıları, ve histogram açıklamasını, beklenen kova sayımlarını içerir.
-
-```figure
-trace-spans
-```

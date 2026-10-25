@@ -58,8 +58,9 @@ Bu iki başarının arasında bir ayarlama var.`k`常数── her biçimdeki a�
 
 ### Neden birleşim %s + %s değerinden daha iyidir ?
 
-BM25 bölümü sınırsızdır ve dil kütlesine bağlıdır.`alpha * bm25 + (1 - alpha) * cosine`需要每语料库的阿尔法调整,并且每次重新索引时都会中断. 基层融合则不然. 两级在不同模式下具有可比性. 自2010年以来,已发布的RRF基线在每个公共TREC赛道上都击败了分数插值.️Bu, Vespa 和 Weaviate 文档中听到的RankFusion与RRF论点与论点相同.️RRF 论点与论点相同.️RRF 论点与论点相同.
+BM25 bölümü sınırsızdır ve dil kütlesine bağlıdır.`alpha * bm25 + (1 - alpha) * cosine`Her bir dil kütlesinin alfa üzünlü olması gerekir ve her bir yeniden indeksi sırasında kesintisi olacaktır.
 
+Bu, Vespa ve Weaviate'deki kayıtlarda duyduğunuz RankFusion ve RRF'nin argümanlarıyla aynıdır. Aynı sonuca varıyorlar: Eğer çok güçlü bir kanıt yoksa, sıralamaya dayalı olarak kalın.
 
 ```figure
 rrf-fusion

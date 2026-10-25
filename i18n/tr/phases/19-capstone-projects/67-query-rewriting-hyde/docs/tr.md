@@ -45,7 +45,7 @@ flowchart LR
 
 HyDE ile LLM 编写的假设文档向量替换用户的查询向量──提示很短:
 
-```text
+```
 You are a domain expert. Write a one-paragraph passage that answers the question
 below. Use the same vocabulary and phrasing the documentation in this domain would
 use. Do not refuse. Do not say you do not know.
@@ -63,7 +63,7 @@ LLM'nin cevabı gerçek cevap olarak yanlışdır, çünkü LLM senin语料库�
 
 Ürün kullanıcı sorgularının N 个释义──最简单的提示:
 
-```text
+```
 Rewrite the following question in {N} different ways. Each rewrite must preserve
 the original intent. Number them 1 to {N}. Do not add explanations.
 ```
@@ -76,7 +76,7 @@ Kullanıcının ifadesi, soru sormanın birçok aynı derecede etkili yolun biri
 
 Tek bir kontrolü karşılayamadı birçok yönlü soruları.
 
-```text
+```
 The following question may require information from multiple distinct topics.
 Decompose it into a list of sub-questions. Each sub-question must be answerable
 independently. If the question is already atomic, return it unchanged.
@@ -153,7 +153,7 @@ python3 code/main.py
 2. 添加第四种策略:step-back prompting(向LLM 询问更一般的问题,检索该问题,然后再缩小范围)
 3. 通过添加问题是原子的头来训练分解器识别原子查询――测量前后的过分率――
 4. Gerçek modeller ile LLM'nin yerine modeller kullanmak.
-5. Her bir yeniden yazma için, yeniden yazmanın değerini aşağıya düşürmek için, hatırlamalara olan etkisini ölçmek için,
+5. Bu, bir yazının bir önceki yazısına ait olduğunu gösterir.
 
 ## 关键术语
 

@@ -142,7 +142,7 @@ python3 -m unittest code/test_main.py
 
 4. R@K'nin birinden hesaplanan ortalama düşüş sayısı sıralaması (MRR) ◊ MRR, doğru projeyi K'nin üst kısmında yerleştirmek için çok hassasdır.
 
-5. Eğitim sırasında beş kontrol noktası, model çalışmasını değerlendirmek için adım 0、10、20、30、40、50) ve öğrenme eğilimi çizmek için bir inceleme noktası oluşturdu.
+5. Eğitim sırasında altı kontrol noktası, model çalışmasını değerlendirdi ve öğrenme eğilimi çizdi.
 
 ## 关键术语
 

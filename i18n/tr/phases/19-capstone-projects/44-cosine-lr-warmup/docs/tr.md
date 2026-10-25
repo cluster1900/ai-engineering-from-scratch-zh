@@ -109,7 +109,7 @@ Gerçek projelerde,`outputs/skill-cosine-warmup.md`Hangi programı yapılandır�
 
 1. 添加时间的逆正方根变化, ve 200 adım oyuncak eğitim koşusu 上对比──哪条曲线 产生更低的最终损失?
 2. 添加 `--restart`Bayrak, `total_steps / 2`增加第二次暖化──为暖暖重启 在玩具运行 上是升升还是伤害做辩护──
-3. 添加一个单位测试验证时间表是连续:对于 `[0, total_steps]`Orta, her adım,差值 `|lr(step+1) - lr(step)|`Öldürülmüş`lr_max / warmup_steps`- Ne?
+3. 添加一个单位测试验证时间表是连续:在`warmup_steps > 0`时, için `[0, total_steps]`Orta, her adım,差值 `|lr(step+1) - lr(step)|`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `lr_max / warmup_steps`                                                                                                                                                                                                                                                              `pi * (lr_max - lr_min) / (2 * (total_steps - warmup_steps))`两者中较大者的约束──较短的阴段可能比升温 斜坡更,所以仅使用升温 斜率不是安全的上界──
 4. Zamanlama 接入 `torch.optim.lr_scheduler.LambdaLR`, bunu çerçeve kodunun 组合──本课使用简单步骤函数;包装 改变了什么?
 5. 添加 `--plot-png`Bayrak, geçiyor.`matplotlib`写出真实图――为本课的文本图 和 PNG 哪个更适合合作为CI runs 的默认做出辩护――
 
