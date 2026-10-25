@@ -53,7 +53,7 @@ Có thể là một nơi sai lầm:
 
 - khoảng cách phần thưởng ngầm `beta * (log(pi/pi_ref)_w - log(pi/pi_ref)_l)`Một sự thích thích rất nhỏ cũng có thể tạo ra bất kỳ khoảng cách lớn nào.
 - Cái mất mát này sẽ được chọn và bị từ chối log-probs 往相反方向推. 只要被拒绝下降得更快,它就可以把选择的绝对 log-prob也往下推. Đây là Phương tượng Phản ứng được chọn xuống cấp.
-- Những ưu tiên không phân phối (trong mẫu hiếm đối với mẫu hiếm) sẽ tạo ra những phần thưởng ngầm bất kỳ cách nào.
+- Các ưu tiên không phân phối (trong hai phản ứng trong chính sách tham chiếu) sẽ tạo ra những phần thưởng ngầm bất kỳ ai.
 
 ### IPO (Azar et al., 2024)
 

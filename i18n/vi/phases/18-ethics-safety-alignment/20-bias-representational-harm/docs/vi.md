@@ -12,7 +12,7 @@
 - 定义 biểu tượng thương tổn và phân phối thương tổn, và cho mỗi một ví dụ trong LLM 部署:
 - Nói ra Gallegos et al. 2024 Trung trong ba loại chỉ số đánh giá,并分别 mô tả một trong những chỉ số này.
 - Mô tả giao thông, và tại sao các phép đo công bằng dựa trên sự không chắc chắn của WinoIdentity đã bù đắp lỗ hổng trong đánh giá thiên vị đơn phương.
-- Mô tả hai loại cơ chế có thể giải thích:
+- mô tả 3 loại cơ chế có thể giải thích:
 
 ## 问题
 

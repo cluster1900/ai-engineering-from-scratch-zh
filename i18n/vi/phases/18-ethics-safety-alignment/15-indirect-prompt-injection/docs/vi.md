@@ -1,6 +1,6 @@
 # Tiêm trực tiếp không trực tiếp  生产攻击面
 
-> Tiêm kích bất trực tiếp (IPI) sẽ chỉ địnhTập vào nội dung bên ngoài  trang web, thư điện tử, tài liệu chia sẻ, vé hỗ trợ  bởi hệ thống cơ quan trong trường hợp không có hoạt động của người dùng rõ ràng. IPI là mối đe dọa sản xuất chiếm ưu thế vào năm 2026: nó vượt qua bộ lọc đầu vào người dùng, vì kẻ tấn công không liên lạc với người dùng; khi các đại diện xử lý nhiều nội dung bên ngoài hơn, nó sẽ lặng lẽ mở rộng; và nó nhắm vào người không đọc được dòng chảy tự động hóa của dữ liệu nhanh chóng. MDPI Thông tin 171): 54 (từ tháng 1 năm 2026) 综合 2023-2025 năm. NDSS 2026 Báo cáo phòng thủ IPI sẽ giải thích thách thức cốt lõi của việc đầu tiên: các chỉ thị nhập vào có thể là "lên bản tốt" có nghĩa là "có"), vì vậy kiểm tra không chỉ là lọc các từ khóa "The Open Attack" (Báo cáo của Nascar Attackers, R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D; R&D;
+> Tiêm kích bất trực tiếp (IPI) sẽ chỉ địnhTập vào nội dung bên ngoài  trang web, thư điện tử, tài liệu chia sẻ, vé hỗ trợ  bởi hệ thống cơ quan trong trường hợp không có hoạt động của người dùng rõ ràng. IPI là mối đe dọa sản xuất chiếm ưu thế vào năm 2026: nó vượt qua các bộ lọc đầu vào người dùng, vì kẻ tấn công không liên lạc với người dùng; khi các đại diện xử lý nhiều nội dung bên ngoài hơn, nó sẽ lặng lẽ mở rộng; và nó nhắm vào người không đọc được dòng tự động hóa nội dung bên ngoài. Thông tin MDPI 171): 54 (từ tháng 1 năm 2026) 综合 2023-2025 năm. NDSS 2026 Báo cáo phòng thủ IPI sẽ giải thích thách thức cốt lõi: các chỉ thị đầu vào có thể là "lên bản tốt" có nghĩa là "có"), vì vậy kiểm tra không chỉ là kiểm tra các từ khóa này. "Báo cáo của Open Attack đã được phát hành gần như 90% trong các cuộc tấn công của các nhóm người, dù hầu hết các cuộc tấn công phòng thủ đã được phát hành, phòng thủ và phòng thủ của các nhóm, trong đó:
 
 **类型：**Xây dựng
 **语言：**Python (stdlib, IPI tấn công + cột bảo vệ)
@@ -40,7 +40,7 @@ CaMeL (Microsoft 2025)、ConfAIde (Stanford 2024) 和 NDSS 2026 IPI-defense pape
 
 ### Người tấn công tiến hành thứ hai
 
-Nasr et al. ( Tháng 10 năm 2025) Sử dụng các cuộc tấn công thích nghi (gradent search, RL policies, random search, 72-hour human red-team) đã thử nghiệm 12 phòng thủ IPI đã được xuất bản.
+Nasr et al. ( Tháng 10 năm 2025) sử dụng các cuộc tấn công thích nghi (gradient search, RL policies, random search, 72-hour human red-team) đã thử nghiệm 12 phòng thủ IPI đã được công bố.
 
 方法论教训: chỉ có trong bao gồm đánh giá tấn công thích ứng 时才发布 phòng thủ。Static-attack benchmarks 不是证据强度;攻击者会知道防御。
 

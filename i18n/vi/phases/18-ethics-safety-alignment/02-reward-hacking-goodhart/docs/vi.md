@@ -26,7 +26,7 @@ Gao、Schulman、Hilton(2023) đã đo lường trực tiếp điểm này. Sử
 
 Sự xuất hiện ban đầu của Goodhart là: Khi một biện pháp trở thành mục tiêu, nó không còn là một biện pháp tốt nữa.
 
-Gao et al. 给出了一个功能形式――令 `d = sqrt(KL(pi || pi_init))`❖令`R_proxy(d)`Để trả tiền cho người đại diện,`R_gold(d)`Vì tiền thưởng vàng...
+Gao et al.  đã đưa ra hình thức chức năng của phần thưởng vàng `d = sqrt(KL(pi || pi_init))`,并令 `R_gold(d)`Vì tiền thưởng vàng...
 
 ```math
 \begin{aligned}
@@ -35,7 +35,7 @@ R_{\text{gold}}^{\text{RL}}(d) &= d\,(\alpha_{\text{RL}} - \beta_{\text{RL}} \lo
 \end{aligned}
 ```
 
-Trong số đó `beta_gold > beta_proxy`Cả hai đều từ 0 KL lên lên, cả hai đều đạt đến đỉnh, nhưng đỉnh vàng còn gần hơn điểm gốc.`d`上, ngay cả khi proxy  tiếp tục tăng, vàng cũng sẽ giảm xuống mức cơ sở 以下──proxy-gold gap trong BoN sampling、PPO 和 SFT-to-best 上都呈现相同的签名──
+2 hình thức đều từ 0 KL lên lên, đạt đỉnh, sau đó giảm.`d`线性增长── do đó ở lớn hơn `d`上, ngay cả khi proxy  tiếp tục tăng, vàng cũng sẽ giảm xuống mức cơ bản dưới đây.
 
 Đây là đường cong tối ưu hóa quá mức. Nó không phải là lỗi của mô hình thưởng cụ thể. Nó là hình dạng của vấn đề.
 
@@ -90,7 +90,7 @@ rlhf-reward-kl
 
 2. Để phân phối tiếng ồn từ Gaussian 改为低自由度的 Học sinh-t(cái đuôi nặng) ⋅ giữ việc thiết lập đào tạo RM đại diện 不变── đỉnh vị trí 和 hậu đỉnh sụp đổ Có gì thay đổi?
 
-3. 阅读 Gao et al. Hình 1 ((ICML 2023) ⋅论文为代理-gold gap 提出一个功能形式──把它适应到练习1的模拟曲线,并比较参数──
+3. 阅读 Gao et al. Hình 1 ((ICML 2023) 』论文为金奖励 提出一个关于 `d`hình thức chức năng. Để nó phù hợp với các đường cong mô phỏng của bài tập 1.
 
 4. 找一篇 最近声称已解奖励黑客的RLHF论文(这个短语是红旗) ――识别论文测试了四种服装中哪些,又没有测试哪些──
 
