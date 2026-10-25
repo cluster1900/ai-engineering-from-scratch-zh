@@ -1,6 +1,6 @@
 # Các đại lý trình duyệt với dài thời gian Web  nhiệm vụ
 
-> ChatGPT agent(7 tháng 7 năm 2025) sẽ Operator và nghiên cứu sâu  hợp nhất làm một trình duyệt / nhà máy tính kết thúc, và trên BrowseComp lên 68.9% 创下 SOTA。OpenAI 于 2025 8月 31 日关闭 Operator đây là sự tích hợp cấp sản phẩm。Anthropic 收购 Vercept 之后, sẽ Claude Sonnet trong OSWorld thành tích trên trên trên OSWorld từ dưới 15%  nâng lên 72.5% Web ・Arena-Verified(ServiceNow,ICLR 2026) sửa đổi tỷ lệ âm tính sai lệch 11.3 phần trăm trong WebArena gốc, phát hành 258-task Hard subset。 những con số này là thực tế。 thực tế: sự chuẩn bị của OpenAI Ứng viên chịu trách nhiệm công khai cho biết, đối với các trình duyệt Ứng viên có thể được một lần trực tiếp hoàn toàn sửa lỗi Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng  dụng Ứng dụng Ứng dụng Ứng dụng  dụng Ứng dụng Ứng dụng Ứng dụng Ứng dụng  dụng Ứng dụng Ứng dụng Ứng dụng  dụng Ứng dụng  dụng  dụng Ứng dụng  dụng Ứng dụng  dụng  dụng Ứng dụng  dụng  dụng Ứng dụng  dụng  dụng  dụng Ứng dụng  dụng Ứng dụng  dụng  dụng Ứng dụng  dụng Ứng dụng  dụng 
+> ChatGPT đại lý ([[7 tháng 7 năm 2025) sẽ Operator và nghiên cứu sâu  hợp nhất làm một trình duyệt / đại lý thiết bị, và trên BrowseComp lên 68.9% 创下 SOTA。OpenAI 于 2025 8 月 31 日关闭 Operator đây là sự tích hợp cấp sản phẩm。Anthropic 收购 Vercept 之后, sẽ Claude Sonnet trong OSWorld kết quả trên trên trên dưới 15%  nâng lên 72.5% Web ・Arena-Verified.
 
 **Type:** Learn
 **Languages:** Python (stdlib, indirect prompt-injection attack surface model)
@@ -9,7 +9,7 @@
 
 ## 问题
 
-Trình duyệt là một đại lý tầm xa: nó sẽ đọc nội dung không tin tưởng, và thực hiện có hậu quả. Mỗi trang mà đại lý truy cập, đều là các mục nhập không được viết bởi người dùng. Mỗi biểu đơn trên mỗi trang, đều là một đường dẫn lệnh tiềm ẩn.
+Trình duyệt là một trình duyệt tầm xa: nó sẽ đọc nội dung không tin tưởng, và thực hiện có hậu quả. Mỗi trang mà một Trình duyệt truy cập đều là một phần nhập không được viết bởi người dùng. Mỗi biểu đơn trên mỗi trang đều là một đường dẫn lệnh tiềm ẩn.
 
 防景不舒服──OpenAI 准备 负责人把隐含事实说出来:Indirect prompt injection不是一个可以完全修复的 bug──原因是攻击发生在代理的读取和行动边界,而这个边界在架构上是模糊的模型读取的每个代币,原则上都可能被读成一条指令──
 

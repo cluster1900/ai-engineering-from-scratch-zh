@@ -58,7 +58,7 @@ Microsoft's Agent Governance Toolkit covered OWASP Agentic Top 10 và EU AI Act 
 
 ###  quan sát$1,200 → $4.800 trường hợp
 
-Ví dụ thực tế trong tài liệu Microsoft: một đại lý thương mại điện tử sau khi thêm công cụ mới, chi phí hàng tháng tăng gấp ba lần. Công cụ này cho phép đại lý trong mỗi phiên truy vấn trạng thái đặt hàng không có kiểm tra vòng lặp. Không có giới hạn trên mỗi công cụ. Không có giới hạn hàng tuần.
+Ví dụ thực tế trong tài liệu Microsoft: một đại lý thương mại điện tử sau khi thêm công cụ mới, chi phí hàng tháng tăng gấp đôi hai lần. Nó cho phép đại lý truy vấn trạng thái đặt hàng trong mỗi phiên. Không kiểm tra vòng lặp. Không giới hạn trên mỗi công cụ. Không giới hạn hàng tuần.
 
 
 ```figure

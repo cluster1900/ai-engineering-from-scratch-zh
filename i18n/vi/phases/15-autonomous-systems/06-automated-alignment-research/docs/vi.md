@@ -1,6 +1,6 @@
 # Nghiên cứu tự động hóa sắp xếp (Anthropic AAR)
 
-> Anthropic trong sandbox độc lập并行运行多个Claude Opus 4.6 Autonomous Alignment Researchers 团队,并通过一个共享论坛 协调;日志 của论坛 nằm bên ngoài bất kỳ sandbox (vì vậy đại lý 无法删除 bản ghi chép của mình)  Trong vấn đề đào tạo yếu đến mạnh, AAR đã vượt qua các nhà nghiên cứu con người Anthropic 自己的总结指出, quy định workflow 往往会限制 AAR 灵活性并降低性能Automation alignment research là một bước, nó sẽ làm giảm đường thời gian bị nén đến RSP thực sự phải kiểm tra những dòng thời gian chính xác 风险 
+> Anthropic trong sandbox độc lập并行运行多个Claude Opus 4.6 Autonomous Alignment Researchers 团队,并通过一个共享论坛 协调;日志 của论坛 nằm bên ngoài bất kỳ sandbox (vì vậy đại lý 无法删除 bản ghi chép của mình)  Trong vấn đề đào tạo từ yếu đến mạnh, AAR đã vượt qua các nhà nghiên cứu con người  Anthropic 自己的总结指出, quy định workflow 往往会限制 AAR 灵活性并降低性能Automation alignment research会压缩时间线,而且压缩正是 RSP 本来检测的那些错调风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风
 
 **Type:** Learn
 **Languages:** Python (stdlib, parallel-research-forum simulator)
