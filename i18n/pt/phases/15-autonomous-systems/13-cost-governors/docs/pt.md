@@ -58,7 +58,7 @@ O conjunto de ferramentas de governança de agentes da Microsoft  abrangendo o O
 
 ### Observar$1,200 → $4.800 casos
 
-O caso real no arquivo da Microsoft: um agente de comércio eletrônico, após a adição de novos instrumentos, o custo mensal duplicou-se. Este instrumento permite ao agente, em cada sessão, consultar o estado de pedidos. Não há um ciclo de verificação.
+O caso real no arquivo da Microsoft: um agente de comércio eletrônico, após adicionar novas ferramentas, o custo de um mês dobrou duas vezes. O instrumento permite que o agente pergunte o estado de pedido em cada sessão. Não há um ciclo de verificação. Não há limites para cada ferramenta. Não há limites para cada ferramenta.
 
 
 ```figure

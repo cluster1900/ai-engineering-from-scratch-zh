@@ -1,6 +1,6 @@
 # Agentes de navegador e tarefas de Web
 
-> O operador ChatGPT  (em 2025) vai operador e pesquisa profunda                                                                                                                                                                                                                                                      
+> O operador ChatGPT  (em inglês: ChatGPT agent)  (em inglês: ChatGPT agent)  (em inglês: ChatGPT agent)  (em inglês: ChatGPT agent)  (em inglês: ChatGPT agent)  (em inglês: ChatGPT agent)  (em inglês: ChatGPT agent)  (em inglês: ChatGPT agent)  (em inglês: ChatGPT agent)  (em inglês: ChatGPT agent)  (em inglês: ChatGPT agent)  (em inglês: ChatGPT agent)  (em inglês: ChatGPT agent)  (em inglês: ChatGPT agent)  (em inglês: ChatGPT agent)  (em inglês: ChatGPT agent)  (em inglês: ChatGPT agent)  (em inglês: ChatGPT agent)  (em inglês: ChatGPT agent)  (em inglês: ChatGPT agent)  (em inglês: ChatGPT agent)  (em inglês: ChatGPT agent)  (em inglês: ChatGPT agent)  (em inglês: ChatGPT agent)  (emês: ChatGPT agent)  (em 2025  (emês: ChatGem: ChatGPT agent)  (em:  (em: )  (em:  (em: )  (em: )  (em:  (em: )  (em:  ()  ( ()  ( ()  ( ()  ()  ( ()  ( ()  ( ()  ( ()  ()  ( ()  ()  ()  ( ()  ( ()  ( ()  ()  ()  ( ()  ( ()  () 
 
 **Type:** Learn
 **Languages:** Python (stdlib, indirect prompt-injection attack surface model)
@@ -9,7 +9,7 @@
 
 ## 问题
 
-O agente de navegador é um agente de longo horizonte: ele lê conteúdo não confiável, e executa operações com consequências. Cada página que o agente visita, são entradas não escritas por usuários. Cada um dos formulários de cada página, são passagens de ordens potenciais.
+O agente de navegador é um agente de longo horizonte: ele lê conteúdo não confiável, e executa operações com consequências. Cada página que o agente visita, são entradas não escritas por usuários. Cada um dos formulários em cada página, são passagens de ordens potenciais.
 
 A preparação da OpenAI não é confortável. O responsável disse que a injeção direta não é um erro que pode ser completamente corrigido. A causa é que o ataque ocorre na fronteira de leitura e ação do agente, e esta fronteira é uma estrutura em que cada token que o modelo leu pode ser lido como uma instrução.
 

@@ -1,6 +1,6 @@
 # Autonomia de Alineação de Pesquisa (AAR)
 
-> Antropic em sandbox independente并行运行多个Claude Opus 4.6 Autonomous Alignment Researchers 团队,并通过一个共享论坛 协调; o registro do fórum está fora de qualquer caixa de areia (por isso o agente 无法删除自己的记录)  Em problemas de treinamento de fraco a forte, o desempenho do AAR ultrapassa os pesquisadores humanos  Antropic 自己的总结指出,规定的工作流 往往会限制 AAR 灵活性并降低性能──自动化调整研究是一个步骤,它将缩缩时间线到 RSP 风险上.
+> Antropic em sandbox independente并行运行多个Claude Opus 4.6 Autonomous Alignment Researchers 团队,并通过一个共享论坛 协调; o日志 desse fórum está fora de qualquer sandbox (por isso o agente 无法删除自己的记录)  Em problemas de treinamento de fraco a forte, o desempenho do AAR ultrapassa os pesquisadores humanos  Antropic 自己的总结指出,规定的工作流 往往会限制 AAR 灵活性并降低性能──自动化调整研究会压缩时间线,而且压缩的正是RSP 本来检测的那些错调风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风风
 
 **Type:** Learn
 **Languages:** Python (stdlib, parallel-research-forum simulator)
