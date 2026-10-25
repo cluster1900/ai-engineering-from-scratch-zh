@@ -1,6 +1,6 @@
 # Phiên truyền của FIPA-ACL và các đạo luật ngôn luận
 
-> Trước MCP, trước A2A, có FIPA-ACL. Năm 2000, Quỹ IEEE cho các đại lý vật lý thông minh  phê duyệt một ngôn ngữ truyền thông đại lý, trong đó có 20 ngôn ngữ hiệu suất, hai ngôn ngữ nội dung, cũng như một nhóm giao thức tương tác: hợp đồng net, đăng ký/ thông báo, yêu cầu khi nào. Nó do đó xuất hiện từ ngành công nghiệp, vì ontology mở bán cho web nói quá nặng, nhưng các hệ thống đa đại lý được thúc đẩy bởi LLM ế tục, đang tái hiện ý tưởng, chỉ không có ngữ nghĩa chính thức: hợp đồng JSON  lấy hiệu suất, ngôn ngữ tự nhiên  thay thế ontologies.
+> Trước MCP, trước A2A, có FIPA-ACL. Năm 2000, Quỹ cho các đại lý vật lý thông minh (FIPA, năm 2005 trở thành Ủy ban tiêu chuẩn của IEEE Computer Society) phê duyệt một ngôn ngữ truyền thông đại lý, trong đó có hai mươi ngôn ngữ thực thi, hai ngôn ngữ nội dung, cùng một nhóm giao thức tương tác: hợp đồng mạng lưới, đăng ký/ thông báo khi nào. Vì vậy, từ giới công nghiệp, nó là bởi vì ontology đã mở ra bán hàng trên web quá nặng, nhưng các hệ thống đa đại lý được thúc đẩy bởi LLM đang phát triển, nó đã tái thực hiện cùng một ý tưởng, chỉ không có ngữ nghĩa chính thức: JSON hợp đồng thực thi, ngôn ngữ tự nhiên thay thế ontologies.
 
 **Type:** 学习
 **Languages:** Python (stdlib)
@@ -193,7 +193,7 @@ Trước khi giao giao thức mới nào đến sản xuất, hãy ghi lại 5 v
 | Term | What people say | What it actually means |
 |------|----------------|------------------------|
 | Speech act | “一种会做事的 utterance” | Austin/Searle：把 utterances 视为 actions。ACL 的理论源头。 |
-| FIPA | “那个老 XML 东西” | IEEE Foundation for Intelligent Physical Agents。2000 年标准化了 ACL。 |
+| FIPA | “那个老 XML 东西” | Foundation for Intelligent Physical Agents。2000 年标准化了 ACL；2005 年成为 IEEE Computer Society 的标准委员会。 |
 | ACL | “Agent Communication Language” | FIPA 的 envelope format：performative + content + metadata。 |
 | Performative | “那个动词” | 一条 message 的 intent class：`inform`、`request`、`propose`、`cfp` 等。 |
 | KQML | “FIPA 的前身” | Knowledge Query and Manipulation Language（1993）。更简单，范围更窄。 |

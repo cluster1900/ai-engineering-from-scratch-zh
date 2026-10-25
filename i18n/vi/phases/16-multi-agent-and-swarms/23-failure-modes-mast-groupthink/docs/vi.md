@@ -112,7 +112,7 @@ STRATUS(NeurIPS 2025) báo cáo,当你部署以下角色时,缓解成功 提升 
 
 ### Việc kiểm toán trong chế độ thất bại
 
-Thực hành tốt nhất của năm 2026 là mỗi năm (hoặc mỗi lần phát hành lớn) thực hiện một lần kiểm toán chế độ thất bại:
+Các thực tiễn tốt nhất của năm 2026 là mỗi quý (và mỗi lần phát hành lớn) thực hiện một cuộc kiểm toán không thành công:
 
 1. **Trace sample。**收集约1000 条 thực sự thực hiện dấu vết.
 2. **Categorize。**Đối với mỗi dấu vết của thất bại,映射到 MAST + nhóm suy nghĩ các loại.

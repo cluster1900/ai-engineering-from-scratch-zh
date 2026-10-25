@@ -47,9 +47,9 @@ worker crashes mid-step
 
 LangGraph trong mỗi siêu bước 后写 kiểm tra điểm;Temporary trong mỗi hoạt động 后写;Restate Sử dụng các tạp chí nguồn gốc sự kiện。
 
-### Thời gian chạy của LangGraph
+### Mỗi bước một điểm kiểm soát thời gian chạy
 
-Mỗi đại lý đều có một.`thread_id`;state là type dict; mỗi siêu bước đều hướng đến bảng điểm kiểm soát 写入一行。恢复时,runtime từ điểm kiểm soát cuối cùng 继续, thay vì từ头开始。`interrupt()`Để chờ nhập nhân tạo; thời gian chạy 会持久化并释放工人──
+Thời gian chạy của LangGraph là ví dụ: mỗi đại lý đều có một .`thread_id`;state là type dict; mỗi siêu bước đều hướng đến bảng điểm kiểm soát 写入一行。恢复时,runtime từ điểm kiểm soát cuối cùng 继续, thay vì từ头开始。`interrupt()`Để chờ nhập nhân tạo; thời gian chạy 会持久化并释放工人──
 
 Đây là một thiết kế sản xuất tham khảo cho tháng 4 năm 2026.
 

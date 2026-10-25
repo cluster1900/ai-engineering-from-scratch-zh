@@ -21,6 +21,8 @@ Swarm 走向相反方向: sử dụng mô hình đã có năng lực gọi công
 
 **Handoff。**Một công cụ có thể được điều chỉnh, nó trả lại một đối tượng mới của Agent.
 
+Đó là tất cả những gì tôi đã nói.
+
 ```
 def transfer_to_refunds():
     return refund_agent  # Swarm sees Agent return → switch active agent
