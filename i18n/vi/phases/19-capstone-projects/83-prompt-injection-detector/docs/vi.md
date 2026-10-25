@@ -68,7 +68,7 @@ Chỉ số chạy tạo ra một báo cáo JSON, trong đó chứa từng loại
 
 1. 添加上下文走私规则系列(藏在工具结果 JSON 中的指令) ・ đo lường tỷ lệ triệu hồi của lời khuyên tốt về cải tiến và chi phí báo cáo sai lầm。
 2. 计算每条规则的贡献: Đối với mỗi条规则,计算 nếu xóa quy tắc sẽ mất đi bao nhiêu tính chất thực.
-3. Thêm một`confidence_threshold`Chuyển nó từ 0 đến 1 và vẽ tỉ lệ gọi lại chính xác cho từng loại.
+3. 添加一个`confidence_threshold`Chuyển nó từ 0 đến 1 và vẽ tỉ lệ gọi lại chính xác cho từng loại.
 
 ## 关键术语
 

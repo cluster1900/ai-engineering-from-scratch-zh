@@ -142,7 +142,7 @@ python3 -m unittest code/test_main.py
 
 4. Với R@K một khởi đầu tính toán trung bình số lượt xếp hạng (MRR) ―― MRR rất nhạy cảm với vị trí bên ngoài của K ở trên đỉnh của dự án chính xác; R@K rất nhạy cảm với việc R@K có bị rơi trước K không──
 
-5. Trong quá trình đào tạo, 5 điểm kiểm tra đánh giá vận hành mô hình (steps 0、10、20、30、40、50) và vẽ đường học tập.
+5. Trong thời gian tập luyện, sáu điểm kiểm tra đánh giá vận hành mô hình (phase 0、10、20、30、40、50) và vẽ đường học tập.
 
 ## 关键术语
 

@@ -119,7 +119,7 @@ python3 -m unittest code/test_main.py
 
 1. Để thay thế InfoNCE thành SigLIP 风格的 sigmoid đối với lỗ hổng, và mô phỏng 语料库上比较收性──
 
-2. thêm các bước khai thác cứng tiêu cực: mỗi tập, chọn các phần khó nhất trong số các tập trước đó không đối đầu với nó sẽ được thêm vào.
+2. 添加硬负挖掘步骤: mỗi phần, trong số các phần trước, chọn những phần khó nhất không đối đầu với nó sẽ được thêm vào.
 
 3. Trong kết hợp được đặt vào đầu của mình thêm hình ảnh- văn bản phù hợp của các bộ phận thứ hai của mình.
 

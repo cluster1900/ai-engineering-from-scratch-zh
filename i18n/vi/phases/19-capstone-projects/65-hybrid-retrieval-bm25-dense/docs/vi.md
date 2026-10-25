@@ -58,8 +58,9 @@ Chúng ta có hai điều chỉnh trong thực hiện.`k`常数── trọng l�
 
 ### Tại sao sự kết hợp tốt hơn so với phần tử cộng quyền nhập giá trị
 
-BM25 phân tử không bị giới hạn và phụ thuộc vào các nguồn thu.`alpha * bm25 + (1 - alpha) * cosine`需要每语料库 alpha 调整,并且每次重新索引时都会中断. Không phải vậy, dựa trên sự kết hợp cấp bậc. Hai cấp độ có tính tương đương trong các mô hình khác nhau. Kể từ năm 2010, các tuyến RRF được phát hành trên mỗi kênh TREC công cộng đã đánh bại số lượng phân tích.
+BM25 phân tử không bị giới hạn và phụ thuộc vào các nguồn thu.`alpha * bm25 + (1 - alpha) * cosine`需要每语料库 alpha 调整,并且每次重新索引都会中断. 基于等级融合则否.
 
+Đây là kết luận tương tự như những gì bạn đã nghe trong các tài liệu của Vespa và Weaviate về RankFusion và RRF. Họ đã kết luận tương tự: trừ khi bạn có bằng chứng rất mạnh để đưa vào giá trị, nếu không, hãy giữ dựa trên xếp hạng.
 
 ```figure
 rrf-fusion

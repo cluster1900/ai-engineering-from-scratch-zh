@@ -101,6 +101,8 @@ cc-atomic-checkpoint
 
 `save_checkpoint`Để mô hình, tối ưu hóa, lập trình, trạng thái tàu và RNG 打包到一个 dict 中.`load_checkpoint`Trở lại, và trở lại một.`TrainState`◊ trường schema là hook nâng cấp: futurformation变化会递增版本 string,而 loader 会进行发送──
 
+`load_checkpoint`调用 `torch.load(..., weights_only=True)``.pt`文件是一个,用 `weights_only=False`反序列化一个不可信文件,会执行文件中指定的任何代码──重量只有载体 只接受 tensor 和基本容器,拒绝其他一切,这就是步骤 1 把RNG状态保存在普通列中原因──完整性检查抛出`ValueError`Thay vì sử dụng `assert`Vì`python -O`会去掉 tuyên bố. Xin hãy sử dụng ngọn đuốc 2.6 hoặc phiên bản mới:`weights_only=True`Có một lỗ hổng đã được biết đến để vượt qua (CVE-2025-32434), vì vậy, bảo đảm dựa trên bài học này chỉ được thành lập từ 2,6 .
+
 ### Bước 4: biến thể bị chia nhỏ
 
 `save_sharded_checkpoint`以 round-robin 方式把参数键 分分到N个 shards 中, sử dụng riêng của riêng mình atom save 写入每个 shard,写入一个包含优化器,安排器和火车状态的地图文件,并写入包含 shard sha256 的 JSON索引.`load_sharded_checkpoint`会在融合前验证 mỗi mảnh.
@@ -121,8 +123,9 @@ python3 code/main.py
 
 生产训练会把检查点 作为教练的一部分交付──形状相同:model + Optimizer + scheduler + counters + RNG,以原子方式写入,并按步骤命名,便于找到最新文件── chia sẻ bố cục 通过并行阅读 支持大型模型加载;`index.json`Đó là phần của việc này.
 
-Trực hành 3 mô hình:
+Phải bắt buộc thực hiện bốn mô hình:
 
+- **用 `weights_only=True` 加载。**Điểm kiểm tra được nhận từ chia sẻ盘 hoặc tải xuống là không thể tin vào.
 - **Schema 是 payload 中的一个 string。**Di cư theo nó, không có nó, bạn sẽ không thể tiến hành trong một tình huống không phá vỡ hoạt động cũ.
 - **对每个 shard 计算 Sha256。**静默截断的下载是最糟糕的 bug; loader phải么快速失败, phải么晚些失败──
 - **让 checkpoint cadence 保持诚实。**Mỗi bước  lưu lại một lần, và mỗi vài phút  lưu lại một lần, lấy người ngắn hơn. Nếu không, tai nạn xảy ra trong một bước dài.

@@ -90,7 +90,7 @@ cc-gpt-assembly
 python3 code/main.py
 ```
 
-输出: số parameter với 124M 参考值的对照、随机随机 生成的代币ID,以及在绑定时打开时 LM head 和 Token Embedding共享存储的确认信息──
+输出: số parameter với 124M 参考值的对照、从固定 prompt 生成的代币 id,以及在绑定时打开时 LM head 和 Token Embedding共享存储的确认信息──
 
 Để làm cho demo  giữ nhanh, script cũng sẽ kết thúc đến kết thúc vận hành một cấu hình nhỏ`d_model=64``num_layers=2`),并 inline 打印生成的代码序列──124M cấu hình 会被构建,但只执行参数计和一次向前传──
 

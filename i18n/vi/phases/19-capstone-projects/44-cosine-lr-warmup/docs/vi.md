@@ -109,7 +109,7 @@ Trong một dự án thực tế,`outputs/skill-cosine-warmup.md`会 mô tả c�
 
 1. Thêm lịch trình của biến thể ngược-square-root, và chạy 200 bước huấn luyện đồ chơi trên đối với tỷ lệ.
 2. 添加 `--restart`cờ, trong `total_steps / 2`增加第二次加热――为热重启 在玩具运行 上是升升还是伤害做辩护――
-3. 添加一个单位测试验证时间表是连续的:对于 `[0, total_steps]`Trung trong mỗi bước,差值 `|lr(step+1) - lr(step)|`Được `lr_max / warmup_steps`约束.
+3. 添加一个单位测试验证时间表是连续的:在`warmup_steps > 0`时, đối với `[0, total_steps]`Trung trong mỗi bước,差值 `|lr(step+1) - lr(step)|`Ưu độ nóng `lr_max / warmup_steps`与最 cosine 斜率 `pi * (lr_max - lr_min) / (2 * (total_steps - warmup_steps))`两者中较大者的约束──较短的阴段可能比升温 斜坡更,所以只用升温 斜率不是安全的上界──
 4. sẽ lập lịch 接入 `torch.optim.lr_scheduler.LambdaLR`, để nó có thể với mã khung 组合.
 5. 添加 `--plot-png`cờ, qua `matplotlib`写出真实图片──为本课的文本图片 和 PNG 哪个更适合合作为CI runs 默认做出辩护──
 

@@ -49,6 +49,10 @@ Thứ ba là:`shell_exit_zero` Harness 运行一个 shell命令(通过课26�
 
 Harness sẽ mỗi nhiệm vụ được vận hành`k`次──Pass@k 是 `1 - (1 - p)^k`, trong đó p là tỷ lệ vượt qua kinh nghiệm;harness cũng báo cáo số liệu thô, thuận tiện để bạn phát hiện sự khác biệt.
 
+```figure
+pass-at-k
+```
+
 ## Kiến trúc
 
 ```mermaid
@@ -100,7 +104,3 @@ python3 -m pytest code/tests/ -v
 ```
 
 demo 以 JSON 打印 EvalReport, bao gồm pass@1、pass@5、 trung bình thời gian trễ 和逐任务 breakdown。 mã thoát 为零。tes 覆盖验证器功能、pass@k math、fixture loading,以及 harness 针对捆绑参考候选人的端到端行为──
-
-```figure
-pass-at-k
-```

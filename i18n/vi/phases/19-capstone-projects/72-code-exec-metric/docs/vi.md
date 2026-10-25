@@ -80,7 +80,7 @@ Mỗi nhiệm vụ có thể vượt quá thời gian.`task.metadata.timeout_s`�
 
 Pass-at-k là một thiết bị đánh giá không phân biệt sử dụng bởi người dùng và bạn bè.`n`独立样本和其中的 `c`通过, từ `n`   `k`Các mẫu có ít nhất một khả năng thông qua giải pháp là:
 
-```text
+```
 pass_at_k(n, c, k) = 1 - C(n - c, k) / C(n, k)
 ```
 

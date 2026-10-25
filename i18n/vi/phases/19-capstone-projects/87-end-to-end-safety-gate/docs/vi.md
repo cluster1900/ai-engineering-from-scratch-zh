@@ -70,7 +70,7 @@ Bài trình diễn chạy tất cả 50 phân loại cố định và 10 个良�
 
 1. 添加第五检查点:`policy-check`, trước khi được tạo ra dựa trên các chỉ dẫn của hệ thống ban đầu. Nó phải từ chối chỉ dẫn của các chỉ dẫn của các tên gọi trong trong đã biết.
 2. Sử dụng số lượng quyền thay thế chất tích hợp xác định: mỗi tín hiệu đóng góp 0-1  độ tin tưởng, và có trong  giá trị nhảy ──扫过 giá trị và báo cáo  82   课语料库精确召回率权衡──
-3. Tăng các biến thể khác nhau trong đó trong quá trình chạy trên mạng; xác minh tác động chậm trễ có được giữ trong ngân sách 50 mL giây không.
+3. 添加异步流变体, trong đó trong quá trình chạy trên mạng; xác định sự chậm trễ có ảnh hưởng hay không giữ trong ngân sách 50毫秒.
 
 ## 关键术语
 

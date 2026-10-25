@@ -102,7 +102,7 @@ Sử dụng thứ 77-81 课中的队列网格原语。第 77 课把所有减少 
 
 ## 练习
 
-1. thêm cây tất cả giảm biến thể, và theo thông tin lớn trong vòng và cây chuyển đổi.
+1. 添加tree allreduce变体,并根据消息大小在环和树之间切换──测量交叉──
 2. 添加 `recv_timeout_ms`, để xếp hạng bị đình trệ sẽ xuất hiện sai lầm thời hạn kết thúc, thay vì mãi mãi đọng lên.
 3. Nói 4 ngôn ngữ gốc`multiprocessing.Queue`替换为 TCP 套接字──相同的测试,真线──
 4. 添加带宽检测挂, để ghi lại mỗi chuỗi các tính toán tử đến JSONL。

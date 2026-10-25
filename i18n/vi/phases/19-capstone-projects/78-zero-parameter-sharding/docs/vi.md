@@ -109,7 +109,7 @@ python3 code/main.py
 
 ## 练习
 
-1. Thông qua thang độ phân đoạn mở rộng đến ZeRO-2: Mỗi cấp chỉ lưu trữ thang độ phân đoạn của mình, thông qua phần không phân đoạn sau đó sẽ được thực hiện trong ngược lại.
+1. 通过分片梯度扩展到ZeRO-2: Mỗi cấp chỉ lưu trữ các phần của mình, thông qua ngược lại sau sẽ không phân đoạn phần của mình để thực hiện 
 2. Thêm một bộ phân tích bộ nhớ, được sử dụng để in thực tế fp32 字节 sử dụng và các trường hợp dự đoán chính thức trên lớp 0 
 3. 测量普通 DDP với ZeRO-1 mỗi bước đính kèm thời gian,并将其分解为前向、后向、通信。
 4. Trong ZeRO-1 下实现梯度裁剪: phải thông qua các phương diện số lượng vuông của tất cả giảm 跨所有分片计算 L2 范数。

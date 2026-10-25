@@ -61,7 +61,7 @@ Khi mỗi chữ ký ổn định, sự kết hợp là rất đơn giản.`Pipel
 
 Trong quá trình sản xuất, bạn có thể sử dụng mô hình gợi ý sẽ được mô hình thay thế cho LLM thực sự:
 
-```text
+```
 You are answering a question using only the snippets below.
 Cite every claim with the anchor in parentheses.
 If the snippets do not answer the question, say "I do not know".

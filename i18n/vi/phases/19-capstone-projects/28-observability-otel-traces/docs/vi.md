@@ -47,6 +47,10 @@ EXPORTER 写 JSONL──每行一个 JSON对象──这是下游工具 可以�
 
 Metrics và traces không tồn tại. Mỗi lần gọi công cụ sẽ tăng một bộ đếm:`tools_called_total{tool="read_file"}`◊histogram 记录观察到的延迟:`tool_latency_ms{tool="read_file"}`△两者都会序列化为 Prometheus text exposition format, đây là thực tế tiêu chuẩn của các métrics dựa trên kéo.
 
+```figure
+trace-spans
+```
+
 ## Kiến trúc
 
 ```mermaid
@@ -73,15 +77,15 @@ span builder là một lớp nhỏ,带有 `span(name, attrs)`Phương pháp, qua
 6. 发发发 span 并 cập nhật métrics của `wrap_tool_call(name)`Nhà trang trí
 7. Demo: sintet一次完整代理调用 (tạm dịch: )  (tạm dịch: )  (tạm dịch: )  (tạm dịch: )  (tạm dịch: )  (tạm dịch: )  (tạm dịch: )  (tạm dịch: )  (tạm dịch: )  (tạm dịch: )  (tạm dịch: )  (tạm dịch: )  (tạm dịch: )  (tạm dịch: )  (tạm dịch: )  (tạm dịch: )  (tạm dịch: )  (tạm dịch: )  (tạm dịch: )  (tạm dịch: )  (tạm dịch: )  (tạm dịch: )  (tạm dịch: )  (tạm dịch: )  (tạm dịch: )  (tạm dịch: )
 
-span id 和 trace id là 16 byte hex string, bởi `os.urandom`生成──đây phù hợp với bối cảnh theo dõi W3C của OTel── xuất khẩu 永不抛出; lỗi IO 会被浮现, nhưng khai thác 会 tiếp tục vận hành──
+trace id là 16 byte 值(32 个 hex 字符),span id là 8 byte 值(16 个 hex 字符),都截取自随机的 `uuid4`hex。 điều này phù hợp với OTel sử dụng của W3C Trace Context 尺寸。 xuất khẩu 永不抛出;IO lỗi 会被浮现, nhưng vòng sẽ tiếp tục vận hành。
 
-histogram có một nhóm các bộ buýt cố định(OTel đối với độ trễ của milimet giây: 5、10、25、50、100、250、500、1000、2500、5000、10000、+Inf)  Các ví theo danh sách 保存; bài tiếp xúc 会按需计算每个 buýt的数量──
+histogram có một nhóm các hộp trễ giây dài nhất định: 5、10、25、50、100、250、500、1000、2500、5000、10000、+Inf。
 
 ## Tại sao viết bằng tay, thay vì sử dụng opentelemetry-sdk
 
-OTel Python SDK là một sự phụ thuộc thực sự. Nó cũng có hàng ngàn dòng mã ̋otLP xuất khẩu nhiều quá trình, cũng như sẽ bị chìm một phần ngân sách của khóa học runtime cost.
+OTel Python SDK là một sự phụ thuộc thực sự. Nó cũng có hàng ngàn dòng mã hóa, một dòng dẫn xuất của các nhà xuất khẩu OTLP, cũng như sẽ bị chìm một phần ngân sách của học phí.
 
-Các quy ước là ổn định. Các định dạng dây phát ra trong bài học này sẽ tiếp tục được phân tích cho đến năm 2030, vì OTel không phá hủy tên thuộc tính GenAI; chúng chỉ sẽ thêm tên mới.
+Các quy ước GenAI trong mô hình vẫn được đánh dấu là phát triển, và trước đó đã thay đổi tên thuộc tính:`gen_ai.usage.prompt_tokens` biến thành `gen_ai.usage.input_tokens`❖ Fix your emitted semantic-conventions 版本, và nâng cấp SDK 时检查它──
 
 ## Nó được kết hợp với phần còn lại của Track A
 
@@ -96,7 +100,3 @@ python3 -m pytest code/tests/ -v
 ```
 
 Demo sẽ được phát hành trong lớp học này`traces.jsonl`(最后清理), sau đó in ấn ba vòng tròn mẫu, tái in đếm và histogram của Prometheus bài tiết.
-
-```figure
-trace-spans
-```

@@ -107,8 +107,8 @@ python3 code/main.py
 
 1. Thêm được quy định các thùng thang nhỏ, và đo trên mô hình sâu hơn với mỗi tham số một allreduce của tốc độ tỷ lệ.
 2. sẽ`no_sync()`实现为上下文管理器,并验证梯度累积与K个微批次单进程基线相相匹配.
-3. thêm`find_unused_parameters`模式, trong đó trước đến đôi khi nhảy qua một trong các lớp MLP; nếu không có dấu hiệu này, hoạt động sẽ rơi vào 局。
-4. sẽ thay thế cho`torch.distributed.barrier()`- chỉ có sự đồng bộ, cảm nhận được sự khác biệt giữa sự đồng bộ dựa trên tất cả các giảm và sự đồng bộ dựa trên rào cản.
+3. 添加`find_unused_parameters`模式, trong đó trước đến đôi khi nhảy qua một trong các lớp MLP; nếu không có dấu hiệu này, hoạt động sẽ rơi vào 局。
+4. 将gloo thay đổi thành`torch.distributed.barrier()`- chỉ có sự đồng bộ, cảm nhận được sự khác biệt giữa sự đồng bộ dựa trên tất cả các giảm và sự đồng bộ dựa trên rào cản.
 5. 量批量大小为 1、16、256 的梯度同步开销作为步长时间的一部分,并解释缩小比例──
 
 ## 关键术语

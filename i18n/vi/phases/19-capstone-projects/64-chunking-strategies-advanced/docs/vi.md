@@ -137,7 +137,7 @@ Chương 69  Trong bài học F 端到端 RAG 系统 sử dụng các phân kh�
 1. 添加第六种策略: sử dụng `tiktoken`Thay vì mã số token-window 
 2. Đưa 30% mã khối vào phần mềm cố định trong.
 3. Việc định nghĩa được đặt vào thay thế bằng định nghĩa được đặt vào từ nhà cung cấp thực tế của dự án.
-4. cho mỗi khối 添加一个`summary`字段: 一句质心描述──重新运行 eval,并将摘要附加到块主体──测量召回提升──
+4. Để mỗi khối thêm một`summary`字段: 一句质心描述──重新运行 eval,并将摘要附加到块主体──测量召回提升──
 
 ## 关键术语
 
