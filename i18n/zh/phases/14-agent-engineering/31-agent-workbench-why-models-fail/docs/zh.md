@@ -121,7 +121,7 @@ flowchart LR
 
 这部分你不需要客气.
 
-- 长链的*代理器的解剖学* 列出了十个组件 提示,工具,,沙盒,配套,记忆,技能,副器以及一个运行时间循环. 它没有命名队列,作为部署单位的员工,触发语义,作为独立关注点的会议持久性,或授权政策. 它把器作为你配置的对象,而不是一个你部署的系统.
+- 拉格链的 *Anatomy of an Agent Harness* 逐渐介绍了核心 Harness 组件:提示,工具,,沙盒,配套,记忆,技能,副主题以及一个运行时间循环──它没有命名队列,作为部署单位的员工,触发语义,作为独立关注点的会议持久性,或授权政策──它把 Harness 作为一个你配置的对象,而不是一个你部署的系统──
 - 艾迪·奥斯曼尼的* 代理装工程* 提出了`Agent = Model + Harness`子的结构和子模式,但没有进一步说明子是由什么构成的.
 - 关于表面的讨论最深,但仍在各自的运行时间内――2026年4月 代理SDK中的哈纳斯-计算分离公告是第一个明确可确认的控制平面/数据平面分离的供应商片――那是一个原始的想法,不是新东西――
 - 机关系统将使用 视为配置对象(Jaymin West的 *Agentic Engineering*,第6章),其中最有力的一句话是机关系统中的主要安全边界──这只是授权政策的重新表述──
@@ -185,7 +185,7 @@ python3 code/main.py
 供应商的框架:
 
 - [Addy Osmani, Agent Harness Engineering](https://addyosmani.com/blog/agent-harness-engineering/) `Agent = Model + Harness`和子模式;基础设施部分较薄
-- [LangChain, The Anatomy of an Agent Harness](https://blog.langchain.com/the-anatomy-of-an-agent-harness/) 十一个组件:提示,工具,,配乐,沙盒,记忆,技能,副行李,运行时间,省略排队,部署,作者
+- [LangChain, The Anatomy of an Agent Harness](https://blog.langchain.com/the-anatomy-of-an-agent-harness/) 核心套装 组件:提示,工具,子,配乐,沙盒,记忆,技能,副用品,运行时间;省略排队,部署,授权
 - [OpenAI, Harness engineering: leveraging Codex in an agent-first world](https://openai.com/index/harness-engineering/) 科德斯团队对其运行时间的看法
 - [OpenAI, Unrolling the Codex agent loop](https://openai.com/index/unrolling-the-codex-agent-loop/) 将代理循环归约为函数调用 上一个`while`
 - [Anthropic, Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents) 特定运行时间内长视界表面

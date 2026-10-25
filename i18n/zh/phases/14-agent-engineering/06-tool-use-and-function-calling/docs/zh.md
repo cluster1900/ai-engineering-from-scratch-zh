@@ -76,7 +76,7 @@ input_schema: JSON Schema (properties, required, types, enums)
 
 ### 沙盒
 
-工具执行是沙盒的边界――详情见09课――简短版:每个工具都应指定阅读/写面――网络访问时间,内存限制――通用`run_shell(cmd)`是危险信号;具体的`git_status()`更安全.
+工具执行是沙盒边界――详情见 第13阶段 · 26――简短版:每个工具都应指定阅读/写面、网络访问、时间 限度、内存限度――通用`run_shell(cmd)`是危险信号;具体的`git_status()`更安全.
 
 
 ```figure

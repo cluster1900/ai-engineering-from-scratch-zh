@@ -109,7 +109,7 @@ python3 code/main.py
 
 **规则过期作为强制机制。**每条规则都带有`expires_at`日期 ((默认是编写后 90 天) ⋅当某条未过期规则连续 60 天没有任何违规时,检查器会发出警告;下一次季度评审要说明保留的理由,要么将削弱为`info`据"云飞机生产人工智能代码审查数据"显示,带有明确过期机制的规则集集集能保持在每个过期机制的规则30条;没有过期机制的规则集成增长到80+,而且大多数从未触发过.
 
-**Markdown 作为 source，JSON 作为 cache。** `agent-rules.md`是作者维护文件;`agent-rules.lock.json`是检查器在热路中读取的缓存──锁由预订重新生成──Markdown 便于评审;JSON解析不会进入每个转──形态与`package.json`现在,`package-lock.json`和 `Cargo.toml`现在,`Cargo.lock`同样.
+**Markdown 作为 source，JSON 作为 cache。** `agent-rules.md`是作者维护文件;`agent-rules.lock.json`是检查器在热路中读取的缓存――锁由预订重新生成――Markdown diff 便于评审;Markdown解析不会进入每轮,因为检查器只加载预建好的小型JSON――形态与`package.json`现在,`package-lock.json`和 `Cargo.toml`现在,`Cargo.lock`同样.
 
 ## 使用它
 
