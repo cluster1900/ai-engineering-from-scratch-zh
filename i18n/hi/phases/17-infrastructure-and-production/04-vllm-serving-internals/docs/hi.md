@@ -10,7 +10,7 @@
 ## 学习目标
 - 将 PagedAttention  KV कैश आवंटनकर्ता के लिए व्याख्याःब्लॉक ब्लॉक तालिकाएँ, तथा क्यों उत्पादन लोड में टुकड़ाकरण 4% नीचे रखा गया है
 -                                                                                                                                                                                                                                                               
-- उपयोग एक वाक्य में वर्णन किया गया है कि टुकड़ा पूर्व-पूर्ति,并说出它保护的是哪个延迟度度度度提示:是 TTFT尾,而不是平均吞吐量)
+- एक वाक्य में वर्णन किया गया है कि यह किस लटेंसी मेट्रिक को संरक्षित करता है।
 - बता दें कि 2026 में VLLM v0.18.0 उन सभी अनुकूलन टीमों की समस्या को प्रभावित करेगा जो एक बार में सक्षम हो जाएंगे।
 
 ## 问题
@@ -41,7 +41,7 @@ PagedAttention ओएस वर्चुअल मेमोरी के वि�
 
 बैच आकार  कभी भी फिक्स्ड नंबर तक पैडिंग नहीं किया जाएगा                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `V1 scheduler`关键不变: शेड्यूलर प्रत्येक डिकोड पुनरावृत्ति 运行一次, बजाय प्रत्येक अनुरोध 运行一次
 
-### टुकड़े टुकड़े पूर्व भरने  संरक्षण TTFT पूंछ
+### टुकड़े टुकड़े पूर्व भरने  संरक्षण ITL पूंछ
 
 प्रीफिल कम्प्यूटिंग-बाउंड है ∙ लामा 3.3 70B ऊपर का 32k-token प्रॉम्प्ट ∙ H100 ऊपर में लगभग 800 ms का शुद्ध प्रीफिलिंग की आवश्यकता होती है ∙ प्रीफिल ∙ रन करते समय, बैच में सभी अन्य अनुक्रमों के डिकोड टोकन ∙ इंतज़ार में होते हैं ∙ सर्विंग लूप में, एक लंबे समय से पहले टोकन प्रॉम्प्ट की लटेंसी TTFT) कुछ अन्य उपयोगकर्ताओं की इंटर-टोकन लटेंसी ITL) 动── में बदल जाएगी
 
@@ -124,7 +124,7 @@ tensor-parallel
 | Chunked prefill | “prefill splitting” | 将长 prefill 拆成 512-token 切片并与 decode 交错 |
 | TTFT | “first token time” | Prefill + queue + network；在长 prompts 下由 prefill 主导 |
 | ITL | “inter-token latency” | 连续 decode tokens 之间的时间；由 batch size 主导 |
-| Goodput | “满足 SLO 的 throughput” | 每个 request 仍命中 TTFT 和 ITL targets 时的 tokens/sec |
+| Goodput | “满足 SLO 的 throughput” | 仍命中 TTFT 和 ITL targets 的 requests/sec（Phase 17 · 08 将其报告为 requests 的占比） |
 | V1 scheduler | “new scheduler” | vLLM 的 2026 scheduler；N-gram spec decode 是与 chunked-prefill 兼容的路径 |
 | `--gpu-memory-utilization` | “memory knob” | 在 weights 和 activations 之后为 KV blocks 预留的 HBM 比例 |
 
