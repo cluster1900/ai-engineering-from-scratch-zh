@@ -42,7 +42,7 @@ Tại sao sử dụng CTDE: khi tập luyện, chúng tôi biết hành động 
 
 ### QMIX (2018)  phân hủy giá trị
 
-Chỉ phù hợp với hợp tác. Phí thưởng toàn cầu là chức năng đơn giản của giá trị Q của mỗi đại lý.
+ chỉ áp dụng cho hợp tác xã.`Q_tot`Là chức năng trộn monotone của mỗi đại lý của giá trị Q:
 
 ```math
 Q_{\text{tot}}(\tau, a) = f\big(Q_1(\tau_1, a_1), \ldots, Q_n(\tau_n, a_n)\big), \quad \frac{\partial f}{\partial Q_i} \ge 0
