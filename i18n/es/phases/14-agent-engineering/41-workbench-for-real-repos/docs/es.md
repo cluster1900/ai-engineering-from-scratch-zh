@@ -1,6 +1,6 @@
 # En realidad Repo 上 utilizar el escritorio
 
-> 十一节 sobre la superficie de un curso, si no puede soportar la verdadera prueba de base de código, es inútil.
+> 十一节 sobre la superficie del escritorio de trabajo, si no puede soportar la verificación de la base de código real, es inútil.
 
 **Type:** Build
 **Languages:** Python (stdlib)

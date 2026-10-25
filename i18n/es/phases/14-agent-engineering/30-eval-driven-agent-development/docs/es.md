@@ -19,7 +19,7 @@ Los agentes pueden pasar por la demostración. Ellos fracasan en la producción 
 ## 概念
 ### Tres niveles de evaluación
 
-1. **Static benchmarks** Utilizando el código de SWE-bench Verified(Leyón 19) 、 para navegar / 桌面的 WebArena/OSWorld(Leyón 20) 、 para el generalista GAIA(Leyón 19) 、 para el uso de herramientas de BFCL V4(Leyón 06)  Para el uso de modelos de comparación y retrogrado por puertas。 contaminación es real:SWE-bench+ 发现 32.67% de la solución fuga。始终报告 Verified / +-audited 分数。
+1. **Static benchmarks** Usado para el código de SWE-bench Verified(Leyón 19) 、 para la navegación / 桌面的 WebArena/OSWorld(Leyón 20) 、 para el generalista GAIA(Leyón 19) 、 para el uso de herramientas de BFCL V4(Leyón 06)  Usado para el modelo de comparación y retraso de puertas。 contaminación es real:SWE-bench+ 发现 32.67% de la solución de fuga。始终报告SWE-bench Verified 上的分数,或SWE-bench+ 这类经过泄漏分分分的审计数据集上的数量──
 
 2. **Custom offline evals** Tu producto:
    - LLM como juez ((Langfuse、Fénix、Opik  Lección 24)。
@@ -51,7 +51,7 @@ Es el auto-refinado de la generalización posterior. Lección 05. Todo el flujo 
 
 ### La fase 14 se levantará.
 
-Cada clase en la fase 14 generará casos de evaluación:
+La mayoría de las clases en la fase 14 generarán casos de evaluación.
 
 | Lesson | 它生成的 Eval case |
 |--------|------------------------|
@@ -74,7 +74,7 @@ Cada clase en la fase 14 generará casos de evaluación:
 | 28 Orchestration | Supervisor 路由到正确 specialist |
 | 29 Runtime Shapes | DLQ 处理 N% failure |
 
-Si tu suite de evaluaciones cubre cada uno de los elementos, ya cubres la Fase 14.
+Si tu suite de evaluación está preparada para cada caso, ya cubres el núcleo de la Fase 14.
 
 ### Eval  Dörörörendeveloppe会 ¿Dónde fracasó
 

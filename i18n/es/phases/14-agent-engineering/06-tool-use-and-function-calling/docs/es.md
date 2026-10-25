@@ -76,7 +76,7 @@ Cada falla de validación debe regresar a la observación estructural, haciendo 
 
 ### El sandboxing
 
-La ejecución de herramientas es el límite de la caja de arena. Lección 09:`run_shell(cmd)`Es un peligro.`git_status()`Más seguro.
+La ejecución de herramientas es el límite de la caja de arena.`run_shell(cmd)`Es un peligro.`git_status()`Más seguro.
 
 
 ```figure

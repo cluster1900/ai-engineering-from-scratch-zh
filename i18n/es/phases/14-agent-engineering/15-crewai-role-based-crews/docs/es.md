@@ -3,7 +3,7 @@
 > CrewAI es un marco multi-agente basado en papeles de 2026 años. Cuatro componentes básicos: Agente, Tarea, Equipo, Proceso. Dos tipos de formaciones: equipos (autónomos) y flujos (event driven, determination).
 
 **类型：**学习 + 构建
-**语言：**Python (stdlib)
+**语言：**Python(Usar numpy)
 **先修：**Fase 14 · 12 (Patrones de flujo de trabajo), Fase 14 · 14 (Modelo de actor)
 **时间：**75 minutos
 
@@ -14,8 +14,8 @@
 - 区分 Crews (basado en el papel de un autor) y Flows (determinidad de los eventos),并解释文档中的生产建议──
 - Uso `@tool`decoratora y`BaseTool`Subclase 接入 herramientas; entender las salidas estructuradas y el libre texto de la extracción.
 - Cuáles son los cuatro tipos de memoria de CrewAI, y cada uno de ellos en qué momento vale la pena usar.
-- 实现 un stdlib 三 Agente equipo investigador  escritor  editor), produce un breve
-- 识别三种 CrewAI fall mode:pronto-bloat, gerente-LLM tax, brotes entregas,
+- Usando Python normal, se realiza un equipo de agentes, investigadores, escritores y editores, y se produce un informe.
+- 识别四种 CrewAI fail modes:pronto-bloat, gerente-LLM tax, brotes entregas, equipo como producto,
 
 ##  problemas
 
@@ -120,7 +120,7 @@ En el equipo`memory=True`O según el tipo de configuración  activado 支(por el
 - 亚秒级延迟预算──等级会增加回路旅行──即使序列化也会包含背景故事和前输出的提示──
 - Loops de agente único. Salto a través de un marco. Un bucle de agente.
 
-Lección 17 Enfrentamiento de los agentes) con Matrix  demostró esto.
+Lección 28 ((Orquestación de patrones) 把这些拓学并排比较──简短版本:CrewAI 位于合作角色基于角落──
 
 ### Forma de dependencia
 
@@ -129,7 +129,7 @@ Lección 17 Enfrentamiento de los agentes) con Matrix  demostró esto.
 ### Este patrón se puede encontrar en el error
 
 - **Backstories 导致 prompt-bloat。**Cada agente Una historia de 2000 palabras, recoger cinco miembros del equipo de los agentes, se reunirán en la primera llamada de herramienta Pre-burnout contexto presupuesto,
-- **Manager-LLM token tax。**Proceso jerárquico Reunión en cada llamada especialista 前增加一个管理员LLM llamada。五个任务的工作人员 会从五次LLM llamada 变成六次,而且管理员调用 携带完整任务列表加上前输出──除非路由依赖输出,否则切换到序列──
+- **Manager-LLM token tax。**Proceso jerárquico Reunión en cada llamada especialista 前增加一个管理员LLM llamada。五个任务的员工 会从五次LLM llamada 变成十次,而且管理员号召 携带完整任务列表加上前输出──除非路由依赖输出,否则切换到序列──
 - **Brittle handoffs。**La tarea N `expected_output`Es un esquema. La tarea N+1 es ponerla como una tarea.`context`读取,并尝试 parse 三个节目──LLM 生成四个──下游 Agente 即兴处理──修复方式在任务 N 上使用 `output_pydantic`,让Task N+1 读取 objeto tipado, en lugar de texto libre.
 - **Crew-as-prod。**libertad forma Crew en caso de que no haya envoltura de flujo se emite hasta la producción.
 
@@ -140,7 +140,7 @@ ae-crew-vs-flow
 
 ## Construirlo
 
-`code/main.py` Realizó dos versiones de stdlib, así como una tripulación de tres agentes.
+`code/main.py`Usando Python ordinario, se logran dos formas, así como un equipo de tres agentes. La única dependencia fuera de la biblioteca es la similaridad de la burla.
 
 形态:
 

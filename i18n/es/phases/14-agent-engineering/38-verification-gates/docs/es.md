@@ -84,7 +84,7 @@ python3 code/main.py
 
 ## Modelo de producción en el escenario real
 
-Cuatro patrones se pondrán en el portón de otro trabajo de la cinta para mejorar la ventaja.
+五种模式 会把门从另一个 lint job提升为决定边──
 
 **Defense-in-depth，而不是 single gate。**El gancho precomitido → verificación del estado de CI → gancho pre-herramienta authz → pre-merger gate。 cada una de las capas es definitiva, por lo tanto el fracaso en la primera capa será capturado en la primera.
 

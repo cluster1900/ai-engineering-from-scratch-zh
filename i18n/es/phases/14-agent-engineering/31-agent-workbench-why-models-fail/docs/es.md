@@ -121,7 +121,7 @@ El punto no es el arnés foreverwin out── el modelo absorberá con el tiempo
 
 Esta parte de esto no necesita clientes.
 
-- LangChain's *Anatomy of an Agent Harness* 枚挙十一組件  prompts, tools, hooks, sandboxes, orchestration, memory, skills, subagents, as well as a runtime dumb loop── no tiene colas de nombres ‒ como unidades de despliegue de trabajadores ‒ trigger semántica、 como persistencia de sesión de punto de atención independiente, o política de autorización― ‒ utiliza el arnés como un objeto que usted configura, y no como un sistema de implementación―
+- LangChain's *Anatomy of an Agent Harness* 逐一介绍了核心 harness 组件:prompts,tools, hooks, sandboxes, orchestration, memory, skills, subagents, as well as a runtime dumb loop── no tiene colas de nombres ‒ como unidad de despliegue de trabajadores ‒ trigger semántica─ como persistencia de sesión de punto de atención independiente, o política de autorización― ‒ considera al arnés como un objeto que usted configura, y no como un sistema que usted despliega―──
 - Addy Osmani de * Ingeniería de Arneses de Agentes *  propuso `Agent = Model + Harness`El marco y el patrón de ratchet, pero no se explica más qué es el arnés de lo que se compone.
 - Antropic y OpenAI sobre superficies  discutidas más profundamente, pero todavía permanecen en su propio tiempo de ejecución 内── abril 2026 Agentes SDK harness-computing separation anuncio es el primer claro confirmable control-plan / data-plan separado pieza de proveedor── esa es una idea primitiva, no es algo nuevo──
 - El arnés será el arnés 视为 config objeto (Jaymin West's *Agentic Engineering*, capítulo 6), de los cuales la frase más poderosa es: el arnés es el límite de seguridad primario en un sistema de agentes.
@@ -185,7 +185,7 @@ En la decisión de si se adopta un concepto, primero lo traduzcan a la primitiva
 Enmarcamientos de los proveedores:
 
 - [Addy Osmani, Agent Harness Engineering](https://addyosmani.com/blog/agent-harness-engineering/)¿ Qué es esto ?`Agent = Model + Harness`Y el patrón de ratchet; infraestructura parte más pobre
-- [LangChain, The Anatomy of an Agent Harness](https://blog.langchain.com/the-anatomy-of-an-agent-harness/) 十一个组件:puestas, herramientas, ganchos, orquestación, cajas de arena, memoria, habilidades, subgenras, tiempo de ejecución, provincias, colas, despliegue, autoría
+- [LangChain, The Anatomy of an Agent Harness](https://blog.langchain.com/the-anatomy-of-an-agent-harness/) 核心 harness 组件:prompts,tools,hooks, orchestration, sandboxes, memory, skills, subagents, runtime,省略 queues, deployment, autz
 - [OpenAI, Harness engineering: leveraging Codex in an agent-first world](https://openai.com/index/harness-engineering/) Codex 团队 sobre su tiempo de ejecución  Surfaces alrededor de la vista
 - [OpenAI, Unrolling the Codex agent loop](https://openai.com/index/unrolling-the-codex-agent-loop/) 将 agente de circuito 归约为 funciones llamadas 上一个 `while`
 - [Anthropic, Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents) Superficies de largo horizonte en un tiempo de ejecución específico
