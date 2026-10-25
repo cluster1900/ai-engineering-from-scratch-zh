@@ -44,7 +44,7 @@ stateDiagram-v2
     DONE --> [*]
 ```
 
-`IDLE` 是唯一合法的入口点。`DONE` 是唯一合法的出口。`AWAITING_TOOL` 是唯一会产生 pull point 的 state。其他所有 transitions 都是 internal。
+`IDLE` 是唯一合法的入口点。`DONE` 是唯一合法的出口。`AWAITING_TOOL` 是唯一会自行产生 pull point 的 state。第二个 pull point `on_pause` 不是 state：当 budget 用尽或某个 hook 请求 review 时，它会从任意 active state 触发。其他所有 transitions 都是 internal。
 
 这个 state machine 是确定性的。给定同一个 event log，harness 会重新进入同一个 state。这个性质让你可以 replay sessions 来调试，而无需重新调用 model。
 

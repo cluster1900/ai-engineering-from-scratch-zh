@@ -35,7 +35,7 @@ flowchart LR
     Writer --> Report[Demo report]
 ```
 
-五个 stages。seed 是三条 hypotheses 的列表。scheduler 用三个 parallel slots 在它们之间运行六个 experiments。bus 报告一个或多个 paper triggers。picker 选择单个最佳 result。critic loop 基于该 result 构建的 draft 进行迭代。paper writer 输出最终的 LaTeX、BibTeX 和 manifest。
+六个 stages。seed 是三条 hypotheses 的列表。scheduler 用三个 parallel slots 在它们之间运行六个 experiments。bus 报告一个或多个 paper triggers。picker 选择单个最佳 result。critic loop 基于该 result 构建的 draft 进行迭代。paper writer 输出最终的 LaTeX、BibTeX 和 manifest。
 
 ## 为什么 import，而不是 copy
 

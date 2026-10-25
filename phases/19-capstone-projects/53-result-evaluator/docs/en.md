@@ -71,7 +71,7 @@ evaluator 运行三个独立计算，并在 verdict 路径中把它们合并。�
 
 Perplexity 相对于 loss 是指数关系。loss 降低 0.1 会让 perplexity 出现大得多的下降。直接在两个配置之间比较 perplexity 没问题，但如果要在单个 report 中把它与 linear metrics 混合，就需要 normalisation。
 
-本课会对 `scale` 字段为 `"log"` 的任何 metric 在计算 improvement 前取 natural log。threshold 随后会在 log space 中应用。perplexity 从 32 降到 28，在 lower is better metric 上是 `log(28) - log(32) = -0.133`，远高于百分之二的 threshold。
+本课会对 `scale` 字段为 `"log"` 的任何 metric 在计算 improvement 前取 natural log。threshold 随后会在 log space 中应用。perplexity 从 32 降到 28，变成 `log(32) = 3.466` 对比 `log(28) = 3.332`。在 lower is better metric 上，相对 improvement 是 `(3.466 - 3.332) / 3.466 = 0.039`，超过了百分之二的 threshold。
 
 ```text
 if scale == "log":

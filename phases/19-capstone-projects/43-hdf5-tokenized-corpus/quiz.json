@@ -8,7 +8,7 @@
       "options": [
         "HDF5 的 logo 更小",
         "随机原因",
-        "HDF5 提供 chunked、integer-only、memory-mapped reads，并支持 O(1) random access；JSONL 会迫使 parser 进入每次 hot-path read",
+        "HDF5 提供 chunked、integer-only、cache-friendly reads，并支持 O(1) random access；JSONL 会迫使 parser 进入每次 hot-path read",
         "JSONL 已被弃用"
       ],
       "correct": 2,

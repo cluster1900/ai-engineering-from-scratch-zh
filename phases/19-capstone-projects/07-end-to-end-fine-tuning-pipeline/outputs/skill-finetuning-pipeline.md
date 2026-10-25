@@ -7,7 +7,7 @@ lesson: 07
 tags: [capstone, fine-tuning, axolotl, trl, dpo, grpo, vllm, eagle-3, mof]
 ---
 
-给定一个 base model（Llama 3.3 8B、Qwen3 14B 或 Gemma 3 12B）和一个 task-specific dataset，构建一条单命令 pipeline，产出一个已服务的 endpoint 和一份可复现的 model card。
+给定一个 base model（Llama 3.1 8B、Qwen3 14B 或 Gemma 3 12B）和一个 task-specific dataset，构建一条单命令 pipeline，产出一个已服务的 endpoint 和一份可复现的 model card。
 
 Build plan:
 
@@ -44,4 +44,4 @@ Refusal rules:
 - 如果数据 license 禁止 derivative models，拒绝在这些数据上 fine-tune。MOF 会评估 data licensing。
 - 如果没有在 eval matrix 上测量 quality loss，拒绝发布 quantized model。
 
-Output: 一个 repo，包含 pipeline orchestrator、Llama 3.3 8B + 一个 alternate base 的 YAMLs、SFT 和 DPO W&B run logs、quantized artifacts、served endpoint、three-benchmark eval matrix、safety eval、2026 MOF model card，以及一份关于你发现并修复的三个最大 data-hygiene issues 的 write-up。
+Output: 一个 repo，包含 pipeline orchestrator、Llama 3.1 8B + 一个 alternate base 的 YAMLs、SFT 和 DPO W&B run logs、quantized artifacts、served endpoint、three-benchmark eval matrix、safety eval、2026 MOF model card，以及一份关于你发现并修复的三个最大 data-hygiene issues 的 write-up。

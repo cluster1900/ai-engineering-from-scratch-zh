@@ -109,7 +109,7 @@ python3 code/main.py
 
 每个指标都直接映射到生产基准：
 
-- **检索。** MS-COCO 5K val、Flickr30K、ImageNet 零样本都是同一相似性矩阵上的 R@K 问题。将合成 eval 替换为真实文件，函数签名保持不变。
+- **检索。** MS-COCO 5K val 和 Flickr30K 是同一相似性矩阵上的 R@K 问题。ImageNet 零样本也使用该矩阵，每个类别一个 prompt embedding，但它报告的是 top-1 分类准确率，也就是在类别 prompts 上的 R@1。将合成 eval 替换为真实文件，函数签名保持不变。
 - **VQA。** VQA v2、GQA、OK-VQA 使用相同的精确匹配形状（使用 soft-acc 而不是 VQA v2 的单答案 EM）。
 - **BLEU-4.** MS-COCO 字幕、NoCaps、Flickr30K 字幕均使用 BLEU-4 加 CIDEr 和 METEOR。添加 CIDEr 是另一项功能。
 

@@ -1,6 +1,6 @@
 # Capstone 07 — 端到端 Fine-Tuning Pipeline（Data 到 SFT 到 DPO 到 Serve）
 
-> 一个基于你自己的数据训练的 8B model，基于你自己的偏好完成 DPO 对齐，完成 quantization、speculative decoding，并以可衡量的 $/1M tokens 成本提供服务。2026 年的 open stack 是 Axolotl v0.8、TRL 0.15、用于迭代的 Unsloth、用于 quantization 的 GPTQ/AWQ/GGUF，以及用于 serving 的 vLLM 0.7 + EAGLE-3。这个 capstone 的目标是可复现地跑完整条 pipeline：输入 YAML，输出已服务的 endpoint，并在 2026 Model Openness Framework 下发布 model card。
+> 一个基于你自己的数据训练的 8B 级 model，基于你自己的偏好完成 DPO 对齐，完成 quantization、speculative decoding，并以可衡量的 $/1M tokens 成本提供服务。2026 年的 open stack 是 Axolotl v0.8、TRL 0.15、用于迭代的 Unsloth、用于 quantization 的 GPTQ/AWQ/GGUF，以及用于 serving 的 vLLM 0.7 + EAGLE-3。这个 capstone 的目标是可复现地跑完整条 pipeline（输入 YAML，输出已服务的 endpoint），并在 2026 Model Openness Framework 下发布 model card。
 
 **Type:** Capstone
 **Languages:** Python (pipeline), YAML (configs), Bash (scripts)
@@ -11,7 +11,7 @@
 ## 问题
 2026 年，每个严肃的 AI 团队都会随时备好一条 fine-tuning pipeline。不是因为他们要发布 frontier base model，而是因为下游适配，也就是 domain SFT、针对标注偏好的 DPO、用于 speculative decoding 的 distilled drafts、以及使用 EAGLE-3 的 serving，才是可衡量收益真正出现的地方。Axolotl v0.8 处理 multi-GPU SFT configs。TRL 0.15 处理 DPO 和 GRPO。Unsloth 让你能快速做 single-GPU iteration。vLLM 0.7 + EAGLE-3 在不损失质量的情况下将 decode throughput 提升 2-3x。工具已经可用；真正的技艺在 YAML、data hygiene 和 eval 纪律里。
 
-你将把一个 8B base（Llama 3.3、Qwen3 或 Gemma 3）在 task-specific data 上依次完成 SFT 和 DPO，随后为 serving 做 quantization，并使用 lm-evaluation-harness、RewardBench-2、MT-Bench-v2 和 MMLU-Pro 衡量提升。你将根据 2026 Model Openness Framework 产出一份 model card。重点是可复现性：一个命令端到端重跑整条 pipeline。
+你将把一个 8B 到 14B 的 base（Llama 3.1 8B、Qwen3 14B 或 Gemma 3 12B）在 task-specific data 上依次完成 SFT 和 DPO，随后为 serving 做 quantization，并使用 lm-evaluation-harness、RewardBench-2、MT-Bench-v2 和 MMLU-Pro 衡量提升。你将根据 2026 Model Openness Framework 产出一份 model card。重点是可复现性：一个命令端到端重跑整条 pipeline。
 
 ## 概念
 这条 pipeline 有五个阶段。**Data**：dedup（MinHash / Datatrove）、quality filter（Nemotron-CC 风格 classifier）、PII scrub、针对 public benchmark contamination 的 split-hygiene check。**SFT**：Axolotl YAML、8xH100 上的 ZeRO-3、cosine schedule、packed sequences、2-3 epochs。**DPO or GRPO**：TRL config、1 epoch、preference pairs 可以来自人工标注或 model-judged、beta tuning。**Quantize**：GPTQ + AWQ + GGUF，保证 deployment flexibility。**Serve**：vLLM 0.7 + EAGLE-3 speculative heads（或 SGLang + SpecForge）、K8s deployment、基于 queue-wait 的 HPA。
@@ -52,7 +52,7 @@ model card (2026 MOF) + safety eval (Llama Guard 4)
 
 ## 技术栈
 - Data: Datatrove 用于 dedup，Nemotron-CC classifier 用于 quality，Presidio 用于 PII
-- Base: Llama 3.3 8B、Qwen3 14B 或 Gemma 3 12B
+- Base: Llama 3.1 8B、Qwen3 14B 或 Gemma 3 12B
 - SFT: Axolotl v0.8，配合 ZeRO-3、Flash Attention 3、packed sequences
 - Preference tuning: TRL 0.15 用于 DPO 或 GRPO；Unsloth 用于 single-GPU iteration
 - Quantization: GPTQ (Marlin)、AWQ、通过 llama.cpp 生成 GGUF
@@ -113,7 +113,7 @@ $ ./pipeline.sh config/llama3.3-8b-domainX.yaml
 ## 练习
 1. 在同一个 task-specific benchmark 上运行 SFT-only、SFT+DPO、SFT+GRPO。报告哪种 preference method 胜出，以及领先多少。
 
-2. 将 Llama 3.3 8B 替换为 Qwen3 14B。在匹配质量下测量 $/1M tokens。
+2. 将 Llama 3.1 8B 替换为 Qwen3 14B。在匹配质量下测量 $/1M tokens。
 
 3. 测量 domain data 与 generic ShareGPT 上的 EAGLE-3 acceptance rate。报告差值，以及它对 latency budgets 意味着什么。
 
@@ -139,5 +139,5 @@ $ ./pipeline.sh config/llama3.3-8b-domainX.yaml
 - [DeepSeek R1 paper (arXiv:2501.12948)](https://arxiv.org/abs/2501.12948) — GRPO 方法
 - [vLLM + EAGLE-3 documentation](https://docs.vllm.ai) — 参考 serving stack
 - [SGLang SpecForge](https://github.com/sgl-project/SpecForge) — 另一种 speculative-decoding trainer
-- [Model Openness Framework 2026](https://isocpp.org/) — open-release 评分标准
+- [Model Openness Framework (arXiv:2403.13784)](https://arxiv.org/abs/2403.13784)：open-release 评分标准
 - [lm-evaluation-harness](https://github.com/EleutherAI/lm-evaluation-harness) — canonical eval runner

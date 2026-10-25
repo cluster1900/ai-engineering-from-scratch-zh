@@ -16,7 +16,7 @@
 
 ## 问题
 
-你设置了一个训练任务，预计运行 18 小时。wallclock 上限是 4 小时。第 11 小时时，cluster 重启了，因为某个比你薪资等级更高的人批准了 kernel upgrade。没有 checkpoint，你就要从头开始。没有 resume，你还会丢失前 11 小时学到的 Optimizer state，所以即使 model weights 留了下来，AdamW moments 也已经没了，下一步会突然朝训练轨迹早已越过的方向跳去。
+你设置了一个训练任务，预计运行 18 小时。scheduler 把每次 allocation 限制在 4 小时，所以这次 run 本来就是一串 resumed jobs。然后在 run 的第 11 小时，cluster 重启了，因为某个比你薪资等级更高的人批准了 kernel upgrade。没有 checkpoint，你就要从头开始。没有 resume，你还会丢失前 11 小时学到的 Optimizer state，所以即使 model weights 留了下来，AdamW moments 也已经没了，下一步会突然朝训练轨迹早已越过的方向跳去。
 
 正确的 artifact 是一个单文件，其中保存继续训练所需的一切：model parameters、Optimizer state、scheduler state、用于绘图的 Loss history、当前 step 和 epoch 以及 batch-in-epoch counters，还有每个 randomness 来源的 RNG state。没有 RNG state，恢复后的 Loss curve 就会是另一条 curve。同一个 model、同一份 data、不同的 shuffle、不同的 dropout mask、dashboard 上不同的数字。
 
