@@ -1,6 +1,6 @@
 # 输入指标  TTFT、TPOT、ITL、Goodput、P99
 
-> 四个指标决定一次推断部署 是否正常工作.TTFT 是预填加排加网络──TPOT(等于ITL) 是每个代币的内存绑定解码 成本──端到端延迟是TTFT加上TPOT 乘以输出长度──通过输出是整个机队 聚合后每秒代币数量──但对产品真正重要的是产量:同时满足每个SLO请求比例──在低优点下高输出意味着您无法处理用户的代币──2026年TRT-LLM 上 Llama-3.1-8B-Instruct 数字参考:平均TTFT 162 ms,平均TPOT 7.33 ms,平均E2E 1,093 ms,平均E150PP90p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9p9
+> 五个指标决定一次推断部署 是否正常工作.TTFT 是预填加排加网络──TPOT(通常被报告为ITL,但各工具对ITL 是否计入第一个代币 看法不一) 是每个代币的内存绑定解码 成本──端到端延迟是TTFT加上TPOT 乘以输出长度──通过输出是整个机队 集成后每秒代币数量──但对产品真正重要的是好的输出:同时满足每个SLO请求的比例下面──在高输出中,意味着正在处理的代币不能按时达到用户的时间.2026年TRT-LLM 上面-3.Llama1B-Instruct的参考数字:TTFT,TTFT,TTFT,TTFT,E 报告中1.093 ,TTFT,TTFT,TTFT,T.
 
 **Type:** 学习
 **Languages:** Python（stdlib，玩具版 percentile calculator 和 goodput reporter）
@@ -49,7 +49,7 @@
 
 `goodput = fraction of requests meeting (TTFT <= a) AND (TPOT <= b) AND (E2E <= c)`
 
-只有每个限制都满足,一个要求才是好──好就是这个比例──在60%的好下高下是失败──目标是低下达到99%的好──
+只有每一个限制都满足,一个请求才是好──好输就是这个比例──一些论文和仪表板则把好输 报告为速度:满足每个SLO的每秒请求 数――把占比乘以请求率 即可换算──在60%的好输下是高输出失败──目标是低输下达到99%的好输下──
 
 到2026年,Goodput已经成为MLPerf推理 v6.0提交以及AI平台提供商内部SLA跟踪中使用的指标.
 

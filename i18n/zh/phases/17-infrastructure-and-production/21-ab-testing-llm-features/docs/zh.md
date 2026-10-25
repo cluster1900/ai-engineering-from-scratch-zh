@@ -103,7 +103,7 @@ mx-sequential-test
 2. 为一个受监督的医疗保健 客户选择 状态或增长书.
 3. 设计一个A/B,测试GPT-4vsGPT-3.5 在成本-每分-提票上表现.
 4. 你的卡尼尔通过了,但A/B显示了 -1.2%的转换.
-5. 将CUPED应用于一个前期差为后期差 60%的前期.
+5. 应用CUPED,使用一个能解释60% 后期方差的前期变量
 
 ## 关键术语
 | Term | What people say | What it actually means |

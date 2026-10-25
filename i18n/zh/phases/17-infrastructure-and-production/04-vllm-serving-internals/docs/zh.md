@@ -10,7 +10,7 @@
 ## 学习目标
 - 将 PagedAttention 解释为KV缓存分配器:区块,区块表以及为什么在生产负载下碎片化保持在4%以下.
 - 在代层面画出连续批量:完成的序列 如何离开批量,新序列 如何加入,而不需要排水――
-- 用一句话描述碎片预填,并说它保护的是哪个延迟度量标 (提示:是TTFT尾,而不是平均吞吐量)
+- 用一句话描述碎片预填,并说它保护的是哪个延迟指标
 - 让我们知道, 2026年,VLLM v0.18.0 中会影响那些一次性启动所有优化团队的变化.
 
 ## 问题
@@ -41,7 +41,7 @@
 
 批量量永远不会被填充到固定数字. 输出位置不同序列 共享一次融合前进. 在2026年的VLLM中,这叫做`V1 scheduler`△关键不变:调度器 每个解码代一次运行,而不是每一个请求一次运行.
 
-### 碎片预填 保护TTFT尾
+### 碎片预填 保护ITL尾
 
 在使用过程中,批量中所有其他序列的解码代码都在等待. 在服务循环中,一个长提示的第一个代码延迟(TTFT) 将变成几十个其他用户的互代码延迟(ITL) 动──
 
@@ -124,7 +124,7 @@ tensor-parallel
 | Chunked prefill | “prefill splitting” | 将长 prefill 拆成 512-token 切片并与 decode 交错 |
 | TTFT | “first token time” | Prefill + queue + network；在长 prompts 下由 prefill 主导 |
 | ITL | “inter-token latency” | 连续 decode tokens 之间的时间；由 batch size 主导 |
-| Goodput | “满足 SLO 的 throughput” | 每个 request 仍命中 TTFT 和 ITL targets 时的 tokens/sec |
+| Goodput | “满足 SLO 的 throughput” | 仍命中 TTFT 和 ITL targets 的 requests/sec（Phase 17 · 08 将其报告为 requests 的占比） |
 | V1 scheduler | “new scheduler” | vLLM 的 2026 scheduler；N-gram spec decode 是与 chunked-prefill 兼容的路径 |
 | `--gpu-memory-utilization` | “memory knob” | 在 weights 和 activations 之后为 KV blocks 预留的 HBM 比例 |
 
