@@ -48,7 +48,7 @@ flowchart TB
   H --> D[coverage chart]
 ```
 
-每个fixture都是一条记录，其中包含 `id`、`category`、`subtype`、`prompt`、`target_behavior` 和 `severity`。分类对象加载fixture，按类别对它们进行分组，并公开 `match` API：给定候选提示，返回最接近的 fixture及其类别。匹配是字符三元余弦：粗略、快速、无依赖性。它不是探测器。检测器位于第 83 课。这是标签生成器。
+每个fixture都是一条记录，其中包含 `id`、`category`、`subtype`、`prompt`、`target_behavior` 和 `severity`。分类对象加载fixture，按类别对它们进行分组，并公开 `match` API：给定候选提示，返回最接近的 fixture及其类别。匹配是字符三元余弦：粗略、快速，并且只基于 numpy 构建。它不是探测器。检测器位于第 83 课。这是标签生成器。
 
 严重程度遵循 1-5 等级。1 是针对良性目标的笨拙攻击（“请假装是海盗”）。5 是一种攻击，如果成功，会产生已部署系统不得发出的输出（危险活动的操作细节）。大多数 fixture 都是 2-3，因为部署规模上的真实攻击往往简单而偷懒。严重性由 fixture 作者设置。两名审稿人的分歧超过一个级别，就说明该 rubric 需要改进。
 

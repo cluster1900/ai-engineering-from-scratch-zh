@@ -89,7 +89,7 @@ tracer 或 UI 可以把它渲染成 removed steps 的 strikethrough，以及 add
 
 ## 两个硬性 budget
 
-`max_steps` 限制整个 session 中的总 step executions，包括 replans。默认是十二。一个线性的五步 plan，如果 replan 两次并且每次增加三个 steps，会达到十六次 executions，从而超过 budget。executor 会拒绝该 replan，并返回 FAILED。
+`max_steps` 限制整个 session 中的总 step executions，包括 replans。默认是十二。失败的尝试也计入。一个在最后一步失败的五步 plan 已经花掉五次 executions。如果每次 replan 都重试该 step 并新增三个 steps，而第一次修订的最后一步再次失败，计数就是九，第二次修订还需要四次：十三。executor 会运行第十二次，拒绝第十三次，并以 reason `step_budget` 返回 FAILED。
 
 `max_replans` 限制第一次 plan 之后 planner 被调用的次数。默认是五。这是更重要的 limit。一个连续五次返回同一个 broken plan 的 planner，否则会一直 loop，直到 step budget 捕获它。限制 replans 会让 failure 更快发生，原因也更清楚。
 

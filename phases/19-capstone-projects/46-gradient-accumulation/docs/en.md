@@ -9,7 +9,7 @@
 
 ## Learning Objectives
 
-- 推导 effective batch 恒等式：`effective_batch = micro_batch * accum_steps`。
+- 推导 effective batch 恒等式：`effective_batch = micro_batch * accum_steps * world_size`，在本课使用的单设备上就是 `micro_batch * accum_steps`。
 - 实现 per-micro-batch loss scaling，让 accumulated Gradient 匹配一次完整 full-batch backward。
 - 在最后一个 micro-batch 之前跳过 optimizer synchronization（sync-on-last-step）。
 - 读取 throughput against effective batch curve，并解释 diminishing return。

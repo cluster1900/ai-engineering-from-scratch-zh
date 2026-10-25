@@ -21,7 +21,7 @@
 
 gate chain 给出 ALLOW，但 sandbox 因为 chain 没有预料到的原因拒绝。eval harness 记录 pass，但 OTel spans 显示 gate 拒绝了 agent 声称使用过的 tool。Prometheus counter 本应增加一次，却增加了两次。observation budget 已经超出，但 agent 继续运行，因为 budget 只在 chain 中追踪，而 sandbox 并不知道。
 
-本课程是整个 track 的 integration test。agent 必须按顺序完成四件事：读取 project、运行 tests、从 test failure 中识别 bug、写入 fix、重新运行 tests，然后停止。每个 operation 都经过 gate chain。每次 tool execution 都经过 sandbox。每个 step 都包在 span 中。eval harness 最终为整体打分。
+本课程是整个 track 的 integration test。agent 必须按顺序完成六件事：读取 project、运行 tests、从 test failure 中识别 bug、写入 fix、重新运行 tests，然后停止。每个 operation 都经过 gate chain。每次 tool execution 都经过 sandbox。每个 step 都包在 span 中。eval harness 最终为整体打分。
 
 ## The Concept
 

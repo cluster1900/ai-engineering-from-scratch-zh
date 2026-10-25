@@ -19,7 +19,7 @@ Build plan:
 6. Weekly PSI / KL drift detector 运行在 pooled prompt Embeddings 上；alert threshold 为 0.2。
 7. Prometheus exporter 提供 eval score aggregates 和 latency percentiles；Alertmanager 路由到 Slack（warning）+ PagerDuty（critical）。
 8. Next.js 15 App Router dashboard：overview、trace search + waterfall、eval trends、drift chart、alerts。
-9. Regression probe：注入一种 response pattern，使其以 1% 的概率泄露假的 SSNs；测量 MTTR（alert-fire time）。
+9. Regression probe：注入一种 response pattern，使其以 1% 的概率泄露假的 SSNs；测量 MTTD（从部署到 alert 触发的时间）。
 
 Assessment rubric:
 
@@ -27,7 +27,7 @@ Assessment rubric:
 |:-:|---|---|
 | 25 | Trace-schema coverage | 生成 canonical GenAI spans 的 SDK families 数量（目标 6+） |
 | 20 | Eval correctness | DeepEval / RAGAS scores 对比 hand-labeled set |
-| 20 | Dashboard UX | 注入 regression 的 MTTR（目标低于 5 分钟） |
+| 20 | Dashboard UX | 注入 regression 的 MTTD（目标低于 5 分钟） |
 | 20 | Cost / scale | 持续 1k spans/sec ingest 且无 backlog |
 | 15 | Alerting + drift detection | Prometheus/Alertmanager chain 端到端演练 |
 
@@ -44,4 +44,4 @@ Refusal rules:
 - 没有 per-SDK canonical-span regression test 时，拒绝声称 "multi-SDK support"。
 - 没有 baseline window 时，拒绝发布 drift detection；zero-shot drift 没有用。
 
-Output: 一个 repo，包含 collector config、ClickHouse schema、Next.js 15 dashboard、eval jobs、drift detector、alerting chain、带 annotated regressions 的 10k-trace demo dataset，以及一份 write-up，记录注入的 PII regression 的 MTTR，并说明经过迭代后让 MTTR 下降的前三个 dashboard UX improvements。
+Output: 一个 repo，包含 collector config、ClickHouse schema、Next.js 15 dashboard、eval jobs、drift detector、alerting chain、带 annotated regressions 的 10k-trace demo dataset，以及一份 write-up，记录注入的 PII regression 的 MTTD，并说明经过迭代后让 MTTD 下降的前三个 dashboard UX improvements。

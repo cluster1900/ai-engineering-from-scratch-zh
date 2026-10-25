@@ -16,7 +16,7 @@
 ## 概念
 该 pipeline 有两层。**deterministic substrate**（Java 用 OpenRewrite，Python 用 libcst）安全地执行大量机械重写：imports、method signatures、null-safety edits、try-with-resources、deprecated API replacements。它速度快，并产出可审计的 diffs。**agent layer**（OpenAI Agents SDK 或 LangGraph，基于 Claude Opus 4.7 和 GPT-5.4-Codex）处理 recipes 无法覆盖的情况：build-file upgrades（Maven/Gradle/pyproject）、transitive dependency conflicts、test flakes、custom annotations。
 
-每个 repo 都会获得一个预装目标 runtime 的 Daytona sandbox。agent 迭代执行：运行 build、分类 failures、应用 fix、重新运行。硬性限制：每个 repo 30 分钟、每个 repo $8、20 个 agent turns。如果所有 tests 通过且 coverage delta 不为负，就打开 PR。如果没有通过，就把该 repo 按失败类别归档并附上证据。
+每个 repo 都会获得一个预装目标 runtime 的 Daytona sandbox。agent 迭代执行：运行 build、分类 failures、应用 fix、重新运行。硬性限制：每个 repo 30 分钟、每个 repo $8、20 个 agent turns。如果所有 tests 通过且 coverage 下降不超过 2 个百分点，就打开 PR。如果没有通过，就把该 repo 按失败类别归档并附上证据。
 
 失败分类体系是交付物。在 50 个 repo 中，什么坏了？Transitive deps？Custom annotations？Build tool version？与迁移无关的 test flakes？每个类别都需要有 count 和 exemplar diff。未来的 recipe authors 可以优先处理前三类。
 
@@ -73,7 +73,7 @@ ce-migration-funnel
 
 4. **Budget caps.** 每个 repo 30 分钟 wall-clock、$8 成本、20 个 agent turns。任何超限都会停止，并以当前 diff 归档到 "budget_exhausted"。
 
-5. **Test + coverage gate.** build 通过后，运行 test suite。将 coverage 与 base repo 对比。如果 coverage 下降超过 2%，归档到 "coverage_regression"。
+5. **Test + coverage gate.** build 通过后，运行 test suite。将 coverage 与 base repo 对比。如果 coverage 下降超过 2 个百分点，归档到 "coverage_regression"。
 
 6. **PR open.** 成功后，push 分支，打开 PR，附上 diff，以及哪些 recipes 被应用、哪些 commits 由 agent 编写的摘要。
 

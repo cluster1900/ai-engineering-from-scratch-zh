@@ -70,7 +70,7 @@ DENIED = {
 
 每个子进程都有一个三挂钟秒的默认预算。runner使用`subprocess.run(..., timeout=t)`。如果超时，runner将捕获 `TimeoutExpired`，终止进程，并记录任务的 `timeout` 退出原因。该任务的分数为零。runner继续前进。
 
-每个任务的超时可通过 `task.metadata.timeout_s` 进行配置。长时间运行的单元测试可能会要求更多；第 70 课中的验证器将该值限制为 30 秒，以保持套件的边界。
+超时是 `run_candidate` 的 `timeout_s` 参数；第 75 课的 runner 通过 `code_exec_timeout_s` 为每次运行设置一次。长时间运行的单元测试可以要求更多，但 `run_candidate` 会把该值限制在 0.1 到 30 秒之间，以保持套件的边界。
 
 ## 输出上限
 
@@ -84,7 +84,7 @@ Pass-at-k 是 HumanEval 和朋友使用的无偏估计器。给定每个任务�
 pass_at_k(n, c, k) = 1 - C(n - c, k) / C(n, k)
 ```
 
-当 `n - c < k` 时，分子未定义，值为 `1`。该实现直接处理边缘情况。我们在第 74 课中公开了 `pass_at_k(n, c, k)` 供排行榜层使用。
+当 `n - c < k` 时，按照通常约定，分子 `C(n - c, k)` 为零（你无法从少于 `k` 个失败中选出 `k` 个），所以值为 `1`。该实现直接处理边缘情况。我们在第 74 课中公开了 `pass_at_k(n, c, k)` 供排行榜层使用。
 
 ```mermaid
 flowchart LR

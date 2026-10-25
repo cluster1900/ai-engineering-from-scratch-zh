@@ -20,7 +20,7 @@
 
 如果你的 repo 里没有 harness，你只能凭感觉比较两个模型。有了 harness，你就能在固定 task set、固定 metric 上比较它们，并得到可以 diff 的 JSON output。Harness 是昨天运行和今天运行之间的 contract。没有它，regression 就会被发布出去。
 
-陷阱是让 harness 过拟合到单个模型。修复方式是反过来使用同一个陷阱：harness 小到十五分钟能读完，tasks 小到可以随 repo 发布，metrics 从零编写以便同事 audit，而 adapter 是唯一放置模型特定代码的地方。替换 adapter，leaderboard 会变化；替换 tasks，leaderboard 会变化。其他东西都不应该变化。
+陷阱是让 harness 过拟合到单个模型。修复方式是让所有模型特定的选择都留在 harness 之外：harness 小到十五分钟能读完，tasks 小到可以随 repo 发布，metrics 从零编写以便同事 audit，而 adapter 是唯一放置模型特定代码的地方。替换 adapter，leaderboard 会变化；替换 tasks，leaderboard 会变化。其他东西都不应该变化。
 
 ## 概念
 
