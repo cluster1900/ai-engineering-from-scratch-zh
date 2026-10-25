@@ -1,6 +1,6 @@
 # Otomatik Düzeltme Araştırması (Antropik AAR)
 
-> Antropic in Independent Sandbox in并行运行 多个Claude Opus 4.6 Autonomous Alignment Researchers 团队,并通过一个共享论坛 协调;该论坛的日志位于任何沙盒之外的任何沙盒外的;因此代理无法删除自己的记录)  zayıf-güçlü eğitim 问题上,AAR'ın performansı insan araştırmacılarını aşmıştır. Antropic 自身总结指出,规定的工作流 往往会限制AAR'ın灵活性并降低性能.
+> Antropic in Independent Sandbox in并行运行多个Claude Opus 4.6 Autonomous Alignment Researchers 团队,并通过一个共享论坛 协调;该论坛的日志位于任何沙盒之外的︎;因此代理无法删除自己的记录︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; ︎; 
 
 **Type:** Learn
 **Languages:** Python (stdlib, parallel-research-forum simulator)

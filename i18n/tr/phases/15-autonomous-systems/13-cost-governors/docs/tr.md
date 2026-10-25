@@ -58,7 +58,7 @@ Microsoft'un Ajan Yönetimi Araç Kütüpleri  kapsamlı OWASP Ajan Top 10 ve AB
 
 ###  gözlemlenmiş $1,200 → $4.800 olay
 
-Microsoft'un dosyasındaki gerçek örnek: Bir e-ticaret ajansı yeni araç ekledikten sonra, aylık maliyet üç katına çıktı. Bu araç ajanı her oturumda bir sıra sipariş durumunu sormaya izin veriyor.
+Microsoft'un dosyasındaki gerçek örnek: Bir e-ticaret ajansı yeni araç ekledikten sonra, aylık maliyet iki katına çıktı. Bu araç, ajandan her oturumda bir sıra sipariş durumunu sormasına izin veriyor.
 
 
 ```figure
