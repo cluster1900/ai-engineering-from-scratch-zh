@@ -91,6 +91,8 @@ roofline
 ## Sử dụng nó
 `code/main.py`实现 một toy radix-tree KV cache, cũng như một bộ lập trình có hai chiến lược:FCFS và cache-aware. Nó sẽ cho phép cùng một tải trọng làm việc phân biệt thông qua hai vận hành, báo cáo tỷ lệ hit tiền tố-cache và thông qua delta.
 
+- [Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?workload=shared&shared=4096)Máy trình bày bộ nhớ cache radix trong một lần thực sự chạy L4  Bốn nhóm mỗi nhóm có một lệnh hệ thống có mã số 4,096 token Một nhóm yêu cầu đầu tiên sẽ tính toán lệnh đó miễn là lệnh này vẫn còn trong bộ nhớ cache, yêu cầu tiếp theo của bộ này chỉ cần tính toán các vấn đề 128 token Bắt bộ nhớ cache radix, bạn có thể thấy số lượng trung bình của thời gian từ 479 ms thành 14,706 ms
+
 ## 交付 nó
 本课会生成 `outputs/skill-radix-scheduler-advisor.md` Đưa ra mô tả tải trọng công việc (quantify) (quantify) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích) (giải thích)
 

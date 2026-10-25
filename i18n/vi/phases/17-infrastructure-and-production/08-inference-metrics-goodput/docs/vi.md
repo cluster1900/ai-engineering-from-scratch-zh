@@ -105,6 +105,8 @@ throughput-latency
 ## Sử dụng nó
 `code/main.py`là một phiên bản máy tính tính tốt đúc. Nó tạo ra phân phối độ trễ tổng hợp, ứng dụng SLO,并计算 tốt đúc. Nó cũng sẽ hiển thị cùng một dấu vết trên GenAI-Perf và TPOT khác biệt của LLMPerf.
 
+- [Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?users=1)Máy trình hiển thị thời gian của mỗi token phát ra trên NVIDIA L4 từ khi nào đến. Một bước giải mã để đọc trọng lượng 16,41 GB, trong 300 GB / s, dưới ít nhất cần 54,7 ms, trong khi thực tế bước này mất 60,16 ms.
+
 ## 交付 nó
 本课会生成 `outputs/skill-slo-goodput-gate.md`❖ Đưa ra một khối lượng công việc và SLO, nó sẽ tạo ra một công thức chuẩn của CI / CD có thể sử dụng, sử dụng đầu vào tốt chứ không phải là đầu ra để triển khai cổng.
 

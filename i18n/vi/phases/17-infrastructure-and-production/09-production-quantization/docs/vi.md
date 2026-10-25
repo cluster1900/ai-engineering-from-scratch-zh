@@ -101,6 +101,8 @@ gpu-memory-breakdown
 ## Sử dụng nó
 `code/main.py`会针对一系列模型大小,计算六种格式的内存足迹 (重量+KV+ kích hoạt) 和相对吞吐量――展示KV缓存何时占主导、重压缩何时划算,以及FP8何时是安全选择――
 
+- [Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?dtype=fp8&users=64)Máy trình bày hiệu quả của FP8 trên NVIDIA L4 ⋅ trọng lượng giảm từ 15.28 GB xuống còn 8.81 GB, KV pool từ 24.094 token tăng lên 142.369 token, 64 người dùng thực hiện phát hành từ 250.85 token mỗi giây tăng lên 735.91 token ⋅
+
 ## 交付 nó
 本课会产出 `outputs/skill-quantization-picker.md` Được xác định về phần cứng, kích thước mô hình, loại tải trọng và dung nạp chất lượng, nó sẽ chọn một kiểu dáng, và tạo ra kế hoạch hiệu chuẩn/bảo quy.
 
