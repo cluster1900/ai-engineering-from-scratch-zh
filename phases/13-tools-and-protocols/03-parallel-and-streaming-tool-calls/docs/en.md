@@ -66,7 +66,7 @@ model 发出的每个调用都有一个 `id`。host 返回的每个结果都必�
 
 host 会在自己的 thread、coroutine 或 remote worker 上运行每个调用的 executor。最简单的 harness 使用 thread pool；生产环境使用 asyncio 配合 `asyncio.gather` 或 structured concurrency。完成顺序不可预测，id 才是标识符。
 
-一个常见 bug：按 call-list 顺序回复结果，而不是按完成顺序回复。这通常能工作，因为 model 只关心 `tool_call_id`，但如果某个结果丢失或重复，乱序提交会让调试更困难。优先按完成顺序回复，并显式带上 ids。
+一个常见 bug：按 call-list 顺序回复结果，而不是按完成顺序回复。这通常能工作，因为 model 只关心 `tool_call_id`，但如果某个结果丢失或重复，一个偏离结果到达顺序而重新排序的回复列表，会让这个缺口更难在 logs 中被找到。优先按完成顺序回复，并显式带上 ids。
 
 ### Streaming tool calls
 

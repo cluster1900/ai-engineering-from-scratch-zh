@@ -352,7 +352,7 @@ python3 -m unittest discover -s code/tests -v
 
 ## 课后深练习
 
-1. 运行 `code/main.py`。仔细追踪执行流。观察 IdP 在步骤 6 中轮换密钥，定时 `refresh_jwks` 重新拉取已发布的公钥集合，验证旧 Token（重叠窗口期内）与新签发的 Token 如何均在不重启服务的情况下顺利验签通过。
+1. 运行 `code/main.py`。仔细追踪执行流。观察 IdP 在脚本输出的步骤 6（即上文流程的步骤 7）中轮换密钥，定时 `refresh_jwks` 重新拉取已发布的公钥集合，验证旧 Token（重叠窗口期内）与新签发的 Token 如何均在不重启服务的情况下顺利验签通过。
 2. 在受保护资源元数据的 `authorization_servers` 列表中新增一个合法的 IdP。签发一枚由该新 IdP 签名的 Token，验证验签例程顺利放行。随后签发一枚由未列入白名单的外部 IdP 签名的 Token，验证系统坚决阻断并返回 `WWW-Authenticate: Bearer error="invalid_token", error_description="iss not allowed"`。
 3. 为 `register_client` 增加速率限制检查，在注册器真正处理请求前执行拦截。在内存中使用按来源 IP 为键的字典实现一个轻量级的 Token Bucket 限流器。
 4. 研读 RFC 7591 规范，指出示例代码中 `/register` 处理器尚未校验的两个协议字段，并补全校验逻辑。（提示：`software_statement` 与 `redirect_uris` 的 URI Scheme 协议检查）。

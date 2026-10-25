@@ -1,6 +1,6 @@
 # 自动化 Alignment Research (Anthropic AAR)
 
-> Anthropic 在独立 sandbox 中并行运行多个 Claude Opus 4.6 Autonomous Alignment Researchers 团队，并通过一个共享 forum 协调；该 forum 的日志位于任何 sandbox 之外（因此 agent 无法删除自己的记录）。在 weak-to-strong training 问题上，AAR 的表现超过了人类研究员。Anthropic 自己的总结指出，规定式 workflow 往往会限制 AAR 的灵活性并降低性能。自动化 alignment research 是一个压缩步骤，它会把时间线压缩到 RSP 本来要检测的那些精确 misalignment 风险上。
+> Anthropic 在独立 sandbox 中并行运行多个 Claude Opus 4.6 Autonomous Alignment Researchers 团队，并通过一个共享 forum 协调；该 forum 的日志位于任何 sandbox 之外（因此 agent 无法删除自己的记录）。在 weak-to-strong training 问题上，AAR 的表现超过了人类研究员。Anthropic 自己的总结指出，规定式 workflow 往往会限制 AAR 的灵活性并降低性能。自动化 alignment research 会压缩时间线，而且压缩的正是 RSP 本来要检测的那些 misalignment 风险。
 
 **Type:** Learn
 **Languages:** Python (stdlib, parallel-research-forum simulator)

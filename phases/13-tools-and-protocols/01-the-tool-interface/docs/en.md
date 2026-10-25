@@ -10,7 +10,7 @@
 ## 学习目标
 - 解释为什么一个只能生成文本的 LLM 不能单凭自身对真实世界采取行动。
 - 画出四步 tool-call loop（describe → decide → execute → observe），并说出每一步由谁负责。
-- 将一个 tool description 写成三部分：name、JSON Schema input，以及确定性的 executor function。
+- 将一个 tool definition 写成四部分：name、description、JSON Schema input，以及确定性的 executor function。
 - 区分 pure tools 和 side-effecting tools，并说明这种划分为什么对安全很重要。
 
 ## 问题
@@ -25,7 +25,7 @@ LLM 输出的是下一个 token 的概率分布。这就是它的全部输出表
 ## 概念
 ### Step one: describe
 
-host 用三个字段声明每个 tool。
+host 用三个字段向模型声明每个 tool。第四部分 executor 留在 host 侧，永远不会到达模型。
 
 - **Name.** 一个稳定、机器可读的标识符。用 `get_weather`，而不是 “weather thing”。
 - **Description.** 一段自然语言简介。“当用户询问某个具体城市的当前天气状况时使用。不要用于历史数据。”
@@ -109,7 +109,7 @@ tp-tool-loop
 
 需要关注的内容：
 
-- tool registry 为每个 tool 持有三个字段：name、description、schema，以及 executor reference。
+- tool registry 为每个 tool 持有四个字段：name、description、schema，以及 executor reference。只有前三个会发送给模型。
 - validator 是一个最小 JSON Schema subset（types、required、enum、min/max），只用 stdlib 编写。Phase 13 · 04 会提供更完整的版本。
 - 循环将 iteration count 限制在五次。生产 agents 正是需要这种 circuit breaker。
 

@@ -40,7 +40,7 @@ flowchart LR
 | Verification quality | acceptance command 是否真的证明了目标，还是只证明了一个更弱的版本？ |
 | Handoff readiness | 下一个 session 是否能从当前状态干净地接手？ |
 
-总分 10 分。低于 7 分是 soft fail；低于 5 分是 hard fail。
+总分 10 分。低于 7 分是 soft fail；低于 5 分，或任一维度为 0 分，是 hard fail。
 
 ### reviewer 是独立角色，不是独立模型
 
