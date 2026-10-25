@@ -12,7 +12,7 @@
 - ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐ ☐
 - Gallegos et al. 2024'te üç sınıf değerlendirme göstergesi bulunur,并分别描述其中一个指标──
 - 交叉性, ve neden WinoIdentity'nin belirsizliklere dayalı adillik ölçümleri tek birim önyargılı değerlendirme eksikliğini giderdi.
-- 描述两种偏见的机制可解释性方法(cinsel nöronlar、SAE özellikleri、 dikkat başı manipülasyonu)
+- 描述三种偏见的机制可解释性方法(cinsel nöronlar、SAE özellikleri、 dikkat başı manipülasyonu)
 
 ## 问题
 

@@ -26,7 +26,7 @@ Gao、Schulman、Hilton(2023) doğrudan bu noktayı ölçtü. 100k etiketleri ku
 
 Goodhart'ın orijinal ifade:Bir ölçü hedefe dönüştüğünde, iyi bir ölçü olmaktan vazgeçirir. Manheim ve Garrabrant(2018) ayrıştırdı dört çeşit çeşitlilik: gerileme-sonuçlu örneği)、 aşırılık( kuyruğu)、 sebeplilik(proxy is target'ın aşağı游) ve düşmanca ajan oyun)。
 
-Gao et al.  给出了一个功能形式──令 `d = sqrt(KL(pi || pi_init))`❖ 令`R_proxy(d)`- Yeterince ödül.`R_gold(d)`"Günahın altını"
+Gao et al.  altın ödülün fonksiyonel biçimini verdi.`d = sqrt(KL(pi || pi_init))`,并令 `R_gold(d)`"Günahın altını"
 
 ```math
 \begin{aligned}
@@ -35,7 +35,7 @@ R_{\text{gold}}^{\text{RL}}(d) &= d\,(\alpha_{\text{RL}} - \beta_{\text{RL}} \lo
 \end{aligned}
 ```
 
-İçlerinden `beta_gold > beta_proxy`❖ Her ikisi de sıfırdan KL yukarı yükselmiş, her ikisi de zirveye ulaşmış, ama altın zirvesi daha yakın bir başlangıç noktasına ❖ daha büyük ❖`d`Üst, proxy                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+两种形式都从零 KL上升,达到峰值,然后下降――论文中代理分 没有干净的拟合;它将持续上升,大 KL 时大致随着`d`线性增长──因此在较大 `d`Üst, proxy                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 
 İşte over-optimization curve── bu belirli bir ödül modeli için bir hata değil── bu sorunun kendiliğinden şekli──
 
@@ -90,7 +90,7 @@ rlhf-reward-kl
 
 2. Gürültü dağılımını Gaussian'dan 改为低自由度'dan öğrenci-t(koyu kuyruğu) ・・・ tutmak proxy RM eğitim ayarı 不变──峰 konum 和 峰 sonrası çöküş ne değişiklik?
 
-3. Gao et al. Şekil 1 ((ICML 2023) ⋅论文为代理-gold gap 提出一个功能形式──把它适应到练习1 的模拟曲线,并比较参数──
+3. 阅读 Gao et al. Şekil 1 ((ICML 2023) ⋅论文 论文为金奖励 提出了一个关于 `d`Bu, Egzersiz 1'in simülasyon eğrilerine uygun olarak yapılır.
 
 4. 找一篇 最近声称已解奖励黑客的RLHF makalesi(这个短语是红旗) ――识别论文测试了四种服中哪些,又没有测试哪些──
 

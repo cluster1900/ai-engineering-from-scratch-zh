@@ -1,6 +1,6 @@
 # Doğrudan Doğrudan Enjeksiyon  生产攻击面
 
-> Yönel olmayan bir istisna enjeksiyonu (IPI)  dış içeriği  web sayfası  e-posta  paylaşılan belge  destek bileti  tarafından ajan sisteminin açık kullanıcı işlemesi olmadan tüketimi  IPI 2026 yılında baskın bir üretim tehdidi: saldırganın kullanıcı giriş filtrelerini geçiyor çünkü saldırgan kullanıcı ile temas etmiyor; ajanlar  daha fazla dış içeriği işliyor, sessiz genişleşiyor; ayrıca, kimse okumayan otomasyon iş akışı  MDPI Bilgisi 171)  54 (Oktâbr 2026)  Genel 2023-2025 yıl  NDSS 2026 IPI savunma kağıdı, temel zorlukları açıklayacak: başlangıçta yerleştirilmiş talimatların "iyi bir baskı" anlamında olması mümkün olduğu için, bu testlerin sadece anahtar kelimeleri filtrelenmesi değil. Bu nedenle, "İlk saldırıların" (Nasdaq Raporu)                                                                                                                                                   
+> Yönel olmayan bir istisna enjeksiyonu (IPI)  dış içeriği  web sayfası  e-posta  paylaşılan belge  destek bileti  tarafından kullanılır  açık kullanıcı işlemesi olmadan ajan sistem tarafından tüketilmektedir.IPI 2026 yılında baskın bir üretim tehdidi: saldırganın kullanıcı giriş filtrelerini atlatır, çünkü saldırgan kullanıcı ile temas etmiyor; ajanlar daha fazla dış içeriği işlemeyi sürdürürken sessiz genişleşiyor; ayrıca, kimse okumayan otomasyon iş akışını hedefliyor. MDPI Bilgisi 171) 54 (Oktâbr 2026)  Genel 2023-2025 yılları.NDSS 2026 IPI savunma makalesi, temel zorlukları açıklayacak: İlk olarak, giriş talimatları "başlı baskı" anlamında olabilir, evet), bu nedenle testlerin sadece bu anahtar kelimeleri filtrelenmek değildir. "Nasra'nın açık saldırı raporları (Nasra'nın açıklama ve saldırı) % 90'a yakın, en büyük insan savunma, en büyük koruma, en büyük koruma, en büyük koruma, 2025 Ekim saldırı, 2035'te yayınlanmıştır.
 
 **类型：**Yapım
 **语言：**Python (stdlib, IPI saldırısı + savunma harnes)
@@ -40,7 +40,7 @@ CaMeL (Microsoft 2025)、ConfAIde (Stanford 2024) 和 NDSS 2026 IPI savunma kağ
 
 ### Saldırgan İkinci Devamı Yapıyor
 
-Nasr et al. (Oktyabr 2025) Adaptif saldırılar kullanarak ((gradyen arama,RL politikaları, rastgele arama, 72 saatlik insan kırmızı ekibi) test etti 12 yayınlanmış IPI savunmaları── her ilk rapor neredeyse sıfır ASR savunmalarının saldırısı >90% ASR─
+Nasr et al. (Oktyabr 2025) Adaptif saldırılar kullanarak (gradyen arama, RL politikaları, rastgele arama, 72 saatlik insan kırmızı ekibi) 12 yayınlanmış IPI savunma test etti.
 
 方法論教训: Sadece adaptif saldırı değerlendirmesini içeren savunma 时才发布防御──static attack benchmarks 不是强度的证据;攻击者会知道防御──
 

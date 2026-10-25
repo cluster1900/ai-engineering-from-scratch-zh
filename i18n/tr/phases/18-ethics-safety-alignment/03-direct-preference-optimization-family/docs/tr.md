@@ -53,7 +53,7 @@ Yanlış bir yerde olabilir:
 
 - - Ödül farkı .`beta * (log(pi/pi_ref)_w - log(pi/pi_ref)_l)`Bu, sınırsız bir tercih.
 - Bu kayıp, seçilen ve reddedilen log-probleri 往相反方向推──, eğer reddedildiğinde, aşağı daha hızlı düşerse, seçilen mutlak log-probleri 往下推──, bu, Degraded Chosen Response 现象──
-- Distribüsiyon dışı tercihler (rare sample vs. rare sample) herhangi bir şekilde içeren ödüller elde eder.
+- Değişiklikten uzak tercihler (II) Referans politikasında aşağıda çok nadir olan örneklere karşı herhangi bir içgüdüsel ödül elde eder.
 
 ### Açıklama (Azar et al., 2024)
 

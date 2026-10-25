@@ -1,6 +1,6 @@
 # 内容审核系统  OpenAI, Perspective, Llama Guard
 
-> 生产级调控系统将课 12-16 中定义的安全政策 操作化──OpenAI调控 API:`omni-moderation-latest`(2024) GPT-4o'ya dayalı, bir kez araya gelebilir metin + görüntüler 分类; 多语言测试集上上一版提升 42%; cevap şema 返回 13 个类 booleans  taciz, taciz/ tehdit, nefret, nefret/ tehdit, yasadışı, yasadışı/ şiddeti, kendini incitme/ niyet, kendini incitme/ talimatlar, cinsel, cinsel/ azınlık, şiddet, şiddet/ grafik; çoğu geliştiricilere karşı ücretsiz olarak görülmüş olan katman geriye dönmüş kalıplar: Giriş moderatörü (önem nesli)  Ürün moderatörü (önem nesli)  Kullanım moderatörü (domen kuralları)  Asynk paralel olarak gizli latency çağrılar;                                                                                                                                                                   
+> 生产级调控系统将课 12-16 中定义的安全政策 操作化──OpenAI调控 API:`omni-moderation-latest`(2024) GPT-4o'ya dayalı, bir kez kullanılabilir metin + görüntüler 分类; 多语言测试集上上上一版提升 42%; cevap şema 返回 13 个类 booleans  taciz, taciz/ tehdit, nefret, nefret/ tehdit, yasadışı, yasadışı/ şiddeti, kendini incitme/ niyet, kendini incitme/ talimatlar, cinsel, cinsel/ azınlık, şiddet, şiddet/ grafik; çoğu geliştiricilere karşı ücretsiz olarak.
 
 **Type:** Build
 **Languages:** Python (stdlib, three-layer moderation harness)
