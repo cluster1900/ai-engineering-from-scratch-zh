@@ -352,7 +352,7 @@ python3 -m unittest discover -s code/tests -v
 
 ## 课后深练习
 
-1. 运行 `code/main.py`◊仔细追踪执行流──观察 IdP 在步骤 6 中轮换密钥,定时 `refresh_jwks`重新拉取已发布的公钥集合,验证旧代币(重叠窗口期内) مع إصدار جديد من الديوتا 如何均在未重启服务的情况下顺利验证通过──
+1. 运行 `code/main.py`◊仔细追踪执行流──观察 IdP 在脚本输出步骤 6 ((即上文流程的步骤 7) 中轮换密钥,定时 `refresh_jwks`重新拉取已发布的公钥集合,验证旧代币(重叠窗口期内) مع إصدار جديد من الديوتا 如何均在未重启服务的情况下顺利验证通过──
 2. في الموارد المحمية`authorization_servers`في قائمة جديدة إضافة إدبي قانونية. إصدار إدبي قانونية من قبل هذا الإدبي قانونية. إصدار إدبي قانونية من قبل هذا الإدبي قانونية.`WWW-Authenticate: Bearer error="invalid_token", error_description="iss not allowed"`.
 3. لأجل`register_client`增加速率限制检查,在注册器真正处理请求前执行拦截──在内存中使用按来源IP 为键的字典实现一个轻量级的代币桶 限流器──
 4. 研读 RFC 7591 规范,指出示例代码中 `/register`处理器尚未校验的两个协议字段,并补全校验逻辑──(提示:`software_statement`مع`redirect_uris`نطاق URI 协议检查)
