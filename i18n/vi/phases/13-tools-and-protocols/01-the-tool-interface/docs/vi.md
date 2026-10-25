@@ -10,7 +10,7 @@
 ## Học mục tiêu
 - 解释 tại sao một LLM chỉ có thể tạo ra văn bản không thể tự mình hành động đối với thế giới thực.
 - 画出四步工具-call loop (xác định → quyết định → thực hiện → quan sát),并说出每一步由谁负责──
-- 将一个工具描述 写成三部分:name、JSON Schema input,以及确定性的执行函数──
+- 将一个工具定义 写成四部分:name、描述、JSON Schema input,以及确定性的执行函数──
 - 区分纯工具和副作用工具,并说明 tại sao phân chia này rất quan trọng đối với an toàn.
 
 ## 问题
@@ -25,7 +25,7 @@ Chuyện vòng bốn bước là sự không thay đổi của tầng dưới c�
 ## 概念
 ### Bước 1: mô tả
 
-host 用三个字段声明 mỗi công cụ.
+host 用三个字段向模型声明每个工具──第四部分执行器 留在主机侧,永远不会到达模型──
 
 - **Name.**Một định vị được đọc trên máy tính.`get_weather`, thay vì đời tiết ──
 - **Description.**Một đoạn ngôn ngữ tự nhiên简介── Khi người dùng hỏi tình hình thời tiết hiện tại của một thành phố cụ thể, không sử dụng dữ liệu lịch sử──
@@ -109,7 +109,7 @@ tp-tool-loop
 
 需要关注的内容:
 
-- Registry tool cho mỗi tool 持有三个字段:name、描述、方案,以及执行器引用──
+- Registry tool cho mỗi tool 持有四个字段:name、描述、方案,以及执行器参考──只有前三会发送给模型──
 - Validator là một bộ phận nhỏ nhất của JSON Schema (types, required, enum, min/max), chỉ sử dụng stdlib 编写,Phase 13 · 04 会提供更完整的版本,
 - 循环将 lặp số 限制在五次――生产代理 正是需要这种断路机――
 

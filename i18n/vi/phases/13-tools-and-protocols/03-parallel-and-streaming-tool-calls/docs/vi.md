@@ -66,7 +66,7 @@ mô hình phát ra mỗi调用 có một`id`◊ host  trả lại mỗi kết qu
 
 Người chủ 会在自己的线索、coroutine或远程工作者 上运行每个调用执行器──最简单的使用线索池;生产环境使用异步配合 配合 `asyncio.gather`Hoặc cấu trúc đồng thời.
 
-Một lỗi thường thấy: theo danh sách gọi 顺序回复结果, thay vì theo hoàn thành顺序回复;;`tool_call_id`, nhưng nếu một kết quả bị mất hoặc lặp lại, các trình tự rắc rối sẽ làm cho việc kiểm tra trở nên khó khăn hơn.
+Một lỗi thường thấy: theo danh sách gọi 顺序回复结果, thay vì theo hoàn thành顺序回复;;`tool_call_id`, nhưng nếu một kết quả bị mất hoặc lặp lại, một kết quả bị chuyển hướng đến thứ tự và sắp xếp lại danh sách lặp lại, sẽ làm cho sự thiếu hụt này khó tìm thấy trong các nhật ký hơn.
 
 ### Các cuộc gọi của công cụ streaming
 

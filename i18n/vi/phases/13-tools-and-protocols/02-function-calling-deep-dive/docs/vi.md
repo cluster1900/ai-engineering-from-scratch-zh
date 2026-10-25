@@ -49,12 +49,12 @@ Mỗi nhà cung cấp cần 5 thứ:
 | Result block | role `tool`, `tool_call_id` | 带 `tool_result`, `tool_use_id` 的 `user` | 带匹配 `id` 的 `functionResponse` |
 | Force-a-tool | `tool_choice: {type: "function", function: {name}}` | `tool_choice: {type: "tool", name}` | `tool_config: {function_calling_config: {mode: "ANY"}}` |
 | Forbid tools | `tool_choice: "none"` | `tool_choice: {type: "none"}` | `mode: "NONE"` |
-| Strict schema | `strict: true` | schema-is-schema（始终 enforce） | request level 的 `responseSchema` |
+| Strict schema | `strict: true` | 每个 tool 上的 `strict: true`（opt-in） | request level 的 `responseSchema` |
 
 ### Bạn thực sự sẽ gặp phải những hạn chế
 
 - **OpenAI.**Mỗi yêu cầu tối đa 128 个工具――Schema depth 5――Argument string <= 8192 bytes――Strict mode 要求没有 `$ref`, không có sự chồng chéo `oneOf`- Không.`anyOf`- Không.`allOf`, mỗi tài sản đều nằm trong thành phố`required`Ở giữa.
-- **Anthropic.**Mỗi yêu cầu tối đa 64 công cụ Ưu điểm độ sâu  thực tế không đặt giới hạn, nhưng giới hạn thực tế là 10 Ưu điểm không có cờ chế độ nghiêm ngặt; mô hình là hợp đồng, mô hình thường sẽ tuân thủ Ưu điểm:
+- **Anthropic.**Mỗi yêu cầu tối đa 64 công cụ Ưu điểm độ sâu  thực tế không đặt giới hạn, nhưng giới hạn thực tế là 10 Ưu điểm sử dụng công cụ chặt chẽ  cần trong định nghĩa công cụ Ưu điểm đặt `strict: true`Khi không đặt, kế hoạch là mô hình thường sẽ tuân thủ hợp đồng, chứ không phải là bảo đảm.
 - **Gemini.**Mỗi yêu cầu tối đa 64 个 hàm。Các loại Schema là OpenAPI 3.0 tiểu tập hợp(với JSON Schema 2020-12 略有差异)。自 Gemini 3 起, liên lạc song song song 使用 unique-id。
 
 ### `tool_choice`hành vi
@@ -91,7 +91,7 @@ Sự biểu hiện của lỗi lập luận không hợp lệ cũng khác nhau.
 
 - **OpenAI (non-strict).**Mô hình  trả lại `arguments: "{bad json}"`, Parse JSON của bạn 失败, bạn nhập thông điệp lỗi và gọi lại.
 - **OpenAI (strict).**Truy cập trong thời gian giải mã; không hợp lệ JSON không thể xuất hiện, nhưng có thể xuất hiện `refusal`
-- **Anthropic.** `input`Có thể chứa các trường bất ngờ; sơ đồ là tư vấn.
+- **Anthropic（non-strict）。** `input`Có thể chứa các trường bất ngờ; sơ đồ là lời khuyên.`strict: true`Khi, lấy mẫu sẽ bị ràng buộc trong kế hoạch.
 - **Gemini.**OpenAPI 3.0 quirk:object fields 上的 `enum`Sẽ bị bỏ qua; bạn cần tự xác nhận mình.
 
 ### Mô hình dịch giả

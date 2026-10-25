@@ -81,7 +81,7 @@ Mỗi người có mô tả và mô hình được đánh dấu theo tên  chọ
 ### Thiết kế tham số
 
 - **每个封闭集合都使用 Enum。** `units: "celsius" | "fahrenheit"`, đừng dùng `units: string`◊Enums 会告诉模型可接受值的全集──
-- **Required vs optional。**标记最低限需要的字段──其他全部可选──OpenAI 严格模式 要求每个字段都在 `required`Trong; trong代码中添加 `is_default: true`Công ước,并让 mô hình 省略它.
+- **Required vs optional。**标记最低限需要的字段──其他全部可选──OpenAI 严格模式 要求每个字段都在 `required`Trong đó, mô hình không thể bỏ qua bất kỳ một loại nào.`null`của liên minh, để mô hình trong không có giá trị gửi `null`
 - **Typed IDs。** `note_id: string`Có, nhưng thêm một `pattern`(`^note-[0-9]{8}$`Để bắt được những cái nhìn ảo giác.
 - **不要使用过度灵活的 types。**避免 `type: any`✿ mô hình 会 ảo giác hình dạng✿
 - **描述 field。** `{"type": "string", "description": "ISO 8601 date in UTC, e.g. 2026-04-22"}`✿ description là một phần của mô hình prompt ✿
