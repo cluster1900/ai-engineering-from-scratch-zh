@@ -68,7 +68,7 @@ Tres agentes  ejecutar una tarea de investigación. A. es un agente de recuperac
 
 1. **每次写入都标注 provenance。**Cada entrada en el estado compartido tiene un registro de quién ha escrito, cuándo ha escrito, cuál es el momento de escribir, y también de qué se ha escrito.
 2. **对写入做 versioning；把它们视为 append-only。**修正 es una nueva entrada, que se utiliza para reemplazar la entrada anterior, en lugar de original.
-3. **至少保留一个无法写入共享状态的 Agent。**Agente de verificación de sólo lectura 抽样输入、重新获取来源,并标记不一致──因为它不能写入池,所以它不会被池毒──
+3. **至少保留一个无法写入共享状态的 Agent。**Agente de verificación de sólo lectura 抽样输入、重新获取来源,并标记不一致──它仍将读取池,因此可能被一条坏输入误导; pero se considerará cada entrada con la fuente original 核对, y no puede escribir, por lo que se determina que nunca se pondrá en el hecho de haber sido envenenado反回共享状态──
 
 ### Tabla negra 先例 (Hayes-Roth, 1985)
 

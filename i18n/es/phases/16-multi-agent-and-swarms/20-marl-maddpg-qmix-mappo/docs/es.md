@@ -42,7 +42,7 @@ Por qué usar CTDE: cuando entrenamos, sabemos la acción de todos; usamos esta 
 
 ### QMIX (2018)  Descomposición de valor
 
-仅适用于合作社――Global reward 之和: 之和: 之和: 适用于合作社. Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和: Global reward 之和 之和: Global reward 之和 之和: Global reward 之和 之和 之和: Global reward 之和 之和 之和 之和 之和: Global reward 之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之之
+ sólo para cooperativas  Valor de acción conjunto `Q_tot`Es la función de mezcla monótona de cada agente de Q-valor:
 
 ```math
 Q_{\text{tot}}(\tau, a) = f\big(Q_1(\tau_1, a_1), \ldots, Q_n(\tau_n, a_n)\big), \quad \frac{\partial f}{\partial Q_i} \ge 0

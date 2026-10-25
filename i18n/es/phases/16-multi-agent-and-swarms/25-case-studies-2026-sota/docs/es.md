@@ -57,7 +57,7 @@ Este es un ejemplo de especialización de roles (fase 16 · 08) y topología est
 Producción en escala de población 案例──时间线:
 
 - **Nov 2025:**Clawdbot (el agente de codificación de recorrido de Peter Steinberger) publicado
-- **Dec 2025 – Mar 2026:**两次更名(Clawdbot → OpenClaw → 继续以 OpenClaw 运行) 』
+- **Jan 2026:**Una semana dentro de dos veces más pronunciado ([[{{lang-en:{{lang-en}}{{lang-en}}}}{{lang-en}}{{lang-en}}{{lang-en}}}}{{lang-en}}{{lang-en}}{{lang-en}}}}{{lang-en}}{{lang-en}}{{lang-en}}}}{{lang-en}}}}{{lang-en}}{{lang-en}}}}{{lang-en}}{{lang-en}}}}{{lang-en}}{{lang-en}}{{lang-en}}}}{{lang-en}}{{lang-en}}}}{{lang-en}}{{lang-en}}}}{{lang-en}}{{lang-en}}}}{{lang-en}}}}{{lang-en}}{{lang-en}}}}{{lang-en}}}}{{lang-en}}}}{{lang-en}}}}{{lang-en}}}}{{lang-en}}}}{{lang-en}}}}{{lang-en}}}}}}{{lang-en}}}}{{lang-en}}}}{{lang-en}}}}{{lang-en}}}}}}{{lang-en}}}}{{lang-en}}}}}}{{lang-en}}}}}}{{lang-en}}}}{{lang-en}}}}}}{{lang-en}}}}}}{{lang-en}}}}}}{{lang-en}}}}{{lang-en}}}}}}}}{{lang-en}}}}}}{{lang-en}}}}}}}}}}{{lang-en}}}}}}}}{{lang-en}}}}}}{{lang-en}}}}}}}}}}}}}}{{lang-en}}}}}}}}{{lang-en}}}}}}}}{{lang-en}}}}}}}}}}}}}}}}}}}}{{lang-en}}}}}}}}}}}}}}}}}}
 - **Feb 2026:**Moltbook  basado en el mismo conjunto de primitivas  como red social de agentes  publicado; en unos días hay alrededor de 2.3M cuentas de agentes ⋅
 - **Mar 2026 (2026-03-10):**Meta 收购 Moltbook──
 - **Mar 2026:**China limita el gobierno a utilizar OpenClaw.
