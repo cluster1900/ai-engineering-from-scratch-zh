@@ -3,7 +3,7 @@
 > CrewAI 是 2026 年基于角色的 multi-agent framework。四个基本构件：Agent、Task、Crew、Process。两种顶层形态：Crews（自主、基于角色的协作）和 Flows（事件驱动、确定性）。文档说得很直接：“对于任何生产就绪的应用，都从 Flow 开始。”
 
 **类型：** 学习 + 构建
-**语言：** Python (stdlib)
+**语言：** Python（使用 numpy）
 **先修：** Phase 14 · 12 (Workflow Patterns), Phase 14 · 14 (Actor Model)
 **时间：** 约 75 分钟
 
@@ -14,8 +14,8 @@
 - 区分 Crews（自主的基于角色）与 Flows（事件驱动的确定性），并解释文档中的生产建议。
 - 使用 `@tool` decorator 和 `BaseTool` subclass 接入 tools；理解 structured outputs 与 free text 的取舍。
 - 说出四种 CrewAI memory types，以及各自在什么时候值得使用。
-- 实现一个 stdlib 三 Agent crew（researcher、writer、editor），产出一份 brief。
-- 识别三种 CrewAI failure modes：prompt-bloat、manager-LLM tax、brittle handoffs。
+- 用普通 Python 实现一个三 Agent crew（researcher、writer、editor），产出一份 brief。
+- 识别四种 CrewAI failure modes：prompt-bloat、manager-LLM tax、brittle handoffs、Crew-as-prod。
 
 ## 问题
 
@@ -120,7 +120,7 @@ CrewAI 开箱提供四种 memory types。它们可以组合：一个 Crew 可以
 - 亚秒级 latency budgets。Hierarchical 会增加 round trips。即使 Sequential 也会序列化包含 backstories 和 prior outputs 的 prompts。
 - Single-agent loops。跳过 framework；一个 agent loop（Lesson 1）加 tool registry 更短。
 
-Lesson 17（Agent Framework Tradeoffs）用 Matrix 展示了这一点。简短版本：CrewAI 位于“collaborative role-based”角落。
+Lesson 28（Orchestration Patterns）把这些 topology 并排比较。简短版本：CrewAI 位于“collaborative role-based”角落。
 
 ### Dependency shape
 
@@ -129,7 +129,7 @@ Lesson 17（Agent Framework Tradeoffs）用 Matrix 展示了这一点。简短�
 ### 这种 pattern 会在哪里出错
 
 - **Backstories 导致 prompt-bloat。** 每个 agent 一篇 2000 词的 backstory，再加五个 agent 的 crew，会在第一次 tool call 前烧掉 context budget。把 backstories 控制在 200 词以内。跨 agents 复用短语；不要把 house style 重复五遍。
-- **Manager-LLM token tax。** Hierarchical process 会在每个 specialist call 前增加一个 manager LLM call。五个 task 的 crew 会从五次 LLM calls 变成六次，而且 manager call 携带完整 task list 加 prior outputs。除非 routing 依赖输出，否则切换到 Sequential。
+- **Manager-LLM token tax。** Hierarchical process 会在每个 specialist call 前增加一个 manager LLM call。五个 task 的 crew 会从五次 LLM calls 变成十次，而且 manager call 携带完整 task list 加 prior outputs。除非 routing 依赖输出，否则切换到 Sequential。
 - **Brittle handoffs。** Task N 的 `expected_output` 是“an outline”。Task N+1 把它作为 `context` 读取，并尝试 parse 三个 sections。LLM 生成了四个。下游 Agent 即兴处理。修复方式是在 Task N 上使用 `output_pydantic`，让 Task N+1 读取 typed object，而不是 free text。
 - **Crew-as-prod。** 自由形式 Crew 在没有 Flow wrapper 的情况下被发布到生产。输出 variability 高；无法 replay；on-call 无法 diff 一次坏运行和一次好运行。用 Flow 包起来。
 
@@ -140,7 +140,7 @@ ae-crew-vs-flow
 
 ## 构建它
 
-`code/main.py` 实现了两种形态的 stdlib 版本，以及一个三 Agent crew。
+`code/main.py` 用普通 Python 实现了两种形态，以及一个三 Agent crew。标准库之外唯一的依赖是 numpy，用于 mocked similarity。
 
 形态：
 

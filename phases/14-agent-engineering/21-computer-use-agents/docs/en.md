@@ -10,7 +10,7 @@
 ## 学习目标
 
 - 描述 Claude computer use：输入截图，输出键盘/鼠标命令，不使用 accessibility API。
-- 说出这三个模型在 OSWorld / WebArena / Online-Mind2Web 上的 benchmark 数字。
+- 回忆本课引用的发布时 benchmark 数字：OpenAI CUA 在 OSWorld / WebArena / WebVoyager 上的数字，以及 Gemini 2.5 Computer Use 在 Online-Mind2Web 上的数字。
 - 解释 Gemini 2.5 Computer Use 文档中的逐步安全模式。
 - 总结这三个模型共同执行的不可信输入契约。
 

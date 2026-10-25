@@ -13,7 +13,7 @@ tags: [preparedness-framework, fsf, rsp, cross-policy, scaling-policy]
 
 1. **OpenAI PF v2 classification.** Tracked 或 Research。如果是 Tracked，命名 Capabilities + Safeguards Report 的触发条件。如果是 Research，指出政策措辞是“potential” mitigations。
 2. **Anthropic RSP v3.0 classification.** 哪个阈值（ASL-3、AI R&D-4、hardcoded prohibition）？哪个缓解措施（affirmative case、security + deployment）？确认该承诺属于 Anthropic-unilateral tier 还是 industry-recommendation tier。
-3. **DeepMind FSF v3 classification.** 哪个领域（Cyber、Bio、ML R&D、CBRN）？哪个 CCL 或 Tracked Capability Level？是否调用 deceptive alignment monitoring？
+3. **DeepMind FSF v3 classification.** 哪个领域（CBRN、Cyber、Harmful Manipulation、ML R&D）？哪个 CCL 或 Tracked Capability Level？是否调用 deceptive alignment monitoring？
 4. **Convergence summary.** 三项政策是否同意该能力的严重性，还是存在有意义的分歧？哪项分类最严谨，哪项最不严谨？
 5. **Measurement dependency.** 每项分类都依赖能力测量。说明该能力如何被测量，以及哪个 eval provider（METR、Apollo、internal、third-party）负责该测量。
 

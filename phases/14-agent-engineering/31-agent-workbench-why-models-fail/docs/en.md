@@ -121,7 +121,7 @@ harness-over-model 的说法现在有了数据支撑。值得了解，因为这�
 
 这一部分你不需要客气。
 
-- LangChain 的 *Anatomy of an Agent Harness* 枚举了十一个组件 — prompts、tools、hooks、sandboxes、orchestration、memory、skills、subagents，以及一个 runtime “dumb loop”。它没有命名 queues、作为 deployment unit 的 workers、trigger semantics、作为独立关注点的 session persistence，或 authorization policy。它把 harness 当作一个你配置的对象，而不是一个你部署的系统。
+- LangChain 的 *Anatomy of an Agent Harness* 逐一介绍了核心 harness 组件：prompts、tools、hooks、sandboxes、orchestration、memory、skills、subagents，以及一个 runtime “dumb loop”。它没有命名 queues、作为 deployment unit 的 workers、trigger semantics、作为独立关注点的 session persistence，或 authorization policy。它把 harness 当作一个你配置的对象，而不是一个你部署的系统。
 - Addy Osmani 的 *Agent Harness Engineering* 提出了 `Agent = Model + Harness` 的框架和 ratchet pattern，但没有进一步说明 harness 是由什么构成的。它读起来像一种立场，而不是一份 spec。
 - Anthropic 和 OpenAI 对 surfaces 讨论得最深，但仍停留在各自 runtime 内。April 2026 Agents SDK 中的 “harness-compute separation” announcement 是第一个明确认可 control-plane / data-plane 分离的 vendor piece。那是一个 primitive idea，不是新东西。
 - agentic_harness book 将 harness 视为 config object（Jaymin West 的 *Agentic Engineering*，chapter 6），其中最有力的一句话是“the harness is the primary security boundary in an agentic system”。这只是 authorization policy 的重新表述。
@@ -185,7 +185,7 @@ Workbench engineering 是一种纪律：把这些 surfaces 显式化、可复用
 Vendor framings:
 
 - [Addy Osmani, Agent Harness Engineering](https://addyosmani.com/blog/agent-harness-engineering/) — `Agent = Model + Harness` 和 ratchet pattern；基础设施部分较薄
-- [LangChain, The Anatomy of an Agent Harness](https://blog.langchain.com/the-anatomy-of-an-agent-harness/) — 十一个组件：prompts、tools、hooks、orchestration、sandboxes、memory、skills、subagents、runtime；省略 queues、deployment、authz
+- [LangChain, The Anatomy of an Agent Harness](https://blog.langchain.com/the-anatomy-of-an-agent-harness/) — 核心 harness 组件：prompts、tools、hooks、orchestration、sandboxes、memory、skills、subagents、runtime；省略 queues、deployment、authz
 - [OpenAI, Harness engineering: leveraging Codex in an agent-first world](https://openai.com/index/harness-engineering/) — Codex 团队对其 runtime 周围 surfaces 的看法
 - [OpenAI, Unrolling the Codex agent loop](https://openai.com/index/unrolling-the-codex-agent-loop/) — 将 agent loop 归约为 function calls 上的一个 `while`
 - [Anthropic, Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents) — 特定 runtime 内的 long-horizon surfaces

@@ -76,7 +76,7 @@ Anthropic 直接使用 `input_schema`。OpenAI 使用 `function.parameters`。�
 
 ### Sandboxing
 
-Tool execution 是 sandbox boundary。详情见 Lesson 09。简短版本：每个 tool 都应指定 read/write surface、network access、timeout、memory cap。通用的 `run_shell(cmd)` 是危险信号；具体的 `git_status()` 更安全。
+Tool execution 是 sandbox boundary。详情见 Phase 13 · 26。简短版本：每个 tool 都应指定 read/write surface、network access、timeout、memory cap。通用的 `run_shell(cmd)` 是危险信号；具体的 `git_status()` 更安全。
 
 
 ```figure

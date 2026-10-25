@@ -49,12 +49,12 @@ function-calling request 的 shape 因 provider 而异。以下是 2026 producti
 | Result block | role `tool`, `tool_call_id` | 带 `tool_result`, `tool_use_id` 的 `user` | 带匹配 `id` 的 `functionResponse` |
 | Force-a-tool | `tool_choice: {type: "function", function: {name}}` | `tool_choice: {type: "tool", name}` | `tool_config: {function_calling_config: {mode: "ANY"}}` |
 | Forbid tools | `tool_choice: "none"` | `tool_choice: {type: "none"}` | `mode: "NONE"` |
-| Strict schema | `strict: true` | schema-is-schema（始终 enforce） | request level 的 `responseSchema` |
+| Strict schema | `strict: true` | 每个 tool 上的 `strict: true`（opt-in） | request level 的 `responseSchema` |
 
 ### 你实际会遇到的限制
 
 - **OpenAI.** 每个 request 最多 128 个 tools。Schema depth 5。Argument string <= 8192 bytes。Strict mode 要求没有 `$ref`，没有带 overlap 的 `oneOf`/`anyOf`/`allOf`，每个 property 都列在 `required` 中。
-- **Anthropic.** 每个 request 最多 64 个 tools。Schema depth 实际上不设上限，但 practical limit 为 10。没有 strict-mode flag；schema 是 contract，model 通常会遵守。
+- **Anthropic.** 每个 request 最多 64 个 tools。Schema depth 实际上不设上限，但 practical limit 为 10。Strict tool use 需要在 tool definition 上设置 `strict: true` 来 opt-in。不设置时，schema 是 model 通常会遵守的 contract，而不是保证。
 - **Gemini.** 每个 request 最多 64 个 functions。Schema types 是 OpenAPI 3.0 subset（与 JSON Schema 2020-12 略有差异）。自 Gemini 3 起，parallel calls 使用 unique-id。
 
 ### `tool_choice` behavior
@@ -91,7 +91,7 @@ Invalid-argument errors 的表现也不同。
 
 - **OpenAI (non-strict).** Model 返回 `arguments: "{bad json}"`，你的 JSON parse 失败，你注入 error message 并重新 call。
 - **OpenAI (strict).** Validation 在 decoding 期间发生；invalid JSON 不可能出现，但可能出现 `refusal`。
-- **Anthropic.** `input` 可能包含 unexpected fields；schema 是 advisory。需要 server-side validate。
+- **Anthropic（non-strict）。** `input` 可能包含 unexpected fields；schema 是 advisory。需要 server-side validate。使用 `strict: true` 时，sampling 会被约束在 schema 之内。
 - **Gemini.** OpenAPI 3.0 quirk：object fields 上的 `enum` 会被静默忽略；你需要自己 validate。
 
 ### The translator pattern

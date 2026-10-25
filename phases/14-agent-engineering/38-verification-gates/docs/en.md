@@ -84,7 +84,7 @@ python3 code/main.py
 
 ## 真实场景中的生产模式
 
-四种 patterns 会把 gate 从“另一个 lint job”提升为“deciding edge”。
+五种 patterns 会把 gate 从“另一个 lint job”提升为“deciding edge”。
 
 **Defense-in-depth，而不是 single gate。** Pre-commit hook → CI status check → pre-tool authz hook → pre-merge gate。每一层都是确定性的，因此一层中的 failure 会被下一层捕获。microservices.io 的 2026 年 3 月 playbook 明确指出：pre-commit hook 是不可绕过的，因为与 model-side skill 不同，它不依赖 agent 遵循指令。verification gate 位于 CI / pre-merge 层。
 

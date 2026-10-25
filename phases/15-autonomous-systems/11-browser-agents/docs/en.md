@@ -1,6 +1,6 @@
 # Browser Agents 与长时程 Web 任务
 
-> ChatGPT agent（2025 年 7 月）将 Operator 和 deep research 合并为一个 browser/terminal agent，并在 BrowseComp 上以 68.9% 创下 SOTA。OpenAI 于 2025 年 8 月 31 日关闭 Operator——这是产品层面的整合。Anthropic 收购 Vercept 后，将 Claude Sonnet 在 OSWorld 上的成绩从低于 15% 提升到 72.5%。WebArena-Verified（ServiceNow，ICLR 2026）修正了原始 WebArena 中 11.3 个百分点的 false-negative rate，并发布了 258-task Hard subset。这些数字是真实的。攻击面也是真实的：OpenAI 的 preparedness 负责人公开表示，针对 browser agents 的 indirect prompt injection“不是一个可以被完全修补的 bug”。2025–2026 年已有记录的攻击包括：Tainted Memories（Atlas CSRF）、HashJack（Cato Networks），以及 Perplexity Comet 中的一键劫持。
+> ChatGPT agent（2025 年 7 月）将 Operator 和 deep research 合并为一个 browser/terminal agent，并在 BrowseComp 上以 68.9% 创下 SOTA。OpenAI 于 2025 年 8 月 31 日关闭 Operator——这是产品层面的整合。Anthropic 收购 Vercept 后，将 Claude Sonnet 在 OSWorld 上的成绩从低于 15% 提升到 72.5%。WebArena-Verified（ServiceNow，ICLR 2026）修正了原始 WebArena 中约 11.3% 的 false-negative rate，并发布了 258-task Hard subset。这些数字是真实的。攻击面也是真实的：OpenAI 的 preparedness 负责人公开表示，针对 browser agents 的 indirect prompt injection“不是一个可以被完全修补的 bug”。2025–2026 年已有记录的攻击包括：Tainted Memories（Atlas CSRF）、HashJack（Cato Networks），以及 Perplexity Comet 中的一键劫持。
 
 **Type:** Learn
 **Languages:** Python (stdlib, indirect prompt-injection attack surface model)
@@ -9,7 +9,7 @@
 
 ## 问题
 
-Browser agent 是一种 long-horizon agent：它会读取不受信任的内容，并执行有后果的操作。Agent 访问的每个页面，都是用户没有编写的输入。每个页面上的每个表单，都是潜在的命令通道。2025–2026 年的攻击语料表明这不是假设：Tainted Memories 让攻击者可以通过精心构造的页面，将恶意指令绑定到 agent 的 memory；HashJack 将命令隐藏在 agent 访问的 URL fragments 中；Perplexity Comet 的劫持只需一次点击即可命中。
+Browser agent 是一种 long-horizon agent：它会读取不受信任的内容，并执行有后果的操作。Agent 访问的每个页面，都是用户没有编写的输入。每个页面上的每个表单，都是潜在的命令通道。2025–2026 年的攻击语料表明这不是假设：Tainted Memories 让攻击者可以通过精心构造的页面，将恶意指令绑定到 agent 的 memory；HashJack 将命令隐藏在 agent 访问的 URL fragments 中；Perplexity Comet 的劫持只需一次点击。
 
 防御图景并不舒服。OpenAI 的 preparedness 负责人把隐含事实说了出来：indirect prompt injection“不是一个可以被完全修补的 bug”。原因在于攻击发生在 agent 的阅读与行动边界，而这个边界在架构上是模糊的——模型读取的每个 token，原则上都可能被读作一条指令。
 

@@ -42,7 +42,7 @@ critic update:   TD on Q_i(x, a_1..n) given next-state joint estimate
 
 ### QMIX (2018) — value decomposition
 
-仅适用于 cooperative。Global reward 是每个 agent 的 Q-value 的 monotone function 之和：
+仅适用于 cooperative。联合 action-value `Q_tot` 是每个 agent 的 Q-value 的 monotone mixing function：
 
 ```math
 Q_{\text{tot}}(\tau, a) = f\big(Q_1(\tau_1, a_1), \ldots, Q_n(\tau_n, a_n)\big), \quad \frac{\partial f}{\partial Q_i} \ge 0

@@ -1,6 +1,6 @@
 # 在真实 Repo 上使用 Workbench
 
-> 十一节关于 surface 的课程，如果无法经受真实 codebase 的检验，就毫无价值。本课会在一个小型 sample app 上将同一个任务运行两遍：prompt-only 与 workbench-guided。让数字来说话。
+> 十一节关于 workbench surface 的课程，如果无法经受真实 codebase 的检验，就毫无价值。本课会在一个小型 sample app 上将同一个任务运行两遍：prompt-only 与 workbench-guided。让数字来说话。
 
 **Type:** Build
 **Languages:** Python (stdlib)

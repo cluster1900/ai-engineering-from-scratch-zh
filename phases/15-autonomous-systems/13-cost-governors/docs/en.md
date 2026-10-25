@@ -58,7 +58,7 @@ Microsoft 的 Agent Governance Toolkit 覆盖 OWASP Agentic Top 10 和 EU AI Act
 
 ### 观察到的 $1,200 → $4,800 案例
 
-Microsoft 文档中的真实案例：一个 e-commerce agent 在添加新工具后，月度成本翻了三倍。该工具允许 agent 在每个 session 中轮询订单状态。没有循环检测。没有每工具上限。没有 week-over-week 增长告警。修复方案是每工具上限加每日增长告警。这是一个模板：每个新的工具表面都是一个新的潜在循环；每个新工具都需要自己的上限和自己的告警。
+Microsoft 文档中的真实案例：一个 e-commerce agent 在添加新工具后，月度成本翻了两番（变为原来的四倍）。该工具允许 agent 在每个 session 中轮询订单状态。没有循环检测。没有每工具上限。没有 week-over-week 增长告警。修复方案是每工具上限加每日增长告警。这是一个模板：每个新的工具表面都是一个新的潜在循环；每个新工具都需要自己的上限和自己的告警。
 
 
 ```figure

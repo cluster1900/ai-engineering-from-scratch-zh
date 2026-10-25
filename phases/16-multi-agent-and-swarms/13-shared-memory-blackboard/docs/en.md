@@ -68,7 +68,7 @@ agent-C ──pub────▶ │                  │ ──▶ agent-F (sub
 
 1. **每次写入都标注 provenance。** 共享状态中的每个 entry 都记录是谁写入、何时写入、在什么 prompt 下写入，以及（如适用）Agent 引用了什么 source。下游 Agent 根据 provenance 带着怀疑读取。
 2. **对写入做 versioning；把它们视为 append-only。** 修正是一个新的 entry，用来 supersede 旧 entry，而不是原地更新。audit trail 会被保留。
-3. **至少保留一个无法写入共享状态的 Agent。** read-only verifier agent 抽样 entries、重新获取 sources，并标记不一致。因为它不能写入 pool，所以它不会被 pool poison。
+3. **至少保留一个无法写入共享状态的 Agent。** read-only verifier agent 抽样 entries、重新获取 sources，并标记不一致。它仍会读取 pool，因此可能被一条坏 entry 误导；但它会把每条 entry 与原始 source 核对，并且不能写入，所以它的判定永远不会把被 poison 的事实反馈回共享状态。
 
 ### Blackboard 先例（Hayes-Roth, 1985）
 

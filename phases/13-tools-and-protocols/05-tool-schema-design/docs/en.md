@@ -81,7 +81,7 @@ notes_search(query)
 ### Parameter design
 
 - **每个封闭集合都使用 Enum。** `units: "celsius" | "fahrenheit"`，不要用 `units: string`。Enums 会告诉 model 可接受值的全集。
-- **Required vs optional。** 标记最低限度需要的字段。其他全部 optional。OpenAI strict mode 要求每个 field 都在 `required` 中；在你的代码中添加 `is_default: true` convention，并让 model 省略它。
+- **Required vs optional。** 标记最低限度需要的字段。其他全部 optional。OpenAI strict mode 要求每个 field 都在 `required` 中，因此 model 不能省略任何一个。把 optional field 的类型写成与 `null` 的 union，让 model 在没有值时发送 `null`。
 - **Typed IDs。** `note_id: string` 可以，但添加一个 `pattern`（`^note-[0-9]{8}$`）来捕获 hallucinated ids。
 - **不要使用过度灵活的 types。** 避免 `type: any`。model 会 hallucinate shapes。
 - **描述 field。** `{"type": "string", "description": "ISO 8601 date in UTC, e.g. 2026-04-22"}`。description 是 model prompt 的一部分。

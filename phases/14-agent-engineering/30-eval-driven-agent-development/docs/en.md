@@ -19,7 +19,7 @@ Agents 能通过 demo。它们会在生产中以 demo 无法预测的方式失�
 ## 概念
 ### 三个评估层级
 
-1. **Static benchmarks** — 用于代码的 SWE-bench Verified（Lesson 19）、用于浏览 / 桌面的 WebArena/OSWorld（Lesson 20）、用于 generalist 的 GAIA（Lesson 19）、用于 tool use 的 BFCL V4（Lesson 06）。用于跨模型比较和 regression gating。污染是真实存在的：SWE-bench+ 发现 32.67% 的 solution leakage。始终报告 Verified / +-audited 分数。
+1. **Static benchmarks** — 用于代码的 SWE-bench Verified（Lesson 19）、用于浏览 / 桌面的 WebArena/OSWorld（Lesson 20）、用于 generalist 的 GAIA（Lesson 19）、用于 tool use 的 BFCL V4（Lesson 06）。用于跨模型比较和 regression gating。污染是真实存在的：SWE-bench+ 发现 32.67% 的 solution leakage。始终报告 SWE-bench Verified 上的分数，或 SWE-bench+ 这类经过 leakage 审计的数据集上的分数。
 
 2. **Custom offline evals** — 你的产品形态：
    - LLM-as-judge（Langfuse、Phoenix、Opik — Lesson 24）。
@@ -51,7 +51,7 @@ Agents 能通过 demo。它们会在生产中以 demo 无法预测的方式失�
 
 ### 将 Phase 14 串起来
 
-Phase 14 中的每一课都会生成 eval cases：
+Phase 14 中的大多数课都会生成 eval cases。下表列出 eval case 最清晰的那些课：
 
 | Lesson | 它生成的 Eval case |
 |--------|------------------------|
@@ -74,7 +74,7 @@ Phase 14 中的每一课都会生成 eval cases：
 | 28 Orchestration | Supervisor 路由到正确 specialist |
 | 29 Runtime Shapes | DLQ 处理 N% failure |
 
-如果你的 eval suite 覆盖了每一项，你就覆盖了 Phase 14。
+如果你的 eval suite 为每一行都准备了一个 case，你就覆盖了 Phase 14 的核心。
 
 ### Eval 驱动开发会在哪里失败
 
