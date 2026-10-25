@@ -87,7 +87,7 @@ npx skills add cluster1900/ai-engineering-from-scratch-zh --skill skill-contract
 Il va`SKILL_ROOT` définir un mode de transport absolu                                                                                                                                                                                                                                                           `SKILL.md`Le répertoire, plutôt que le répertoire source de cours, n'est pas non plus le répertoire de travail actuel:
 
 ```bash
-# 将占位符替换为安装器打印出的绝对路径
+# Replace the placeholder with the destination printed by the installer.
 SKILL_ROOT="$(cd "/absolute/path/to/skill-contract-reviewer" && pwd -P)"
 test -f "$SKILL_ROOT/SKILL.md"
 printf 'SKILL_ROOT=%s\n' "$SKILL_ROOT"

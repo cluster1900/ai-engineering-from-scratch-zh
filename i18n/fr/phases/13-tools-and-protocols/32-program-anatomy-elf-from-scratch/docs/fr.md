@@ -380,6 +380,29 @@ macho.function_bytes("_percent_change")[:4].hex()
 
 Équelles sont les caractéristiques de l'équipement de recherche et de recherche ?
 
+## 评分实验
+
+5 questions sur les fixations de ce cours.`code/lab_answers.json`◊ Numéro écrit en chiffre, ou écrit en chiffre `"0x40"`Une liste écrite en JSON.
+
+1. `t1`Le nombre de personnes qui ont été arrêtées par l'État est de 6%.
+2. `t2`:leger-x86_64-O1.o Moyen pourcentage_changement de la taille st_¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
+3. `t3`Le texte de l'article est modifié par le texte de l'article.
+4. `t4`:ledger-x86_64-O0.o 中的重定位类型名,排序后写成列表──
+5. `t5`:ledger-x86_64-O1.o 中 .rodata+0x14 处的五个 int 值,写成列表──
+
+检查你的答案:
+
+```bash
+cd phases/13-tools-and-protocols/32-program-anatomy-elf-from-scratch
+python3 code/lab.py
+```
+
+ inspecteur dans les fixations soumises `code/main.py`计算每个期望值──它为每道题输出 `PASS`- Je suis là.`FAIL`Ou `TODO`Et le total, seulement cinq questions sont passées.`python3 code/lab.py my-answers.json`Je peux vérifier un autre dossier.`code/tests/test_lab.py`证明检查器接受正确答案并拒绝错误答案──
+
+### Regardez ça fonctionne
+
+[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler)Le machine a mis ce cours comme ses deux premiers postes pour fonctionner.`percent_change`Le dossier de l'objectif, le coffre ouvert`.text`Il est également utilisé pour la communication de données.
+
 ## Le produit
 
 本课产 出 `outputs/skill-program-anatomy-elf-from-scratch.md` Peut être utilisé pour Claude,Cursor,Codex,OpenClaw,Hermes ou tout autre logiciel intelligent de SKILL.md. Cette compétence transforme le fichier de compilation objectif ou fichier exécutable construit par l'utilisateur en rapport de mise en page, donne une portée de fichier pour chaque structure, symbole et réposition, et fournit des certificats de sortie aux outils de collecte de données.

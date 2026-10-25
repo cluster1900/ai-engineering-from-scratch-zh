@@ -85,9 +85,9 @@ Pour le client purement moderne, le service de découverte est optionnel; mais e
 - `-32021`Faute de compétences (faute de compétences)
 - `-32022`Protocole non pris en chargeVersion ((不支持的协议版本)
 
-Même si le terminal est inscrit dans le catalogue du patrimoine, les erreurs modernes déjà identifiées prouvent également qu'il est un serveur moderne.`initialize`Il s'agit d'une attaque de degré dangereux.
+Même si le terminal est inscrit dans le catalogue du patrimoine, les erreurs modernes déjà identifiées prouvent également qu'il est un serveur moderne.`initialize`On est en train de faire des dégradations.
 
-Je ne peux pas le faire .`-32601`(method un trouvé) comme preuve suffisante d'entrée dans l'héritage. Il ne représente que le fait que le client soit éligible à démarrer une recherche d'héritage de durée limitée.
+Je ne peux pas le faire .`-32601`(methode non trouvée) comme preuve suffisante d'entrée dans l'héritage. Il ne représente que le fait que le terminal soit éligible à démarrer une recherche d'héritage de durée limitée.
 
 ### Blanc nom représentant le transport et non le témoignage de l'accord
 
@@ -99,7 +99,7 @@ client.add_server("archive", archive_transport, allow_legacy=True)
 
 必須將此選項绑定至明确配置的命令或端点──嚴禁使用通配符让任意未知 Server自动降级为较弱语义──未配置`allow_legacy=True`Les résultats de la recherche de résultats sont les résultats de la recherche de résultats.`initialize`Il y a une autre.
 
-Le client ne peut envoyer que des messages dans les limites du délai de livraison.`initialize`S'il vous plaît, alors exigez strictement de satisfaire à toutes les conditions suivantes:
+Le nombre de clients ne détermine pas la durée de la mission.`initialize`S'il vous plaît, alors exigez strictement de satisfaire à toutes les conditions suivantes:
 
 -  Réception de JSON-RPC correspondant à la demande d' ID `2.0`响应;
 -                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              `result`字段,且无 `error`Le dépôt de la commission
@@ -107,7 +107,29 @@ Le client ne peut envoyer que des messages dans les limites du délai de livrais
 - incluant des types d'objets `capabilities`字段;
 - 包含非空字符串 `name`Avec `version``serverInfo`Les objets
 
-Toute version de l'information, de l'information, de l'erreur, de l'erreur ou de l'erreur de l'identité, est directement défaillante.
+Toute version de l'information, de l'information, de l'erreur, de l'erreur ou de l'erreur de l'identité, est directement défaillante.`legacy_probe_timeout_ms`传给传输适配器; le vrai studio ou l'adaptateur HTTP doit effectivement exécuter ce temps de capture, et non seulement le consigner.
+
+Pour la transmission à la périphérie de la cache sélectionnée, ne réétudiez pas avant chaque réutilisation.
+
+### L'héritage est un complément
+
+Une fois que la recherche restreinte est retournée à la validité de l'élément de preuve, le client doit utiliser strictement l'élément de preuve de l'élément de preuve sélectionné selon la définition de la version modifiée:
+
+1. L'équipe de recherche et développement de l'équipe de recherche
+2. 校验协商出的修订版 appartient à la collection de l'héritage déjà affectée.
+3. Récords de capacités de l'épreuve avec le serveur.
+4.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              `notifications/initialized`Il y a une autre.
+5. En cours de cycle de vie de transmission, l'utilisation de l'héritage
+
+Cette branche n'existe que pour une connexion connue à un terminal, elle n'est pas un nouveau serveur ou une nouvelle demande par défaut. Si la transmission redémarre ou le terminal change, la mise à disposition du terminal est abandonnée et renouvelée.
+
+### 工具发现与缓存
+
+Pour chaque activité à chaque fin de régularisation`tools/list`现代结果包含 `resultType`- Je suis là.`ttlMs`Avec `cacheScope`                                                                                                                                                                                                                                                              
+
+ Pour le serveur Legacy  défaut `resultType`Le client doit en tenir compte.`"complete"`◊ ne pas exiger une réponse plus tôt que la négociation de temps ◊
+
+Le serveur doit retourner à la définition de la répartition. Le client doit également être en phase avec la répartition de la répartition, afin que la répartition de l'enregistrement local ne soit pas dépendante du processus d'initiation.
 
 ### 命名空间无冲突合并
 
@@ -117,17 +139,33 @@ Deux serveurs pourraient être exposés .`search`Les instruments devraient être
 2. **冲突时拒绝（Reject on collision）**: ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇ ̇  ̇ ̇    ̇ ̇         ̇ ̇            ̇                        
 3. **静默覆盖（Silent overwrite）**- Le numéro de la liste:**坚决杜绝**Il cache le modèle réellement utilisé par le serveur.
 
+Dans le même temps, conservez le nom de la norme avec le nom local.`tools/call`Utilisation de l'appareil de service 声明的本地名──
+
 ### 调用路由机械
 
 路由是纯粹的映射查找:
 
 ```text
-规范工具名
-  -> 对端名称 + 本地工具名
-  -> 生成全新的 JSON-RPC 请求 ID
-  -> 现代请求元数据 或 显式 Legacy 结构
-  -> 匹配响应 ID 并返回
+canonical tool name
+  -> peer name + local tool name
+  -> new JSON-RPC request id
+  -> modern request metadata or explicit legacy shape
+  -> matching response id
 ```
+
+Lorsque le transfert est inutilisable, ne l'envoyez pas.`tools/list` Dans les demandes modernes perdues lors de la transmission, si la stratégie de sécurité de l'opération le permet, il est possible d'utiliser le nouveau JSON-RPC ID à nouveau.
+
+### 通知与订阅
+
+Listes et ressources modernes modifiées uniquement par le Client  ouverts `subscriptions/listen`流到达──Client 发送通知过器, attendre `notifications/subscriptions/acknowledged`,并用通知元数据中的听 请求ID 关联事件──
+
+断开后发起新听 请求并重新拉取相关列表或资源──现代流不使用 `Last-Event-ID`La réparation
+
+### Il n' y a pas de requête du serveur
+
+现代 Server 不会为样本化、Elicitation或根向客户端发发起独立的JSON-RPC 请求──它们回复 `input_required`,Le client répond à la demande d'entrée intégrée, puis réessaye la demande initiale.
+
+满足输入期间 ne pas bloquer le terminal de réponse du lecteur.
 
 ```figure
 tp-client-merge
@@ -135,7 +173,7 @@ tp-client-merge
 
 ## 动手实践
 
-`code/main.py`通过内存对端函数清晰显示了整个协议决策树──它连接到两个现代对端和一个显然白单单标记的遗产对端,合并并路由它们的工具:
+`code/main.py`通过内存对端函数清晰显示了整个协议决策树──它连接到两个现代对端和一个显然白单标记的遗产对端,合并并路由它们的工具──传输可调用对象会收到一个超时预算,使兼容分支无法隐藏无限探测──
 
 ```bash
 cd code
@@ -147,14 +185,23 @@ python3 -m unittest discover tests -v
 
 - 现代请求逐次重复元数据;
 - Je suis là .`-32022`时重试现代发现, absolument non retourné à la main;
-- 已识别的现代错误绝不发生降级;
-- 超时、断开与未知错误在无白名单时绝不触发 `initialize`Le dépôt de la commission
+- 已识别的现代错误绝不发生降级 (même si elle est dans la liste blanche);
+- 超时、连接关闭、空响应与未识别的错误在无白名单时绝不触发 `initialize`Le dépôt de la commission
 - Le nombre de personnes qui ont été récompensées par la loi est de 0,5%`initialize`响应后才确立为遗产;
+- Les résultats de l'héritage non formés ou non soutenus rendent l'hébergement inutilisable;
 - l'époque sélectionnée est stable et existe au cours du cycle de vie de la transmission.
 
 ## 交付物
 
-本课交付 `outputs/skill-mcp-client-harness.md`Il peut être utilisé pour les demandes modernes de création, les études, les négociations, la détermination du nom de domaine, la mise en place de la sécurité, ainsi que la mise en place de la sécurité.
+本课交付 `outputs/skill-mcp-client-harness.md`◊ elle peut être utilisée pour les demandes modernes                                                                                                                                                                                                                                                         
+
+##  exercice et réflexion
+
+1. 让一个模拟 Server  retour `-32022`且没有双方支持的版本,确认客户 直接失败而发送 `initialize`Il y a une autre.
+2. Pour créer un serveur héritage, rejoindre la liste blanche, faire en sorte qu'il soit restreint.`initialize`探测超时, prouver que c'est à lui de garder `unknown`Il est indispensable.
+3. Pour deux pouvoirs sur la mise en œuvre`cacheScope: "private"`Liste des outils, confirmez que le client ne partagera jamais les résultats de la mise en cache de l'un des articles ci-dessus à l'autre.
+4. Pour modifier la stratégie de conflit en refus, et pour faire démarrer le défaut, l'erreur de communication comprend deux facteurs:
+5. 添加一个有限的 `subscriptions/listen`模拟器;流丢失时使用新请求ID 重新听并重新拉取工具──
 
 ## 核心专业术语
 
@@ -168,6 +215,8 @@ python3 -m unittest discover tests -v
 | 正向 Legacy 证据 (Positive legacy evidence) | 针对受支持旧版协议返回的有效、ID 匹配的 `initialize` 结果 |
 | 合并命名空间 (Merged namespace) | 跨所有活跃对端规范化后的工具全局名称集合 |
 | 冲突策略 (Collision policy) | 处理重名工具的加前缀或报错拒绝规则 |
+| 时代缓存 (Era cache) | 为单个传输对端保存的已选现代或 Legacy 行为 |
+| 传输恢复 (Transport recovery) | 重启或重连、重新发现、重新列出，并以新 ID 安全重试 |
 
 ## 延伸阅读
 
@@ -175,3 +224,4 @@ python3 -m unittest discover tests -v
 - [MCP Server Discovery](https://modelcontextprotocol.io/specification/2026-07-28/server/discover)
 - [MCP stdio Transport](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio)
 - [MCP Versioning](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning)
+- [MCP Tools](https://modelcontextprotocol.io/specification/2026-07-28/server/tools)

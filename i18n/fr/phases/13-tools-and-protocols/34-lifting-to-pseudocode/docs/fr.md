@@ -533,6 +533,29 @@ Pour`-O0`Je suis là .`grade`添加 `switch`La réparation
 
 Le succès est:`-O0`Je suis là .`grade`Avec `-O1`Je suis là .`grade`Dans l'ensemble du réseau, la sortie est la même, et le résultat de récupération contient un `switch`Il n' y a pas de`goto`Il y a une autre.
 
+## 评分实验
+
+5 questions sur les fixations de ce cours.`code/lab_answers.json`◊ Numéro écrit en chiffre, ou écrit en chiffre `"0x40"`Une liste écrite en JSON.
+
+1. `t1`:调用约定在 -O1 下给 %_change 的参数数数──
+2. `t2`:- Le total de la SSA 形式中 phi 函数 的个数──
+3. `t3`:magic_divisor pour 0x66666667 ∞
+4. `t4`:-O1 ′%_change 伪代码的最后一条语句,写成一行文本──
+5. `t5`:-Total de l'O1 中 param_1 恢复出的 C 类型。
+
+检查你的答案:
+
+```bash
+cd phases/13-tools-and-protocols/34-lifting-to-pseudocode
+python3 code/lab.py
+```
+
+ inspecteur dans les fixations soumises `code/main.py`计算每个期望值──它为每道题输出 `PASS`- Je suis là.`FAIL`Ou `TODO`Et le total, seulement cinq questions sont passées.`python3 code/lab.py my-answers.json`Je peux vérifier un autre dossier.`code/tests/test_lab.py`证明检查器接受正确答案并拒绝错误答案──
+
+### Regardez ça fonctionne
+
+[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler?opt=O0)La machine a utilisé ce cours comme son évolutif pressing machine, type de clés, structure des outils et de l'impression pour fonctionner et utiliser.`code/main.py`输出 IR、SSA 和伪代码──`-O0`目標文件: trois tranches transformées en variables locales, 具为 if/other 合上两爪──
+
 ## 交付产物
 
 本课产 出 `outputs/skill-lifting-to-pseudocode.md` L'utilisation de ce produit pour améliorer une fonction, fournir des conseils pour chaque ligne, et remplir un tableau de différence avec le texte de l'anticompileur.

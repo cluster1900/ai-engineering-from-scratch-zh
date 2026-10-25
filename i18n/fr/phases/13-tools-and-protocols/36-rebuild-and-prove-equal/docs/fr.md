@@ -389,6 +389,29 @@ Les deux voies de vérification se sont étendues à la même file d'objet.`tota
 
 Success standard: preuve enregistré liste quatre fonctions, chaque affirmation sont portées avec un identifiant de preuve, et laisser un étiquette string différent lorsque `grade_label`Il ne peut pas.
 
+## 评分实验
+
+5 questions sur les fixations de ce cours.`code/lab_answers.json`◊ Numéro écrit en chiffre, ou écrit en chiffre `"0x40"`Une liste écrite en JSON.
+
+1. `t1`:x86_64 上的 %_change_model(3, 105)。
+2. `t2`:x86_64 上的 %_change_model(0, 5)。
+3. `t3`:grade_model(100)
+4. `t4`:input_grid() Environ une seule et même quantité de données.
+5. `t5`:x86_64 模型发生陷的网格单元数量──
+
+检查你的答案:
+
+```bash
+cd phases/13-tools-and-protocols/36-rebuild-and-prove-equal
+python3 code/lab.py
+```
+
+ inspecteur dans les fixations soumises `code/main.py`计算每个期望值──它为每道题输出 `PASS`- Je suis là.`FAIL`Ou `TODO`Et le total, seulement cinq questions sont passées.`python3 code/lab.py my-answers.json`Je peux vérifier un autre dossier.`code/tests/test_lab.py`证明检查器接受正确答案并拒绝错误答案──
+
+### Regardez ça fonctionne
+
+[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler)L'appareil sort finalement le faux code, et le classe dans un dossier pour en déduire: la page ne le prouve pas.
+
 ## 输出技能
 
 本课产 出 `outputs/skill-rebuild-and-prove-equal.md` Utiliser le document de fonction et le candidat pour la reconstruction de la structure de la preuve et de la preuve de deux voies.

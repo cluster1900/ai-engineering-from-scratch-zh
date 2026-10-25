@@ -471,6 +471,29 @@ Sur le papier, dessinez cinq blocs, d'abord calculer le contrôle du nœud, puis
 
 Le succès est:`python3 code/main.py cfg`Il peut être répertorié par chaque utilisateur possible et prouver sa réposition, et tous les documents objectifs sont toujours en cours de référence.
 
+## 评分实验
+
+5 questions sur les fixations de ce cours.`code/lab_answers.json`◊ Numéro écrit en chiffre, ou écrit en chiffre `"0x40"`Une liste écrite en JSON.
+
+1. `t1`:递归下降在 -O1 的级 中解码出的指令数──
+2. `t2`:- Le nombre total de blocs de base de l'O1
+3. `t3`:- Le total des adresses du centre circulaire de O1, écrit en 1016进制──
+4. `t4`: Dans le cadre de la mise en pièces, couvrir l'adresse de départ de l'ordre de mise en pièces de 0x14, écrire en 16 dans le système
+5. `t5`:-0 de la note 中跳转表的条目数──
+
+检查你的答案:
+
+```bash
+cd phases/13-tools-and-protocols/33-disassembly-and-control-flow
+python3 code/lab.py
+```
+
+ inspecteur dans les fixations soumises `code/main.py`计算每个期望值──它为每道题输出 `PASS`- Je suis là.`FAIL`Ou `TODO`Et le total, seulement cinq questions sont passées.`python3 code/lab.py my-answers.json`Je peux vérifier un autre dossier.`code/tests/test_lab.py`证明检查器接受正确答案并拒绝错误答案──
+
+### Regardez ça fonctionne
+
+[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler?program=trap&sweep=linear)Le système de calcul de la machine utilise ce cours comme base de calcul et de calcul de base.`sweep-trap.o`Le code de déchiffrement affiche quatre caractères de données du code de déchiffrement, et un seul marqueur indique qu'il se trouve à`0x13`- Je suis là .`addq`内部、地址 `0x14`Le déchiffreur est passé à la descente, on peut voir le saut à travers ces données.
+
 ## Le produit
 
 本课包含 `outputs/skill-disassembly-and-control-flow.md`Il est utilisé pour transformer les fichiers cibles et les noms de fonctions en un ensemble de fichiers et de blocs de base, avec des types de bord, des nœuds de contrôle et tous les contrôles non résolus. Il est nécessaire de fournir des informations de référence, des méthodes de compilation de deux types de fichiers, des caractères de calcul, des preuves de positionnement de chaque tableau de récupération, ainsi que des informations de contenu encore inconnues.

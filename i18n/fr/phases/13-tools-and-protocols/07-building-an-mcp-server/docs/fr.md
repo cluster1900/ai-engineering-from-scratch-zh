@@ -28,14 +28,14 @@ Ce cours va créer deux fois un note Server:Python et TypeScript versions utilis
 ### 现代请求分发循环(La boucle de dépêche)
 
 ```text
-读取一行 JSON-RPC 文本
-解析外层 Envelope
-若为通知（Notification），则不予响应
-针对当前请求校验 params._meta
-根据 method 执行路由分发
-使用 resultType 与 serverInfo 封装成功结果
-写回一行 JSON-RPC 响应文本
-立即遗忘当前请求作用域的元数据
+read one JSON-RPC line
+parse the envelope
+if it is a notification, do not respond
+validate params._meta for this request
+route by method
+wrap success with resultType and serverInfo
+write one JSON-RPC response line
+forget request-scoped metadata
 ```
 
 Dans le mode studio, il y a trois règles clés:
@@ -116,7 +116,7 @@ L'hôte doit les utiliser pour effectuer des vérifications interactives et des 
 
 Pour les données de notes privées des utilisateurs, il faut les utiliser.`cacheScope: "private"` Compartie de la réserve ne peut pas être transmise par le sous-secteur de la réserve.
 
-现代数据变更推送 cesser d'être utilisé `resources/subscribe`◊ Le client 通过发起 `subscriptions/listen`Déclaration`resourceSubscriptions`Ou liste des événements à recevoir
+现代数据变更推送 cesser d'être utilisé `resources/subscribe`◊ Le client 通过发起 `subscriptions/listen`Déclaration`resourceSubscriptions`Ou la liste des événements qui ont eu lieu à la suite de la réception de la communication.
 
 ### Les instructions
 
@@ -141,7 +141,13 @@ Liste ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ ∆ �
 
 现代 Server peut être envoyé avec le Client demande de notification directement liée, ou dans le Client  ouverte `subscriptions/listen`- Je vous ai envoyé un message.**绝不能**Il est également possible de modifier le code de la page de l'utilisateur.
 
-Quand le gestionnaire a besoin de l'échantillonnage, de l'obtention ou des racines, il retourne à l'intérieur.`input_required`结果── Après avoir effectué l'entrée de la demande du client, utiliser le nouveau identifiant de demande 重新发起原始方法调用──
+Quand le gestionnaire a besoin de l'échantillonnage, de l'obtention ou des racines, il retourne à l'intérieur.`input_required`结果──Client 在满足所请求的输入后,使用全新请求 ID 重新发起原始方法调用──第 11 课将详细讲解这种多轮往返请求(Multi Round-Trip Request)模式──
+
+### 显式的遗产 兼容
+
+Le serveur peut également être réalisé dans un héritage séparé.`2025-11-25`握手──当请求中存在现代规范要求的 `_meta`字段时, ça choisit le comportement moderne;当收到 `initialize`时,则走 L'héritage 行为。
+
+Ne fais pas ça !`2026-07-28`S'il vous plaît, passez par le chemin de la main, ne traitez pas modernes.`resultType`字段塞进 Legacy 的初始化结果中──本课代码刻意只实现现代规范, afin que ces changements restent clairement visibles──
 
 ```figure
 t3-dispatch-loop
@@ -172,8 +178,8 @@ npx tsx main.ts --demo
 ##  exercice et réflexion
 
 1. Le serveur ne réutilisera jamais les anciennes capacités de la déclaration de la requête précédente.
-2. 颠倒 `TOOLS`- Je suis là.`PROMPTS`及笔记数据的录入顺序, confirmer que les résultats de toutes les enquêtes de liste sont toujours stables.
-3. Une nouvelle fois, une nouvelle fois, une nouvelle fois, une nouvelle fois, une nouvelle fois, une nouvelle fois, une nouvelle fois.`notes_delete`工具, et intégrer le contrôle, l'évaluation et l'exécution de l'exécution`destructiveHint`                                                                                                                                                                                                                                                              
+2. 颠倒 `TOOLS`- Je suis là.`PROMPTS`及笔记数据的录入顺序, confirmer que les résultats de toutes les enquêtes de la liste sont toujours stables.
+3. Une nouvelle fois, une nouvelle fois, une nouvelle fois, une nouvelle fois, une nouvelle fois, une nouvelle fois, une nouvelle fois.`notes_delete`工具, et intégrer le contrôle de l'exécuteur,并让 `destructiveHint`                                                                                                                                                                                                                                                              
 4. 补充 `resources/templates/list`接口, exigences de l'accès`ttlMs`- Je suis là.`cacheScope`L'équipe de la Commission a été chargée de la mise en œuvre de la politique de sécurité et de la sécurité.
 5. Pour`2025-11-25`编写一个完全隔离的遗产 适配器,并通过测试证明现代请求绝不会错进遗产 处理路径──
 
@@ -184,9 +190,9 @@ npx tsx main.ts --demo
 | 无状态 Server (Stateless server) | 仅从每个请求自身的元数据处理调用，无任何协议 Session 内存记忆 |
 | `server/discover` | 强制实现的现代方法，用于向调用方公布支持的版本与功能集 |
 | 完整结果 (Complete result) | 携带 `resultType: "complete"` 的成功现代结果 |
-| 可缓存结果 (Cacheable result) | 附带强制 `ttlMs` 与 `cacheScope` 提示的发现、列表或只读结果 |
+| 可缓存结果 (Cacheable result) | 附带强制 `ttlMs` 与 `cacheScope` 提示的发现、列表或资源读取结果 |
 | 确定性列表 (Deterministic list) | 逻辑相同的注册表必须输出完全一致、可复现的条目顺序 |
-| Server 身份 (Server identity) | 在结果 `_meta` 中携带的 `io.modelcontextprotocol/serverInfo` 标识 |
+| Server 身份 (Server identity) | 推荐在结果 `_meta` 中携带的 `io.modelcontextprotocol/serverInfo` 标识 |
 | Tool 业务错误 (Tool error) | Tool 调用正常被解析执行，但业务逻辑失败，返回包含 `isError: true` 的 content |
 | 协议错误 (Protocol error) | 非法的 JSON-RPC 格式或无效的 MCP 请求参数，直接通过顶层 `error` 报错返回 |
 

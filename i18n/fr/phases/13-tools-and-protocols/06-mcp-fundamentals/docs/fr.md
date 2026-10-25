@@ -150,6 +150,10 @@ Ce type de strict ordre permet de créer des désaccords entre les différents c
 
 Mais il faut séparer complètement les deux temps. Les requêtes modernes sont obligatoirement reconnues par chaque requête; les connexions anciennes ne peuvent être déterminées que par des voies de retour spécifiquement définies par les archives.**绝不能把 `initialize` 当作连接 `2026-07-28` Server 的默认行为。**
 
+Ainsi, les "stateless" ont des significations différentes à différentes époques.`2026-07-28`En général, il s'agit d'un protocole invariable: chaque requête ordinaire peut être expliquée indépendamment, et il n'y a pas de session MCP.`2025-11-25`Dans les versions précédentes, les capacités de démarrage et de négociation appartiennent à une connexion, de sorte que l'adaptateur de capacité peut conserver cet ancien état de connexion. La réalisation de la double époque n'est pas un état de machine à grande échelle, mais un noyau moderne sans état, placé à côté d'un adaptateur de statut séparé, et fait un choix précis avant la mise en œuvre du terminal.
+
+Ces deux sens ne sont pas interdits par l'état d'application durable. Les tâches ou les ébauches peuvent être stockées dans un stockage partagé à travers un handle non transparent. Le client met cet handle comme une entrée normale et une expédition, chaque copie sera autorisée à l'utiliser.
+
 ```figure
 mcp-tool-call
 ```

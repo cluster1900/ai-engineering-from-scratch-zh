@@ -426,6 +426,29 @@ La première fois, il faut le mettre en place.`EvidenceIntegrityError`, puisque 
 
 Success standard: chaque phrase du rapport cite un identifiant dans le paquet de preuves, et cet élément `unknown`Le mot est éliminé.
 
+## 评分实验
+
+5 questions sur les fixations de ce cours.`code/lab_answers.json`◊ Numéro écrit en chiffre, ou écrit en chiffre `"0x40"`Une liste écrite en JSON.
+
+1. `t1`:compute_evidence_id Pour le niveau de la preuve réelle.json  données par la preuve id。
+2. `t2`:grade 记录中限制的数量──:grade 记录中限制的数量──:grade 记录中限制的数量──:grade 记录中限制的数量──:grade 记录中限制的数量──:grade 记录中限制的数量──:grade 记录中限制的数量──:grade 记录中限制的数量──:grade 记录中限制的数量──:grade 记录中限制的数量
+3. `t3`:grade 记录的关系_coverage 状态──
+4. `t4`:grade de confiance et d'autorité, écrit en deux caractères composés de la liste:
+5. `t5`:grade 记录中科目 的 SHA-256。
+
+检查你的答案:
+
+```bash
+cd phases/13-tools-and-protocols/35-evidence-confidence-and-unknowns
+python3 code/lab.py
+```
+
+ inspecteur dans les fixations soumises `code/main.py`计算每个期望值──它为每道题输出 `PASS`- Je suis là.`FAIL`Ou `TODO`Et le total, seulement cinq questions sont passées.`python3 code/lab.py my-answers.json`Je peux vérifier un autre dossier.`code/tests/test_lab.py`证明检查器接受正确答案并拒绝错误答案──
+
+### Regardez ça fonctionne
+
+[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler?symbols=off)机器维护一本证据账本,分成四托盘:observé、derivé、inferré 和未知── ce lien ouvre la fonction en cas de clôture du tableau de symboles, de sorte que le nom de la fonction et le bout de la fonction sont insérés dans l'inconnu, le lieu de départ est inséré──
+
 ## Le produit
 
 本课产 出 `outputs/skill-evidence-ledger.md`Il guide les organismes intelligents à écrire chaque découverte en tant que dossier de catégories de confiance, de sources d'autorité, de restrictions et de liens, en expliquant comment conserver les inconnus avec la version modifiée, ainsi que quand les conclusions seront prises.`pass`- Je suis là.`fail`- Je suis là.`unknown`Ou `unsupported`Il y a une autre.

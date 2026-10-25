@@ -201,9 +201,9 @@ Le contrôleur d'entrée est situé entre la découverte et le chemin:
 
 ```text
 Registry sync -> artifact verifier -> live discovery -> admission controller -> route table
-                                                |                 |
-                                                v                 v
-                                           evidence store    admission ledger
+                                               |                 |
+                                               v                 v
+                                          evidence store    admission ledger
 ```
 
 Pour les tâches ci-dessus, la répartition des pouvoirs minimaux est séparée: les tâches de registre et de phase nécessitent des pouvoirs de lecture uniquement des données; les tâches de test des objets nécessitent des pouvoirs de tirage de l'emballage logiciel; les contrôles de route nécessitent des pouvoirs d'activation pour obtenir des empreintes digitales.
