@@ -40,6 +40,10 @@ V(s) \leftarrow \max_a \sum_{s',r} P(s',r \mid s,a) [r + \gamma V(s')]
 
 **为什么 $\gamma < 1$ 很重要。**Bellman đang hoạt động trong một quá trình bình thường.$\gamma$-sự thu hẹp:$\lVert T V - T V' \rVert_\infty \le \gamma \lVert V - V' \rVert_\infty$◊Contraction có nghĩa là điểm cố định duy nhất 和几何收── bỏ đi $\gamma < 1$, bạn đã mất đảm bảo, cần đường chân trời hữu hạn hoặc hấp thụ trạng thái cuối cùng.
 
+```figure
+value-iteration-gamma
+```
+
 ## 动手构建
 
 ### Bước 1: 构建 GridWorld MDP model
@@ -140,10 +144,6 @@ def value_iteration(gamma=0.99, tol=1e-6):
 - **Policy ties。**Nếu hai hành động có cùng giá trị Q,`argmax`Có thể mỗi lần lặp lại sử dụng cách khác nhau để phá vỡ平局, dẫn đến nhoàng chính sách  kiểm tra振荡── sử dụng ổn định tie-break(phát hành thứ nhất trong chuỗi cố định)。
 - **State-space explosion。**DP mỗi lần lau là $O(\lvert S \rvert \cdot \lvert A \rvert)$◊ được sử dụng trong khoảng 107 tiểu bang. ◊ vượt qua quy mô này, bạn cần tính toán gần như các hàm (Phase 9 · 05 tiếp theo) ◊
 
-
-```figure
-value-iteration-gamma
-```
 
 ## Sử dụng nó
 

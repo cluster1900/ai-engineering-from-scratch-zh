@@ -46,6 +46,10 @@ V_n(s) = V_{n-1}(s) + (1/n) [G_n - V_{n-1}(s)]
 
 Trong điều kiện ấm áp, mỗi cặp được truy cập vô hạn,$\alpha$满足 Robbins-Monro), sẽ có tỷ lệ 1 收到 $Q^{\ast}$和 $\pi^{\ast}$
 
+```figure
+epsilon-greedy
+```
+
 ## 动手构建
 
 ### Bước 1: triển khai → (s, a, r) 列表
@@ -138,10 +142,6 @@ def mc_control(env, episodes, gamma=0.99, epsilon=0.1):
 - **Non-stationary policies。**Nếu $\pi$发生变化 (如 MC control 中那样), cũ trả về từ các chính sách khác nhau.
 - **Off-policy importance sampling。**权重 $\pi(a \mid s)/\mu(a \mid s)$会沿轨迹 连乘──Variance 会随地平线 爆炸──用每决权 IS 截断,或切换到 TD──
 
-
-```figure
-epsilon-greedy
-```
 
 ## Sử dụng nó
 

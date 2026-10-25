@@ -179,7 +179,7 @@ tags: [rl, actor-critic, gae]
 
 ## Các bài tập
 
-1. **Easy。**Trong 4×4 GridWorld 上 sử dụng MC lợi thế$(G_t - V(s_t))$训练 diễn viên-chính trị.
+1. **Easy。**Trong 4×4 GridWorld 上 sử dụng MC lợi thế $(G_t - V(s_t))$训练 diễn viên-chính trị.
 2. **Medium。**切换 thành lợi thế dư TD$(r + \gamma V(s') - V(s))$◊ đo lường lợi thế của các lô.
 3. **Hard。**实现 GAE(λ)。扫描 $\lambda \in \lbrace 0, 0.5, 0.9, 0.95, 1.0 \rbrace$◊ vẽ kết quả hoàn lại so với hiệu quả mẫu.
 
