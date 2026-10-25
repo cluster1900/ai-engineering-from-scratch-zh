@@ -45,7 +45,7 @@ flowchart LR
 
 HyDE Utilizando LLM 编写的假设文档向量替换用户的查询向量──提示很短:
 
-```text
+```
 You are a domain expert. Write a one-paragraph passage that answers the question
 below. Use the same vocabulary and phrasing the documentation in this domain would
 use. Do not refuse. Do not say you do not know.
@@ -63,7 +63,7 @@ Na produção, você vai limitar o arquivo de hipóteses para duas a três frase
 
 O que é o mais simples de um usuário:
 
-```text
+```
 Rewrite the following question in {N} different ways. Each rewrite must preserve
 the original intent. Number them 1 to {N}. Do not add explanations.
 ```
@@ -76,7 +76,7 @@ Quando a frase do usuário é uma das muitas maneiras igualmente eficazes de faz
 
 单一检索不能满足多方面的问题――分解要求 LLM 将问题拆成子问题,系统再检索每个子问题――提示:
 
-```text
+```
 The following question may require information from multiple distinct topics.
 Decompose it into a list of sub-questions. Each sub-question must be answerable
 independently. If the question is already atomic, return it unchanged.
@@ -153,7 +153,7 @@ O curso 69 irá colocar a fase do redator em frente ao revisor do curso 65 e col
 2. 添加第四种策略:step-back prompting(向LLM 问问更一般问题,检索该问题,然后再缩小范围)
 3. 通过添加问题是原子的头来训练分解器识别原子查询―― 测量前后的过分率――
 4. Utilize o modelo real para substituir o modelo LLM.
-5. Para cada reescritura, adicionar a confiança por porcentagem.
+5. Para cada reescritura, a porcentagem de confiança é aumentada.
 
 ## 关键术语
 

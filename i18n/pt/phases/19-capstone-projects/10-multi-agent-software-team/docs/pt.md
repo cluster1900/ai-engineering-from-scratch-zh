@@ -116,7 +116,7 @@ $ team run --issue https://github.com/acme/widget/issues/842
 ## 练习
 1. No meio do caminho para a diferença , entra em um erro evidente .`return None`)。 taxa de falsa aprovação do revisor de medidas。调优 revisor prompt, até que a falsa aprovação 低于5%。
 
-2. 减少到两个编码器 (arquiteto +编码器 +审核器 +测试器,编码器 顺序运行两个子任务) ――比较墙钟 和通过率――
+2.  reduzir para dois programadores(arquiteto + 两个编码器 + revisor + tester, cada um 顺序运行两个子任务) ――
 
 3. Utilize restrição de um único escritor  substituir coordenador de fusão  subtarefas 触及不相交的文件集) 测量建筑师的规划负担──
 

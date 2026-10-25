@@ -107,8 +107,8 @@ Seção 78 (Zero)
 
 1. Adicionar um pequeno barril de gradiente configurável, e medir em um modelo mais profundo com cada parâmetro uma aceleração total redução.
 2. - Não .`no_sync()`实现为上下文管理器,并验证梯度累积与K个微批次的单进程基线相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相相
-3. Adição`find_unused_parameters`模式, que às vezes salta uma das camadas MLP; se não tiver esse sinal, o funcionamento ficará empenhado em 局。
-4. será substituído por`torch.distributed.barrier()`- só sim, sentida a diferença entre o sim baseado em tudo redução e o sim baseado em barreira.
+3. 添加`find_unused_parameters`模式, que às vezes salta uma das camadas MLP; se não tiver esse sinal, o funcionamento ficará empenhado em 局。
+4. Vai-se substituir por`torch.distributed.barrier()`- só sim, sentida a diferença entre o sim baseado em tudo redução e o sim baseado em barreira.
 5. 量批量大小为 1、16、256 的梯度同步开销作为步长时间的一部分,并解释缩比例──
 
 ## 关键术语

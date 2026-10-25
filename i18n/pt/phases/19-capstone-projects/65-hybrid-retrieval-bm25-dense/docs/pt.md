@@ -58,8 +58,9 @@ Há duas coisas que podemos fazer.`k`常数── a sobreposição de peso de ca
 
 ### Por que a fusão é melhor do que o percentual
 
-BM25 分数 não é limitado e depende da base de linguagem.`alpha * bm25 + (1 - alpha) * cosine`需要每语料库 alpha 调整,并且每次重新索引时都会中断. Não, os dois níveis são comparáveis em diferentes modelos. Desde 2010, as linhas de base RRF lançadas em cada canal público TREC derrotaram o número de inserções. Isto é o mesmo que você ouviu nos documentos da Vespa e da Weaviate sobre RankFusion e RRF.
+BM25 分数 não é limitado e depende da base de linguagem.`alpha * bm25 + (1 - alpha) * cosine`需要每一个语料库 alpha 调整,并且每次重新索引时都会中断――基于等级融合则否――两个等级在不同模式下具有可比性――自2010年以来, RRF 基线已发布在每个公共TREC赛道上都击败分数插值――
 
+Isto é o mesmo que você ouviu nos documentos da Vespa e da Weaviate sobre RankFusion e RRF. Eles chegaram à mesma conclusão: a menos que você tenha provas muito fortes para inserir valor, ou então manter baseado em classificação.
 
 ```figure
 rrf-fusion

@@ -101,6 +101,8 @@ cc-atomic-checkpoint
 
 `save_checkpoint`Otimizador, cronógrafo, estado do trem, RNG, um modelo, um modelo, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de treinamento, um sistema de com ação, um sistema de treinamento, um sistema de com ação, um sistema de treinamento, um sistema de com ação,`load_checkpoint`Reverso recuperá-lo,并返回一个 `TrainState`◊ campo de esquema é gancho de atualização: futurformatschanger会递增版本string, enquanto o carregador irá realizar o envio.
 
+`load_checkpoint`调用 `torch.load(..., weights_only=True)`- Não.`.pt`O papel é um pickle, usal.`weights_only=False`Contrarreduzir um documento incrível, executar qualquer código especificado no documento.`ValueError`Em vez de usar`assert`Porque ...`python -O`会去掉 afirmações── por favor use torch 2.6 ou updated version:`weights_only=True`Existe uma falha conhecida em evitar a CVE-2025-32434, por isso, esta garantia depende apenas de 2,6 a partir de
+
 ### Passo 4: variante em fragmentos
 
 `save_sharded_checkpoint`Em forma rotunda, distribuir as chaves de parâmetros em N 个 shards, usando o seu próprio armazenamento atômico, escrever em cada shard, escrever em um metá-filo que contém o optimizador, cronista e estado de trem, e escrever em um índice JSON de shard sha256.`load_sharded_checkpoint`Vai-se juntar a cada pedaço.
@@ -121,8 +123,9 @@ python3 code/main.py
 
 O sistema de controle de dados é o mesmo: modelo + optimizador + agendador + contadores + RNG, com formato atômico   書き込み,并按ステップ 命名,便于找到最新文件──Layouts Shared 通过平行阅读 支持大型模型加载;`index.json`É só fazer com que isto aconteça.
 
-Para obrigatoriamente executar três modos:
+Para forçar a execução de quatro modos:
 
+- **用 `weights_only=True` 加载。**O ponto de controle obtido do compartilhamento ou download é o inábível.
 - **Schema 是 payload 中的一个 string。**Migrações, de acordo com as suas ramificações. Sem elas, você não pode evoluir em condições que não destroem o antigo sistema operacional.
 - **对每个 shard 计算 Sha256。**O download é o pior bug do carregador, ou é um rápido falha, ou é um falha tarde.
 - **让 checkpoint cadence 保持诚实。**Cada passo salvar uma vez, e cada minuto de um relógio de parede salvar uma vez, tirar mais curto.

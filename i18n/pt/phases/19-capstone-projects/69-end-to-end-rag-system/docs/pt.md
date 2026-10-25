@@ -61,7 +61,7 @@ O gerador de eletrônicos é o último, também o mais fácil de danificar.
 
 Na produção, você pode usar um modelo de sugestão para substituir para um verdadeiro LLM:
 
-```text
+```
 You are answering a question using only the snippets below.
 Cite every claim with the anchor in parentheses.
 If the snippets do not answer the question, say "I do not know".

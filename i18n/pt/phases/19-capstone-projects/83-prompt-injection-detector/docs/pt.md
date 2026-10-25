@@ -68,7 +68,7 @@ Para alguns dispositivos (especialmente para o teste), o testeiro é intencional
 
 1. 添加上下文走私规则系列 ([[Hidden in tool results JSON]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]] ]]
 2. 计算每条规则的贡献: Para cada regra, calcular se eliminar essa regra perderá quantas reais positividade.
-3. Adicionar um`confidence_threshold`旋── fazer o 0 扫到 1 e traçar a taxa de recarga precisa de cada classe──
+3. - Adicione um.`confidence_threshold`旋── fazer o 0 扫到 1 e traçar a taxa de recarga precisa de cada classe──
 
 ## 关键术语
 

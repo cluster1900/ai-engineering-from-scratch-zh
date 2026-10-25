@@ -109,7 +109,7 @@ Modelo de produção:
 
 ## 练习
 
-1. através da escala de fragmentos expandida para ZeRO-2: cada rank só armazenar a escala de fragmentos, através de um reverso posterior será não-fragmento parte limpa para realizar-se.
+1.  através da escala de fragmentos expandindo-se para ZeRO-2: cada rank só armazenar a escala de fragmentos, através de um reverso posterior será não-fragmento parte limpa para realizar-se
 2. Adicione um analisador de memória, para imprimir em 0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
 3. ∆o medir o DDP normal com o ZeRO-1 em cada passo do tempo, e o descompõe em ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆o ∆ ∆o ∆
 4. Em ZeRO-1 para realizar a redução de gradiente: deve ser feito através de um local de quantidade quadrada de todos os

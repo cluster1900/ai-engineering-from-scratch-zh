@@ -47,6 +47,10 @@ exportador 写 JSONL──每行一个 JSON对象──这是下游工具 可以
 
 Metricas e vestígios não estão presentes.`tools_called_total{tool="read_file"}`◊ histograma 记录观察到的延迟:`tool_latency_ms{tool="read_file"}`◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊ ◊    ◊ ◊ ◊   ◊                                                                         
 
+```figure
+trace-spans
+```
+
 ## Arquitetura
 
 ```mermaid
@@ -73,15 +77,15 @@ Registro de métricas é dois dictos.`{(name, frozen_labels): int}` Histogram
 6. 发发出 span 并更新 métricas `wrap_tool_call(name)`Decorador.
 7. Demo: sintetise uma vez completa invocação agente ((outils spans 外层包 gen_ai.chat span),写入 traces.jsonl,打印 Prometheus exposição,并以零 退出。
 
-span id 和 trace id é 16 byte hex cordas, por `os.urandom`生成── isto se ajusta ao contexto de rastreamento do W3C da OTel── exportador 永不抛出; erros IO 会被浮现, mas o arsenal 会继续运行──
+trace id é 16 bytes  值(32 个 hex 字符), span id é 8 bytes 值(16 个 hex 字符),都截取自随机的 `uuid4`Hex. Isto é conforme com o uso OTel de W3C Trace Context size.
 
-Histograma tem um conjunto de baldes fixos ((OTel para o valor de predefinição de latência de milissegundos: 5、10、25、50、100、250、500、1000、2500、5000、10000、+Inf) ⋅Exemplos em lista 保存;exposição 会按需计算每个桶的数量──
+Histograma tem um conjunto fixo de milímetros de latência de buckets: 5、10、25、50、100、250、500、1000、2500、5000、10000、+Inf。 é a versão mais curta do SDK OTel 默认边界的精简版,默认边界也包括 0、75、750 和 7500──Exemplos de lista 保存;exposition 会按需计算每个 bucket的数量──
 
 ## Por que escrever, em vez de usar o SDK de opentelemetria?
 
-O OTel Python SDK é uma dependência real. Ele também tem milhares de linhas de código, vários processos de exportador OTLP, bem como vai inundar um fração do orçamento de curso custo de execução.
+O OTel Python SDK é uma dependência real. Ele também tem milhares de linhas de código, um back-end de exportação de OTLP, bem como um custo de execução do orçamento de aula.
 
-As convenções são estáveis. O formato de fio emitido neste curso continuará a ser resolvido até 2030, pois OTel não vai destruir os nomes de atributos da GenAI; eles só vão adicionar novos nomes.
+As convenções da GenAI em especial ainda são marcadas para desenvolvimento, e anteriormente alteraram o nome do atributo:`gen_ai.usage.prompt_tokens`- Não .`gen_ai.usage.input_tokens` Fixar as convenções semânticas que você emite   версия, e melhorar SDK 时检查它──
 
 ## Como é que ele se combina com o resto da pista A?
 
@@ -96,7 +100,3 @@ python3 -m pytest code/tests/ -v
 ```
 
 Demo encontrou-se no trabalho de esta aula em um lançamento `traces.jsonl`(最后清理), então imprimir três períodos de amostra, reprimir contadores e histogramas de exposição Prometheus;. testes 验证 span 可回路序列化、canonical GenAI atributos 存在、counter 正确递增,并且 histograms exposition 包含预期桶 counts。
-
-```figure
-trace-spans
-```

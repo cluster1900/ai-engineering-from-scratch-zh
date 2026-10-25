@@ -109,7 +109,7 @@ Em um projeto real,`outputs/skill-cosine-warmup.md`É preciso descrever qual é 
 
 1. Adicionar o cronograma de variante inversa-raiz quadrada, e executar treinamento de brinquedo em 200 passos 上对比──哪条曲线 产生更低的最终损失?
 2. 添加 `--restart`bandeira, em`total_steps / 2`Aumentar o segundo aquecimento. Para reiniciar o aquecimento.
-3. Adicionar uma unidade de teste o calendário de verificação é contínuo: para`[0, total_steps]`Em cada passo, diferença.`|lr(step+1) - lr(step)|`Recebido`lr_max / warmup_steps`- Não.
+3. Adicionar uma unidade de teste o cronograma de verificação é contínuo:`warmup_steps > 0`时, para `[0, total_steps]`Em cada passo, diferença.`|lr(step+1) - lr(step)|`Receber aquecimento  inclinável `lr_max / warmup_steps`Com o mais elevado cosínio`pi * (lr_max - lr_min) / (2 * (total_steps - warmup_steps))`两者中较大者的约束──较短的阴段可能比升温 斜坡更,所以只用升温 斜率不是安全的上界──
 4. Vai marcar o horário`torch.optim.lr_scheduler.LambdaLR`, fazer com que o código frame 组合──本课使用简单步骤函数;包装 改变了什么?
 5. 添加 `--plot-png`bandeira, através de `matplotlib`写出真实图片──为本课的文本图片 和 PNG 哪个更适合合作为CI runs 的默认做出辩护──
 

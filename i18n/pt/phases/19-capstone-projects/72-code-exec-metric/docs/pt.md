@@ -80,7 +80,7 @@ O processo pode estar inundado de dados, consumindo todo o seu processo de armaz
 
 Pass-at-k é um calculador humano e amigo de uso imparcial.`n`独立样本和其中的 `c`Por aqui, por aqui.`n`De grandeza por`k`A probabilidade de que a solução seja aprovada é:
 
-```text
+```
 pass_at_k(n, c, k) = 1 - C(n - c, k) / C(n, k)
 ```
 

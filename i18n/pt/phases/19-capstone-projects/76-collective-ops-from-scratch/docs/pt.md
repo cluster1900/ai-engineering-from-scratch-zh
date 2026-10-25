@@ -102,7 +102,7 @@ Use第 77-81 课中的队列网格原语──第 77 课把所有减少 接入 D
 
 ## 练习
 
-1. Adicionar árvore todos reduzir os variações, e, de acordo com a informação,
+1. Adição de árvores todos reduzir os variações, e, de acordo com a informação,
 2. 添加 `recv_timeout_ms`, para que a classificação estagnada apareça um erro de data de encerramento, em vez de ficar sempre pendurada.
 3. " Quatro idiomas originais "`multiprocessing.Queue`替换为 TCP 套接字──相同的测试,真线──
 4. Adicionar o código de acesso, para que cada linha de dados seja registrada no JSONL.

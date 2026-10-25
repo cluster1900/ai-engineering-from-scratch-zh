@@ -70,7 +70,7 @@ A demonstração funciona com todas as 50 categorias e 10 bons pontos de seguime
 
 1. - Adicione o quinto ponto de inspecção:`policy-check`, antes de ser produzido, deve ser rejeitado em função do nome de ferramenta interna conhecida.
 2. Utilize o número de pontos de poder substituir o aglutinador de determinação: cada sinal contribui 0-1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-3. Adicionar variações de fluxo de variação, entre elas, durante a execução do processo de geração; verificar se o impacto do atraso permanece dentro do orçamento de 50 milissegundos.
+3. Adicionar variações de fluxo de variação, entre elas, durante a execução do processo de gerenciamento; verificar se o impacto do atraso permanece dentro do orçamento de 50 milissegundos.
 
 ## 关键术语
 

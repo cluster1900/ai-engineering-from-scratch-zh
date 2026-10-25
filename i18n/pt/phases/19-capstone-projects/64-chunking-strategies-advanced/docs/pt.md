@@ -137,7 +137,7 @@ No curso 69 , o sistema RAG utiliza o separador de seleção como sua primeira f
 1. 添加第六种策略: usar `tiktoken`Em vez de uma janela de símbolo de contagem de caracteres, comparar com a janela fixa na mesma fixação.
 2. Inserir 30% do bloco de código em um dispositivo de散文 中──重新运行该表── explicar por que todas as estratégias, exceto a Markdown estruturada, perderam a memória──
 3. A definição de um sistema de informação é uma forma de informação que pode ser utilizada para a informação.
-4. para cada bloco 添加一个`summary`字段: 一句质心描述──重新运行 eval,并将摘要附加到块主体──测量召回提升──
+4. Para cada bloco, adicione um.`summary`字段: 一句质心描述──重新运行 eval,并将摘要附加到块主体──测量召回提升──
 
 ## 关键术语
 

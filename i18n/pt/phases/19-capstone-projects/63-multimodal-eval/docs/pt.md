@@ -142,7 +142,7 @@ python3 -m unittest code/test_main.py
 
 4. Com R@K 一起计算平均倒数排名 (MRR) ⋅ MRR é muito sensível à posição fora do topo do K do projeto que está no topo do K; R@K é muito sensível ao facto de estar no topo do K ⋅
 
-5. Durante o treino, cinco pontos de verificação avaliaram o funcionamento do modelo, e desenharam uma curva de aprendizagem.
+5. Durante o treino, seis pontos de verificação avaliaram o funcionamento do modelo, e desenharam uma curva de aprendizagem.
 
 ## 关键术语
 
