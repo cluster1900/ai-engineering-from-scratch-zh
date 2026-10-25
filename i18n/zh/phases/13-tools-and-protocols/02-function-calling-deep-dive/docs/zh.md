@@ -49,12 +49,12 @@
 | Result block | role `tool`, `tool_call_id` | 带 `tool_result`, `tool_use_id` 的 `user` | 带匹配 `id` 的 `functionResponse` |
 | Force-a-tool | `tool_choice: {type: "function", function: {name}}` | `tool_choice: {type: "tool", name}` | `tool_config: {function_calling_config: {mode: "ANY"}}` |
 | Forbid tools | `tool_choice: "none"` | `tool_choice: {type: "none"}` | `mode: "NONE"` |
-| Strict schema | `strict: true` | schema-is-schema（始终 enforce） | request level 的 `responseSchema` |
+| Strict schema | `strict: true` | 每个 tool 上的 `strict: true`（opt-in） | request level 的 `responseSchema` |
 
 ### 你实际上会遇到的限制
 
 - **OpenAI.**每个请求 最多 128 个工具――方案深度 5――论文字符串 <= 8192字节――严格模式 要求没有`$ref`没有重叠的`oneOf`现在,我们要去.`anyOf`现在,我们要去.`allOf`每个房地产都在`required`在中.
-- **Anthropic.**每个请求最多64个工具. 方案深度实际上没有上限,但实际上限制为10个.
+- **Anthropic.**每个请求最多64个工具. 方案深度实际上没有设置上限,但实际上限制为10个. 严格的工具使用需要在工具定义上设置.`strict: true`选择不设置时,方案是通常遵守合同的模型,而不是保证.
 - **Gemini.**每个请求最多 64 个函数──方案类型是OpenAPI 3.0子集──与JSON方案 2020-12 略有差异──自双子座3起,并行调用使用独特的ID──
 
 ### `tool_choice`行为
@@ -91,7 +91,7 @@
 
 - **OpenAI (non-strict).**模型返回`arguments: "{bad json}"`您的JSON解析器失败,您输入错误信息并重新调用.
 - **OpenAI (strict).**在解码期间发生验证;不有效的JSON 不可能出现,但可能出现`refusal`,我知道.
-- **Anthropic.** `input`可能包含意想不到的字段;方案是建议的.需要服务器方面验证.
+- **Anthropic（non-strict）。** `input`可能包含意想不到的字段;方案是建议的.需要服务器方面验证.`strict: true`时,样本会被束在方案中.
 - **Gemini.**开启API 3.0 奇特:对象字段 上的 `enum`你需要自我验证.
 
 ### 翻译模式

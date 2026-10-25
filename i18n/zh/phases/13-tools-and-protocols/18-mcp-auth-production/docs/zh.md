@@ -352,7 +352,7 @@ python3 -m unittest discover -s code/tests -v
 
 ## 课后深度练习
 
-1. 运行`code/main.py`仔细追踪执行流.观察 IdP 在步骤 6 中轮换密钥,定时 `refresh_jwks`重新拉取已发布的公钥集合,验证旧代币(重叠窗口期内) 与新发发行的代币 如何均在未重新启动服务的情况下顺利验证签通过.
+1. 运行`code/main.py`仔细追踪执行流.观察 IdP 在脚本输出步骤 6 ((即上文流程的步骤 7) 中轮换密钥,定时 `refresh_jwks`重新拉取已发布的公钥集合,验证旧代币(重叠窗口期内) 与新发发行的代币 如何均在未重新启动服务的情况下顺利验证签通过.
 2. 在受保护资源数据元的`authorization_servers`列表中新增一个合法的IDP──签发一个由该新IDP签署的代币,验证验证签证例程顺利放行──随后签发一个由未列入白名单的外部IDP签署的代币,验证系统坚决阻断并返回`WWW-Authenticate: Bearer error="invalid_token", error_description="iss not allowed"`,我知道.
 3. 为`register_client`增加速度限制检查,在注册器真正处理请求前执行拦截. 在内存中使用按来源IP 为键字典实现轻量级的代币桶限制器.
 4. 研读RFC 7591 规范,指出示例代码中 `/register`处理器尚未校验的两个协议字段,并补全校验逻辑──(提示:`software_statement`与`redirect_uris`协议检查) 〔
