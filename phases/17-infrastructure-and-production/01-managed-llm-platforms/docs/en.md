@@ -31,7 +31,7 @@
 
 ### 规模下的 Latency 差距
 
-Artificial Analysis 运行持续 benchmark。在等效的 Llama 3.1 405B 部署上（shared on-demand），Azure OpenAI median first-token latency 约为 50 ms；Bedrock 约为 75 ms。这个差距不是 AWS 失败 — 它是容量模型差异。Azure 销售 PTUs (Provisioned Throughput Units)，为你的 tenant 预留 GPU 容量。Bedrock 的等价物（Provisioned Throughput）也存在，但每 unit 起价约 $21/hour，大多数客户仍停留在 shared on-demand。
+Artificial Analysis 运行持续 benchmark。在等效的 Llama 3.1 405B 部署上，使用 PTUs 的 Azure median first-token latency 约为 50 ms；shared on-demand 的 Bedrock 约为 75 ms。这个差距不是 AWS 失败 — 它是容量模型差异。Azure 销售 PTUs (Provisioned Throughput Units)，为你的 tenant 预留 GPU 容量。Bedrock 的等价物（Provisioned Throughput）也存在，但每 unit 起价约 $21/hour，大多数客户仍停留在 shared on-demand。
 
 On-demand shared capacity 会与所有其他客户的流量竞争。Dedicated capacity 不会。如果你的产品 SLA 是 TTFT < 100 ms at P99，那么你要么购买 Azure 上的 PTUs，要么购买 Bedrock Provisioned Throughput，要么接受默认波动。
 
@@ -91,7 +91,7 @@ i4-platform-lanes
 2. 你的产品需要 Claude 3.7 Sonnet 和 GPT-4o。设计一个 two-provider deployment — 哪个放到哪个 hyperscaler，前面放什么 gateway，failover policy 是什么？
 3. 一位受监管的 healthcare 客户要求 BAAs、US-East data residency 和 sub-100ms P99 TTFT。选择一个平台，并用三个具体功能来论证。
 4. 你发现本月 Bedrock 账单在没有流量变化的情况下上涨了 4x。没有 Application Inference Profiles 时，你会如何找到罪魁祸首？有 profiles 时，需要多久？
-5. 阅读 Azure OpenAI 和 Bedrock pricing pages。对于 100M-token/month Claude workload，哪个更便宜 — direct Anthropic API、Bedrock on-demand，还是 Bedrock Provisioned Throughput？
+5. 阅读 Anthropic API 和 Bedrock pricing pages。对于 100M-token/month Claude workload，哪个更便宜 — direct Anthropic API、Bedrock on-demand，还是 Bedrock Provisioned Throughput？
 
 ## 关键术语
 | Term | What people say | What it actually means |

@@ -53,7 +53,7 @@ L_{\text{DPO}} = -\log \sigma\!\left(
 
 - implicit reward gap `beta * (log(pi/pi_ref)_w - log(pi/pi_ref)_l)` 是无界的。一个很小的 preference 也可能产生任意大的 gap。
 - 这个 loss 会把 chosen 和 rejected 的 log-probs 往相反方向推。只要 rejected 下降得更快，它就可以把 chosen 的绝对 log-prob 也往下推。这就是 Degraded Chosen Response 现象。
-- Out-of-distribution preferences（稀有样本对稀有样本）会产生任意的 implicit rewards。
+- Out-of-distribution preferences（两个 responses 在 reference policy 下都很罕见的样本对）会产生任意的 implicit rewards。
 
 ### IPO (Azar et al., 2024)
 

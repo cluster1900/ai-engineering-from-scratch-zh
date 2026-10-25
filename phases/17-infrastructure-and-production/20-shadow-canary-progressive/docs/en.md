@@ -77,7 +77,7 @@ Candidate 接收与 production 相同的 requests；outputs 会被记录，但�
 
 ### Metrics cadence
 
-Canary gates 每 5-15 分钟检查一次，具体取决于 traffic volume。1% traffic 且 10 req/min 时，每个 window 有 50-150 个 data points — 对 latency 足够，但对 user feedback 来说噪声较大。10% 会带来约 10x 更多数据。Progressions 应该在每一步暂停足够久，以累积足够的 samples。
+Canary gates 每 5-15 分钟检查一次，具体取决于 traffic volume。1,000 req/min 的 1%（即 canary 收到 10 req/min）时，每个 5-15 分钟的 window 有 50-150 个 data points — 对 latency 足够，但对 user feedback 来说噪声较大。10% 会带来约 10x 更多数据。Progressions 应该在每一步暂停足够久，以累积足够的 samples。
 
 ### A/B 步骤是可选的
 

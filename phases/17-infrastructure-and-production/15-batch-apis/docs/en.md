@@ -1,6 +1,6 @@
 # Batch APIs — 50% 折扣成为行业标准
 
-> 每个主要 provider 都提供 async batch API，带有 50% 折扣和约 24 小时 turnaround。OpenAI、Anthropic、Google，以及大多数 inference platforms（Fireworks batch tier、Together batch）都实现了同样的模式。把 batch 和 prompt caching 叠加，overnight pipelines 的成本会降到同步未缓存成本的约 10%。规则极其简单：如果它不是交互式的，就应该放到 batch。内容生成 pipelines、document Classification、数据提取、报告生成、批量 labeling、catalog tagging——任何能容忍 24 小时延迟的工作，在迁移到 batch 之前都是把钱留在桌上。2026 年的生产模式是把每个新的 LLM workload 分流到三条 lane：interactive（同步并带 caching）、semi-interactive（async queue 并带 fallback）、batch（overnight，叠加 cached input）。那些假装是 interactive、但其实能容忍数分钟延迟的 workloads 浪费最多。
+> 每个主要 provider 都提供 async batch API，带有 50% 折扣和约 24 小时 turnaround。OpenAI、Anthropic、Google，以及大多数 inference platforms（Fireworks batch tier、Together batch）都实现了同样的模式。把 batch 和 prompt caching 叠加，overnight pipelines 的成本会降到同步未缓存成本的约 10%。规则极其简单：如果它能容忍数小时的延迟，就应该放到 batch。内容生成 pipelines、document Classification、数据提取、报告生成、批量 labeling、catalog tagging——任何能容忍 24 小时延迟的工作，在迁移到 batch 之前都是把钱留在桌上。2026 年的生产模式是把每个新的 LLM workload 分流到三条 lane：interactive（同步并带 caching）、semi-interactive（async queue 并带 fallback）、batch（overnight，叠加 cached input）。那些假装是 interactive、但其实能容忍数分钟延迟的 workloads 浪费最多。
 
 **Type:** Learn
 **Languages:** Python (stdlib, toy batch-vs-sync cost simulator)
@@ -49,7 +49,7 @@ Batch 是“我承诺在 24 小时内返回”——不是“这会花 24 小时
 
 **Semi-interactive** — 用户提交任务，数分钟后回来查看。Async queue，并在 batch 不可用时 fallback 到 sync。可以想到中等规模的 RAG indexing。
 
-**Batch** — 用户期待结果 “by morning” 或 “next hour”。Content pipelines、大规模 Classification、offline analysis。始终 batch，始终叠加 caching。
+**Batch** — 用户期待结果 “by morning” 或 “by end of day”。Content pipelines、大规模 Classification、offline analysis。始终 batch，始终叠加 caching。
 
 常见错误：因为 pipeline 是 production，就把所有东西都归类为 interactive。Production 不是 latency spec——SLA 才是。
 

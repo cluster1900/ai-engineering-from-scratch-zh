@@ -1,6 +1,6 @@
 # 在 Blackwell 上使用 FP8 和 NVFP4 运行 TensorRT-LLM
 
-> TensorRT-LLM 仅限 NVIDIA，但它在 Blackwell 上胜出。在配合 Dynamo 编排的 GB200 NVL72 上，SemiAnalysis InferenceX 在 2026 年 Q1-Q2 测得 120B 模型成本为每百万 Token $0.012，而 H100 + vLLM 为 $0.09/M，形成 7x 的经济差距。这个 stack 是三种浮点精度体系的叠加：FP8 对 KV cache 和 attention kernels 仍然关键，因为它具备它们所需的动态范围；NVFP4（4-bit microscaling）处理权重和激活值；multi-token prediction (MTP) 与 disaggregated prefill/decode 又在此之上再增加 2-3x。Day-0 模型支持可直接加载 FP4 权重，无需 post-training conversion。对 2026 年工程团队来说，问题在于：TRT-LLM 是封闭的 NVIDIA stack，因此采用它就是用可移植性换吞吐。在承诺采用前，先基于你的模型与硬件组合算清楚。
+> TensorRT-LLM 仅限 NVIDIA，但它在 Blackwell 上胜出。在配合 Dynamo 编排的 GB200 NVL72 上，SemiAnalysis InferenceX 在 2026 年 Q1-Q2 测得 120B 模型成本为每百万 Token $0.012，而 H100 + vLLM 为 $0.09/M，形成 7x 的经济差距。这个 stack 叠加了两种浮点格式与两种 serving 技术：FP8 对 KV cache 和 attention kernels 仍然关键，因为它具备它们所需的动态范围；NVFP4（4-bit microscaling）处理权重和激活值；multi-token prediction (MTP) 与 disaggregated prefill/decode 又在此之上再增加 2-3x。Day-0 模型支持可直接加载 FP4 权重，无需 post-training conversion。对 2026 年工程团队来说，问题在于：TRT-LLM 是封闭的 NVIDIA stack，因此采用它就是用可移植性换吞吐。在承诺采用前，先基于你的模型与硬件组合算清楚。
 
 **Type:** 学习
 **Languages:** Python (stdlib，玩具级 FP8/NVFP4 内存与成本计算器)

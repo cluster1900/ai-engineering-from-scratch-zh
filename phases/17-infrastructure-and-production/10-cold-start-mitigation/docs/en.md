@@ -1,6 +1,6 @@
 # Serverless LLMs 的 Cold Start Mitigation
 
-> 一个 20 GB model image 从 cold 到 serving 需要 5-10 分钟（7B）到 20+ 分钟（70B）。在真正的 serverless 世界里，这不是 warm-up，而是 outage。Mitigations 作用在五层：pre-seeded node images（AWS 上的 Bottlerocket、dual-volume arch）、model streaming（NVIDIA Run:ai Model Streamer，vLLM 原生支持）、GPU memory snapshots（Modal checkpoints，restart 最多快 10x）、warm pools（`min_workers=1`）、tiered loading（ServerlessLLM 的 NVMe→DRAM→HBM pipeline，latency 降低 10-200x），以及传输 input Token（KB）而不是 KV cache（GB）的 live migration。Modal 发布的 2-4s cold starts 是下限；Baseten 默认 5-10s，配合 pre-warming 可达 sub-second。本课教你测量、预算并叠加这五层。
+> 大模型从 cold 到 serving 需要数分钟：一个 70B model 在全新 node 上大约需要 3-8 分钟才能产出第一个 Token。在真正的 serverless 世界里，这不是 warm-up，而是 outage。Mitigations 作用在五层：pre-seeded node images（AWS 上的 Bottlerocket、dual-volume arch）、model streaming（NVIDIA Run:ai Model Streamer，vLLM 原生支持）、GPU memory snapshots（Modal checkpoints，restart 最多快 10x）、warm pools（`min_workers=1`）、tiered loading（ServerlessLLM 的 NVMe→DRAM→HBM pipeline，latency 降低 10-200x），外加一个额外的第六种 pattern：传输 input Token（KB）而不是 KV cache（GB）的 live migration。Modal 发布的 2-4s cold starts 是下限；Baseten 默认 5-10s，配合 pre-warming 可达 sub-second。本课教你测量、预算并叠加这五层。
 
 **Type:** Learn
 **Languages:** Python (stdlib, toy cold-start path simulator)

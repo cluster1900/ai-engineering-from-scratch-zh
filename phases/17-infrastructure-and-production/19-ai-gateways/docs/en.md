@@ -8,7 +8,7 @@
 **Time:** ~60 minutes
 
 ## 学习目标
-- 列举六个核心 gateway 功能（routing、fallback、retries、rate limits、secrets、observability、guardrails）。
+- 列举七个核心 gateway 功能（routing、fallback、retries、rate limits、secrets、observability、guardrails）。
 - 将四个 2026 gateway（LiteLLM、Portkey、Kong AI、Bifrost）映射到 scale ceilings 和 use cases。
 - 引用 Kong benchmark（相比 Portkey 228%，相比 LiteLLM 859%），并解释它为什么对 >500 RPS 很重要。
 - 在给定 data residency 和 ops budget 的情况下选择 self-hosted 或 managed。
@@ -19,7 +19,7 @@
 在 app layer 重新实现这些，会让每个 service 与每个 provider 耦合。Gateway layer 会把它整合到一个 process 中，提供一个 API（通常 OpenAI-compatible），再分发到各个 providers。
 
 ## 概念
-### Six core features
+### Seven core features
 
 1. **Provider routing** — 将 OpenAI、Anthropic、Gemini、self-hosted 等放在一个 API 后面。
 2. **Fallback** — 遇到 429、5xx 或 quality failure 时，在别处重试。
@@ -104,7 +104,7 @@ mx-gateway-fallback
 
 ## 练习
 1. 运行 `code/main.py`。配置 OpenAI→Anthropic→self-hosted 的 fallback。在 5% provider error rate 下，预期 hit rate 是多少？
-2. 你的 SLA 是 TTFT P99 < 200 ms，baseline 为 300 ms。哪些 gateways 仍在 budget 内？
+2. 你的 SLA 是 TTFT P99 < 320 ms，而 model 本身在 P99 下测得 300 ms。哪些 gateways 仍在 budget 内？
 3. 一个 healthcare customer 要求 self-hosted + PII redaction + audit。选择 Portkey OSS 还是 Kong。
 4. 比较 LiteLLM 与 Kong：团队应该在什么 RPS ceiling 迁移？
 5. 为 multi-tenant SaaS 设计 rate-limit policy：free tier、trial tier、paid tier。选择 token-bucket 还是 sliding-window？

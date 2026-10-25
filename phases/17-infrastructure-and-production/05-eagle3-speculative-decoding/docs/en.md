@@ -16,7 +16,7 @@
 
 ## 问题
 
-Decode 是 memory-bound。在一台运行 Llama 3.3 70B FP8 的 H100 上，每个 decoded Token 会读取约 140 GB/s 的权重并输出一个 Token。GPU compute 在 decode 期间几乎空闲，瓶颈是 HBM bandwidth，而不是 matmul throughput。
+Decode 是 memory-bound。在一台运行 Llama 3.3 70B FP8 的 H100 上，每个 decode step 都会从 HBM 读取全部约 70 GB 权重，并为每个 sequence 输出一个 Token。GPU compute 在 decode 期间几乎空闲，瓶颈是 HBM bandwidth，而不是 matmul throughput。
 
 Speculative decoding 利用了这个差距。用便宜的 draft model 生成 K 个候选 Token，然后让 target model 在一次 forward pass 中验证所有 K 个。每个被验证通过的 Token 实际上都是免费的（摊销进 target 本来无论如何都要做的 batch-of-K forward）。
 
