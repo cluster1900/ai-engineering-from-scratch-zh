@@ -109,7 +109,7 @@ python3 code/main.py
 
 Her gösterge doğrudan üretim tabanına yer alır:
 
-- **检索。**MS-COCO 5K val、Flickr30K、ImageNet 零样本都是同一相似性矩阵上的 R@K 问题──将合成 eval 替换为真文件,函数签名保持不变──
+- **检索。**MS-COCO 5K val ve Flickr30K aynı benzerlik matçındaki R@K  problemi. ImageNet 零样本也使用该矩阵,每个类别一个提示嵌入,但它报告的是 top-1 分类准确率,也就是在类提示上的 R@1──将合成 eval 替换为真文件,函数签名保持不变──
 - **VQA。**VQA v2、GQA、OK-VQA aynı doğru uyum biçimini kullanır.
 - **BLEU-4.**MS-COCO 字幕、NoCaps、Flickr30K 字幕均使用BLEU-4加 CIDER 和 METEOR──添加 CIDER 是另一项功能──
 

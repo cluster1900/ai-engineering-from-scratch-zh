@@ -20,7 +20,7 @@ Her hafta yeni bir dil modeli ortaya çıkar. Satışcılık konuşması çok iy
 
 Eğer repo'nun harness yoksa, sadece iki modeli karşılaştırma hissine sahip olursun. Harness varsa, sabit görev kümesi üzerinde kalır, sabit metrikler üzerinde karşılaştırır ve farklı JSON çıkışı elde eder. Harness ise dün çalışması ile bugün çalışması arasındaki bir sözleşmedir.
 
-陷是让harness 过适合到单个模型──修复方式是反过来使用同一个陷:harness 小到十五分钟能读完,任务小到随随随 发布,测量从零编写以便同事审计,而适配器是唯一放置模型特定代码的地方──替代适配器,leaderboard 会变;替代任务,leaderboard 会变――其他一切不应变──
+陷是让harness 过适合单个模型──修复方式是让所有模型的特定选择都留在harness 之外:harness 小到十五分钟能读完,任务小到随随随随随随随随随随随随随随发行, metrics 从零编写以便同事审计,而适配器是唯一模型的特定代码放置的地方──替代适配器,leaderboard 会变;替代任务,leaderboard 会变──其他东西都不应变──
 
 ## 概念
 

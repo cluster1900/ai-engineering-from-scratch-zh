@@ -16,7 +16,7 @@ Bir ajan inşa edeceksin, bir Java 8 repoyu alacaksın, bir Java 8 repoyu alacak
 ## 概念
 Bu boru hattı iki katlı.**deterministic substrate**(Java kullanılarak OpenRewrite, Python kullanılarak libcst) güvenli bir şekilde büyük miktarda mekanik yeniden yazılımı: ithalat, yöntem imzaları, sıfır güvenlik düzenlemeleri, kaynaklarla deneme, zayıf API değiştirmeleri, hızla hızlı bir şekilde, ve denetlenebilir farklılıklar üretmektedir.**agent layer**(OpenAI Agents SDK veya LangGraph, Claude Opus 4.7 ve GPT-5.4 Kodeks'e dayalı) Reçepleri işleme imkansız durum: dosya geliştirmelerini yapma Maven/Gradle/pyproject)
 
-Her repo şehri bir ön yükleme hedefi çalışır zamanın Daytona sandbox olarak elde edilir. Ajan 代执行:运行构建分类故障、应用修正、重新运行。硬性限制:每个 repo 30 分钟、每个 repo $8、20 代理转── eğer tüm testler 通过且覆盖的delta 不负,就打开PR──如果没有通过,就把该 repo 按失败类归档并附上证券──
+Her repo şehri bir ön yükleme hedefi çalışır zamanın Daytona sandbox olarak elde edilir. Ajan 代执行:运行构建分类故障、应用修正、重新运行。硬性限制:每个 repo 30 分钟、每个 repo $8、20 个代理转── eğer tüm testler 通过且覆盖下降不超过2个百分点,就打开PR──如果没有通过,就把该 repo 按失败类档并附上证券──
 
 失败分类体系是交付物──在50个 repo 中,什么坏了?Transitive deps?Custom annotations?Build tool version?与迁移无关的测试片?
 
@@ -73,7 +73,7 @@ ce-migration-funnel
 
 4. **Budget caps.**Her repo 30 dakika duvar saati ≈$8 成本、20 代理 döner ≈° herhangi bir aşırı sınır kesilecek, ≈° mevcut fark ≈° " bütçe_ tükeniyor" ≈°
 
-5. **Test + coverage gate.**Bu, bir süre sonra test süiti ile yapılan testlerin kapsamını %2'den fazla düştüğünde, kapsamın geri dönüşü olarak değerlendirilecek.
+5. **Test + coverage gate.**Bu, bir süre sonra test süiti kullanmak için kullanılacak.
 
 6. **PR open.**Başariden sonra, bölümü dürtü, PR aç, eklemeyi değiştir, ve hangi tarifler uygulanır, hangi görevler üstlenir.
 

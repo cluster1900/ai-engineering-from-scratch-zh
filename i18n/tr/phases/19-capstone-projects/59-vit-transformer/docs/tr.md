@@ -69,7 +69,7 @@ ViT-Base bir 86M 参数编码器. 2026 yılı standartlarına göre, bu değer �
 
 ### Çizgiyi mi?
 
-Vision Transformer sadece kodlayıcı içerir ve iki yönlü:`i`Herhangi bir token'a katılabilirsiniz.`j` Hiç bir çubuk yok.  61                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+Vision Transformer sadece kodlayıcı içerir ve iki yönlü:`i`Herhangi bir token'a katılabilirsiniz.`j`△ maske yok. ◦ 61 ⇒ Koducu'daki metin kendi dikkatini etki örtüsü ile kullanır.
 
 ### CLS token öğrendi ne?
 

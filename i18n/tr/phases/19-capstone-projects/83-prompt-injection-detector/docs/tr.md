@@ -82,4 +82,4 @@ injection-gate
 
 ## 进一步阅读
 
-Bu dersdeki 84'ten 87'e kadar dersler.
+Bu dersdeki 84'ten 87'e kadar dersler. Burada testör, sonundan sonuna kadar oluşturulan dört sinyalden biridir.

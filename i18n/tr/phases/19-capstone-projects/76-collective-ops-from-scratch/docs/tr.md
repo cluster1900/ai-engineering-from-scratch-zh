@@ -16,7 +16,7 @@
 
 ## 问题
 
-N'de basit tüm azaltmak 将张量 N 次发送到根并广播 N 次。 her rango'nun genişliği kısaltmak için$O(N)$, kök bir şişe oldu, ve asılı olan asılı olan asılı olan en yavaş bağlantı N.$T/N$- Evet.$2(N-1)$块, bu yüzden her sıra 字节下降到$2T(N-1)/N$Ağaçlar, küçük N ve yüksek gecikme zincirinde kazanır, çünkü derinlik $\log_2(N)$跳而不是 $2(N-1)$◊ Kötü toplu seçim için, en yavaş GPU karar adım zaman
+N'de basit tüm azaltmak 将张量 N 次发送到根并广播 N 次。 her rango'nun genişliği kısaltmak için$O(N)$, kök bir şişe oldu, ve asılı olan asılı olan asılı olan en yavaş bağlantı N.$T/N$- Evet.$2(N-1)$块, bu yüzden her sıra 字节下降到$2T(N-1)/N$, N' büyüdükçe ve yaklaştıkça$2T$Ve asla onu aşmaz, ne kadar büyük olursa olsun. Ağaçlar, küçük N ve yüksek gecikme zincirinde kazanır.$\log_2(N)$跳而不是 $2(N-1)$◊ Kötü toplu seçim için, en yavaş GPU karar adım zaman
 
 Bu ders içinde okuduğunuz her dağıtımlı eğitim çerçevesinin hepsi bu dört temel dile bağlıdır. PyTorch DDP, her bir parametrelerden bir tümü ile derecesi azaltır, aynı adımları yapar. ZeRO, tümüyle birlikte 广播更新的参数, 广播更新的参数, 广播更新的参数, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分_散分_散分_分_分_分_分_分_分_分_分_分_分_分_分_分_分_分_分_分_分_分_分_分_分_分_分_分_分______________________________________________________________________________________________________________________________________________________________________________________________________
 

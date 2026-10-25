@@ -21,7 +21,7 @@ Büyük çoğunluklu ajan demoları, yalnız çalışmalar halinde: tek tek kum 
 
 Kapı zinciri  İZLETİN İZLETİNİ, ama kum kutu çünkü zincir                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
-Bu ders tüm pistin entegrasyon testidir.Agent, dört şeyi sırayla tamamlamalıdır: projenin okunması, testlerin yürütülmesi, test başarısızlığından sonra hataların tespit edilmesi, yazılı düzeltme, yeniden çalıştırılması, sonra durdurulması.
+Bu ders tüm pistin entegrasyon testidir.Agent, altı şeyi sırayla tamamlamalıdır: projenin okunması, testlerin yürütülmesi, test başarısızlığından sonra, hataları tespit etmek, yazmak, yeniden çalıştırmak, sonra durdurulması.
 
 ## Anlaşım
 

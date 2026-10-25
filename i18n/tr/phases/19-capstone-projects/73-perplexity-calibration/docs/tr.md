@@ -88,7 +88,7 @@ Bu araç güvenini softmax'ten alıyor.`[0, 1]`Orta herhangi bir sayı.`softmax 
 
 - Tüm tahminler yanlış: ECE ortalama güvenilirlik, Brier yüksek değer, karışıklık metin bakış açısıdır.
 - % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-- p=0.5 时完全不确定预测因子:ECE 0.5 减去精度,Brier 0.25 减去校正项──
+- p=0.5 时完全不确定预测因子: Her预测都落入同一个bin,所以ECE为`|0.5 - accuracy|`✿Brier 恰好为0.25,因为无论 `y`Evet 0 ya da 1,`(0.5 - y)^2 = 0.25`- Evet.
 - 空输入:ECE、Brier 和可靠性返回 `0.0`(或零填充数组) ◊零token durumu için, karmaşıklık 返回 `NaN` Bu yollar uyarı yayınlamayacaktır; koşucu bu değerleri kontrol eder ve rapor edilmeyeceğini veya atlamayı karar verir.
 
 Bu örnekler testlere dahil edilmiştir. Gerçek temel testlerdeki gerçek modeller onları yenmez, ancak eksik bir uyarıcı veya küçük örnek onları yenmez ve işletim cihazı çökmemesi gerekir.

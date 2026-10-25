@@ -70,7 +70,7 @@ Biz de önümüzdeyiz.`import sys`Ve bir geçiş yaptır.`os.system`Bu yüzden, 
 
 Her süreçte üç dakikanın bir öntanımlı bütçesi vardır.`subprocess.run(..., timeout=t)`Eğer süper zaman olursa, koşucu yakalar.`TimeoutExpired`, bitirme süreci, ve görevlerin kaydedilmesi`timeout`退出原因──この任務の分数は零──ランナー devam eder──
 
-Her görevin geçici zamanı .`task.metadata.timeout_s`配置──长时间运行单元测试可能会要求更多; 70 课中的验证器将该值限制为30秒,以保持套件的边界──
+- Evet .`run_candidate``timeout_s`参数;第 75 课的跑者 通过 `code_exec_timeout_s`Uzun süredir çalışmakta olan birim testleri daha fazlasını gerektirebilir.`run_candidate`Bu değerleri 0.1 ila 30 saniye arasında sınırlandırıp, takımın sınırını koruyacağız.
 
 ## 输出上限
 
@@ -84,7 +84,7 @@ Geç-at-k, insan değerleri ve arkadaşların kullandığı bir değerlendirme m
 pass_at_k(n, c, k) = 1 - C(n - c, k) / C(n, k)
 ```
 
-- Evet .`n - c < k`时, molecules undefined, value为 `1`◊ Bu durumun doğrudan işlenmesi için.`pass_at_k(n, c, k)`供排行层使用──
+- Evet .`n - c < k`时, normal olarak, moleküller `C(n - c, k)`Neden azını çekmiyorsun?`k`个失败中选出   个失败中选出`k`个), 所以值为 `1`◊ Bu durumun doğrudan işlenmesi için.`pass_at_k(n, c, k)`供排行层使用──
 
 ```mermaid
 flowchart LR

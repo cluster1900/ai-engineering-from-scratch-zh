@@ -92,7 +92,7 @@ python3 code/main.py
 
 **交叉编码器不对称。** `rerank(q, d)`和 `rerank(d, q)`Eğer bir şey değiştirmezsen, hatırın yıkılır.
 
-**N 太低，无法暴露该 bug。**Eğer N = K ayarlanırsa,交叉编码器 yeniden sıralanamaz; sadece yeniden sıralanır.
+**N 太低，无法暴露该 bug。**Eğer N = K ayarlanırsa,交叉编码器 K 个候选人重新排序, fakat yeni adayları üst K 带来无法. K 个候选人. K 个候选人.
 
 **训练数据泄漏到评估中。**Eğer manuel token'ın eğitimi değerlendirme sorgularını içerse, yeniden sıralamalar çok şaşırtıcı görünüyor.
 

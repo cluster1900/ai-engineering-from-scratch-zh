@@ -18,7 +18,7 @@
 
 Görüş dil modeli iki beceri gerektirir. Bu iki beceri gerektirir. Bir başlık verilmiş, çok sayıda görüntüde doğru bir görüntü bulunmuş olmalıdır. Bu bir başlık yazılmış olmalıdır.
 
-InfoNCE  sorumlu sıralama yarısı                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    `N^2 - N`- Neyse. - Neyse.`(N, N)`LM                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+InfoNCE  sorumlu sıralama yarısı                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    `N^2 - N`- Neyse. - Neyse.`(N, N)`LM  kaybı işleminin yarısını: görüntü koşulları standartlarına göre bir sonraki token tahminleri olarak oluşturulur.
 
 ## 概念
 
@@ -54,7 +54,7 @@ N 个图像嵌入堆叠为行, N 个文本嵌入堆叠为行―― L2-将两者�
 
 ### 合并损失
 
-`total = contrastive + lm_weight * lm`, içinden `lm_weight`Bu iki kaybı paylaşmak için kodlayıcı ve projeksiyonu 梯度; sadece çözücü LM 损失梯度 olarak kabul eder. Bu farklı ağırlıklara sahip CoCa ve BLIP kullanımı çoklu görev birimidir. SigLIP sadece kontrastlı 项leri korur ve sigmoid çift kaybı  softmax yerine kullanır.
+`total = contrastive + lm_weight * lm`, içinden `lm_weight`Bu iki kaybı paylaşmak 编码器 ve projektör 梯度; çözücü sadece LM 损失的梯度'den alır. Bu farklı ağırlıklara sahip CoCa 和 BLIP kullanımı çok görevli bir yapılandırma. SigLIP sadece kontrastlı 项leri korur ve sigmoid çift kaybı  softmax yerine kullanır.
 
 |组件|损失面|影响|
 |-----------|--------------|---------|

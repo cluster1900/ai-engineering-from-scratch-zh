@@ -1,6 +1,6 @@
 # HDF5 Tokenized 语料库
 
-> İyi dil yazısı, bir eğitmenin gitme hızıyla okuyabilmesi için bir düzenleme yapması gerekir. Disk üzerindeki JSONL 16 veri yükleyici işçisi değildir. HDF5'in tam sayıdaki parçaları için düzenlenebilir tokenerlik oluşturur.
+> İyi dil yazısı, bir eğitmenin gitme hızıyla okuyabilmesi için bir düzenleme yapması gerekir. Disk üzerindeki JSONL 16 veri yüklemeci işçisi değildir. HDF5'in tam sayıdaki parçalarındaki HDF5'in büyüklüğünü düzenleyebilir. Bu ders, HDF5'in büyüklüğünü düzenleyebilir şekilde tokenize etmeyi, çok sayıda dosyanın parçalanmış yazısını, eğitim sırasında parçalanmış okumalarını ve doğru paketleme ile kaydırma penceresi veri yüklemeciyi oluşturur.
 
 **Type:** Build
 **Languages:** Python
@@ -18,7 +18,7 @@
 
 Modern dil model eğitim çalışması Onlarca işçi üzerinde gerçekleşir. Hızlıca saniyede yüz binlerce örnek okur. Diskte JSONL ilk soğuk saklama sayfasında hata yaparken çöküyor. JSON parser  çok yavaş, dosya sınırları arama yapmaz.$O(1)$Randeom erişim 平 token akışı
 
-HDF5                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `tokens[3,200,000 : 3,200,8192]`Bu sayfalardaki arşivler, sayfa kaşından kopyalanıp yeni dağıtılmış NumPy dizisine kadar arayan hiperlabı oluşturur.
+HDF5                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `tokens[3_200_000 : 3_208_192]`Bu sayfalardaki arşivler, sayfa kaşından kopyalanıp yeni dağıtılmış NumPy dizisine kadar arayan hiperlabı oluşturur.
 
 Yapım sorunu yazılmaya hazırlıklı olmakta. Ölçülebilir veri kümeleri kolaylıkla yanlışıyla kullanılır: bir kez bir dosya yazmak, HDF5 dosyası parçalara ayırmak kullanışsız hale gelir. Bir kez tüm dosyaları yazmak, süreç ölürken tüm parçacık kaybedilmektedir.
 
@@ -48,9 +48,9 @@ token veri kümesi 使用 `maxshape=(None,)`Ve kesin.`chunks=(chunk_size,)`创�
 
 单个 HDF5 文件是单点故障──管线 会并行写入片段:Phase 19 lesson 42 中的每个输入片段 生成一个 HDF5输出片段──`shards.json`index 会按碎片 记录文件路、代码计数、文件计数,以及代码的 sha256──trainer 读取`shards.json`Küresel karşılamaları hesaplamak ve onaylamak için.
 
-### Hatıra haritası okuyucu
+### Parçalama okuyucu
 
-                                                                                                                                                                                                                                                              `swmr=True`Modu 打开自己负责的 HDF5 dosyaları,并请求 `tokens[start:stop]`△ bir kez parça 变热,HDF5'in parça düzeni 就会让它成为页面缓存支持的读物──worker 永远不会实现整个文件:slice 会被复制到数据库的批量缓冲,之后数据库在批量时间将其复制到固定记忆训练 tensor──热路 在每次块转换时一次系统调用;其余都是RAM访问──
+                                                                                                                                                                                                                                                              `swmr=True`Modu 打开自己负责的 HDF5 dosyaları,并请求 `tokens[start:stop]`△ bir kere parça 变热,HDF5'in parça düzeni bunu bir kez daha düşük maliyetli bir okuma yaptırır: h5py ⇒ bellek haritası 文件, yerine HDF5 parça kaşı ve OS sayfa kaşı 读取 tüm parçalar, tekrar tekrar isteklerin hiperslab 复制出来──worker 永远不会实现整个文件:slice将会被复制到数据载体的批量缓冲器,然后数据载体在批量时间将其复制到固定记忆训练 Tensor──热路 在每次块转换时一次系统调用;其余是 RAM 访问──
 
 ### Çekilme penceresi veri yükleyici
 
@@ -68,10 +68,10 @@ cc-hdf5-corpus
 - `Tokenizer`- Bir bayt seviyesindeki belirleyici simgesi, demo için 足够好──接口是 `encode(text) -> list[int]`和 `vocab_size`- Evet.
 - `HDF5ShardWriter`- 打開可调整大小的整数数据集, 打开代码缓冲到块大小,按固定大小步骤大小大小大小并写入,在关闭时把 打开`token_count`和 `sha256`记录为 HDF5 özellikleri。
 - `ShardedTokenizationPipeline`- Giriş belgeleri üzerinden geçiyor, yazarın yanına yol açıyor, çıkıyor.`shards.json`İndeksi
-- `MmapTokenStore`- 打開 shard dosyaları                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     `get_slice(start, stop)`API.
+- `MmapTokenStore`- 打開 shard files 进行碎片阅读(这个名字只是为了方便;h5py 读取是碎片,不是mmap 文件),计算全球抵消,暴露单个 `get_slice(start, stop)`API.
 - `SlidingWindowDataloader`- Global stream 中 ランダム windows,并 yield `(input_ids, target_ids)`NumPy dizileri
 
-Dosya tabanının demo bir çok küçük bir hafıza korpusunu oluşturacak, iki parçaya işaretleyecek, hafıza haritası üzerinden açacak, 10 seri verileri yükleyecek, her seri şeklini ve kontrol toplamını yazdıracak.
+Dosya tabanının demo bir çok küçük hafıza korpusunu oluşturur, iki parçaya ayırır, parça parça olarak okuyor, açar, 10 seri veri yükleyiciyi çalışır, her seri şeklini ve kontrol miktarını basar.
 
 运行:
 
@@ -118,7 +118,7 @@ Gerçek projelerde,`outputs/skill-hdf5-tokenized-corpus.md`Hangi tokenizer'in, h
 | Term | What people say | What it actually means |
 |------|-----------------|------------------------|
 | Resizable dataset | "Append-only" | 一个带 `maxshape=(None,)` 的 HDF5 dataset，通过按 chunk 大小 stride 调用 `resize` 增长 |
-| Chunked layout | "How HDF5 stores it" | 固定大小的 on-disk pages，kernel 可 memory-map，dataloader 可连续读取 |
+| Chunked layout | "How HDF5 stores it" | 固定大小的 on-disk blocks，HDF5 将其作为一个单元读取并缓存，因此 dataloader 能以低成本读取连续范围 |
 | `swmr` mode | "Read-while-write" | Single-Writer-Multiple-Reader mode，使 dataloader workers 能安全共享文件 |
 | Shard index | "shards.json" | 包含 offsets 和 content hashes 的所有 token shards 的 durable index |
 | Sliding window | "Training sample" | global token stream 的固定长度 slice，trainer 会把它与 shift-by-one target 配对 |
@@ -127,7 +127,7 @@ Gerçek projelerde,`outputs/skill-hdf5-tokenized-corpus.md`Hangi tokenizer'in, h
 
 - [HDF5 chunking documentation](https://docs.hdfgroup.org/hdf5/v1_14/)- 本课使用的碎片化・尺寸化数据集布局
 - [h5py user guide](https://docs.h5py.org/en/stable/)- HDF5 Python bağlamaları
-- [NumPy memory mapping](https://numpy.org/doc/stable/reference/generated/numpy.memmap.html)- HDF5 通过 h5py 暴露的读侧原始
+- [h5py chunked storage](https://docs.h5py.org/en/stable/high/dataset.html#chunked-storage)- h5py  nasıl parçalara ayıklanmış veri kümelerini okur ve nasıl parçalara ayıklanmış cache ayarlanır
 - 19 · 42 aşama - 输出由本课 टोकenize 的下载器
 - 19 · 44 aşama - 消费这个数据包的 cosine时间表
 - Eğitim aşamasının 19 · 45 aşaması

@@ -1,6 +1,6 @@
 # Capstone 07  端到端 Fine-Tuning Pipeline ((Data to SFT to DPO to Serve)
 
-> Kendi verilerinize dayalı 8B modeli, kendi tercihlerinize dayalı DPO'yu tamamlamak, kuantitasyonunu tamamlamak, spekülasyonsal çözümü oluşturmak, ölçülebilir $/1M jetonları oluşturmak. 2026 yılının açık yığınında Axolotl v0.8、TRL 0.15、 kullanılacak olan Unsloth'in  generasyonuna GPTQ/AWQ/GGUF'yi kullanmak, ve hizmet veren vLLM 0.7 + EAGLE-3'ye.
+> Kendi verilerini eğitmek için 8B seviyesinde bir model, DPO'yu tamamlamak, kuantitasyonu tamamlamak, spekülasyonu çözmek, ölçülebilir $/1M tokenleri kullanmak ve hizmet sunmak için bir proje oluşturmak. 2026 yılının açık yığınında Axolotl v0.8、TRL 0.15、 kullanılacak olan Unsloth'ın nesilden bir kısmı olarak kullanılacak.
 
 **Type:** Capstone
 **Languages:** Python (pipeline), YAML (configs), Bash (scripts)
@@ -11,7 +11,7 @@
 ## 问题
 2026 yılında, her ciddi AI ekibi her zaman iyi ayarlama bir boru hattı hazırlayacak. Sınır baz modeli yayınlaması için değil, aşağıdaki ayarlama için, yani domain SFT'ler için, etiketlenmiş tercih edilen DPO'lar için, spekülasyonsal dekodeleme için distil edilmiş taslaklar için, ayrıca EAGLE-3 servisini kullanmak için, sadece gerçek olarak ortaya çıkan kazançları ölçülebilecek yerlerdir.
 
-Siz bir 8B tabanı yerleştireceksiniz(Llama 3.3、Qwen3 veya Gemma 3) Görev-özel verilerde 上依次完成 SFT 和 DPO, sonra ise kvantizasyon yapmak,并使用 lm-evaluation-harness、RewardBench-2、MT-Bench-v2 和 MMLU-Pro 衡量升升级──
+Llama 3.1 8B、Qwen3 14B veya Gemma 3 12B) görevi spesifik verilerde 上次完成 SFT 和 DPO, sonra ise kvantizasyon yapmak,并使用 lm-evaluation-harness、RewardBench-2、MT-Bench-v2 和 MMLU-Pro 衡量升级──你将根据2026 Model Openness Framework 产出一份模型卡──重点是可复现性:一个命令到端重跑整条管道──
 
 ## 概念
 Bu boru hattının beş aşaması var.**Data**:dedup(MinHash / Datatrove) ✓ kalite filtre(Nemotron-CC 风格 sınıflandırıcısı) ✓PII scrub、 kamu standartı kirliliğinin bölünmüş hijyen kontrolü¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬**SFT**Aksolat YAML  8xH100 上的ZERO-3 柯西斯时间表 包装序列 2-3 epochs **DPO or GRPO**:TRL yapılandırması ∞1 epoch ∞ tercih çiftleri yapay etiketleme veya model değerlendirmesi ∞beta ayarlama ∞**Quantize**:GPTQ + AWQ + GGUF,保证 konuşma esnekliği。**Serve**:vLLM 0.7 + EAGLE-3 spekülasyon başları( veya SGLang + SpecForge) 、K8s dağıtım、 sırada bekleme temelinde HPA──
@@ -52,7 +52,7 @@ model card (2026 MOF) + safety eval (Llama Guard 4)
 
 ## 技术
 - Veriler: Detatrove dedup için, Nemotron-CC sınıflandırıcısı kalite için, Presidio PII için
-- Üssü: Llama 3.3 8B、Qwen3 14B veya Gemma 3 12B
+- Üssü: Llama 3.1 8B、Qwen3 14B veya Gemma 3 12B
 - SFT: Axolotl v0.8, ZeRO-3 ✓ Flash Attention 3 ✓ Paketlenmiş diziler
 - Tercihleri ayarlama: TRL 0.15 DPO veya GRPO için kullanılır; Unsloth tek GPU iterasyon için kullanılır
 - Kvantizasyon: GPTQ (Marlin) 、AWQ、 llama.cpp üzerinden 生成 GGUF
@@ -113,7 +113,7 @@ $ ./pipeline.sh config/llama3.3-8b-domainX.yaml
 ## 练习
 1. Aynı görev-özel bir referans değerinde, SFT+DPO、SFT+GRPO¬ olarak kullanılır.
 
-2. Llama 3.3 8B'yi Qwen3 14B'ye değiştirmek için kullanılır.
+2. Llama 3.1 8B'yi Qwen3 14B'ye değiştirmek için kullanılır.
 
 3. 测量域数据与通用ShareGPT 上的EAGLE-3 kabul oranı──报告差值,以及它对延迟预算意味着什么──
 
@@ -139,5 +139,5 @@ $ ./pipeline.sh config/llama3.3-8b-domainX.yaml
 - [DeepSeek R1 paper (arXiv:2501.12948)](https://arxiv.org/abs/2501.12948) GRPO 方法
 - [vLLM + EAGLE-3 documentation](https://docs.vllm.ai) 参考 Hizmet toplu
 - [SGLang SpecForge](https://github.com/sgl-project/SpecForge)  başka bir tür spekülasyonsal dekodlama eğitmeni
-- [Model Openness Framework 2026](https://isocpp.org/) açık yayın 评分标准
+- [Model Openness Framework (arXiv:2403.13784)](https://arxiv.org/abs/2403.13784)Açık yayınlama 评分标准
 - [lm-evaluation-harness](https://github.com/EleutherAI/lm-evaluation-harness) kanonik değerlendirme koşucusu

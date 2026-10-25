@@ -16,7 +16,7 @@
 
 ## 问题
 
-Bir eğitim görevi ayarladınız, 18 saat çalışmayı öngörüyorsunuz. 4 saat. 11. saat. Kluster yeniden başlandı, çünkü sizden daha yüksek maaşlı bir kişi çekirdek yükseltmesini onayladı. Kontrol noktası yok. Baştan başlamak zorundasınız.
+Bir eğitim görevi ayarladınız, 18 saat çalışmayı öngörüyorsunuz. Programcı, her alokasyonu 4 saatte sınırlandırın, bu yüzden bu sefer çalışmak, bu sefer bir dizi yeniden başlatılan iş sırasıdır. Sonra çalışmanın 11. saatinde, küme yeniden başlatıldı, çünkü senin ücretinden daha yüksek bir personel çekirdek yükseltmesini onayladı. Kontrol noktası yok, baştan başlamak zorundasın.
 
 Doğrudan eser, bir tek dosyadır, içinde kalıcı olarak eğitime ihtiyaç duyulan her şeyi korumak: model parametreleri、Optimizer durumu、Sedüler durumu、Kalan tarihi、Hazırlık aşamasında ve çağda kullanılan hesaplayıcılar, her bir rastlantı kaynaklı RNG durumu、RNG durumu yok, geri kazanma sonrası Kayıp eğri, başka bir eğri olacaktır── Aynı model、 Aynı veri、 farklı karıştırma、 farklı düşüş maskası、 tablo üzerinde farklı rakamlar。
 

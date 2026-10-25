@@ -89,7 +89,7 @@ Tracer veya UI'yi kaldırılan adımların çarpışması ve eklenenlerin vurgul
 
 ## 两个硬性预算
 
-`max_steps` limiti tüm seansın içinde toplam adımlar uygulanması, replans içerir. 默认是十二──一线性的五步计划, eğer replans 两次并且每次增加三个步骤,达到十六次执行,从而超过预算──执行者会拒绝该计划,并返回 FAILED──
+`max_steps` limiti tüm oturum içindeki toplam adım uygulamalar, replans dahil. 默认是十二──失败的尝试也计入──一个在最后一步失败的五步计划 已经花了五次执行──如果每次重复试试这个步骤并新增三个步骤,而第一次修改的最后一步再次失败,计数是九,第二修改还需要四次:十三──执行人会运行第十二次,拒绝第十三次,并理由`step_budget`Geri dönüş başarısız oldu.
 
 `max_replans`限制第一次计划 后规划师 被调用次数――默认是五――这是更重要的限制――一个连续五次回复同一个破碎的计划的规划师,否则会一直循环,直到步骤预算 抓获它――限制重规划会让失败更快发生,原因也更清楚――
 

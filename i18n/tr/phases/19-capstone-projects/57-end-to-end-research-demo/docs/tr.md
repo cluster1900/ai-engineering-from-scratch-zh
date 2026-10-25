@@ -35,7 +35,7 @@ flowchart LR
     Writer --> Report[Demo report]
 ```
 
-五个阶段──seed is a list of three条 hypotheses──scheduler using three parallel slots In between them run six experiments──bus 报告一个或多个纸触发器──picker 选择单个最佳结果──批判循环 基于该结果 构建的草案 进行代──纸作家 输出最终的 LaTeX、BibTeX 和 manifest──
+六个阶段──seed is a list of three条 hypotheses──scheduler using three parallel slots In between them run six experiments──bus 报告一个或多个纸触发器──picker 选择单个最佳结果──批判循环 基于该结果 构建的草案 进行代──纸作家 输出最终的 LaTeX、BibTeX 和 manifest──
 
 ## Neden kopyalamak yerine ithal et?
 

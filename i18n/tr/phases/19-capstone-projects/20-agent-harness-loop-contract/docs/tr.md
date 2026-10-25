@@ -44,7 +44,7 @@ stateDiagram-v2
     DONE --> [*]
 ```
 
-`IDLE`Bu, yasal giriş noktası.`DONE`Bu, yasal olarak yapılan tek ihracat.`AWAITING_TOOL`Tek bir çekim noktası oluşur. Diğer tüm geçişler içindir.
+`IDLE`Bu, yasal giriş noktası.`DONE`Bu, yasal olarak yapılan tek ihracat.`AWAITING_TOOL`Tek bir çekim noktası oluşur.`on_pause`Bu durum: bütçeye bir şekilde girerken, herhangi bir aktif durumdan 触发. Diğer tüm geçişler içsel.
 
 Bu durum makinesi kesinliktir. Aynı olay logunu, harness'i yeniden aynı durumuna girer. Bu durum, seansları tekrar oynatmanıza izin verir.
 

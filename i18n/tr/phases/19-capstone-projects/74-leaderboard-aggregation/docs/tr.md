@@ -64,7 +64,7 @@ Bu iki sıralama programı farklı hedeflere hizmet eder.
 
 Ortalama puan, bir modelin görev puanlarının ortalama değeridir. Bu, başlıklı sayısal sıralama raporu.
 
-胜率计算模型在同一任务上击败所有其他模型的频率──每任务,得分最高的模型获胜平分──胜率等于获胜次数除了模型得分的任务数──它对异常值和尺度差不太敏感,但会丢失信息──
+胜率计算模型在同一任务上击败所有其他模型的频率──每任务,得分最高的模型获胜──平局时,每个并列模型都算完整一次获胜──胜率等于获胜次除了模型得分的任务数──它对异常值和尺度差不太敏感,但会丢失信息──
 
 ```python
 def win_rate(model_id, runs_by_task, all_models):
@@ -132,4 +132,4 @@ Bu, ECE veya diğer kurum değişkenlerine özgüven geliştirmiyor. Bunlar 73'c
 
 ## Daha ileri
 
-Doğal olarak bir sonraki adım, eşleşik görevlerin önemi, eşleşik olmayan yönlendirme programı değil. A ve B modellerinin aynı yüz görev yürütüldüğünde, uygun testler, bireysel görev farklarına yönelik gerçekleştirdiğimiz eşleşik yönlendirme programıdır. Ayrıca, bir dizi görev saygısının bir dizi aşama yönlendirme programına da ihtiyacınız var.
+Her modelin alanı eşleşmez, ancak modeller arasındaki karşılaştırma eşleşmelidir. A ve B modelleri aynı yüz görevde çalışıyorsanız, uygun testler, bireysel görev farklarına yönelik eşleşme yönlendirme programıdır.`bootstrap_pairwise_diff`Bu yüzden, bu dersin temelinde, koruyabileceğiniz sayıları rapor etmek için doğru söylemler vardır.

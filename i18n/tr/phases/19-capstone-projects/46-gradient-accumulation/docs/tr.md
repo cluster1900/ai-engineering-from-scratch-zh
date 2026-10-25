@@ -9,7 +9,7 @@
 
 ## Öğrenme Hedefleri
 
-- 推导 etkili parti 恒等式:`effective_batch = micro_batch * accum_steps`- Evet.
+- 推导 etkili parti 恒等式:`effective_batch = micro_batch * accum_steps * world_size`Bu ders için kullanılan tek bir cihaz üzerinde.`micro_batch * accum_steps`- Evet.
 - Mikro-batch kaybı ölçeklemesini gerçekleştirmek, toplanan Gradient'i bir kez tam batch geriye doğru uyumlu hale getirmek.
 - Son mikro seri içinde  önce optimizer senkronizasyonu atladı
 - 读取 throughput against effective batch curve,并解释 decreasing return──

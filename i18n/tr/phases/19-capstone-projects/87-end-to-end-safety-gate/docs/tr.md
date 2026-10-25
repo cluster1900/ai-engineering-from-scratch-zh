@@ -9,7 +9,7 @@
 
 ## 问题
 
-Bu kursadaki 82-86 derslerin her bir kısmı bir bölüm içerir: sınıflandırma, giriş denetleyicisi, değerlendirme çerçevesinin, çıkış sınıflandırma, kural motorunun. Gerçek Güvenlik Kapısı, bunları bir araya getirmek, talep yaşam döngüsünün doğru zamanlarında çalıştırmak, anlaşmazlıkları olduğunda ne işlem yapılması gerektiğine karar vermek ve denetleyicinin ilk sabah okuduklarını takip etmesini sağlamak.
+Bu dersdeki 82-86 derslerin her bir kısmı bir bölüm içerir: sınıflandırma yöntemleri, giriş kontrol cihazları, değerlendirme çerçeve, çıkış sınıflandırma cihazları, kural motorları. Gerçek Güvenlik Kapısı, bunların çalıştırma zamanını birleştirmelidir.
 
 Büyük bir giriş üç kontrol istasyonunda bulunur. Önceden üretilen model çağrılmadan önce çalıştırılır: 83 numaralı sınıfın içinde bulunan denetçi, ipucu görüyor, sonra da onu ya geçiyor, ya da tamamen durdurur, ya da aşağı seviyeye bir token ekliyor.
 
@@ -35,11 +35,11 @@ flowchart TB
 
 |信号状态 |行动|
 |---|---|
+|检测器在非 benign 类别上置信度 >= 0.85 |生成前 block|
 |任何高严重性 |块|
-|任何中等严重程度 |编辑|
-|任何低严重程度 |警告|
-|全部无 + 检测器置信度 < 0.5 |允许 |
-|检测器置信度 0.5-0.85，无其他信号 |警告|
+|任何中等严重程度（检测器置信度 0.5 到 0.85，或提前终止 stream） |编辑|
+|任何低严重程度（检测器在非 benign 类别上置信度低于 0.5） |警告|
+|检测器判定为 benign 且无其他信号 |允许 |
 
 块返回拒绝── Redact 发送经过分类器编辑的文本并应用规则引擎修复程序──警告在发送原件时附带软件通知──允许运送原件──每个请求都发发发一个`RequestTrace`, içeren`request_id`- Evet.`prompt`- Evet.`pre_gen`(检测器判决)`during_gen`(token过器触发器)`post_gen`(分类器操作 + 规则报告)`final_action`- Evet.`final_output`和 `latency_ms`- Evet.
 

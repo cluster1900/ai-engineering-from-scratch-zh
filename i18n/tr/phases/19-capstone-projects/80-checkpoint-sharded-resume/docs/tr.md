@@ -52,7 +52,7 @@ flowchart TD
 
 ### Atom-seçim
 
-標準模式:将每个分片写入 `<name>.tmp`,将清单写入 `manifest.json.tmp`,fsync Her parça, sonra yeniden adlandırılır. Aynı dosya sistemindeki POSIX yeniden adlandırılması atomic; ya yeni dosya tamamen var, ya da eski dosya tamamen var.
+標準模式:将每个分片写入 `<name>.tmp`,将清单写入 `manifest.json.tmp`,fsync Her dosya, yeniden adlandırılan parça, son yeniden adlandırılan parça listesi. Aynı dosya sistemindeki tek bir POSIX yeniden adlandırılması atomudur: Yeni dosya tamamen var mı, eski dosya tamamen var mı? Bir grup yeniden adlandırılmak bir mesele değildir, bu nedenle liste yeniden adlandırılması gönderme noktasıdır, yükleyici listedeki hash'e göre her parça kontrol eder. Her kontrol noktasını kendi adımlarına yazır. Böylece liste yeniden adlandırılmadan önce meydana gelen çöküş önceki kontrol noktasını etkin kontrol noktası yapar.
 
 ### 模式 must defend 的三种故障模式 模式
 

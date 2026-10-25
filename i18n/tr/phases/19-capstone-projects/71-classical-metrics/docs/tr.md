@@ -28,7 +28,7 @@ BLU, sayı ve konumdur. ROUGE-L, hareketli planlama. F1, birikimle yapılan biri
 
 ## simgeselleştirme
 
-分词器是 `re.findall(r"\w+", text.lower())`▽小写、字母数字运行、删除标点符号──本课程中的每个标标都使用这个精确的分词器──runner没有选择权──如果您交换分词器,您将运行不同的基准测试──
+分词器是 `re.findall(r"\w+", text.lower())`▽小写,保留连续的单词字符(字母、数字和下划线), tüm diğer karakterleri kaldırın。 本课程中的每个标志都使用这个精确的分词器──runner没有选择权──如果您交换分词器,您将运行不同的基准测试──
 
 ```python
 TOKEN_RE = re.compile(r"\w+", re.UNICODE)
@@ -67,7 +67,7 @@ flowchart LR
 
 ## BLEU-4
 
-BLEU, düzenli bir makineler tercüme göstergesidir, halen özet çalışmalarında bulunmaktadır. Kullandığımız formül, dil kütle sınıfının BLEU-4, standart basitlik cezası ile değiştirilen n eski dil sayımlarının bir düzeltme yapılması ile birlikte, bu nedenle tek eksik olan 4 eski dil sayısının oranı sıfıra indirilmeyecektir.
+BLEU, kuralların makinelerle tercüme göstergesidir, halen özet çalışmalarında bulunmaktadır. Kullandığımız formül, cümle sınıfı BLEU-4, her bir tahmin için bir referans, bir standart basitlik cezası ve değiştirilmiş n 元语法计数 için bir düzeltme yapılır. Bu nedenle, tek eksik olan 4 元语法, oranı sıfıra indirmez.
 
  Her bir aday için referans karşılığı olarak, n'e eşit olarak 1、2、3、4 saat değişiklik sonrası n'den önceki dıklım doğruluğunu hesaplamak için yapılan değişikliklere göre, n'den sonraki dıklım doğruluğu herhangi bir referans içeren n'den önceki dıklım doğruluğunun en büyük sayısını kullanarak seçkinleri eleştirir, bu nedenle adaylar bir kısaltmayı tekrarlayarak büyütemezler.
 
@@ -110,7 +110,7 @@ numpy 表使实现清晰易读;纯 Python 列表也可以工作──选择 ROUG
 
 ## 准确度
 
- Çoklu hedef sınıflandırma görevleri için, doğruluk tek bir standartlama hedefiyle kesin bir uyumluğa düşer.`metric_name`Yukarıdaki düzenleme, ve koşucunun içinde bir karakter karşılaştırması yapılması gerekmez.
+                                                                                                                                                                                                                                                              `metric_name`Yukarıdaki düzenleme, ve koşucunun içinde bir karakter karşılaştırması yapılması gerekmez.
 
 ## 派遣合同
 

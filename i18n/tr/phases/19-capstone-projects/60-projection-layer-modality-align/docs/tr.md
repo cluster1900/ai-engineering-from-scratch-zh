@@ -119,7 +119,7 @@ python3 -m unittest code/test_main.py
 
 4. Yükleme cihazının ağırlığına küçük bir L2  ceza ekleyin ve bunun 余弦 ile nasıl birleştiğini gözlemleyin.
 
-5. Projector'u yüklemeyi sürdürür, sonra yeniden yüklenir ve çalıştırılır.
+5. 保存投影仪权重, sonra onları 结的视觉编码器 ile yeniden yükle ve 反向传播 olmadan çalıştır 推理──验证投影仪是您唯一需要交付的新文物;部署时编码器仍需运行前向传播──
 
 ## 关键术语
 

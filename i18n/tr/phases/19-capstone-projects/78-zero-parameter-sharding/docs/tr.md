@@ -16,7 +16,7 @@
 
 ## 问题
 
-Vanilla DDP, her şeyi kopyaladı: parametre, gradient ve optimizer durumu her bir seviyeye kadar tam olarak varmaktadır. Fp16'daki 7B parametre modeli için, bu her bir seviyeye 14 GB parametre, 14 GB gradient ve 28 GB optimizer durumu anlamına gelir.
+Vanilla DDP  her şeyi kopyaladı: parametre 梯度 ve optimizer durumu her derecede tamamıyla varlıklıdır. fp16'daki 7B  parametre modeli için, bu her derecede 14 GB  parametre  14 GB 梯度 ve 56 GB  optimizer durumu anlamına gelir.
 
 ZeRO 1. aşamasında optimizer durumuna bölünmeler yapılır. Her aşama bir 1/N'in Adem'i vardır. Ardından ZeRO tüm gradiyi azaltmaz ve kendi adımlarını yerleştirir, aksine yayılımı azaltır. Bu nedenle her aşama sadece kendi parçacıklarının gradiyi toplamını alır.
 
@@ -93,7 +93,7 @@ python3 code/main.py
 
 **混合精度是重点。**ZeRO bir karışık kesinlik tekniği; fp32 主副本是分片的──混合精度 olmaksızın yürütülen ZeRO fp32 master'a 内存税 getirecek, fakat eşleşmeyen fp16'ın önde gelen kazancı olmayan ZeRO'nun üretim süreci her zaman autocast veya bf16 配重配对对─
 
-**第一阶段几乎是免费的。**通信在带宽方面与DDP相同──内存节省与N 成线性关系──唯一成本是优化器分片的簿记──生产堆默认为阶段 1,除非参数分片内存也是一个问题;然后第二或第三阶段用通信换取内存──
+**第一阶段几乎是免费的。**通信在带宽方面与DDP相似──内存节省与N 成线性关系──唯一成本是优化器分片的簿记──生产堆默认为阶段1,除非梯度或参数内存也是一个问题──阶段2 在不增加带宽的情况下梯度分片对;只有阶段3对参数本身分片对,它用阶层通信换取这一部分内存──
 
 ## Kullan
 
