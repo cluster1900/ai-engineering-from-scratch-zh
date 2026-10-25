@@ -10,7 +10,7 @@
 ## 學习目标
 
 - وصف كلود استخدام الكمبيوتر:输入截图,输出键盘/鼠标命令,不使用可访问性 API。
-- أوضح أن هذه النماذج الثلاثة في OSWorld / WebArena / Online-Mind2Web على مقياس العدد:
+- ذكرى هذا الدراسة اقتباسات الإصدارات عند إصدار مقياس رقم:OpenAI CUA في OSWorld / WebArena / WebVoyager 上的数字, وكذلك Gemini 2.5 استخدام الكمبيوتر في Online-Mind2Web 上的数字──
 - 解释 Gemini 2.5 استخدام الحاسوب 文档中的逐步安全模式──
 - 总结 these three models co-execution of ناقابل اعتماد
 

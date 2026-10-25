@@ -121,7 +121,7 @@ flowchart LR
 
 هذا جزء لا تحتاج إلى زبون
 
-- * أناثومية الوكيل Harness من LangChain * تمتثل عشرة مكونات  محذوفات ، أدوات ، هوقات ، صناديق الرمل ، ترقية ، ذاكرة ، مهارات ، فرعية ، وكذلك حلقة تشغيل غبية .
+- لانغ تشين * أناثومية حزمة وكيل * تقدم بشكل متزايد تعريف الحزمة الأساسية 组件: أدوات ، أدوات ، هوقات ، صناديق الرمل ، ترقية ، ذاكرة ، مهارات ، فرعية ، وكذلك حلقة تشغيل غبية 🏼 لا يوجد لها صفوف تسمية ‬ كعاملين وحدة التنفيذ ‬ التشغيل المفصل ‬ كثبات جلسة مستقلة من نقاط الاهتمام ، أو سياسة التأذن‬‬ ‬ يستخدم الحزمة ككائن تعيينك ، وليس نظام تعيينك‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬
 - أددي أوسماني من * وكيل حزم الهندسة *  طرحت `Agent = Model + Harness`أساسية، ولكن لا يوجد أي تفسير إضافي حول ما يشكله الحزام.
 - انتروبيك و OpenAI على السطحات  بحثت أكثر عمقا، ولكن لا تزال تبقى في وقت تشغيلها 内。 أبريل 2026 وكلاء SDK في harness-computing separation الإعلان هو أول قطعة واضحة يمكن تحديد التحكم-طائرة / بيانات-طائرة من البائع منفصلة。 ذلك فكرة بدائية، وليس شيئا جديدا ً‬
 - كتاب agentic_harness سوف تستخدم 视为 config object((جايمين ويست *Agentic Engineering*, الفصل 6) ، من بينها أكثر جملة فعالية هوالسلسلة هي الحدود الأمن الرئيسية في نظام وكالة──
@@ -185,7 +185,7 @@ python3 code/main.py
 إطارات البائع:
 
 - [Addy Osmani, Agent Harness Engineering](https://addyosmani.com/blog/agent-harness-engineering/) `Agent = Model + Harness`و نمط الرفع؛ الجزء من البنية التحتية
-- [LangChain, The Anatomy of an Agent Harness](https://blog.langchain.com/the-anatomy-of-an-agent-harness/) 十一个组件:مواصلات، أدوات، هيكات، أوركستراسيون، صناديق الرمل، الذاكرة، المهارات، المكونات الفرعية، وقت التشغيل،省略 queues、deployment、authz
+- [LangChain, The Anatomy of an Agent Harness](https://blog.langchain.com/the-anatomy-of-an-agent-harness/) أساسية الحزمة 组件:مواصلات، أدوات، هيكات، أوركستراسيون، صناديق الرمل، الذاكرة، المهارات، المكونات الفرعية، وقت التشغيل،省略 queues、deployment、authz
 - [OpenAI, Harness engineering: leveraging Codex in an agent-first world](https://openai.com/index/harness-engineering/) نظرة كودكس 团队 على وقت تشغيله  حول السطحات
 - [OpenAI, Unrolling the Codex agent loop](https://openai.com/index/unrolling-the-codex-agent-loop/) 将代理循环 归约为函数调用 上一个 `while`
 - [Anthropic, Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)  أسطح الأفق الطويل في وقت تشغيل محدد
