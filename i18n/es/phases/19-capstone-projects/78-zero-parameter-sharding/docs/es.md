@@ -16,7 +16,7 @@
 
 ##  problemas
 
-Vanilla DDP  copió todo: el estado de los parámetros, gradientes y optimizadores en cada nivel es completo. Para el modelo de parámetros 7B en fp16, esto significa que cada nivel de 14 GB parámetros, 14 GB gradientes y 28 GB  estado de los optimizadores.  El estado de los optimizadores es el término más grande, también el más fácil de dividir, ya que se toca solo durante el paso, no durante el período anterior o posterior de retorno.
+Vanilla DDP  copió todo: parametros, gradientes y estados de optimizador en cada nivel están completos. Para el modelo de 7B de parametros en fp16, esto significa que cada nivel 14 GB  parametros, 14 GB gradientes y 56 GB  estado de optimizador.
 
 ZeRO la primera fase de hacer fragmentos en el estado del optimizador. Cada nivel tiene un 1/N de Adán 时刻. Más adelante, ZeRO no reducirá toda la escala y entrará en su lugar, sino que reducirá la dispersión, por lo que cada nivel sólo recibirá la escala de su fragmento en total.
 
@@ -93,7 +93,7 @@ Tres modos hacen que ZeRO 足以交付──
 
 **混合精度是重点。**ZeRO es una técnica de precisión mixta; fp32 主副本是分片的. Se ejecuta sin precisión mixta, ZeRO le dará a fp32 master un impuesto de almacenamiento, y sin el correspondiente fp16 hacia el triunfo.
 
-**第一阶段几乎是免费的。**通信在带宽方面与DDP相同──内存节省与N 成线性关系──唯一成本是优化器分片的簿记──生产堆默认为阶段 1,除非参数分片内存也是一个问题;然后第二或第三阶段用通信换取内存──
+**第一阶段几乎是免费的。**通信在带宽方面与DDP相似──内存节省与N 成线性关系──唯一成本是优化器分片的簿记──生产堆默认为阶段1,除非梯度或参数内存也是一个问题──阶段2在不增加带宽的情况下对梯度分片;只有阶段3对参数本身分片,它用阶层通信换取这一部分内存──
 
 ## Usalo
 

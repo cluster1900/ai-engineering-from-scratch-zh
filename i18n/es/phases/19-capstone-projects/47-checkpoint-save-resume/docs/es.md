@@ -16,7 +16,7 @@
 
 ##  problemas
 
-Usted ha establecido una tarea de entrenamiento, previsto para funcionar 18 horas. El reloj de pared sufre 4 horas. El reloj de pared se reinicia, porque alguien de más alto nivel de su salario ha aprobado la actualización del núcleo.
+Usted ha establecido una tarea de entrenamiento, se espera que funcione 18 horas. Planificador Ponga cada asignación a 4 horas, así que esta vez la ejecución se trata de una serie de trabajos reanudados. Luego, en la segunda hora de la ejecución, el grupo se reinicia, porque alguien de un nivel salarial superior a usted aprobó la actualización del núcleo.
 
 El artefacto correcto es un único documento, en el que se conserva todo lo necesario para continuar entrenando:parámetros de modelo, estado de optimización, estado de cronograma, para dibujar el historial de pérdida, paso actual y época, así como contadores de batch-in-epoch, y cada aleatoriedad de origen del estado de RNG.
 

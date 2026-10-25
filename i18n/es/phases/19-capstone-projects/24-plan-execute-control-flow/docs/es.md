@@ -89,7 +89,7 @@ Tracer o UI puede transformarse en el paso de los pasos eliminados, así como en
 
 ## ∆ dos presupuestos
 
-`max_steps`limitando las ejecuciones de los pasos totales de toda la sesión, incluyendo los replánamientos. 默认是十二──一线性的五步计划, si el replán 两次并且每次增加三个步骤, alcanzará十六次执行,从而超过预算──执行员会拒绝该计划,并返回 FAILED──
+`max_steps`limitando toda la sesión de ejecuciones de los pasos, incluyendo replanización. 默认是十二──失败的尝试也计入──一个在最后一步失败的五步计划 已经花了五次执行──如果每次重复计划都重试该步并新增三步步,而第一次修改的最后步再次失败,计数是九,第二修改还需要四次:十三──执行会运行第十二次,拒绝第十三次,并合理`step_budget` Retorno FALIDO
 
 `max_replans`限制第一次计划 后规划师 被调用次数──默认是五──这是更重要的限制──一个连续五次回归同一个破碎的计划规划师,否则会一直循环,直到步骤预算 抓获它──限制重规划会让失败更快发生,原因也更清楚──
 

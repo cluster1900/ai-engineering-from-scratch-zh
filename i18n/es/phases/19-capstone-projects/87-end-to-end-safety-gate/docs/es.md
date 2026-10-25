@@ -9,7 +9,7 @@
 
 ##  problemas
 
-En el curso, las secciones 82-86 de cada uno de los cursos contienen una parte: clasificación, controles de entrada, marco de evaluación, clasificación de salida, motores de reglas. La verdadera puerta de seguridad debe reunirlos, ejecutarlos en el momento correcto del ciclo de vida de la solicitud, decidir qué operar cuando no estén de acuerdo, y generar el seguimiento que el auditor puede leer en la mañana del domingo.
+Cada uno de los capítulos 82-86 de este curso contiene una parte: la clasificación de métodos, los controles de entrada, los sistemas de evaluación, los controles de salida, los motores de reglas. La verdadera puerta de seguridad debe combinar el tiempo de ejecución de los mismos. La sección 83 de los controles de la clase 85 y la sección 86 de los motores de reglas), para que se ejecuten en el momento correcto del ciclo de vida de la solicitud, para decidir qué operar cuando no se apruebe, y para generar un seguimiento que el auditor pueda leer en la mañana del domingo.
 
 La serie de pruebas se realiza en tres estaciones de control. Se ejecuta antes de que el modelo sea convocado: el examinador de la clase 83 vea la pista, luego lo atraviesa, o lo impide por completo, o lo impide por completo.
 
@@ -35,11 +35,11 @@ El polvo se combina con cuatro señales de gravedad: la función de polvo es una
 
 |信号状态 |行动|
 |---|---|
+|检测器在非 benign 类别上置信度 >= 0.85 |生成前 block|
 |任何高严重性 |块|
-|任何中等严重程度 |编辑|
-|任何低严重程度 |警告|
-|全部无 + 检测器置信度 < 0.5 |允许 |
-|检测器置信度 0.5-0.85，无其他信号 |警告|
+|任何中等严重程度（检测器置信度 0.5 到 0.85，或提前终止 stream） |编辑|
+|任何低严重程度（检测器在非 benign 类别上置信度低于 0.5） |警告|
+|检测器判定为 benign 且无其他信号 |允许 |
 
 块返回拒绝── Redact 发送经过分类器编辑的文本并应用规则引擎修复程序──警告在发送原件时附带软件通知──允许运送原件──每请求都发发出一个`RequestTrace`, entre ellos:`request_id`¿Qué es esto?`prompt`¿Qué es esto?`pre_gen`(检测器判决)`during_gen`(se señaló por el dispositivo de contacto)`post_gen`(分类器操作 + 规则报告)`final_action`¿Qué es esto?`final_output`Y `latency_ms`¿Qué es eso?
 

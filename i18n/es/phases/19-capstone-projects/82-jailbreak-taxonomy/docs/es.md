@@ -48,7 +48,7 @@ flowchart TB
   H --> D[coverage chart]
 ```
 
-Cada fijo es un registro, que contiene`id`¿Qué es esto?`category`¿Qué es esto?`subtype`¿Qué es esto?`prompt`¿Qué es esto?`target_behavior`Y `severity` Se realizan las categorías de objetos en carga, se realizan las categorías de objetos en carga, se realizan las categorías de objetos en carga y se realizan las categorías de objetos en carga.`match`API: dado un indicador de candidato, regresa a la fijación más cercana y a su clase.
+Cada fijo es un registro, que contiene`id`¿Qué es esto?`category`¿Qué es esto?`subtype`¿Qué es esto?`prompt`¿Qué es esto?`target_behavior`Y `severity` Se realizan las categorías de objetos en carga, se realizan las categorías de objetos en carga, se realizan las categorías de objetos en carga y se realizan las categorías de objetos en carga.`match`API: given determin candidate tip, return the closest fixture and its class──匹配是字符三元余弦:粗略、快速,并且只基于 numpy 构建──它不是探测器──检测器位于第83 课──这是标签生成器──
 
 严重程度遵循 1-5等级──1 es un ataque erróneo dirigido a objetivos de buena naturaleza. Please pretend it is piracy.)──5 es una forma de ataque, si es exitoso, se producirá un sistema ya desplegado que debe emitir un resultado.
 

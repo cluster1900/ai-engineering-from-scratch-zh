@@ -16,7 +16,7 @@ Usted construirá un agente, que recibe un repo Java 8 (o Python 2 repo), y prod
 ## 概念
 El oleoducto tiene dos niveles.**deterministic substrate**(Java con OpenRewrite, Python con libcst) seguridad ejecutar una gran cantidad de máquinas reescribir: importaciones, firmas de método, modificaciones de seguridad cero, intentos de recursos, reemplazos de API degradados.**agent layer**(OpenAI Agents SDK o LangGraph, basado en Claude Opus 4.7 y GPT-5.4-Codex) procesar recetas 无法覆盖的情况:build-file upgrades(Maven/Gradle/pyproject) 过渡的依赖冲突、测试片、定制注释──
 
-Cada repo obtendrá una caja de arena de Daytona de tiempo de ejecución de un objetivo de preinscripción. Agente 代执行:运行构建分类失败、应用修正、重新运行.
+Cada repo obtendrá una caja de arena de Daytona de tiempo de ejecución de un objetivo de preinstalación. Agente 代执行:运行构建分类失败、应用修正、重新运行.
 
 失败分类体系是交付物品. En 50 repos, ¿qué está mal? Depositivos transitivos? Anotations personalizadas?Construir una versión de herramienta? Flascas de prueba relacionadas con la migración? Cada clase necesita tener un conteo y ejemplos de diferencia.
 
@@ -73,7 +73,7 @@ ce-migration-funnel
 
 4. **Budget caps.**Cada repo 30 minutos de reloj de pared ≈ $8 成本、20 ≈ agentes se vuelven ≈ cualquier super límite todo se detendrá, y se clasificará como "ordenado" ≈ "ordenado" ≈
 
-5. **Test + coverage gate.**Si la cobertura baja más del 2%, se clasifica en "cubrición_regressión" (coverage_regression).
+5. **Test + coverage gate.**Si la cobertura baja por encima de 2 puntos de porcentaje, se clasifica en "cubrición_regressión" (coverage_regression).
 
 6. **PR open.**Después del éxito, empuje, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, abre, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re, y que re,
 

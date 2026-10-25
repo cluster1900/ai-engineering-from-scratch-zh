@@ -18,7 +18,7 @@
 
 La prueba de formación de modelos de lenguaje moderno se ejecuta en decenas de trabajadores 上以每秒数十万样本的速度读取代币. JSONL en el disco en la primera falla de página de caché frío.$O(1)$Acceso aleatorio de la corriente de tokens.
 
-HDF5                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `tokens[3,200,000 : 3,200,8192]`El costo es para cada trabajador un manejo de archivo abierto, así como un pedazo de una gran huella de página en caché; en comparación con el costo de descifrar JSONL, esto puede ser ignorado.
+HDF5                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `tokens[3_200_000 : 3_208_192]`El costo es para cada trabajador un manejo de archivo abierto, así como un pedazo de una gran huella de página en caché; en comparación con el costo de descifrar JSONL, esto puede ser ignorado.
 
 Construir problemas está en hacer que la escritura sea realista.  Datos dimensionables  fácilmente se pueden usar erróneamente: una vez escribir un archivo, HDF5 文件会碎碎化到不可用.  Una vez dimensionar 写入所有文件,进程死亡会丢失整个片段.
 
@@ -48,9 +48,9 @@ conjunto de datos de token `maxshape=(None,)`Y fijo `chunks=(chunk_size,)`创建
 
 单个 HDF5 文件是单点故障──管线 会并行写入片段:Fase 19 lesón 42 En medio de cada uno de los archivos de entrada se produce una HDF5 de salida shard──`shards.json`Index 会按分片 记录文件路径、代币计数、文件计数,以及代币的 sha256──trainer 读取 `shards.json`Para calcular las compensaciones globales y verificar los términos de la base.
 
-### Lectura con mapa de memoria
+### Leído en pedazos
 
-En el entrenamiento, cada trabajador se reunirá`swmr=True`modo 打开自己负责的 HDF5 archivos,并请求 `tokens[start:stop]` una vez que el fragmento 变热, la disposición de fragmentos de HDF5 就会让它成为页面缓存支持的阅读──worker 永远不会实现 整个文件:slice 会被复制到数据加载器的批量缓冲,之后数据加载器 在批量时间将其复制到固定记忆训练 tensor──热路 在每次块转换时有一个系统调用; 其余都是RAM访问──
+En el entrenamiento, cada trabajador se reunirá`swmr=True`modo 打开自己负责的 HDF5 archivos,并请求 `tokens[start:stop]`△ una vez que el fragmento 变热, la disposición de fragmentos de HDF5 就将使这成为一次低成本的读:h5py 不会内存地图文件,而是通过 HDF5 fragment cache 和 OS page cache 读取整个块,再把请求的hyperslab 复制出来──worker 永远不会实现整个文件:slice将被复制到数据载机的批包,然后数据载机在批时间将其复制到固定记忆训练 tensor──热路在每次块转换时一次系统调用;其余是 RAM访问──
 
 ### Cargador de datos de ventanas deslizantes
 
@@ -68,10 +68,10 @@ cc-hdf5-corpus
 - `Tokenizer`- Un tokenizer determinista de nivel de byte, para demo 足够好──接口是 `encode(text) -> list[int]`Y `vocab_size`¿Qué es eso?
 - `HDF5ShardWriter`- Abre un conjunto de datos de números enteros de tamaño ajustable, puesta en buffer de tokens hasta el tamaño de la pieza, fija el tamaño de la pequeña etapa y escribe, en el momento de cerrar`token_count`Y `sha256`记录为 HDF5 atributos。
 - `ShardedTokenizationPipeline`- recorrer los documentos de entrada, los viajará al escritor, y los exportará.`shards.json`índice
-- `MmapTokenStore`- 打开 shard files  llevar a cabo lecturas de memoria, calcular compensaciones globales, exponen a un solo `get_slice(start, stop)`API.
+- `MmapTokenStore`- 打开 fragment files 进行碎片阅读(这个名字只是为了方便;h5py 读取是碎片,不是mmap 文件),计算全球抵消,暴露单个 `get_slice(start, stop)`API.
 - `SlidingWindowDataloader`- de la corriente global 中 seleccionar ventanas aleatorias,并 yield `(input_ids, target_ids)`Arrays de número
 
-文件底部的演示会构建一个很小的内存库,代码到两个片段,通过内存地图打开它们,运行数据载体10批发,并打印每个批发的形状和检查数量――
+La demo de la base del archivo se construirá un corpus de memoria muy pequeño, se tokenizará a dos fragmentos, se leerá en pedazos, se abrirá, se ejecutará un cargador de datos de 10 lotes, se imprimirá la forma y la cantidad de cheques de cada lote.
 
 运行:
 
@@ -118,7 +118,7 @@ En el proyecto real,`outputs/skill-hdf5-tokenized-corpus.md`¿Cuál es el tamañ
 | Term | What people say | What it actually means |
 |------|-----------------|------------------------|
 | Resizable dataset | "Append-only" | 一个带 `maxshape=(None,)` 的 HDF5 dataset，通过按 chunk 大小 stride 调用 `resize` 增长 |
-| Chunked layout | "How HDF5 stores it" | 固定大小的 on-disk pages，kernel 可 memory-map，dataloader 可连续读取 |
+| Chunked layout | "How HDF5 stores it" | 固定大小的 on-disk blocks，HDF5 将其作为一个单元读取并缓存，因此 dataloader 能以低成本读取连续范围 |
 | `swmr` mode | "Read-while-write" | Single-Writer-Multiple-Reader mode，使 dataloader workers 能安全共享文件 |
 | Shard index | "shards.json" | 包含 offsets 和 content hashes 的所有 token shards 的 durable index |
 | Sliding window | "Training sample" | global token stream 的固定长度 slice，trainer 会把它与 shift-by-one target 配对 |
@@ -127,7 +127,7 @@ En el proyecto real,`outputs/skill-hdf5-tokenized-corpus.md`¿Cuál es el tamañ
 
 - [HDF5 chunking documentation](https://docs.hdfgroup.org/hdf5/v1_14/)- El diseño de los conjuntos de datos dimensionables de las clases
 - [h5py user guide](https://docs.h5py.org/en/stable/)- HDF5 de Python enlaces
-- [NumPy memory mapping](https://numpy.org/doc/stable/reference/generated/numpy.memmap.html)- HDF5                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+- [h5py chunked storage](https://docs.h5py.org/en/stable/high/dataset.html#chunked-storage)- h5py  cómo leer conjuntos de datos en pedazos y cómo configurar un caché en pedazos
 - Fase 19 · 42 - 输出由本课 Tokenize 的 downloader
 - Fase 19 · 44 - 消费这个数据包的 cosino horario
 - Fase 19 · 45 - 包裹 entrenamiento paso de la bucle de AMP

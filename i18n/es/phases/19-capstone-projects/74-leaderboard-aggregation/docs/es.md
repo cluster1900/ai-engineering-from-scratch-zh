@@ -64,7 +64,7 @@ Estos dos programas de clasificación sirven a objetivos diferentes.
 
 El índice medio es un modelo de valor medio de cada número de tareas. Este es el informe de clasificación numérica de los títulos. Es muy sensible a los valores anormales y a la desequilibrio de las tareas.
 
-胜率计算模型在同一任务上击败所有其他模型的频率──对于每项任务,得分最高的模型获胜(平分)──胜率等于获胜次数除了模型得分的任务数──它对异常值和尺度差异不太敏感,但会丢失信息──
+胜率计算模型在同一任务上击败所有其他模型的频率──对于每项任务,得分最高的模型获胜(平局时,每个并列模型都算完整一次获胜)──胜率等于获胜次数除了模型得分的任务数──它对异常值和尺寸差异不太敏感,但会丢失信息──
 
 ```python
 def win_rate(model_id, runs_by_task, all_models):
@@ -132,4 +132,4 @@ Desde arriba hasta abajo`main.py` Datos de la información`EvalRun`¿Qué es 
 
 ## Más adelante
 
-El siguiente paso natural es la importancia de la tarea de la tarea de la pareja, no el de la guía de la pareja. Si el modelo A y B funcionan con el mismo cien de tareas, entonces el examen apropiado es el de la diferencia de tarea de la pareja de la tarea que hemos logrado en cada uno de nosotros. Además, también necesitas un programa de guía de la serie de tareas de respeto.
+Cada modelo tiene un espacio sin parentesco, pero la comparación entre los modelos debe ser parentesco. Si los modelos A y B ejecutan las mismas cien tareas, entonces el examen apropiado es dirigido a la diferencia de tareas por programa de parentesco.`bootstrap_pairwise_diff`已实现了. Además, también necesitas un programa de guía de nivel de serie de tareas de respeto. Los problemas matemáticos no son independientes entre sí. El método de errores de cálculo afecta a diez de ellos.

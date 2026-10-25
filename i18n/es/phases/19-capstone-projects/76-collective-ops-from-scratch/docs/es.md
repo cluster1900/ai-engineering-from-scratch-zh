@@ -16,7 +16,7 @@
 
 ##  problemas
 
-N 级上的简单 allreduce 将张量 N 次发送到根并广播 N 次。 cada rango de la banda ancha se acumulará para$O(N)$, la raíz se convierte en un botelón, y el nivel de la cadena es el más lento multiplicado por N.$T/N$de la$2(N-1)$块, por lo tanto cada rango 字节下降到$2T(N-1)/N$El árbol todo se reduce en el pequeño N y el alto tiempo de retraso en la cadena de la victoria, porque la profundidad es$\log_2(N)$跳 en lugar de $2(N-1)$◊ Para la configuración de grupo seleccionar errores de superficie, la GPU más lenta decide los pasos de tiempo.
+N 级上的简单 allreduce 将张量 N 次发送到根并广播 N 次。 cada rango de la banda ancha se acumulará para$O(N)$, la raíz se convierte en un botelón, y el nivel de la cadena es el más lento multiplicado por N.$T/N$de la$2(N-1)$块, por lo tanto cada rango 字节下降到$2T(N-1)/N$, con el aumento y la tendencia$2T$且永远不会超过它,无论集群大小如何―― Árbol todo se reduce en小N 和高延迟链路上胜,因为深度是$\log_2(N)$跳 en lugar de $2(N-1)$◊ Para la configuración de grupo seleccionar errores de superficie, la GPU más lenta decide los pasos de tiempo.
 
  Cada marco de entrenamiento distribuido que leerás en este manual depende de estos cuatro idiomas originales。 PyTorch DDP va a reducir la gradiente con cada barril de parámetros en un allreduce 同步。 ZeRO                                                                                                                                                                                                                                    
 

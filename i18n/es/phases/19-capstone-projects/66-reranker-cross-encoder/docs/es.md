@@ -92,7 +92,7 @@ python3 code/main.py
 
 **交叉编码器不对称。** `rerank(q, d)`Y `rerank(d, q)`Siempre primero ofrecemos preguntas. Si no cambias de memoria, el recuerdo se derrumbará.
 
-**N 太低，无法暴露该 bug。**Si la configuración N = K, el encuadrado de la caja no puede reordenarse; sólo puede reordenarse.
+**N 太低，无法暴露该 bug。**Si la configuración N = K, el encuadrante de intercambio puede reordenar a K 个候选人, pero no puede llevar nuevos candidatos a la parte superior de K. Recuerda que K no cambiará, por lo que el aumento parece ser de cero.
 
 **训练数据泄漏到评估中。**Si el entrenamiento de los tokens de mano incluye una consulta de evaluación, entonces el re-rango parece maravilloso.
 

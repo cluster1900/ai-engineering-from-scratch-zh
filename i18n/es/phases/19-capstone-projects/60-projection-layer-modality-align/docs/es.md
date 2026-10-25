@@ -119,7 +119,7 @@ python3 -m unittest code/test_main.py
 
 4. En el proyector se agrega un pequeño L2 惩罚, y observa cómo se interactúa con el yústros en la medida constante, por lo que el castigo principal se reduce a la dirección no utilizada)
 
-5. Mantenga el peso del proyector, luego vuelva a cargar y ejecutar el proceso, sin necesidad de un codificador de vídeo a la transmisión posterior, solo necesita proyector para su implementación.
+5. 保存投影仪权重, luego volver a cargarlos junto con el codificador de imágenes de la consola, y ejecutar sin la posibilidad de contra-propagación. 验证投影仪是你唯一需要交付的新文物;
 
 ## 关键术语: "El hombre es un hombre"
 

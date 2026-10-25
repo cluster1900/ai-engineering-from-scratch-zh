@@ -57,7 +57,7 @@ El transformador tiene miles de parámetros de volumen. Cada volumen de tiempo s
 
 ### ¿Por qué fijar las semillas?
 
-Cada rango debe ser ajustado`torch.manual_seed(seed + rank)` hacer lavar, pero调用`torch.manual_seed(seed)` realizar inicialización de los parámetros.                                                                                                                                                                                                                                                          
+Cada rango debe ser ajustado`torch.manual_seed(seed + rank)` hacer lavar, pero调用`torch.manual_seed(seed)` realizar inicialización de parámetros. La utilización de semillas compartidas individuales significa que cada nivel ve la misma secuencia de lote. Para los parámetros, la distribución de la posición 0 en la construcción es la única razón por la cual se permite que la copia sea la misma. La distribución de semillas inicializadas es la siguiente: si la emisión se saltó o salió mal, la inicialización de la clasificación específica permitirá que cada copia tenga un peso de inicio diferente, mientras que sólo la escala y la secuencia de los pasos nunca podrán ser combinados. Obtener el modelo subcompatible correcto, de lo contrario, el ensayo de eficacia del parámetros fallará en el paso 1.
 
 
 ```figure

@@ -28,7 +28,7 @@ La red es el conjunto de los tokens. La parte más difícil es seleccionar los t
 
 ## simbólico
 
-¿Cómo es eso ?`re.findall(r"\w+", text.lower())`◊小写、字母数字运行、删除标点符号── cada uno de los indicadores de este curso utiliza este exacto分词器──runner no tiene derecho a elegir── si usted cambia分词器, usted realizará diferentes pruebas de base──
+¿Cómo es eso ?`re.findall(r"\w+", text.lower())`◊小写,保留连续的单词字符(字母、数字和下划线), eliminar todos los demás caracteres。 cada indicador de este curso utiliza este exacto分词器。 el corredor no tiene derecho a elegir。 si usted cambia分词器, usted realizará diferentes pruebas基准。
 
 ```python
 TOKEN_RE = re.compile(r"\w+", re.UNICODE)
@@ -67,7 +67,7 @@ flowchart LR
 
 ## BLEEU-4
 
-BLEU es un indicador de traducción automática de la normativa, que todavía se encuentra en el trabajo de resumen. La fórmula que utilizamos es BLEU-4, de la categoría de base de texto, con un estándar de simplificación y una mejora de la cantidad de n 元语法计数, por lo que los 4 元语法 que faltan no se reducen a cero.
+BLEU es un indicador de traducción automática de la normativa, que todavía se encuentra en el trabajo de resumen. La fórmula que utilizamos es BLEU-4, de la categoría de la frase, para cada predicción y referencia a la diferenciación, con un estándar de sencillez y una simplificación de la cantidad de n 元语法计数 de las modificaciones posteriores, por lo que los 4 元语法 que faltan por individuo no llevarán la porcentaje a cero.
 
  Para cada candidato-referencia, se calcula la precisión de la gramática n igual a 1 ̊2 ̊3 ̊4 horas de modificación.  La precisión de la modificación se calcula a través de cualquier referencia en la gramática n máxima cantidad de la gramática n, por lo que el candidato no puede repetir una frase para expansión. La media geométrica de cuatro precisiones es influenciada por la punción de la simplicidad.
 
@@ -110,7 +110,7 @@ Numpy 表使实现清晰易读; Pure Python 列表也可以工作──选择 RO
 
 ## 准确度
 
- Para las tareas de clasificación de múltiples objetivos, la precisión se reduce a una coincidencia precisa con los objetivos de estandarización individuales.`metric_name`Por lo tanto, no hay necesidad de hacer una comparación de caracteres en el corredor.
+ Para las tareas de clasificación, la precisión se reduce a la coincidencia precisa: si la predicción coincide con el objetivo de estandarización de la lista, se obtiene 1 分.`metric_name`Por lo tanto, no hay necesidad de hacer una comparación de caracteres en el corredor.
 
 ## 派遣合同 (enviar contrato)
 

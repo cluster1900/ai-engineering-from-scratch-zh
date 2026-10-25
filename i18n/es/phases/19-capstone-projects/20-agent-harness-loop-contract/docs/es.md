@@ -44,7 +44,7 @@ stateDiagram-v2
     DONE --> [*]
 ```
 
-`IDLE`Es el único punto de entrada legal.`DONE`Es la única exportación legal.`AWAITING_TOOL`Es el único estado que producirá un punto de atracción. Todas las demás transiciones son internas.
+`IDLE`Es el único punto de entrada legal.`DONE`Es la única exportación legal.`AWAITING_TOOL`Es el único estado que generará por sí mismo un punto de atracción.`on_pause`No es estado: cuando el presupuesto se usa como máximo o un gancho Require revisión 时, se hará desde cualquier estado activo 触发. Todas las demás transiciones son internas.
 
 Esta máquina de estado es de certeza. Dado que el mismo registro de eventos, el uso volverá a entrar en el mismo estado. Esta naturaleza permite que puedas reproducir las sesiones para probar, sin necesidad de volver a utilizar el modelo.
 

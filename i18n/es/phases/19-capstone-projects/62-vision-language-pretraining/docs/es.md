@@ -18,7 +18,7 @@
 
 视觉语言模型需要两项技能――它必须排名:给定题,在众多图像中找到正确图像――它必须生成:给定图像,写一题――只针对一个技能对模型进行预训就可以得到半系统―― CLIP 确定排名,但无法提供字幕―― GPT-4V 可以添加字幕,但使用单独检索头进行排名――多目标预训一次即可实现这两个目标――
 
-InfoNCE  responsable de la clasificación de la mitad. Para un grupo de N, el modelo se adaptará a los casos de la normalización, se`N^2 - N`No coincide con el caso negativo, luego con el generado.`(N, N)`La mitad de la producción de procesamiento de LM                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+InfoNCE  responsable de la clasificación de la mitad. Para un grupo de N, el modelo se adaptará a los casos de la normalización, se`N^2 - N`No coincide con el caso negativo, luego con el generado.`(N, N)`La mitad de la producción de LM  pérdida de procesamiento: según el estándar de imagen condicionada, las dos pérdidas son de forma muy pequeña, y comparten el peso del programador y del proyector; el descifrador solo utiliza el entrenamiento de LM  pérdida ⋅
 
 ## 概念
 
@@ -54,7 +54,7 @@ Para el cálculo, el cálculo de la composición de las imágenes se realiza en 
 
 ### 合并损失 合并损失 合并损失 合并损失 合并损失
 
-`total = contrastive + lm_weight * lm`, entre ellos `lm_weight`Es la forma de combinación de múltiples tareas utilizada en CoCa y BLIP, con diferentes pesos. SigLIP sólo conserva los contrastes, y no utiliza la pérdida de pares sigmoides en lugar de la suavidad.
+`total = contrastive + lm_weight * lm`, entre ellos `lm_weight`Es la forma de combinación de múltiples tareas utilizada en CoCa y BLIP, con diferentes pesos. SigLIP sólo conserva los contrastes, y sustituye la pérdida de par sigmoide por la suavidad.
 
 |组件|损失面|影响|
 |-----------|--------------|---------|

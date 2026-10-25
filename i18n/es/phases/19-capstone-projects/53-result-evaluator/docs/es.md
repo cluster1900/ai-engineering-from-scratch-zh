@@ -71,7 +71,7 @@ evaluador 运行三个独立计算, y en el veredicto 路径中把它们合并�
 
 La perplejidad en comparación con la pérdida es una relación de índice. La pérdida disminuye 0.1 y la perplejidad se produce mucho más.
 
-Este curso se va a`scale`字段为 `"log"`Cualquier métrica en el cálculo mejora de la anterior toma log. el umbral natural.`log(28) - log(32) = -0.133`, lejos de los dos por ciento del umbral.
+Este curso se va a`scale`字段为 `"log"`Cualquier métrica en el cálculo mejora de la anterior toma log. el umbral natural.`log(32) = 3.466`En comparación`log(28) = 3.332`△ en menor es mejor métrica 上, relativa mejora es `(3.466 - 3.332) / 3.466 = 0.039`, superó el umbral del 2 por ciento.
 
 ```text
 if scale == "log":

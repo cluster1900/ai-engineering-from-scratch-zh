@@ -21,7 +21,7 @@ La mayoría de las demostraciones de agentes son de trabajo aislado: un único a
 
 La cadena de puertas  otorgó permiso, pero sandbox Porque la cadena  no se espera que la causa rechazó  Evall Harness  Record Pass, pero OTel span  Muestra puerta  rechazó el agente  Clasificando el uso de herramientas  Prometheus counter Este debería aumentar una vez, pero aumentó dos veces ✿ Presupuesto de observación  Ya ha superado, pero el agente  Continuar a funcionar, porque el presupuesto sólo está en la cadena de rastreo, mientras que sandbox 不知道。
 
-Este curso es una prueba de integración de toda la pista. El agente debe completar cuatro cosas en orden: leer proyectos, ejecutar pruebas, salir de la prueba, identificar errores, escribir y volver a ejecutar pruebas, y luego detenerse. Cada operación pasa por la cadena de puertas. Cada ejecución de herramientas pasa por la caja de arena.
+Este curso es una prueba de integración de toda la pista. El agente debe completar seis cosas en orden: leer el proyecto, ejecutar pruebas, desde el fracaso de las pruebas, identificar errores, escribir, arreglar, volver a ejecutar pruebas, y luego detenerse. Cada operación pasa por la cadena de puertas. Cada ejecución de herramientas pasa por la caja de arena.
 
 ## El concepto
 

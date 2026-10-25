@@ -1,6 +1,6 @@
 # Capstone 07  端到端 Fine-Tuning Pipeline(Data hasta SFT hasta DPO hasta Serve)
 
-> Un modelo 8B basado en su propio entrenamiento de datos, basado en sus propias preferencias para completar DPO en conjunto, completar la cuantificación ‒descodación especulativa, y con un tamaño medible de $/1M tokens 成本提供服务. La pila abierta del año 2026 es Axolotl v0.8、TRL 0.15、 para la generación de Unsloth ‒ para la cuantificación ‒ GPTQ/AWQ/GGUF, así como para el servicio de vLLM 0.7 + EAGLE-3.
+> Un modelo de nivel 8B basado en su propio entrenamiento de datos, basado en sus propias preferencias para completar DPO en conjunto, completar la cuantificación ‒descodación especulativa, y con tokens de $/1M medibles 成本提供服务. La pila abierta del año 2026 es Axolotl v0.8 ‒ TRL 0.15 ‒ para la generación de Unsloth ‒ para la cuantificación ‒ GPTQ/AWQ/GGUF, así como para el servicio de vLLM 0.7 + EAGLE-3 ‒. El objetivo de esta piedra angular es la ejecución completa de la pipeline de la entrada y salida de servicios, y el lanzamiento de la tarjeta modelo del marco de apertura del modelo 2026 ‒ 下 ‒
 
 **Type:** Capstone
 **Languages:** Python (pipeline), YAML (configs), Bash (scripts)
@@ -11,7 +11,7 @@
 ##  problemas
 En 2026, cada equipo de IA se preparará a cualquier momento para un proceso de ajuste fino. No es porque publiquen un modelo base fronterizo, sino porque se adapte, es decir, el dominio SFT, DPO dirigido a etiquetas preferentes, y los proyectos destilados de descifrado especulativo para el uso de EAGLE-3, sólo es donde se puede medir el beneficio real.
 
-Usted pondrá una base 8B(Llama 3.3、Qwen3 o Gemma 3) en datos específicos de tareas 上依次完成 SFT 和 DPO, posteriormente servir para hacer cuantización,并使用lm-evaluation-harness、RewardBench-2、MT-Bench-v2 和 MMLU-Pro 衡升级── usted pondrá en función del Marco de apertura del modelo 2026 产出一个模型卡──重点是可复现性:出端命令到端重跑整条管道──
+Usted pondrá una base de 8B a 14B (Llama 3.1 8B、Qwen3 14B o Gemma 3 12B) en datos específicos de tareas 上依次完成 SFT 和 DPO, luego servir para hacer cuantización,并使用lm-evaluation-harness、RewardBench-2、MT-Bench-v2 和 MMLU-Pro 衡量升级── usted va a producir un modelo de tarjeta de acuerdo con 2026 Model Openness Framework──重点是可复现性:
 
 ## 概念
 Este oleoducto tiene cinco etapas.**Data**El análisis de la calidad de los datos de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información de la información.**SFT**:Axolotl YAML、8xH100 上的 ZeRO-3、cosin schedule、packed sequences、2-3 épocas。**DPO or GRPO**:TRL configuración ∞1 época ∞ pares de preferencias pueden provenir de etiquetado artificial o de modelo-juzgado ∞beta sintonización ∞**Quantize**:GPTQ + AWQ + GGUF,保证 flexibilidad de despliegue―**Serve**:vLLM 0.7 + EAGLE-3 cabezas especulativas(o SGLang + SpecForge) 、K8s despliegue、 basado en HPA de espera en cola―
@@ -52,7 +52,7 @@ model card (2026 MOF) + safety eval (Llama Guard 4)
 
 ## 技术
 - Datatroves para dedup, clasificadores de Nemotron-CC para calidad, Presidio para PII
-- Base: Llama 3.3 8B、Qwen3 14B o Gemma 3 12B
+- Base: Llama 3.1 8B、Qwen3 14B o Gemma 3 12B
 - SFT: Axolotl v0.8, junto con ZeRO-3 ✓ Flash Attention 3 ✓ secuencias empaquetadas
 - La configuración de preferencia: TRL 0.15 Usado para DPO o GRPO; Unsloth Usado para iteración de GPU única
 - Cuantización: GPTQ (Marlin) 、AWQ、 a través de llama.cpp 生成 GGUF
@@ -113,7 +113,7 @@ $ ./pipeline.sh config/llama3.3-8b-domainX.yaml
 ##  ejercicios
 1. En el mismo índice de referencia específico de tarea, se ejecuta SFT+DPO、SFT+GRPO── informe qué método de preferencia 胜出,以及领先多少──
 
-2. Para poner en marcha el nuevo modelo de la Llama 3,8B, se sustituye por el Qwen3,14B.
+2. Para la Llama 3.1 8B  sustituir por Qwen3 14B ⋅ en匹配质量下测量 $/1M tokens ⋅
 
 3.  Medir los datos de dominio con la tasa de aceptación de EAGLE-3 de ShareGPT superior genérico                                                                                                                                                                                                                                                  
 
@@ -139,5 +139,5 @@ $ ./pipeline.sh config/llama3.3-8b-domainX.yaml
 - [DeepSeek R1 paper (arXiv:2501.12948)](https://arxiv.org/abs/2501.12948) GRPO 方法
 - [vLLM + EAGLE-3 documentation](https://docs.vllm.ai) 参考 pila de servicio
 - [SGLang SpecForge](https://github.com/sgl-project/SpecForge)  otro tipo de entrenador de decodificación especulativa
-- [Model Openness Framework 2026](https://isocpp.org/) liberación abierta 评分标准
+- [Model Openness Framework (arXiv:2403.13784)](https://arxiv.org/abs/2403.13784):libre abierto 评分标准
 - [lm-evaluation-harness](https://github.com/EleutherAI/lm-evaluation-harness) ejecutor de evaluación canónica

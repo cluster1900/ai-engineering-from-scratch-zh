@@ -69,7 +69,7 @@ ViT-Base es un codificador de 86M 参数. Según el estándar de 2026, este valo
 
 ### ¿Por qué no?
 
-Vision Transformer  sólo contiene codificador y es doble:token `i`Puede participar en cualquier token .`j` No hay tela. En la sección 61 se utilizará el factor de ocultación, pero en el interior del programación visual, la atención está completamente conectada.
+Vision Transformer  sólo contiene codificador y es doble:token `i`Puede participar en cualquier token .`j` No se utiliza máscara.  Se utiliza el factor de ocultamiento de la atención en el texto del código de codificación.
 
 ### CLS token ha aprendido lo que
 

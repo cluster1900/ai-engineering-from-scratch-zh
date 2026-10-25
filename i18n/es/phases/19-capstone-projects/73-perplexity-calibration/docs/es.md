@@ -88,7 +88,7 @@ La seguridad del instrumento no se supone que proviene de la máxima suavidad.`[
 
 - Todas las predicciones son erróneas: la ECE es la confianza media, la Brier es el valor alto, la confusión es la visión del modelo sobre el texto.
 - Las previsiones de la UE se mantienen en el mercado de la UE.
-- P=0.5 时完全不确定的预测因子:ECE为0.5 减去准确度,Brier为0.25 减去校正项──
+- P=0.5 时完全不确定预测因子: cada predicción cae en el mismo contenedor, por lo que ECE es `|0.5 - accuracy|`✿Brier 恰好为0.25,因为无论 `y`Es 0 y es 1,`(0.5 - y)^2 = 0.25`¿Qué es eso?
 - Airport: ECE, Brier y fiabilidad de la devolución`0.0`(O 0 llenar el número) ◊ Para la situación de 0 tokens, Perplejidad  retorno `NaN` Estos caminos no emitirán advertencias; el corredor revisará estos valores y decidirá si se reportará o se saltará.
 
 Estos casos fueron incluidos en los ensayos. Los modelos reales de los ensayos reales de base no los golpearán, pero los adaptadores o pequeños ejemplos defectuosos los golpearán, y los operadores no deberían colapsar.

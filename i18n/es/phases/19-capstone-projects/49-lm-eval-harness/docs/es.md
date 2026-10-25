@@ -20,7 +20,7 @@ Cada semana surge un nuevo modelo lingüístico. El marketing y el marketing dic
 
 Si tu repo 里 no tiene arnés, sólo puedes comparar dos modelos. Si tienes arnés, puedes compararlas en un conjunto de tareas fijas, métricas fijas, y obtener un resultado JSON diferente.
 
-陷是让harness 过适合到单个模型──修复方式是反过来使用同一个陷:harness 小到十五分钟能读完,任务小到可以随随随 发布, métricas desde cero编写以便同事审计,而适配器是唯一放置模型特定代码的地方──替代适配器,leaderboard 会变;替代任务,leaderboard 会变――其他一切不应该变──
+陷是让harness 过适合单个模型──修复方式是让所有模型的特定选择都留在harness 之外:harness 小到十五分钟能读完,任务小到可以随随随 发布, métricas desde cero编写以便同事审计,而适配器是唯一模型的特定代码的地方──替代适配器,leaderboard 会变;替代任务,leaderboard 会变――其他东西都不应该变──
 
 ## 概念
 

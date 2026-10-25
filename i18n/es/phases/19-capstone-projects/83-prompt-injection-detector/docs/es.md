@@ -82,4 +82,4 @@ Para algunos fijos (especialmente para los que parecen buenos), el detector es d
 
 ##  más阅读
 
-El ensayo de la clase 84 a la clase 87 es uno de los tres signos de la formación de los examinadores de la clase.
+En este curso, las clases 84 a 87 se incluyen los cuatro signos de la terminal a la puerta, los otros tres son el filtro de tokens, las categorías y el motor de reglas.
