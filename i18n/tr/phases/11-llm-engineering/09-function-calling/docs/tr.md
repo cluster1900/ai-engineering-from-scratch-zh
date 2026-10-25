@@ -179,6 +179,7 @@ mx-tool-call-loop
 Bir kayıt yapın, depolama araç tanımları ve uygulamaları için kullanılır. Her araçta JSON Schema tanımı vardır.
 
 ```python
+import ast
 import json
 import math
 import time
@@ -287,10 +288,18 @@ def read_file(path):
 def run_code(code, language="python"):
     if language != "python":
         return {"error": True, "message": f"Language '{language}' not supported. Only 'python' is available."}
-    forbidden = ["import os", "import sys", "import subprocess", "exec(", "eval(", "__import__", "open("]
-    for pattern in forbidden:
-        if pattern in code:
-            return {"error": True, "message": f"Forbidden operation: {pattern}", "code": "SECURITY_VIOLATION"}
+    try:
+        tree = ast.parse(code)
+    except SyntaxError as e:
+        return {"error": True, "message": f"SyntaxError: {e}", "code": "SYNTAX_ERROR"}
+    unsafe_names = {"exec", "eval", "compile", "__import__", "open", "globals", "locals", "vars", "getattr", "setattr", "delattr"}
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.Import, ast.ImportFrom)):
+            return {"error": True, "message": "Forbidden operation: import is not allowed", "code": "SECURITY_VIOLATION"}
+        if isinstance(node, ast.Attribute) and node.attr.startswith("__") and node.attr.endswith("__"):
+            return {"error": True, "message": "Forbidden operation: dunder attribute access is not allowed", "code": "SECURITY_VIOLATION"}
+        if isinstance(node, ast.Name) and node.id in unsafe_names:
+            return {"error": True, "message": f"Forbidden operation: {node.id} is not allowed", "code": "SECURITY_VIOLATION"}
     try:
         local_vars = {}
         exec(code, {"__builtins__": {"print": print, "range": range, "len": len, "str": str, "int": int, "float": float, "list": list, "dict": dict, "sum": sum, "min": min, "max": max, "abs": abs, "round": round, "sorted": sorted, "enumerate": enumerate, "zip": zip, "map": map, "filter": filter, "math": math}}, local_vars)
@@ -299,6 +308,8 @@ def run_code(code, language="python"):
     except Exception as e:
         return {"error": True, "message": f"{type(e).__name__}: {e}"}
 ```
+
+Sonraki yazılarda, bu yazıyı yazılı olarak okudukları için, her bir satırın eşleşmesi, yazılı olarak yazılmamış olan her şey kaybolacaktır.`import`语句、dunder 属性访问(即通往真实解释器的 `__class__`和 `__globals__`链) ve güvensiz yapı 名称── hatta, onu gerçek güvenlik sınırları yerine öğretim için kullanılan bir filtre olarak da düşünmelidir. herhangi bir süreç içindeki gardiyan, çalışmakta olan kodları aynı açıklayıcı ile paylaşır, uygulanabilir bir nesne bulabilir.
 
 ### 步骤 3: Tüm Araçları Kaydet
 
@@ -325,7 +336,7 @@ def register_all_tools():
         read_file,
     )
     register_tool(
-        "run_code", "Execute Python code in a sandboxed environment. Set a 'result' variable to return output.",
+        "run_code", "Run a small Python snippet behind a static-analysis guard and a restricted interpreter. This is a teaching filter, not real isolation. Set a 'result' variable to return output.",
         {"type": "object", "properties": {"code": {"type": "string", "description": "Python code to execute"}, "language": {"type": "string", "enum": ["python"], "description": "Programming language"}}, "required": ["code"]},
         run_code,
     )
@@ -612,7 +623,7 @@ OpenAI araç çağrılarını  geri dönüş için `response.choices[0].message.
 # client = anthropic.Anthropic()
 #
 # response = client.messages.create(
-#     model="claude-sonnet-4-20250514",
+#     model="claude-sonnet-5",
 #     max_tokens=1024,
 #     tools=[{
 #         "name": "get_weather",
@@ -633,7 +644,7 @@ OpenAI araç çağrılarını  geri dönüş için `response.choices[0].message.
 # result = get_weather(**tool_block.input)
 #
 # final = client.messages.create(
-#     model="claude-sonnet-4-20250514",
+#     model="claude-sonnet-5",
 #     max_tokens=1024,
 #     tools=[...],
 #     messages=[
