@@ -58,7 +58,7 @@ El conjunto de herramientas de gobernanza de agentes de Microsoft  que cubre el 
 
 ###  observado $1,200 → $4.800 casos
 
-Un caso real en Microsoft: un agente de comercio electrónico después de agregar nuevas herramientas, el costo mensual se duplicó en tres veces. Este instrumento permite al agente en cada sesión consultar el estado de los pedidos.
+Un caso real en Microsoft: un agente de comercio electrónico después de agregar nuevas herramientas, el costo de la semana se duplicó dos veces. Este instrumento permite al agente en cada sesión consultar el estado de los pedidos.
 
 
 ```figure

@@ -1,6 +1,6 @@
 # Investigación de Alineación Automática (ARA antropológica)
 
-> En el caso de los investigadores de la capacitación de los hombres y mujeres, el rendimiento del AAR supera a los investigadores humanos. En el caso de los investigadores de la capacitación de los hombres y mujeres, el rendimiento del AAR supera a los de los hombres y mujeres. En el caso de los investigadores de la capacitación de los hombres y mujeres, el rendimiento del AAR supera a los de los hombres y mujeres. En el caso de los investigadores de la capacitación de los hombres y mujeres, el rendimiento del AAR supera a los de los hombres y mujeres.
+> En el caso de los investigadores de la formación de los grupos de expertos de la Antropic, el rendimiento del AAR superó a los investigadores humanos. En el caso de los expertos de la formación de los grupos de expertos de la Antropic, el rendimiento del AAR superó a los investigadores humanos. En el caso de los expertos de la formación de los grupos de expertos de la Antropic, el rendimiento del AAR superó a los expertos de la investigación de la formación de los grupos de expertos de la Antropic.
 
 **Type:** Learn
 **Languages:** Python (stdlib, parallel-research-forum simulator)

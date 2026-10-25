@@ -1,6 +1,6 @@
 # Agentes de navegador y tareas web
 
-> Agente ChatGPT(Jul de 2025) combinará Operador y investigación profunda 合并为一个浏览器/终端代理, y se lanzó en BrowseComp 上以 68.9% 创下 SOTA。OpenAI 于2025 年 8 月 31 日关闭 Operador这是产品层整合──人类收购 收购 后, Claude Sonnet en OSWorld su rendimiento en menos del 15% 升级至72.5% Web ・Arena-verified(ServiceNow,ICLR 2026) corregiría la tasa de falsos puntos de ciento negativo de 11.3 en la WebArena original, publicó un subconjunto de 258-task Hard ⋅ estos números son reales。 Los ataques también son reales: la preparación de OpenAI  responsable de la publicidad declaró que la acción dirigida a los agentes de navegador  puede ser ejecutada por una inyección completa de bug                                                                                                                                                       
+> Agente ChatGPT(Jul de 2025) combinará Operador y investigación profunda 合并为一个浏览器/终端代理, y se lanzó en BrowseComp 上 68.9% 创下 SOTA。OpenAI 于 2025 年 8 月 31 日关闭 Operador这是产品层整合──Anthropic 收购 后, Claude Sonnet en OSWorld su rendimiento en OSWorld pasará del 15% al menos a 72.5%Web──Arena-Verified.
 
 **Type:** Learn
 **Languages:** Python (stdlib, indirect prompt-injection attack surface model)
@@ -9,7 +9,7 @@
 
 ##  problemas
 
-El agente de navegador es un agente de horizonte largo: lee contenido no creído y realiza operaciones con consecuencias. Cada página que visita el agente, es una entrada sin redacción de usuario. Cada uno de los formularios de cada página, es un posible camino de orden. El lenguaje de ataque de 2025-2026 muestra que esto no es una hipótesis: Memorias contaminadas.
+El agente de navegador es un agente de horizonte largo: lee contenido no creído y realiza operaciones con consecuencias. Cada página que visita el agente es una entrada sin redacción de usuario. Cada una de las páginas es un camino de orden potencial. El lenguaje de ataque de 2025-2026 muestra que esto no es una hipótesis: Memorias contaminadas.
 
 La preparación de OpenAI no es cómoda. El responsable de la investigación ha revelado que la inyección indirecta de un prompt no es un error que pueda ser completamente reparado. La causa es que el ataque ocurre en el límite de lectura y acción del agente, y este límite en la estructura es un símbolo de modalidad borrosa.
 
