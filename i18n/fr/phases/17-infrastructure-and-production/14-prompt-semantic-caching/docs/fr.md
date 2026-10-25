@@ -2,7 +2,7 @@
 
 > **Pricing snapshot 日期为 2026-04。**Les déclarations de valeur suivantes reflètent les cartes de taux des fournisseurs collectées lors de la publication de ce cours; avant de les citer, veuillez d'abord examiner le lien de l'examen du dossier.
 
-> Le caching se produit à deux niveaux. L2(niveau fournisseur) Prompte/préfixe caching 会为重复 préfixe 复用注意 KV  Anthropic's prompt-caching docs 宣称,在长时间的提示上最高可降低90% 成本、降低85%延迟;对于Claude 3.5 Sonnet,cache se lit为$0.30/M，而 fresh 为 $3.00/M,TTL pour 5 minutes,1h TTL 选项有2x write premium(docs.anthropic.com,2026-04)。OpenAI prompt caching 会自动应用于 ≥1024 tokens的提示,并将缓存输入 定价相对新鲜约90%折扣(platform.openai.com,2026-04); précises pour chaque modèle caché rate 取决于现金率卡──L1app-level) 语义缓存 会在嵌入式相似性命中完全跳过LLM──Vendor 95% précision指的是匹配正确度,而不是  报告的击率  报告的击率不是从10%开封聊) 升级到结构化FAQ) 不等;(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+> Le caching se produit à deux niveaux. L2(niveau fournisseur) Prompte/préfixe caching 会为重复 préfixe 复用注意 KV  Anthropic's prompt-caching docs 宣称,在长时间的提示上最高可降低90% 成本、降低85%延迟;对于Claude 3.5 Sonnet,cache se lit为$0.30/M，而 fresh 为 $3.00/M,TTL pour 5 minutes,1h TTL 选项有2x write premium(docs.anthropic.com,2026-04)。OpenAI prompt caching 会自动应用于 ≥1024 tokens的提示,并将缓存输入 定价相对新鲜约90%折扣(platform.openai.com,2026-04); 具体的每模型缓存率 取决于现率卡──L1app-level) 语义缓存会在嵌入式相似性命中完全跳过LLM──Vendor 95%精度指的是匹配正确度,而不是  报告的击率  报道的击率不是10%开启聊天) 提升结构化 FAQ) 不等,  74%                                                                                                                                                                   
 
 **Type:** Learn
 **Languages:** Python (stdlib, toy two-layer cache simulator)
@@ -52,7 +52,7 @@ Les revendications de précision du fournisseur désignent la réponse cache du 
 
 Votre agent n'a pas lancé 10 appels d'outils. Tous les 10 ont le même système de 4K-token prompt. Cache anthropique écrit est par demande. Première cache-écriture dans le fournisseur voir le prompt.
 
-修复:batch avec séquentiel-first  单独发起请求 1, puis dans le cache de 1 已填充 后再触发 2-10──给第一工具调用 增加300 ms;节省 5-10x 账单──
+修复:batch avec séquentiel-first  单独发起请求 1, puis dans le cache de 1 已填充后再触发 2-10──给第一工具调用 增加300 ms;避免 5-10x 的账单膨胀──
 
 ### Le modèle anti-contenu dynamique
 
@@ -88,7 +88,7 @@ Les prix sont les données collectées dans les documents fournisseurs des liens
 - Lire l'article en cache: Claude 3.5 Sonnet 上 $0.30/M, environ par rapport à l'entrée fraîche 便宜 10x(docs.anthropic.com)
 - Prémium d'écriture en cache anthropic:1.25x(5 min TTL) ou 2x(1 heure TTL)。
 - OpenAI auto-cache: applicable pour les demandes de 1024 jetons; dans les cartes de taux actuels, l'entrée en cache 定价约为 10% de l'entrée fraîche de la plateforme.openai.com) 👇
-- Taux de succès du cache sémantique (reporté par la communauté):chat ouvert 约 ~10%; FAQ structurée 最高约 ~70%── pas baseline documentée par le fournisseur。
+- Taux de succès du cache sémantique(reporté par la communauté):chat ouvert 约 ~ 10%; FAQ structurée 最高约 ~ 70%; fixe de l'instruction de l'opérateur de la voix ≠ 50-80%── pas baseline documentée par le fournisseur──
 - ProjetDiscovery: à travers le projet de blogue de projet, en 2025, le taux de succès est de 7% à 74%.
 - Anti-pattern de parallélisation: rapport typique montre que lorsque N 个 requêtes parallèles 错过第一次 cache write 时,账单会膨胀 510x。
 

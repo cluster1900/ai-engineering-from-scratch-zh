@@ -1,6 +1,6 @@
 # Les API de lot  50% déconte devenir un standard de l'industrie
 
-> Chaque fournisseur principal offre une API de lot asynchrone, avec 50% de réduction et environ 24 heures de redressement. OpenAI, Anthropic, Google, ainsi que la plupart des plateformes d'inférence (Fireworks batch tier, Ensemble batch) ont réalisé le même modèle. Le coût des pipelines de nuit va diminuer d'environ 10% du coût de la mise en cache. La règle est très simple: si elle n'est pas interactive, elle devrait être mise en lot. Les lignes de production de contenu, la classification des documents, les données, les rapports, l'étiquetage de masse, l'étiquetage de catalogues, tout ce qui peut tolérer 24 heures de retard de travail, avant le transfert de lot, mais avant la mise en cache, tout l'argent reste sur la table. Le nouveau modèle de production de 2026 ans est de mettre en ligne chaque nouvelle entrée de travail de la LMM à trois phases interactives: les files d'attente, les coordonnées de travail, les coordonnées de travail, les coordonnées, les coordonnées, les coordonnées, les coordonnées, les coordonnées, les coordonnées, les coordonnées, les coordonnées, les coordonnées, les coordonnées, les coordonnées, etc.
+> Chaque fournisseur principal offre une API de lot asynchrone, avec 50% de réduction et environ 24 heures de redressement. OpenAI, Anthropic, Google, ainsi que la plupart des plateformes d'inférence (Fireworks batch tier, Ensemble batch) ont mis en œuvre le même modèle. Le coût des pipelines de nuit va diminuer d'environ 10% du coût de la production simultanée. La règle est très simple: si elle peut tolérer quelques heures de retard, elle devrait être mise en lots. Les pipelines de production de contenu, la classification des documents, la collecte de données, la production de rapports, l'étiquetage en masse, l'étiquetage en catalogue peuvent tolérer 24 heures de retard de travail, avant la déménagement du lot.
 
 **Type:** Learn
 **Languages:** Python (stdlib, toy batch-vs-sync cost simulator)
@@ -49,7 +49,7 @@ Une résumé de document 50K, en utilisant le même système de jetons 4K:
 
 **Semi-interactive** Utilisateur soumettre des tâches, quelques minutes après revenir et voir.
 
-**Batch** Utilisateur attend le résultat dans la matinée ou à l'heure suivante──Pipelines de contenu、Classification à grande échelle、Analyse hors ligne──始终批,始终叠加缓存──
+**Batch** Utilisateur attendant le résultat dans la matinée ou dans la fin de la journée──content pipelines、grandes échellesClassification、analyse hors ligne──始终批,始终叠加缓存──
 
 常见错误: Parce que le pipeline est la production, on classifie tout comme interactif.
 

@@ -1,6 +1,6 @@
 # Les données de référence sont les données de référence de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse de l'analyse.
 
-> Le déploiement d'une seule démarche d'inférence détermine si c'est normal. Le TTFT est le pré-remplissage 加队加网络──TPOT(prix ITL) est le décodeur relié à la mémoire de chaque jeton 成本──端到端延迟是 TTFT加 TPOT 乘输出长度──Throughput est l'ensemble de la flotte 聚焦每秒的标号──mais le produit est vraiment important: bonput: simultanément répondre à chaque demande de SLO.
+> 五个指标决定一次推断部署 是否正常工作──TTFT 是预填加队加网络──TPOT((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
 
 **Type:** 学习
 **Languages:** Python（stdlib，玩具版 percentile calculator 和 goodput reporter）
@@ -49,7 +49,7 @@ Il ne peut pas vous dire la santé d'une seule requête.
 
 `goodput = fraction of requests meeting (TTFT <= a) AND (TPOT <= b) AND (E2E <= c)`
 
-SLO est une contrainte multi-constance. Une seule contrainte est satisfaite. Une seule demande est satisfaite.
+SLO est une contrainte multi-constance. Une seule contrainte est satisfaite. Une seule demande est satisfaite. Une seule satisfaction est la bonne proportion.
 
 D'ici 2026, Goodput est devenu un indicateur utilisé par les fournisseurs de plateformes d'IA et de suivi interne de SLA.
 

@@ -41,7 +41,7 @@ Les séquences en cours de fonctionnement sont appelées collections`RUNNING`Lis
 
 La taille du lot ne sera jamais rembourrée à un chiffre fixe.`V1 scheduler`◊ Key invariant:scheduler Chaque itération de décode 运行一次, plutôt que chaque demande 运行一次。
 
-### Pré-remplissage en morceaux  protection de la queue TTFT
+### Pré-remplissage en morceaux  protéger la queue ITL
 
 Le préfill est un computable de la Llama 3.3 70B du 32k-token prompt en un seul H100 de la Llama 3.3 70B du 32k-token prompt en un seul H100 de la Llama 3.3 70B du 32k-token prompt en 800 ms de pure préfill en un seul H100 de la Llama 3.3 70B du 32k-token prompt en un seul H100 de la Llama 3.3 70B du 30 de la Llama 3.3 Llama 3.3 Llama 3.3 Llama 3.3 Llama 3.3 Llama 3.3 Llama 3.3 Llama 3.3 Llama 3.3 Llama 3.3 Llama 3.3 Llama 3.3 Llama 3.3 Llama 3.3 Llama 3.3 Llama 3.3 Llama 3.3 Llama 3.3 Llama 3.3 Llama 3.3 Llama 3.3 Llama 3.3 Llama 3.3 Llama 3.3 Llama 3.3 Llama 3.3 Llama 3.3 Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3. Llama 3.
 
@@ -124,7 +124,7 @@ tensor-parallel
 | Chunked prefill | “prefill splitting” | 将长 prefill 拆成 512-token 切片并与 decode 交错 |
 | TTFT | “first token time” | Prefill + queue + network；在长 prompts 下由 prefill 主导 |
 | ITL | “inter-token latency” | 连续 decode tokens 之间的时间；由 batch size 主导 |
-| Goodput | “满足 SLO 的 throughput” | 每个 request 仍命中 TTFT 和 ITL targets 时的 tokens/sec |
+| Goodput | “满足 SLO 的 throughput” | 仍命中 TTFT 和 ITL targets 的 requests/sec（Phase 17 · 08 将其报告为 requests 的占比） |
 | V1 scheduler | “new scheduler” | vLLM 的 2026 scheduler；N-gram spec decode 是与 chunked-prefill 兼容的路径 |
 | `--gpu-memory-utilization` | “memory knob” | 在 weights 和 activations 之后为 KV blocks 预留的 HBM 比例 |
 

@@ -31,7 +31,7 @@ Le programme de formation est basé sur la formation professionnelle et la forma
 
 ### Latéance différence sous la taille
 
-L'analyse artificielle 运行持续 benchmark──在等效的 Llama 3.1 405B 部署上(shared on demand),Azure OpenAI médiane de latence du premier jeton 约为 50 ms;Bedrock 约为 75 ms── cette différence n'est pas AWS 失败 它是容量模型差异──Azure 销售 PTUs (Provisioned Throughput Units),为您的租户 预留 GPU 容量──Bedrock 的等价格──Bedrock 的等价格──也存在,但每单位 起价约$21/小时,大多数共享客户仍然停留在需求──
+L'analyse artificielle 运行持续 benchmark──在等效的Llama 3.1 405B 部署上, l'utilisation de PTUs Azure médiane de première latence de jeton 约为50 ms; partagé sur demande Bedrock 约为75 ms── cette différence n'est pas AWS 失败  它是容量模型差异──Azure 销售 PTUs (Provisioned Throughput Units), pour votre locataire 预留 GPU 容量──Bedrock 等价格──Bedrock 提供通过put) existe également, mais par unité 起价约$21/h, la plupart des clients partagés restent sur demande──
 
 Si votre produit SLA est TTFT < 100 ms à P99, alors vous devez acheter des PTU sur Azure, acheter un débit fourni par Bedrock, ou accepter un débit accepté.
 
@@ -91,7 +91,7 @@ i4-platform-lanes
 2. Vos produits ont besoin de Claude 3.7 Sonnet et GPT-4o... concevoir un déploiement de deux fournisseurs... qui met à l'échelle de l'hypercaler, avant de mettre à l'entrée, la politique de défaillance est quoi ?
 3. Unité de soins de santé sous surveillance  Client requérant BAAs、residence de données de l'Est des États-Unis 和 sub-100ms P99 TTFT── choisir une plateforme, et utiliser trois fonctions spécifiques pour obtenir des résultats.
 4. Vous avez découvert que le nombre de comptes Bedrock a augmenté de 4 fois en cas de changement de trafic.
-5. Pour les 100 millions de jetons/mois Claude, qui est le plus rentable  direct API Anthropic、Bedrock sur demande, ou Bedrock Provisioned Throughput?
+5. Pour 100 millions de jetons/mois Claude charge de travail, qui est le plus rentable  direct API anthropique、Bedrock sur demande, ou Bedrock fourni de débit?
 
 ## 关键术语
 | Term | What people say | What it actually means |

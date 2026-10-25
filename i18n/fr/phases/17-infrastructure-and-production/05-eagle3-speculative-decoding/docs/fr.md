@@ -16,7 +16,7 @@
 
 ##  problématique
 
-Le décodeur est lié à la mémoire. Dans un système de fonctionnement Llama 3.3 70B FP8 H100, chaque jeton décodé prend environ 140 Go/s de poids et sort un jeton.
+Le décode est lié à la mémoire. Dans une opération Llama 3.3 70B FP8 H100, chaque étape de décode est effectuée à partir de HBM.
 
 Le décoding spéculatif a utilisé cette différence. Il utilise un modèle de projet peu coûteux pour créer des jetons K 个候选, puis permet au modèle cible de vérifier tous les jetons K 个在一次前进通行中验证所有 K 个.
 

@@ -48,7 +48,7 @@ RTT interrégionale:
 - États-Unis-Est-1  eu-Ouest-1: ~75 ms。
 - États-Unis-est-1  ap-sud-est-1: ~ 220 ms。
 
-Si le routage Place une demande de l'est des États-Unis à l'est des États-Unis à l'est des États-Unis, le préfixe de préfixe de l'emplacement de l'emplacement de l'emplacement sera de 440 ms.`prefill_time + network_latency`La réponse est généralement de maintenir le routage régional, sauf si le pré-remplissage occupe la préfixation dominante de plusieurs MB.
+Si le routage met une requête à l'arrière de l'US-East-1 送到ap-southeast-1 节省的预写,节省的预写(800 → 80 ms,即 720 ms) 后缩小到500 ms;`prefill_time + network_latency`La réponse est généralement de maintenir le routage régional, sauf si le pré-remplissage occupe la préfixation dominante de plusieurs MB.
 
 ###  Commerce "inférence transregionale"
 

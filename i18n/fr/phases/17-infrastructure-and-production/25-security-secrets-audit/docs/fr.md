@@ -20,7 +20,7 @@ En outre, les demandes d'utilisateur contiennent mon nom de domaine est 123-45-6
 
 En outre, dans votre cluster EKS, vous pouvez accéder à n'importe quel hôte Internet. Quelqu'un peut parcourir une recherche DNS et expiler les données dans un domaine contrôlé par l'attaquant.
 
-La sécurité des services de MLL 必须处理这三类矢量──Vault-backed credentials──PII scrubbing──Network exit filtration──Audit logs──
+La sécurité des services de LLM 必須處理這三類矢量,并能在事后证明这一点──value-backed credentials──PII scrubbing──Network exit filtration──Audit logs 作为证据链──
 
 ## 概念
 ### 集中式 vault + tirage du rôle IAM

@@ -103,7 +103,7 @@ mx-sequential-test
 2. Pour un patient soignant  sur place                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 3. 设计一个A/B,测试 GPT-4 vs GPT-3.5 在成本-per-résolu-ticket 上的表现──primary metric、guardrail metric、secondaire 分别是什么?
 4. Votre canary est passé, mais A/B montre -1,2% de conversion.
-5. Pour une période préliminaire, le CUPED est appliqué à une période préliminaire de 60% de la période postérieure.
+5. 应用 CUPED, utilisant une capacité d'expliquer 60% de la différence de la période précédente de la covariation de la période d'arrivée (→ Related系数平方为 0.6)
 
 ## 关键术语
 | Term | What people say | What it actually means |

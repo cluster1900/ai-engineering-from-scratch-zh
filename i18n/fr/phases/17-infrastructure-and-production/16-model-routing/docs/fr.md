@@ -1,6 +1,6 @@
 # Modèle de routage  comme moyen de base de réduction des coûts
 
-> Un courtier dynamique va évaluer chaque demande (type de tâche, longueur de token, similarité d'intégration, confiance), et faire une simple requête  envoyé à un modèle bon marché, faire une requête complexe  améliorer à un modèle frontalier ‒ aussi appelé modèle en cascade ‒ études de cas de production montrent que, dans les États-Unis/ Royaume-Uni/UE, la qualité des services sous-traitants peut être réduite de 20 à 60%; dans les SaaS à fort trafic, une amélioration de l'efficacité du routage de 30% ‒ Conversion en six chiffres par an ‒ Le contexte de l'année 2026 est LLM ‒ prix inférieur à 10 fois par an: de la fin des années 2022 à 2026 ‒ GPT-4-class Token ‒$20/M 降到约 $La plupart des retombées proviennent de meilleures piles de service (Phase 17 · 04-09), pas du matériel. Le routage est une méthode de réduction de prix qui ne provoque pas de régression du produit.
+> Un courtier dynamique va évaluer chaque demande (type de tâche, longueur de token, similarité d'intégration, confiance), et envoyer une requête simple, envoyer un modèle bon marché, faire une requête complexe, mettre à niveau un modèle frontalier, et cela s'appelle également cascade de modèle.$20/M 降到约 $La plupart des retombées proviennent de meilleures piles de service (Phase 17 · 04-09), pas du matériel. Dans le cas où le routage est en train de ne pas entraîner de régression du produit, la réduction de prix est transformée en marge.
 
 **Type:** Learn
 **Languages:** Python (stdlib, toy cascading router simulator)
@@ -44,7 +44,7 @@ Si vous mettez 70% de route sur un modèle bon marché, 30% sur un modèle cher,
 
 Les passerelles d'IA(Phase 17 · 19) Exposition à l'itinéraire―LiteLLM avec des retombées et des coûts de routage `router`configuration──Portkey avec des gardes + routage──Kong AI Gateway avec un routage basé sur des plugins──OpenRouter's modèle de marché  Exposition Recommandation API──
 
-L'utilisation de l'équipement de navigation est également possible.
+L'équipe de formation de la Commission européenne a été créée pour la première fois en juin 2007.
 
 ### 2026 价格曲线
 
@@ -69,7 +69,7 @@ Utiliser des métriques de qualité en ligne pour la route 设门:
 ### Tu devrais te rappeler le nombre
 
 - 2026: économie de routing: études de cas: 20 à 60%
-- Réduction des prix du LLM en 2022-2026: environ 10 fois par an.
+- La baisse des prix de la LLM en dessous du niveau de capacité fixe: environ 10 fois par an;
 - GPT-4 niveau 2022 contre 2026: ~$20/M → ~$0,40/M:
 - Impact de la latence en cascade: moyenne d'environ 1,2 fois, augmentation d'environ 2 fois (environ 10% du trafic)
 

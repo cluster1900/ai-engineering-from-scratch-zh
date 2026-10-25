@@ -8,7 +8,7 @@
 **Time:** ~60 minutes
 
 ## Objectif de l'apprentissage
-- 列举六个核心 gateway 功能 routeage, retrait, retrait, limite de vitesse, secrets, observabilité, garde-fou)
+- 列举七个核心 gateway 功能 路由,倒退,retries,rates limites,secrets,observabilité,garderelles)
 - Il y aura quatre passerelles de 2026 (LiteLLM, Portkey, Kong AI, Bifrost) qui seront projetées sur les plafonds d'échelle et les cas d'utilisation.
 - 引用 Kong benchmark ((相比Portkey 228%,相比LiteLLM 859%),并解释为什么对 >500 RPS 很重要──
 - Dans le cas de résidence de données et de budget des opérations, choisissez l'hébergement ou la gestion de données.
@@ -19,7 +19,7 @@ Vous avez besoin de failover si OpenAI retourne à 429, alors essayez Anthropic)
 Dans la couche d'applications, ces nouvelles fonctionnalités permettront à chaque service de s'intégrer à chaque fournisseur. La couche de passerelle le regroupe dans un processus, fournit une API (généralement OpenAI compatible), et le redistribue à chaque fournisseur.
 
 ## 概念
-### Six caractéristiques fondamentales
+### Sept caractéristiques fondamentales
 
 1. **Provider routing** mettre OpenAI, Anthropic, Gemini, auto-hébergé etc. dans une API 
 2. **Fallback** 遇到429、5xx或质量故障 时,在别处重试──
@@ -104,7 +104,7 @@ mx-gateway-fallback
 
 ## 练习
 1. 运行  référencement`code/main.py` Configuration OpenAI→Anthropic→auto-hébergé de la chute.
-2. Votre SLA est TTFT P99 < 200 ms, la ligne de base est de 300 ms... quels sont les portails qui sont encore dans le budget ?
+2. Votre SLA est TTFT P99 < 320 ms, tandis que le modèle est en P99 < 300 ms...
 3. Un client de soins de santé  exige un hébergement autonome + rédaction de données personnelles + audit。 choisi Portkey OSS 还是 Kong。
 4. Comparer LiteLLM à Kong: quel plafond RPS devrait déménager la équipe ?
 5. Pour les SaaS multi-tenants  politique de limite de tarifs de conception: niveau gratuit, niveau d'essai, niveau payant,

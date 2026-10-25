@@ -77,7 +77,7 @@ Si votre pile doit être redéploiée pour revenir en arrière, réparer ce poin
 
 ### Cadence des métriques
 
-Les portes canaries Chaque 5-15 minutes de vérification une fois, dépend en particulier du volume de trafic. 1% du trafic. et 10 minutes par minute. Chaque fenêtre a 50 à 150 points de données.
+Les portes canaries Chaque 5-15 minutes de vérification une fois, dépend en particulier du volume de trafic. 1% de 1.000 req/min.
 
 ### A/B 步骤是可选的
 

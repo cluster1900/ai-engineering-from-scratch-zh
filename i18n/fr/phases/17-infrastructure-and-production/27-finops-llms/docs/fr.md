@@ -131,7 +131,7 @@ i4-spend-ladder
 1. 运行  référencement`code/main.py`Tu sais comment choisir la valeur ?
 2. Vous allez construire quelles 5 vidéos ?
 3. Le plus grand locataire est unité-économie-négatif.
-4. Pour le produit de support  calculer le coût par billet résolu:3M Token/billet, environ 800 billets/jour, taux de mise en cache GPT-5
+4. Pour le produit de support  calculer le coût par billet résolu:3M Token/ticket, environ 800 billets/jour, toutes les entrées  selon le taux caché GPT-5 $0.125/M 计(
 5. Le marquage rétroactif est-il possible ou non ?
 
 ## 关键术语

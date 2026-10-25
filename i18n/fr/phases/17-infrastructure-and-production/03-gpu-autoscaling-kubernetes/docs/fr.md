@@ -18,7 +18,7 @@ Votre équipe a publié un service de Master en médecine supérieure.`DCGM_FI_D
 
 En outre, vous utilisez le Cluster Autoscaler 管理节点──凌晨2点来一个1M-Token prompt; cluster花了3分钟供给节点,请求超时──
 
-En outre, vous déployez un module qui doit être déployé à travers 2 nœuds en utilisant 8 GPUs de modèle 70B. Le cluster a 7 GPUs vides, il y a encore 1 GPU répartis sur 3 nœuds.
+En outre, vous déployez un besoin de traverser 2 nœuds en utilisant 8 GPUs de modèle 70B. Cluster avec 7 GPUs vides, dispersés sur 3 nœuds, encore moins 1 nœuds. Cluster Autoscaler pour le manque de 1 GPU fournit un nœud.
 
 Trois niveaux, trois modes différents de défaillance. L'autoscalage GPU-conscient de 2026 n'est pas un outil HPA.
 
