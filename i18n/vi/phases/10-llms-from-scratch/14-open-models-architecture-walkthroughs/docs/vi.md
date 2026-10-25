@@ -217,7 +217,7 @@ Llama 3 8B trong bối cảnh 128k ЅF16 Ѕhead_dim = ẩn / num_heads = 128 时
 
 Các hình thức trên giả định mỗi tầng đều lưu trữ chuỗi hoàn chỉnh.
 
-```text
+```
 kv_cache = 2 * num_kv_heads * head_dim * bytes_per_element
            * (full_layers * max_seq_len + sliding_layers * min(W, max_seq_len))
 ```

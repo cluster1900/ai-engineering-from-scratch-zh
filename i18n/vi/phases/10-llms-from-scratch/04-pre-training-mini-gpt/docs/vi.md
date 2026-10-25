@@ -218,11 +218,11 @@ Thời gian học tập hơn bạn tưởng tượng là quan trọng hơn. GPT-
 Dự án đầu ra (logits head) với Matrix Embedding Token 共享权重──这叫重量绑定它减少38M参数,并提升性能,因为它迫使模型对输入和输出使用同一个表示空间──
 
 
-```figure
-sampling-decoder
-```
-
 ##  xây dựng nó
+
+```figure
+iso-machine {"machine":"mini-gpt"}
+```
 ### 步骤 1: Nhập Layer
 
 Các token được nhúng sẽ 50,257 个可能 Trong mỗi token được hiển thị vào một 768 维 vector.
@@ -464,6 +464,10 @@ def generate(model, prompt_tokens, max_new_tokens=100, temperature=0.8):
 Nhiệt độ  kiểm soát随机性── Nhiệt độ 1.0 使用原始分布── Nhiệt độ 0.5 会让分布更尖(更确定模型更经常选择顶级选择)── Nhiệt độ 1.5 会让分布更平坦(更随机低概率代币 获得更大的机会)── Nhiệt độ 0.0 là giải mã tham lam(总是选择最高概率代币)──
 
 `tokens[-seq_len:]`Chiếc cửa sổ này là cần thiết, bởi vì mô hình có chiều dài ngữ cảnh lớn nhất (GPT-2 là 1024)  Một khi vượt qua nó, chúng ta phải bỏ đi các mã thông báo cũ nhất  Đó là cửa sổ ngữ cảnh của tất cả mọi người trong cuộc thảo luận 
+
+```figure
+sampling-decoder
+```
 
 ## Sử dụng nó
 ### 完整训练与生成 Demo

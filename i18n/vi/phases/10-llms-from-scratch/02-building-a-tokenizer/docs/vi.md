@@ -393,7 +393,7 @@ import tiktoken
 
 gpt4_enc = tiktoken.get_encoding("cl100k_base")
 
-test_paragraph = "Machine learning is powerful. ML很强大。 L'apprentissage automatique est puissant. 🤖💪"
+test_paragraph = "Machine learning is powerful. 机器学习很强大。 L'apprentissage automatique est puissant. 🤖💪"
 
 tokens = gpt4_enc.encode(test_paragraph)
 pieces = [gpt4_enc.decode([t]) for t in tokens]

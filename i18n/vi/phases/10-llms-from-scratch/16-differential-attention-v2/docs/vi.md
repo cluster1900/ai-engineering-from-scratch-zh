@@ -142,7 +142,7 @@ Lưu ý: đầu ra trọng lượng có thể được chuyển đổi sang tiê
 给定一个配置 ((隐藏=4096,头=32,头=128),打印:
 
 - Đổi biến cơ bản: Q、K、V Vỳ tự lớn`hidden * hidden`, MLP vì 4 * ẩn
-- DIFF V1:Q、K khác nhau`hidden * hidden`, V lớn vì`hidden * hidden`(不变), đầu mờ trong bên trong giảm nửa.`lambda`参数$(O(\text{heads} \cdot d_{\text{head}}))$
+- DIFF V1:Q、K khác nhau`hidden * hidden`, V lớn vì`hidden * hidden`(不变), đầu mờ trong bên trong giảm nửa.`lambda`参数 $(O(\text{heads} \cdot d_{\text{head}}))$
 - DIFF V2:Q`2 * hidden * hidden`, K, lớn hơn`hidden * hidden`, V lớn vì`hidden * hidden`                                                                                                                                                                                                                                                              $O_W$前投影回去──增加相同的 `lambda`参数。
 
 Toy 会测量 V2 的额外参数成本(大约每个注意区 额外 `hidden * hidden`),并打印出来──

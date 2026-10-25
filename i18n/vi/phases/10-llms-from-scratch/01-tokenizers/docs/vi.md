@@ -53,6 +53,10 @@ BPE là một thuật toán nén tham, sau đó được sử dụng lại để
 
 Từ đơn ký tự bắt đầu. Từ mỗi cặp chữ cái có tần suất cao nhất của các ký tự có tần số cao nhất của các ký tự có tần số cao nhất của các ký tự có tần số cao nhất của các ký tự có tần số cao nhất của các ký tự có tần số cao nhất của các ký tự có tần số cao nhất của các ký tự có tần số cao nhất của các ký tự có tần số cao nhất của các ký tự có tần số cao nhất của các ký tự có tần số cao nhất của các ký tự có tần số cao nhất của các ký tự có tần số cao nhất của các ký tự có tần số cao nhất của các ký tự.
 
+```figure
+tokenizer-bpe
+```
+
 Dưới đây là một tập hợp rất nhỏ trên hoạt động BPE, trong đó bao gồm "hết""",hết" và "hết mới nhất":
 
 ```
@@ -195,10 +199,6 @@ Trong GPT-2 có một số token, mỗi từ trung bình cần 2-3 token. Trong 
 
 Đó là lý do tại sao Llama 3 sẽ mở rộng từ 32K lên 128K. Việc phân phối các mã thông báo không phải là chữ tiếng Anh càng nhiều, sự nén giữa các ngôn ngữ càng công bằng.
 
-
-```figure
-tokenizer-bpe
-```
 
 ```figure
 tokenizer-tradeoff
