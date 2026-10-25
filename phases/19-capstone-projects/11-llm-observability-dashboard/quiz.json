@@ -54,12 +54,12 @@
       "stage": "check",
       "question": "在注入的 PII 泄露 regression 上，交付物的检测时间（MTTD）目标是什么？",
       "options": [
-        "从 bug 部署到 Slack alert 低于 5 分钟",
-        "下一个 on-call shift 内",
         "24 小时内",
+        "下一个 on-call shift 内",
+        "从 bug 部署到 Slack alert 低于 5 分钟",
         "低于 1 小时"
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": ""
     },
     {
