@@ -68,7 +68,7 @@ Le problème n'est pas le partage de l'état en soi, mais celui du partage.**没
 
 1. **每次写入都标注 provenance。**Chaque entrée dans l'état communes sont enregistrées par qui écrit, quand écrit, à quel moment écrit, ainsi que par l'agent qui cite la source.
 2. **对写入做 versioning；把它们视为 append-only。**修正 est une nouvelle entrée, utilisée pour remplacer l'ancienne entrée, plutôt que d'être original·更新──audit trail 会被保留──
-3. **至少保留一个无法写入共享状态的 Agent。**Lire uniquement l'agent de vérification 抽样输入、重新获取来源,并标记不一致──因为它不能写入池,所以它不会被池毒──
+3. **至少保留一个无法写入共享状态的 Agent。**L'agent vérificateur de lecture uniquement 抽样输入、重新获取来源,并标记不一致──它仍将读取池,因此可能被一条坏输入误导;但它将每条条输入与原始源核对,并且不能写入,所以它的判断永远不会把被毒的事实反回共享状态──
 
 ### Le tableau noir 先例 (Hayes-Roth, 1985)
 
