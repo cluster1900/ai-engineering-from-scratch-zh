@@ -42,7 +42,7 @@ Por que usar CTDE: quando treinamos, nós sabemos a ação de todos; usamos esta
 
 ### QMIX (2018)  decomposição de valor
 
- Aplica-se apenas para cooperativa Global reward 之和:
+ Aplica-se apenas às cooperativas  Valor de acção comum`Q_tot`Função de mistura monótona de Q-valor de cada agente:
 
 ```math
 Q_{\text{tot}}(\tau, a) = f\big(Q_1(\tau_1, a_1), \ldots, Q_n(\tau_n, a_n)\big), \quad \frac{\partial f}{\partial Q_i} \ge 0

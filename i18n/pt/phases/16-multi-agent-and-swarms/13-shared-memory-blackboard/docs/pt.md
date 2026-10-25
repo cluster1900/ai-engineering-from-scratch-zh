@@ -68,7 +68,7 @@ O problema não é o estado de partilha em si, mas o estado de partilha.**没有
 
 1. **每次写入都标注 provenance。**Cada entrada no estado de comunhão têm registro de quem escreveu, quando escreveu, em que momento escreveu, e também de qual fonte citou o agente.
 2. **对写入做 versioning；把它们视为 append-only。**修正 é uma nova entrada, usada para substituir a antiga entrada, em vez de original地更新──audit trail 会被保留──
-3. **至少保留一个无法写入共享状态的 Agent。**Agente de verificação de somente leitura 抽样入目、重新获取来源,并标记不一致──因为 não pode ser escrito em piscina, por isso não será envenenado em piscina──
+3. **至少保留一个无法写入共享状态的 Agent。**Agente de verificação de somente leitura 抽样输入、重新获取来源,并标记不一致──它仍然会读取池,因此可能被一条坏进口误导; mas ela classifica cada entrada com a fonte original 核对,并且不能写入,所以它的判断永远不会把被毒的事实反回共享状态──
 
 ### Tabela negra 先例 (Hayes-Roth, 1985)
 

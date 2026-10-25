@@ -57,7 +57,7 @@ Esta é uma referência a especialização de papéis (Fase 16 · 08) e a topolo
 Produção em escala populacional 案例──时间线:
 
 - **Nov 2025:**Clawdbot (Peter Steinberger's local agente de codificação ReAct-loop) lançado
-- **Dec 2025 – Mar 2026:**两次更名(Clawdbot → OpenClaw → 继续以 OpenClaw 运行) 』
+- **Jan 2026:**̇周内两次更名 ̇因商标投诉,于 1 月 27 日由 Clawdbot 更名 Moltbot,三天后再由 Moltbot 更名 OpenClaw) ̇
 - **Feb 2026:**Moltbook  baseado no mesmo conjunto de primitivas  como rede social apenas para agentes  publicado; em poucos dias, há cerca de 2,3 milhões de contas de agentes 
 - **Mar 2026 (2026-03-10):**Meta 收购 Moltbook──
 - **Mar 2026:**China limita os computadores do governo a usar OpenClaw.
