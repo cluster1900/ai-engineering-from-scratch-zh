@@ -109,7 +109,7 @@ python3 code/main.py
 
 كل مؤشر يتم تصويره مباشرة إلى أساس الإنتاج:
 
-- **检索。**MS-COCO 5K val、Flickr30K、ImageNet 零样本都是 R@K 问题在同一相似性矩阵中──将合成 eval 替换为真文件,函数签名保持不变──
+- **检索。**MS-COCO 5K val و Flickr30K هو نفس المشكلة R@K على المصفوفة المقابلة.
 - **VQA。**VQA v2、GQA、OK-VQA استخدام نفس صيغة المكافأة الدقيقة(استخدمة acc-soft بدلا من VQA v2 واحد الإجابة EM) 
 - **BLEU-4.**MS-COCO 字幕、NoCaps、Flickr30K 字幕均使用BLEU-4加 CIDER 和 METEOR──添加 CIDER 是另一项功能──
 

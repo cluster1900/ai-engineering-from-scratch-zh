@@ -9,7 +9,7 @@
 
 ## أهداف التعلم
 
-- 推导 الحزمة الفعالة 恒等式:`effective_batch = micro_batch * accum_steps`.
+- 推导 الحزمة الفعالة 恒等式:`effective_batch = micro_batch * accum_steps * world_size`، على الجهاز الوحيد المستخدم في هذه الدورة`micro_batch * accum_steps`.
 - 实现 per-micro-batch loss scaling, جعل تراكم الدرجة 匹配 مرة كاملة كاملة الارتباط للخلف.
 - في آخر مجموعة صغيرة  قبل قفز التزامن المثالي
 - 读取 التكامل ضد منحنى اللحظة الفعالة،并解释 انخفاض العائد
