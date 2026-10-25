@@ -31,7 +31,7 @@ Một vấn đề sâu sắc hơn là danh mục. Nếu bạn cần sử dụng 
 
 ###  quy mô dưới  khoảng cách độ trễ
 
-Phân tích nhân tạo 运行持续基准──在等效的 Llama 3.1 405B 部署上(shared on demand),Azure OpenAI trung bình latency đầu tiên token 约为50 ms;Bedrock 约为75 ms──这个差距不是AWS 失败 它是容量模型差异──Azure 销售PTU (Provided Throughput Units),为您租户 预留 GPU 容量──Bedrock 的等价格──Bedrock 的等价格──也存在,但每单位 起价约$21/小时,大多数共享客户仍然停留在需求──
+Phân tích nhân tạo 运行持续基准──在等效的Llama 3.1 405B 部署上,使用PTUs的Azure median first-token latency 约为50 ms;Share on-demand的Bedrock 约为75 ms;;这个差距不是AWS 失败 它是容量模型差异──Azure 销售PTUs (Provided Throughput Units),为您租户 预留 GPU 容量──Bedrock 的等价格──Bedrock 的等价也存在,但每单位 起价约21$/小时,大多数客户仍然停留在需求上的──
 
 Khả năng chia sẻ theo yêu cầu 会与所有其他客户的流量竞争――Khả năng chuyên dụng 不会―― Nếu sản phẩm của bạn là SLA là TTFT < 100 ms tại P99, thì bạn sẽ hoặc mua PTU trên Azure, hoặc mua Bedrock Provisioned Throughput, hoặc chấp nhận默认波动――
 
@@ -91,7 +91,7 @@ i4-platform-lanes
 2. Các sản phẩm của bạn cần Claude 3.7 Sonnet và GPT-4o. Thiết kế một triển khai hai nhà cung cấp  哪个放到哪个超级级,前面放什么门口,失败政策是什么?
 3. Một位受监管的医疗保健 客户要求BAAs、US-East data residency 和 sub-100ms P99 TTFT── chọn một nền tảng,并使用三个具体功能来论证──
 4. Bạn thấy rằng trong tháng này, số lượng thanh toán trên trang web tăng lên 4x... không có hồ sơ thông tin ứng dụng... làm thế nào bạn sẽ tìm ra nguyên nhân?
-5. 阅读 Azure OpenAI 和 Bedrock giá cả trang. Đối với 100M-token/tháng Claude workload, 哪个更便宜  trực tiếp Anthropic API、Bedrock theo yêu cầu, hay Bedrock Provided Throughput?
+5. 阅读 Anthropic API 和 Bedrock giá cả trang. Đối với 100M-token / tháng Claude workload, 哪个更便宜  trực tiếp Anthropic API、Bedrock theo yêu cầu, hay Bedrock Provided Throughput?
 
 ## 关键术语
 | Term | What people say | What it actually means |

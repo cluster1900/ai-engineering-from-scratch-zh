@@ -16,7 +16,7 @@
 
 ## 问题
 
-Thử giải mã là kết nối bộ nhớ. Trong một phiên bản chạy Llama 3.3 70B FP8 của H100 trên, mỗi mã hóa mã hóa sẽ đọc khoảng 140 GB / s của trọng lượng và xuất ra một mã hóa.
+Thử giải mã là kết nối bộ nhớ. Trong một phiên bản chạy Llama 3.3 70B FP8 của H100 trên, mỗi bước giải mã đều được chuyển từ HBM 读取全部约70 GB 权重,并为每序列输出一个代币. GPU tính toán trong thời gian giải mã gần như không có,瓶 là băng thông của HBM, chứ không phải là dung lượng matmul.
 
 Việc giải mã giả định đã sử dụng khoảng cách này. Sử dụng mô hình dự thảo rẻ tiền để tạo ra K 个候选 token, sau đó để mô hình mục tiêu trong một lần đi trước kiểm chứng tất cả các K 个.
 

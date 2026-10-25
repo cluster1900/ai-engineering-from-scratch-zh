@@ -103,7 +103,7 @@ mx-sequential-test
 2. Đối với một người được chăm sóc sức khỏe  giám sát trên địa điểm  khách hàng chọn Statsig hoặc GrowthBook。
 3. 设计一个A/B,测试 GPT-4 vs GPT-3.5 在成本-per-resolved-ticket 上的表现──初级计量,防线计量,二级分别是什么?
 4. Canary của bạn đã qua, nhưng A / B  hiển thị -1,2% chuyển đổi. Bạn sẽ phát hành?
-5. Để CUPED được áp dụng cho một giai đoạn trước, tương đương với giai đoạn sau, tương đương với 60% giai đoạn trước.
+5. 应用 CUPED, sử dụng một能解释 60% 后期方差的前期变化(相关系数平方为 0.6) ――计算有效样本大小增──
 
 ## 关键术语
 | Term | What people say | What it actually means |

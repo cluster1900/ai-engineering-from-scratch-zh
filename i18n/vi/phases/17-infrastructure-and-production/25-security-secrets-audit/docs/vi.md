@@ -20,7 +20,7 @@ Ngoài ra, các yêu cầu của người dùng 包含Nhanh SSN của tôi là 1
 
 Ngoài ra, LLM pod trong cluster EKS của bạn có thể truy cập bất kỳ máy chủ internet nào. Có người dùng tìm kiếm DNS để đưa dữ liệu ra miền bị tấn công kiểm soát. Không có gì ngăn chặn nó.
 
-An ninh của các dịch vụ LLM  phải xử lý các loại vector này.
+An ninh của các dịch vụ LLM  phải xử lý các loại vector này,并能在事后证明这一点──tài liệu tín dụng được hỗ trợ bởi kho lưu trữ──PII scrubbing──Network exit filtration──Audit logs 作为证据链──
 
 ## 概念
 ### 集中式 vault + IAM-role pull

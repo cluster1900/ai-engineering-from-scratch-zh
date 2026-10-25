@@ -48,7 +48,7 @@ RTT liên khu vực:
 - US-East-1  eu-West-1: ~75 ms。
 - US-East-1  ap-southeast-1: ~ 220 ms。
 
-Nếu định tuyến đưa yêu cầu từ US-East-1 送 đến ap-southeast-1 热 tiền đề,节省的预填(800 → 80 ms) sẽ được 440 ms round-trip 抵消──GORGO(2026 nghiên cứu)把这一点显式化:联合最小化`prefill_time + network_latency`, thay vì chỉ tối thiểu hóa prefill. Câu trả lời thường là giữ tuyến đường khu vực, trừ khi prefill chiếm chủ yếu các prefix đa MB khổng lồ.
+Nếu định tuyến đưa yêu cầu từ US-East-1 送到 ap-southeast-1 节省的预写(800 → 80 ms,即 720 ms) 在付出约 220 ms RTT 后缩小到约 500 ms; nếu khu vực phía xa 让请求排队,或已经驱逐该预写, this点余量就会消失──GORGO(2026 nghiên cứu) đưa điểm này ra biểu thức:联合最小化`prefill_time + network_latency`, thay vì chỉ tối thiểu hóa prefill. Câu trả lời thường là giữ tuyến đường khu vực, trừ khi prefill chiếm chủ yếu các prefix đa MB khổng lồ.
 
 ### 商业 "tranh vùng suy luận" 在这里帮不上忙
 

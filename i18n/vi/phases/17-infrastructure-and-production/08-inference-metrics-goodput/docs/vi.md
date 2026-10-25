@@ -1,6 +1,6 @@
 # Các Metrics Inference  TTFT、TPOT、ITL、Goodput、P99
 
-> Các chỉ số xác định việc triển khai suy luận là một lần hay không là một công việc bình thường. TTFT là prefill 加 queue 加网络──TPOT(tương đương với ITL) là mã hóa kết nối bộ nhớ của mỗi token 成本──端到端延迟 là TTFT cộng với TPOT nhân với bước ra ra.
+> 五个指标决定一次推断部署 是否正常工作──TTFT 是预填 加队加网络──TPOT(常被报告为ITL,但各工具对ITL 是否计入第一代令牌 看法不一) 是每个令牌的内存-bound decode 成本──端到端延迟 是TTFT加上TPOT 乘以输出长度──通过输出是整个舰队 聚合后每秒的Token数──但对产品真正重要的是好的输出:同时满足每个SLO请求的比例下面──在好输出中,高输出意味着正在处理时无法达到用户的Token──2026年TRT-LLM 上面-3.Llama1B-Instruct 参考数字:低输出TTPT,低输出TTPT,低输出TTPT,低输出TTPT, 7.03.E 报告E 报告,高输出TTPT,低输出TTPT,低输出TTPT,低输出TTPT,低输出TTPT,低输出TTPT,低输出T,低输TTPT,低输T,低输TTPT,低输T,低输T,低输TTPT,低输T,低输T,低输TTPT,低输T,低输T,低输T,低输TTPT,低输T,低输T,低输T,低输T,低输TTPT,低输T,低输T,低输T,低输T,低输TTPT,低输T,低输T,低输T,低输T,低输T,低输T,低输T,低输T,低输TTPT,低输T,低输T,低输TTPT,低输T,低输T,低输T,低输T,低输T,低输T,低输T,低输T,低输T,低输T,低输T,低输T,低输T,低输T,低输T,低输T,低输T,低输T,低输T,低输T,低输T,低输T,低输T,低
 
 **Type:** 学习
 **Languages:** Python（stdlib，玩具版 percentile calculator 和 goodput reporter）
@@ -49,7 +49,7 @@ Trong cùng một đống prefill chunked của Llama-3.3-70B H100 đống trên
 
 `goodput = fraction of requests meeting (TTFT <= a) AND (TPOT <= b) AND (E2E <= c)`
 
-SLO là một hạn chế đa hạn chế. Chỉ có mỗi hạn chế được đáp ứng, một yêu cầu là tốt.
+SLO là một hạn chế đa hạn. Chỉ có mỗi hạn chế đều được đáp ứng, một yêu cầu là tốt. Một số bài báo và bảng điều khiển đưa ra kết quả tốt.
 
 Đến năm 2026, Goodput đã trở thành các đề xuất của MLPerf Inference v6.0 và các nhà cung cấp nền tảng AI trong SLA theo dõi.
 

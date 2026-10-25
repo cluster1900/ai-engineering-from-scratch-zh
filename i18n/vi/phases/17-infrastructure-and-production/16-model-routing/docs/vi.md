@@ -1,6 +1,6 @@
 # Mô hình định tuyến  như một phương tiện cơ bản để giảm chi phí
 
-> Một nhà môi giới năng động sẽ đánh giá mỗi yêu cầu (từ loại nhiệm vụ, chiều dài mã thông báo, tương tự kết hợp, sự tự tin), và đưa câu hỏi đơn giản, gửi cho mô hình rẻ, đưa câu hỏi phức tạp, nâng cấp đến mô hình biên giới, cũng được gọi là mô hình hỗn hợp. Các nghiên cứu trường hợp sản xuất cho thấy, trong US / UK / EU, chất lượng của các mã thông báo có thể giảm 20% đến 60%; trong SaaS lưu lượng cao, 30% cải thiện hiệu quả định tuyến sẽ chuyển thành 6 tỷ lệ hàng năm.$20/M 降到约 $0.40/M── phần lớn giảm từ các gói dịch vụ tốt hơn(Phase 17 · 04-09), không phải phần cứng──Routing là bạn đang không gây ra sự suy giảm sản phẩm, chuyển đổi giá như vậy thành mức chi phí theo cách margin──Phương thức thất bại là con đường nhỏ gọn: đường đưa 40%  đưa cho mô hình yếu hơn, các nhiệm vụ lý luận chất lượng cao xuống 3-5%, một quý không ai chú ý── sử dụng các métrics chất lượng trực tuyến cho đường 设 gate, thay vì chỉ phụ thuộc vào các thiết lập đánh giá ngoại tuyến──
+> Một nhà môi giới động sẽ đánh giá mỗi yêu cầu (từ loại nhiệm vụ, chiều dài token, tương tự kết hợp, sự tự tin), và đưa câu hỏi đơn giản, gửi cho mô hình rẻ, đưa câu hỏi phức tạp, nâng cấp đến mô hình biên giới, cũng được gọi là mô hình hỗn hợp. Các nghiên cứu trường hợp sản xuất cho thấy, trong US / UK / EU, chất lượng của các dịch vụ có thể giảm 20% đến 60%; trong SaaS lưu lượng cao, 30% cải thiện hiệu quả định tuyến sẽ được chuyển thành 6 tỷ lệ hàng năm.$20/M 降到约 $0.40/M (khoảng 50x)  Phần lớn sự giảm từ các gói dịch vụ tốt hơn (Phase 17 · 04-09), không phải phần cứng.  Routing là một cách để giảm giá thành margin.
 
 **Type:** Learn
 **Languages:** Python (stdlib, toy cascading router simulator)
@@ -44,7 +44,7 @@ Nếu bạn đưa 70% đường đến mô hình rẻ, đưa 30% đường đế
 
 Các cổng thông tin AI (Phase 17 · 19) lộ trình tiếp xúc.`router`config──Portkey có bảo vệ + định tuyến──Kong AI Gateway có định tuyến dựa trên plugin──OpenRouter của mô hình thị trường  Khám phá khuyến nghị API──
 
-Mở nguồn:RouteLLM (LMSYS) 、Không Diamond (thị thương mại) 、Prompt Mule。
+Mối nguồn mở:RouteLLM (LMSYS) Prompt Mule。
 
 ### 2026 价格曲线
 
@@ -69,7 +69,7 @@ Sử dụng các métrics chất lượng trực tuyến cho đường 设 gate:
 ### Bạn nên nhớ số
 
 - 2026 năm chất lượng đơn vị: tiết kiệm đường dẫn: nghiên cứu trường hợp là 20-60%
-- Thị giá LLM giảm từ năm 2022 đến năm 2026: tổng cộng khoảng 10 lần mỗi năm.
+- Giá LLM giảm dưới mức năng lực cố định: khoảng 10x mỗi năm;
 - GPT-4 cấp 2022 vs 2026:~$20/M → ~$0,40/M:
 - Tác động độ trễ ngập: trung bình khoảng 1,2x, tăng lên khoảng 2x ((khoảng 10% lưu lượng truy cập) 👇
 

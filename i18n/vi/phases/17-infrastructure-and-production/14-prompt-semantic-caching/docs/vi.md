@@ -2,7 +2,7 @@
 
 > **Pricing snapshot 日期为 2026-04。**Các tuyên bố số dưới đây phản ánh thẻ giá bán hàng được thu thập khi phát hành bài học này; trong các bài đăng dưới đây, xin trước tiên đối chiếu
 
-> Caching 发生在两层──L2(provider-level)prompt/prefix caching 会为重复 prefix 复用注意 KV  Anthropic 的快速缓存文件 宣称,在长时间的提示上最高可降低90% 成本、降低 85%延迟; đối với Claude 3.5 Sonnet, cache đọc 为$0.30/M，而 fresh 为 $3.00/M,TTL 为 5 分钟,1 giờ TTL 选项有2x write premium(docs.anthropic.com,2026-04)。OpenAI prompt caching 会 tự động ứng dụng cho các yêu cầu của ≥1024 token,并将 cached input 定价相对新鲜约90%折扣(platform.openai.com,2026-04); chính xác mỗi mô hình cached rate 取决于现场率卡──L1(app-level) semantic caching 会在嵌入式相似性命中完全跳过LLM──Vendor 95%精度指的是匹配正确度,而不是  报告的击率  报告的击率不是从10%开封聊) 升级到结构化 FAQ) 不等;((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+> Caching 发生在两层──L2(provider-level)prompt/prefix caching 会为重复 prefix 复用注意 KV  Anthropic 的快速缓存文件 宣称,在长时间的提示上最高可降低90% 成本、降低 85%延迟; đối với Claude 3.5 Sonnet, cache đọc 为$0.30/M，而 fresh 为 $3.00/M,TTL 为 5 分钟,1 giờ TTL 选项有2x write premium(docs.anthropic.com,2026-04)。OpenAI prompt caching 会 tự động ứng dụng cho các yêu cầu của ≥1024 token,并将 cached input 定价相对新鲜约90%折扣(platform.openai.com,2026-04); chính xác mỗi mô hình cached rate 取决于现场率卡──L1app-level) semantic caching 会在嵌入式相似性命中完全跳过LLM──Vendor 95%精度指的是匹配正确度,而不是 hit rate  报告的成功率从10%开放式聊天) 升级结构化 FAQ) 不等,((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
 
 **Type:** Learn
 **Languages:** Python (stdlib, toy two-layer cache simulator)
@@ -52,7 +52,7 @@ Các tuyên bố chính xác của nhà cung cấp chỉ là phản ứng đư�
 
 Bạn đại lý và phát hành 10 cuộc gọi công cụ. Tất cả 10 trong số đó đều có cùng một hệ thống mã hóa 4K-quýu động. Anthropic cache viết là theo yêu cầu của; lần đầu tiên cache-tập trong nhà cung cấp  nhìn thấy nhanh chóng sau khoảng 300 ms hoàn thành.
 
-修复:batch với chuỗi-lần đầu tiên  单独发起请求 1, rồi trong cache 1 已填充 后再触发 2-10──给第一个工具调用 增加300 ms;节省 5-10x 账单──
+修复:batch với chuỗi-lần đầu tiên  单独发起请求 1, rồi trong cache 1 已填充 后再触发 2-10──给第一个工具调用 增加300 ms;避免 5-10x 的账单膨胀──
 
 ### Các nội dung động chống mô hình
 
@@ -88,7 +88,7 @@ Các API hàng loạt(Phase 17 · 15) trong vòng quay 24 giờ 下 cung cấp 5
 - Anthropic được lưu trữ đọc:Claude 3.5 Sonnet 上 $0.30/M, khoảng hơn đầu vào mới 便宜 10x(docs.anthropic.com) 👇
 - Antropic cache write premium:1.25x(5-min TTL) hoặc 2x(1-hour TTL)。
 - OpenAI tự động lưu trữ: áp dụng cho ≥1024 mã thông báo; trên thẻ giá hiện tại, đầu vào lưu trữ 定价约为 10% của đầu vào mới(platform.openai.com) 👇
-- Tỷ lệ truy cập cache ngữ nghĩa(được báo cáo bởi cộng đồng):tương tự mở chat 约 ~ 10%; FAQ có cấu trúc 最高约 ~ 70%── không phải là đường cơ sở được xác định bởi nhà cung cấp。
+- Tỷ lệ truy cập cache ngữ nghĩa(được báo cáo bởi cộng đồng):tương tự mở chat 约 ~ 10%; FAQ có cấu trúc 最高约 ~ 70%; thiết lập yêu cầu cố định 上的语音代理 为 50-80%──不是供应商文件的基线──
 - ProjectDiscovery: thông qua sẽ động chuyển 移出 tiền tố, tỷ lệ hit từ 7% → 74%
 - Phân tích chống đồng bộ: báo cáo điển hình cho thấy, khi N 个 yêu cầu song song 错过第一次 cache viết 时,账单会膨胀 510x。
 

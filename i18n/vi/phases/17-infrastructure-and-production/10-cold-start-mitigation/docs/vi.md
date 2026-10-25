@@ -1,6 +1,6 @@
 # Mức độ giảm bớt bắt đầu lạnh của LLM không máy chủ
 
-> Một hình ảnh mô hình 20 GB từ lạnh đến phục vụ 需要 5-10 分钟(7B) đến 20+ 分钟(70B) ・・・在真正的无服务器世界里,这不是加热,而是停电──Mitigations作用在五层:预种种节点图像(AWS 上的瓶块、双体积弧)、模型流播(NVIDIA Run:ai Model Streamer,vLLM 原生支持)、GPU bộ nhớ snapshots(Modal checkpoints,restart 最多快 10x)、热池(`min_workers=1`(Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nói: "Nó" "Nói: "Nó" "Nó": "Nó" "Nó" "Nó" "Nó" "Nó" "Nó" "Nó" "Nó" "Nó" "Nó" "Nó" "Nó" "Nó" "Nó" "nên" "Nó" "Nó" "Nó" "Nó" "nên" "nên" "nên" "nên" "nên" "nên" "nên" "nên" "nên" "nên" "nên" "nên" "nên" "nên" "nên" "nên" "nên" "nên" "nên" "nên" "nên" "nên" "n" "nên" "n"
+> Trong một thế giới không có máy chủ thực sự, đây không phải là sự nóng lên, mà là sự tắt điện thoại. Mích ứng ảnh tác động ở 5 tầng: hình ảnh nút trước khi được gieo lên.`min_workers=1`(Bản phẩm này được phát hành bởi các nhà máy tính và các nhà máy tính khác nhau, và có thể được sử dụng để tạo ra các hệ thống điện thoại thông minh.
 
 **Type:** Learn
 **Languages:** Python (stdlib, toy cold-start path simulator)

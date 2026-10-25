@@ -8,7 +8,7 @@
 **Time:** ~60 minutes
 
 ## Học mục tiêu
-- 列举六个核心 gateway 功能 路线,倒退,退行, 速率限制, bí mật, khả năng quan sát, bảo vệ)
+- 列举七个核心 gateway 功能 路线,倒退,退行, 限速,秘密,可观性,保护)
 - Sẽ có 4 cổng vào năm 2026 (LiteLLM、Portkey、Kong AI、Bifrost) được chiếu lên các trần cột và trường hợp sử dụng.
 - 引用 Kong benchmark ((相比 Portkey 228%,相比 LiteLLM 859%),并解释为什么对 >500 RPS 很重要──
 - Trong trường hợp quản lý dữ liệu và ngân sách của các hoạt động, chọn tự lưu trữ hoặc quản lý.
@@ -19,7 +19,7 @@ Bạn cần phải lỗi hơn nếu OpenAI quay lại 429, hãy thử Anthropic)
 Trong lớp ứng dụng 重新实现这些, sẽ cho phép mỗi dịch vụ với mỗi nhà cung cấp 合.Gateway layer sẽ tích hợp nó vào một quy trình, cung cấp một API (thường tương thích với OpenAI), phân phối lại cho các nhà cung cấp.
 
 ## 概念
-### 6 tính năng cốt lõi
+### Bảy tính năng cốt lõi
 
 1. **Provider routing** sẽ mởAI, Anthropic, Gemini, tự lưu trữ等等 đặt vào một API 后面.
 2. **Fallback** 遇到 429 、5xx hoặc thất bại chất lượng 时, 在别处重试──
@@ -104,7 +104,7 @@ mx-gateway-fallback
 
 ## 练习
 1. 运行 `code/main.py` cấu hình OpenAI→Anthropic→ tự lưu trữ của sự suy giảm.
-2. SLA của bạn là TTFT P99 < 200 ms, đường cơ sở là 300 ms...
+2. SLA của bạn là TTFT P99 < 320 ms, trong khi mô hình thực sự là P99 dưới 300 ms.
 3. Một khách hàng chăm sóc sức khỏe  yêu cầu tự lưu trữ + biên soạn PII + kiểm toán.
 4. So sánh LiteLLM với Kong: Đội nên di chuyển trên trần RPS nào?
 5. Đối với nhiều thuê nhà SaaS  thiết kế chính sách giới hạn mức giá: cấp độ miễn phí, cấp độ thử nghiệm, cấp độ trả tiền, chọn token-bucket hoặc cửa sổ trượt?

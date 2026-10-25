@@ -18,7 +18,7 @@ Nhóm của bạn tại Kubernetes lên đăng một dịch vụ LLM.`DCGM_FI_DE
 
 Ngoài ra, bạn sử dụng Cluster Autoscaler 管理节点──凌晨2点来一个1M-Token prompt; cluster花了3分钟供给节点,请求超时──
 
-Ngoài ra, bạn triển khai một cần trải qua 2 nút sử dụng 8 GPU của mô hình 70B;. cluster có 7 GPU trống, còn 1 GPU phân tán trên 3 nút;. cluster Autoscaler vì thiếu hụt 1 GPU  cung cấp một nút;. bảy nút chờ 4 phút, một bên đốt tiền, một bên Kubernetes Đặt GPU cuối cùng lên;.
+Ngoài ra, bạn triển khai một cần xuyên 2 node sử dụng 8 GPU của 70B mô hình;. cluster có 7 GPU trống, phân tán trên 3 node, còn差 1 个. Cluster Autoscaler vì thiếu hụt 1 GPU  cung cấp một node;. đã được dự kiến 7 GPU trống 4 phút, một bên đốt tiền, một bên và các Kubernetes đặt GPU cuối cùng 拉起来;.
 
 Ba tầng, ba kiểu khác nhau thất bại.
 

@@ -131,7 +131,7 @@ i4-spend-ladder
 1. 运行 `code/main.py`✿ Đổi tắt giết trong cái gì điểm z 触发?
 2.  thiết kế một bảng điều khiển chi phí cho mỗi người thuê. Bạn sẽ xây dựng 5 hình ảnh nào trước?
 3. Bạn thuê lớn nhất là đơn vị kinh tế tiêu cực.
-4. 为 hỗ trợ sản phẩm  tính chi phí cho mỗi vé được giải quyết:3M Token/ticket, khoảng 800 vé/ngày, GPT-5 tỷ lệ lưu trữ:
+4. Để hỗ trợ sản phẩm  tính phí cho mỗi vé được giải quyết:3M Token/ticket, khoảng 800 vé/ngày, tất cả các đầu vào 按 GPT-5 hồng kho $0.125/M 计(发布时的标价;请查看实时的价格卡)
 5. 论证 Tagging retroactive 是否可能有效──何时可以接受?
 
 ## 关键术语

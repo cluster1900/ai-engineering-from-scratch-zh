@@ -1,6 +1,6 @@
 # Trong Blackwell 上 sử dụng FP8 và NVFP4 运行 TensorRT-LLM
 
-> TensorRT-LLM  chỉ giới hạn ở NVIDIA, nhưng nó ở Blackwell 上胜出── 在配合 Dynamo 编排 GB200 NVL72 上,SemiAnalysis InferenceX trong năm 2026 Q1-Q2 测得 120B 模型成本为每百万代币$0.012，而 H100 + vLLM 为 $0.09/M, hình thành khoảng cách kinh tế 7x. Đây là một loạt các hệ thống độ chính xác của các hệ thống:FP8 đối với các hạt nhân cache và chú ý KV vẫn quan trọng, bởi vì nó có phạm vi động thái cần thiết cho chúng;NVFP4(4-bit vi mô) xử lý trọng lượng và giá trị kích hoạt;MTP và dự đoán mã thông báo đa phân chia trước/đóng mã cũng tăng thêm 2-3x.
+> TensorRT-LLM  chỉ giới hạn ở NVIDIA, nhưng nó ở Blackwell 上胜出── 在配合 Dynamo 编排 GB200 NVL72 上,SemiAnalysis InferenceX trong năm 2026 Q1-Q2 测得 120B 模型成本为每百万代币$0.012，而 H100 + vLLM 为 $0.09/M, tạo ra khoảng cách kinh tế 7x. Bộ đống này ở đống hai dạng dạng浮点 hình dạng với hai dạng dịch vụ. FP8 đối với bộ nhớ KV và hạt nhân chú ý vẫn quan trọng, vì nó có phạm vi động lực cần thiết cho chúng. NVFP4 (Microscaling 4-bit) xử lý trọng lượng và giá trị kích hoạt; dự đoán đa token (MTP) và prefill / decode phân chia. Ngoài ra, nó cũng tăng thêm 2-3x.
 
 **Type:** 学习
 **Languages:** Python (stdlib，玩具级 FP8/NVFP4 内存与成本计算器)

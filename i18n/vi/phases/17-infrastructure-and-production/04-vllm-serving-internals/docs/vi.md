@@ -10,7 +10,7 @@
 ## Học mục tiêu
 - 将 PagedAttention  giải thích cho KV cache phân bổ: khối, bảng khối, và tại sao phân mảnh trong sản xuất tải xuống giữ ở mức 4% dưới đây:
 - Trong cấp độ lặp lại vẽ liên tục batching: hoàn thành các chuỗi  làm thế nào để rời khỏi hàng, các chuỗi mới  làm thế nào để gia nhập, không cần phải thoát khỏi.
-- 用一句话描述 chunked prefill,并说出它 bảo vệ là 哪个延迟度度提示:是 TTFT tail,而不是平均吞吐量)
+- 用一句话描述 chunked prefill,并说出它 bảo vệ là 哪个延迟度度度提示:是并发解码的 ITL尾,而不是平均吞吐量) 
 - Nói ra năm 2026 vLLM v0.18.0 sẽ ảnh hưởng đến những lần một lần kích hoạt tất cả các nhóm tối ưu hóa của Gotcha.
 
 ## 问题
@@ -41,7 +41,7 @@ Lưu tập liên tục trong mỗi bước giải mã 之间运行──把正�
 
 Kích thước lô 永远不会被填到固定数字──输出位置不同序列 共享一次融合前面── 在 2026 年的 vLLM 中,这叫做`V1 scheduler`❖ Key Invariant: Scheduler Mỗi lần giải mã lặp đi lặp lại 运行一次, thay vì mỗi yêu cầu 运行一次。
 
-### Prefill trọn vẹn  bảo vệ đuôi TTFT
+### Prefill trọn vẹn  bảo vệ đuôi ITL
 
 Prefill là tính toán-binded của──Llama 3.3 70B trên 32k-token prompt trong đơn张 H100 上需要约800 ms的纯预fill──prefill 运行时,batch trong tất cả các chuỗi khác của mã hóa mã hóa mã hóa đều đang chờ đợi── trong vòng bán chạy, một长提示的第一代令延迟(TTFT) sẽ trở thành vài chục người dùng khác của các giao thức mã hóa latency(ITL) 动──
 
@@ -124,7 +124,7 @@ tensor-parallel
 | Chunked prefill | “prefill splitting” | 将长 prefill 拆成 512-token 切片并与 decode 交错 |
 | TTFT | “first token time” | Prefill + queue + network；在长 prompts 下由 prefill 主导 |
 | ITL | “inter-token latency” | 连续 decode tokens 之间的时间；由 batch size 主导 |
-| Goodput | “满足 SLO 的 throughput” | 每个 request 仍命中 TTFT 和 ITL targets 时的 tokens/sec |
+| Goodput | “满足 SLO 的 throughput” | 仍命中 TTFT 和 ITL targets 的 requests/sec（Phase 17 · 08 将其报告为 requests 的占比） |
 | V1 scheduler | “new scheduler” | vLLM 的 2026 scheduler；N-gram spec decode 是与 chunked-prefill 兼容的路径 |
 | `--gpu-memory-utilization` | “memory knob” | 在 weights 和 activations 之后为 KV blocks 预留的 HBM 比例 |
 

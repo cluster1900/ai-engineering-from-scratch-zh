@@ -1,6 +1,6 @@
 # Các API hàng  50% giảm giá trở thành tiêu chuẩn ngành
 
-> Mỗi nhà cung cấp chính đều cung cấp API lô nhịp không đồng bộ, với 50% giảm giá và khoảng 24 giờ quay lại. OpenAI, Google, cũng như hầu hết các nền tảng suy luận (Fireworks batch tier, cùng lô) đều thực hiện cùng một mô hình.
+> Mỗi nhà cung cấp chính đều cung cấp API lô nhịp không đồng bộ, với 50% giảm giá và khoảng 24 giờ quay lại. OpenAI, Anthropic, Google, cũng như hầu hết các nền tảng suy luận (Fireworks batch tier, cùng lô) đều thực hiện cùng một mô hình.
 
 **Type:** Learn
 **Languages:** Python (stdlib, toy batch-vs-sync cost simulator)
@@ -49,7 +49,7 @@ Một bản tóm tắt tài liệu 50k, sử dụng cùng một hệ thống mã
 
 **Semi-interactive** Người dùng gửi nhiệm vụ, vài phút sau quay lại xem.
 
-**Batch** User expect results by morning hoặc next hour──Content pipelines、大规模分类、离线分析──始终批量,始终叠加缓存──
+**Batch** User expect results by morning hoặc by the end of the day──Content pipelines、大规模分类、离线分析──始终批量,始终叠加缓存──
 
 常见错误: Vì đường ống là sản xuất, nên hãy xếp tất cả mọi thứ vào loại tương tác.
 

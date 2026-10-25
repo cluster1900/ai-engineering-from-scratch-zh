@@ -77,7 +77,7 @@ Nếu hàng của bạn cần phải tái triển khai để có thể quay lạ
 
 ### Tỷ lệ thời gian
 
-Canary Gates Mỗi 5-15 phút kiểm tra một lần, cụ thể phụ thuộc vào khối lượng lưu lượng truy cập ▌1% lưu lượng truy cập ▌ và 10 req/min ▌, mỗi cửa sổ có 50-150 điểm dữ liệu  đối với độ trễ ▌ đủ, nhưng đối với phản hồi của người dùng từ tiếng ồn lớn hơn ▌10% sẽ mang lại khoảng 10x nhiều dữ liệu ▌Thành công ▌ nên tạm dừng đủ lâu trong mỗi bước, để tích lũy đủ mẫu ▌
+Canary Gate Mỗi 5-15 phút kiểm tra một lần, tùy thuộc vào khối lượng lưu lượng truy cập ∙1,000 req/min 1% ∙ đó là Canary  nhận 10 req/min) Khi, mỗi 5-15 phút cửa sổ có 50-150 điểm dữ liệu  đối với độ trễ  đủ, nhưng đối với phản hồi của người dùng từ tiếng ồn lớn hơn ∙10% sẽ mang lại khoảng 10x nhiều dữ liệu ∙ tiến bộ  nên tạm dừng đủ lâu trong mỗi bước, để tích lũy đủ các mẫu ∙
 
 ### A/B 步骤 là lựa chọn
 
