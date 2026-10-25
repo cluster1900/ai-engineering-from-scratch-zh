@@ -102,6 +102,25 @@ Ngày nay, mỗi hệ thống bộ nhớ sản xuất đều là một biến th
 
 根据运营形态(自主托管,管理,框架集成)选择,而不是根据核心模式 选择;核心模式就是MemGPT。
 
+### 智能体记忆的形态
+
+Phần phân giải là vấn đề dung lượng, nó không quyết định phải tồn tại gì. Trong hệ thống sản xuất, có bốn loại ký ức lặp lại, mỗi loại trả lời một câu hỏi khác nhau:
+
+- **Working memory** 现在什么最重要?in context 层:当前任务、最近几轮对话、固定的核心部分──也就是即时本身──
+- **Episodic memory** 发生了什么? quá khứ của cuộc nói chuyện, vòng quay và quỹ đạo, liên quan đến phiên và lượt 引用 cùng lưu trữ, có thể theo yêu cầu trả lại.
+- **Semantic memory** 什么是真的? về người dùng 领域和世界的事实,随着变化更新和重复.
+- **Procedural memory** Điều này phải làm sao? Học các thói quen, sở thích và quy tắc, chúng hướng dẫn hành vi trong tương lai, chứ không phải là ký ức.
+
+开源实现 từng lựa chọn các điểm chia sẻ khác nhau:
+
+| 类型 | 实现 | 如何解决 |
+|------|----------------|-------------------|
+| Working | MemGPT / Letta | 通过 memory tools 在固定的 prompt 预算中换入换出内容（本课，Lesson 08） |
+| Episodic | Zep | Temporal knowledge graph：facts 带有有效区间，因此可以查询“什么时候什么是真的” |
+| Semantic | Mem0 | 一条 extraction pipeline，在 vector、KV 和 graph stores 之间对 facts 去重和更新（Lesson 09） |
+| Semantic + procedural | LangMem | 在后台把 facts 和行为规则提取到一个 store 中，agent 在轮次之间查阅它 |
+| Episodic + semantic | agentmemory | 在 session 运行时捕获它们，并整合为有类型、可搜索的记录 |
+
 ## 交付 nó
 `outputs/skill-virtual-memory.md`Đây là một kỹ năng có thể sử dụng được, có thể sử dụng cho bất kỳ thời gian chạy mục tiêu nào 生成正确的两层内存架架(主 +档案 + tool surface),并接好驱逐政策和引用字段──
 
@@ -129,3 +148,7 @@ Ngày nay, mỗi hệ thống bộ nhớ sản xuất đều là một biến th
 - [Letta, Memory Blocks blog](https://www.letta.com/blog/memory-blocks) Sự tiến hóa ba cấp
 - [Anthropic, Effective context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) Lập bối  theo ngân sách
 - [Chhikara et al., Mem0 (arXiv:2504.19413)](https://arxiv.org/abs/2504.19413)  cấu trúc bộ nhớ sản xuất lai trên mô hình này
+- [Zep (getzep/zep)](https://github.com/getzep/zep)  分类表中的 thời gian kiến thức-chữ liệu ghi nhớ
+- [Mem0 (mem0ai/mem0)](https://github.com/mem0ai/mem0) Bài học 09 cửa hàng lai 背后的提取管道
+- [LangMem (langchain-ai/langmem)](https://github.com/langchain-ai/langmem) Trong quá trình đưa ra các sự kiện và quy tắc hành vi
+- [agentmemory (rohitg00/agentmemory)](https://github.com/rohitg00/agentmemory) Tận dụng và tích hợp các phiên bản để có loại ghi chép có thể tìm kiếm

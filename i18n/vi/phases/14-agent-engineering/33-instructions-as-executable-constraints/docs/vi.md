@@ -62,7 +62,7 @@ Mỗi quy tắc có một câu, một loại, một dòng mô tả, và một`ch
 
 Cách sửa chữa không phải là viết một tệp ngắn hơn, mà viết một tệp phân cấp. Router gốc cần phải nhỏ đến mỗi phiên đều có thể đọc xong, và chỉ lưu chỉ mục. Nội dung sâu sắc được đặt trong tệp chủ đề, chỉ khi nhiệm vụ chạm vào chủ đề ứng phó.
 
-```text
+```
 AGENTS.md                  # router，少于 50 行：这个 repo 是什么、去哪里看、5 条硬规则
 docs/
   agent-rules.md           # 完整规则集（本课）

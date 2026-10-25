@@ -92,7 +92,7 @@ Có 4 phương pháp để biến tối thiểu của bài học này thành m�
 
 **将大型 artifacts 与 state 分离。**Đừng để CSVs 长 transcripts hoặc tạo ra các tập tin  lưu trữ `agent_state.json`△将 artefact 保存为单独文件(或上传到物体存储),state 中只保留路径──检查点 保持小而快; artefact 独立增长──
 
-**Event sourcing 用于 audit，snapshots 用于 resume。**Mỗi đột biến đều được thêm vào nhật ký sự kiện`state.events.jsonl`); chụp nhanh thường xuyên đến `state.json`✿ Resume 读取 snapshot, rồi play snapshot timestamp ✿ tất cả các sự kiện sau đó.
+**Event sourcing 用于 audit，snapshots 用于 resume。**Mỗi đột biến đều được thêm vào nhật ký sự kiện`state.events.jsonl`); chụp nhanh thường xuyên đến `state.json`✿ Resume 读取 snapshot, sau đó chơi lại snapshot timestamp ✿ tất cả các sự kiện sau đó. Điều này sẽ tiêu tốn nhiều đĩa, nhưng cho phép bạn từng từ quyết định của đại lý, điều này đối với điều chỉnh đường chân trời dài đến quan trọng.✿ Postgres trong tầng lưu trữ sử dụng WAL của nó  thực hành tương tự.
 
 **Schema migrations，否则拒绝加载。** `schema_version`Integer là契约── khi quản lý tải lên các file phiên bản chưa biết, nó sẽ từ chối đọc── trong schemap bump 旁边交付迁移脚本;`tools/migrate_state.py`Trong mỗi lần khởi động 时等运行.
 

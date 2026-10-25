@@ -1,6 +1,6 @@
 # Thuộc hữu 可观测性: Langfuse, Phoenix, Opik
 
-> 三个开源代理可观测性平台主导了 2026 年──Langfuse (MIT)  每月 6M+ cài đặt, theo dõi + quản lý nhanh chóng + đánh giá + phiên bản lặp lại──Arize Phoenix (Elastic 2.0)  深入的代理 专用评估、RAG 相关性、OpenInference tự động dụng cụ──Comet Opik (Apache 2.0)  tự động hóa nhanh chóng 优化、guardrails、LLM-judge 幻觉检测──
+> 三个可自托管的代理可观测性平台主导了 2026 年──Langfuse (MIT)  每月 6M+ cài đặt, theo dõi + quản lý nhanh chóng + đánh giá + phiên bản lặp lại──Arize Phoenix (Elastic 2.0)  深入的代理 专专用评估、RAG 相关性、OpenInference tự động dụng cụ──Comet Opik (Apache 2.0) 自动化提示 优化guardrails、LLM-judge 幻觉检测──
 
 **类型：**Học tập
 **语言：**Python (stdlib)
@@ -9,7 +9,7 @@
 
 ## Học mục tiêu
 
-- Nói về ba nền tảng đại lý nguồn mở hàng đầu có thể xem xét và giấy phép.
+- Nói về ba loại nền tảng tự quản lý đại lý có thể quan sát được và giấy phép của nó, và chỉ ra giấy phép nào không phải là nguồn mở của OSI.
 - 区分每个平台最擅长的方面:Langfuse (giải phóng nhanh mgrm + các phiên)  Phoenix (RAG + tự động dụng cụ)  Opik (tích cực + tháp) 
 - 解释 tại sao đến năm 2026, 89% báo cáo tổ chức đã triển khai Cung viên 可观测性.
 - 实现一个带有LLM- thẩm phán 评估的 stdlib trace-to-dashboard pipeline。

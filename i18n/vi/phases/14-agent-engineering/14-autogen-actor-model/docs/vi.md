@@ -34,6 +34,8 @@ Hai diễn viên không thể chia sẻ trí nhớ. Họ chỉ có thể gửi t
 
 ### AutoGen v0.4 中的三个API层
 
+AutoGen v0.4 chia các giao diện của nó thành ba tầng:
+
 1. **Core.**- Quản lý diễn viên cấp dưới.`AgentRuntime``Agent``Message``Topic`❖ trao đổi tin nhắn đồng bộ, dựa trên sự kiện ❖
 2. **AgentChat.**面向任务的高层API(替代 v0.2 của ConversableAgent)`AssistantAgent``UserProxyAgent``RoundRobinGroupChat``SelectorGroupChat`
 3. **Extensions.**集成:OpenAI、Anthropic、Azure、tools、memory。

@@ -14,7 +14,7 @@
 - Sử dụng một bộ nhớ lưu trữ, trong đó có một`add()`写入全部三个存储,`search()`Kết quả kết hợp
 
 ## 问题
-Đối với một trong ba loại truy vấn, một bộ nhớ tổng thể xuất hiện:
+Mỗi loại kho lưu trữ chỉ phù hợp với một trong ba loại truy vấn:
 
 - **语义相似性**                                                                                                                                                                                                                                                              
 - **事实查找**  người dùng's điện thoại số là gì? KV 胜出; Dòng 浪费资源, đồ thị  quá phức tạp.
