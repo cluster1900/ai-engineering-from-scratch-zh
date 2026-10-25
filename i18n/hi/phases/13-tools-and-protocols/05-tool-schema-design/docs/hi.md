@@ -81,7 +81,7 @@ notes_search(query)
 ### पैरामीटर डिजाइन
 
 - **每个封闭集合都使用 Enum。** `units: "celsius" | "fahrenheit"`, उपयोग न करें `units: string`Enums 会告诉模型可接受值的全集──
-- **Required vs optional。**标记 न्यूनतम आवश्यकता的字段──其他全部可选──OpenAI सख्त मोड  प्रत्येक फ़ील्ड `required`अपने कोड में जोड़ा`is_default: true`सम्मेलन,并让模型 省略它──
+- **Required vs optional。**标记 न्यूनतम आवश्यकता的字段──其他全部可选──OpenAI सख्त मोड  प्रत्येक फ़ील्ड `required`मध्य, इसलिए मॉडल किसी भी एक को नहीं बचा सकता है।`null`                                                                                                                                                                                                                                                              `null`
 - **Typed IDs。** `note_id: string`हाँ, लेकिन एक जोड़ें `pattern`(`^note-[0-9]{8}$`) हालूसिनेटेड आईडी को पकड़ने के लिए
 - **不要使用过度灵活的 types。**避免 `type: any`✿ मॉडल ✿ हालूसिनेट आकार ✿
 - **描述 field。** `{"type": "string", "description": "ISO 8601 date in UTC, e.g. 2026-04-22"}` विवरण  मॉडल प्रॉम्प्ट का हिस्सा है
