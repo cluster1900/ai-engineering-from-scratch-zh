@@ -20,7 +20,7 @@
 
 另外，你的 EKS cluster 中的 LLM pod 可以访问任意 internet host。有人通过 DNS lookup 把数据 exfil 到 attacker-controlled domain。没有任何东西阻止它。
 
-LLM services 的 Security 必须处理这三类 Vector。Vault-backed credentials。PII scrubbing。Network egress filtering。Audit logs。
+LLM services 的 Security 必须处理这三类 Vector，并能在事后证明这一点。Vault-backed credentials。PII scrubbing。Network egress filtering。Audit logs 作为证据链。
 
 ## 概念
 ### 集中式 vault + IAM-role pull

@@ -2,7 +2,7 @@
 
 > **Pricing snapshot 日期为 2026-04。** 以下数值声明反映本课发布时采集的 vendor rate cards；在下游引用前，请先对照链接文档核验。
 
-> Caching 发生在两层。L2（provider-level）prompt/prefix caching 会为重复 prefix 复用 attention KV —— Anthropic 的 prompt-caching docs 宣称，在长 prompts 上最高可降低 90% 成本、降低 85% latency；对于 Claude 3.5 Sonnet，cache reads 为 $0.30/M，而 fresh 为 $3.00/M，TTL 为 5 分钟，1-hour TTL 选项有 2x write premium（docs.anthropic.com，2026-04）。OpenAI prompt caching 会自动应用于 ≥1024 tokens 的 prompts，并将 cached input 定价为相对 fresh 约 90% 折扣（platform.openai.com，2026-04）；精确的 per-model cached rate 取决于 live rate card。L1（app-level）semantic caching 会在 Embedding similarity 命中时完全跳过 LLM。Vendor “95% accuracy” 指的是匹配正确性，而不是 hit rate —— 报告的生产 hit rates 从 10%（open-ended chat）到 70%（structured FAQ）不等；两家 provider 都没有发布 official baseline，因此应把这些视为 community telemetry，而不是保证。生产陷阱：parallelization 会破坏 caching（在第一次 cache write 之前发出的 N 个 parallel requests 会让花费膨胀数倍），而 prefix 内的 dynamic content 会完全阻止 cache hits。ProjectDiscovery 报告称，通过将 dynamic text 移出 cacheable prefix，hit rate 从 7% 提升到 74%（2025-11）。
+> Caching 发生在两层。L2（provider-level）prompt/prefix caching 会为重复 prefix 复用 attention KV —— Anthropic 的 prompt-caching docs 宣称，在长 prompts 上最高可降低 90% 成本、降低 85% latency；对于 Claude 3.5 Sonnet，cache reads 为 $0.30/M，而 fresh 为 $3.00/M，TTL 为 5 分钟，1-hour TTL 选项有 2x write premium（docs.anthropic.com，2026-04）。OpenAI prompt caching 会自动应用于 ≥1024 tokens 的 prompts，并将 cached input 定价为相对 fresh 约 90% 折扣（platform.openai.com，2026-04）；精确的 per-model cached rate 取决于 live rate card。L1（app-level）semantic caching 会在 Embedding similarity 命中时完全跳过 LLM。Vendor “95% accuracy” 指的是匹配正确性，而不是 hit rate —— 报告的生产 hit rates 从 10%（open-ended chat）到 70%（structured FAQ）不等，固定 prompt set 上的 voice agents 据报为 50-80%；两家 provider 都没有发布 official baseline，因此应把这些视为 community telemetry，而不是保证。生产陷阱：parallelization 会破坏 caching（在第一次 cache write 之前发出的 N 个 parallel requests 会让花费膨胀数倍），而 prefix 内的 dynamic content 会完全阻止 cache hits。ProjectDiscovery 报告称，通过将 dynamic text 移出 cacheable prefix，hit rate 从 7% 提升到 74%（2025-11）。
 
 **Type:** Learn
 **Languages:** Python (stdlib, toy two-layer cache simulator)
@@ -52,7 +52,7 @@ Vendor accuracy claims 指的是返回的 cached response 在语义上合适的�
 
 你的 agent 并行发起 10 个 tool calls。全部 10 个都有相同的 4K-token system prompt。Anthropic cache writes 是 per-request 的；第一次 cache-write 在 provider 看到 prompt 后约 300 ms 完成。Requests 2-10 在同一毫秒窗口到达，并且每个都会看到 cache miss。你支付了 10 次 write premiums，0 次 read discounts。
 
-修复：batch with sequential-first —— 单独发起 request 1，然后在 1 的 cache 已经 populated 后再触发 2-10。给第一个 tool call 增加 300 ms；节省 5-10x 账单。
+修复：batch with sequential-first —— 单独发起 request 1，然后在 1 的 cache 已经 populated 后再触发 2-10。给第一个 tool call 增加 300 ms；避免 5-10x 的账单膨胀。
 
 ### The dynamic content anti-pattern
 
@@ -88,7 +88,7 @@ Pricing points 是从链接的 vendor docs 中采集的 2026-04 数据，并且�
 - Anthropic cached read：Claude 3.5 Sonnet 上 $0.30/M，约比 fresh input 便宜 10x（docs.anthropic.com）。
 - Anthropic cache write premium：1.25x（5-min TTL）或 2x（1-hour TTL）。
 - OpenAI auto-cache：适用于 ≥1024 tokens 的 prompts；在当前 rate cards 上，cached input 定价约为 fresh input 的 10%（platform.openai.com）。
-- Semantic cache hit rate（community-reported）：open chat 约 ~10%；structured FAQ 最高约 ~70%。不是 vendor-documented baseline。
+- Semantic cache hit rate（community-reported）：open chat 约 ~10%；structured FAQ 最高约 ~70%；固定 prompt set 上的 voice agents 为 50-80%。不是 vendor-documented baseline。
 - ProjectDiscovery：通过将 dynamic 移出 prefix，hit rate 从 7% → 74%（project blog，2025-11）。
 - Parallelization anti-pattern：典型报告显示，当 N 个 parallel requests 错过第一次 cache write 时，账单会膨胀 5–10x。
 

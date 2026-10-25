@@ -26,7 +26,7 @@ Gao、Schulman、Hilton（2023）直接测量了这一点。用 100k labels 训�
 
 Goodhart 的原始表述是：“When a measure becomes a target, it ceases to be a good measure.” Manheim and Garrabrant（2018）区分了四种 variants：regressional（finite-sample）、extremal（tails）、causal（proxy 是 target 的下游）和 adversarial（agent gaming）。对 RLHF 来说，extremal + adversarial 是主导模式。
 
-Gao et al. 给出了一个 functional form。令 `d = sqrt(KL(pi || pi_init))`。令 `R_proxy(d)` 为 mean proxy reward，`R_gold(d)` 为 mean gold reward。经验上：
+Gao et al. 给出了 gold reward 的 functional form。令 `d = sqrt(KL(pi || pi_init))`，并令 `R_gold(d)` 为 mean gold reward。经验上：
 
 ```math
 \begin{aligned}
@@ -35,7 +35,7 @@ R_{\text{gold}}^{\text{RL}}(d) &= d\,(\alpha_{\text{RL}} - \beta_{\text{RL}} \lo
 \end{aligned}
 ```
 
-其中 `beta_gold > beta_proxy`。两者都从 zero KL 上升，两者都会达到峰值，但 gold peak 更接近原点。在较大的 `d` 上，即使 proxy 继续上升，gold 也会跌到 baseline 以下。proxy-gold gap 在 BoN sampling、PPO 和 SFT-to-best 上都呈现相同 signature。
+两种形式都从 zero KL 上升，达到峰值，然后下降。论文中 proxy score 没有干净的拟合；它会持续上升，在大 KL 时大致随 `d` 线性增长。因此在较大的 `d` 上，即使 proxy 继续上升，gold 也会跌到 baseline 以下。proxy-gold gap 在 best-of-n sampling 和 RL 上都呈现相同 signature。
 
 这就是 “over-optimization curve”。它不是某个特定 reward model 的 bug。它是问题本身的形状。
 
@@ -90,7 +90,7 @@ rlhf-reward-kl
 
 2. 把 noise distribution 从 Gaussian 改为低自由度的 Student-t（heavy-tailed）。保持 proxy RM training setup 不变。peak location 和 post-peak collapse 有什么变化？
 
-3. 阅读 Gao et al. Figure 1（ICML 2023）。论文为 proxy-gold gap 提出了一个 functional form。把它拟合到 Exercise 1 的 simulated curves，并比较 parameters。
+3. 阅读 Gao et al. Figure 1（ICML 2023）。论文为 gold reward 提出了一个关于 `d` 的 functional form。把它拟合到 Exercise 1 的 simulated curves，并比较 parameters。
 
 4. 找一篇最近声称已经“solved” reward hacking 的 RLHF paper（这个短语是 red flag）。识别论文测试了四种 costumes 中的哪些，又没有测试哪些。
 

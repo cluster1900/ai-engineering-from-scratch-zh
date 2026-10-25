@@ -12,7 +12,7 @@
 - 定义表征性伤害与分配性伤害，并各给出一个 LLM 部署中的例子。
 - 说出 Gallegos et al. 2024 中的三类评估指标，并分别描述其中一个指标。
 - 描述交叉性，以及为什么 WinoIdentity 的基于不确定性的公平性测量弥补了单轴偏见评估的缺口。
-- 描述两种偏见的机制可解释性方法（gender neurons、SAE features、attention-head manipulation）。
+- 描述三种偏见的机制可解释性方法（gender neurons、SAE features、attention-head manipulation）。
 
 ## 问题
 

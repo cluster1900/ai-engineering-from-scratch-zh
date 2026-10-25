@@ -1,6 +1,6 @@
 # Indirect Prompt Injection — 生产攻击面
 
-> Indirect prompt injection (IPI) 将指令Embedding外部内容中 — web page、email、shared document、support ticket — 由 agentic system 在没有显式用户操作的情况下消费。IPI 是 2026 年占主导地位的生产威胁：它绕过 user-input filters，因为攻击者从不接触用户；随着 agents 处理更多外部内容，它会静默扩展；并且它针对的是没人阅读 prompt 的自动化工作流。MDPI Information 17(1):54 (January 2026) 综合了 2023-2025 年研究。NDSS 2026 的 IPI-defense paper 将核心挑战表述为：注入的指令在语义上可能是良性的（"please print Yes"），因此检测需要的不只是 keyword filtering。"The Attacker Moves Second" (Nasr et al., joint OpenAI/Anthropic/DeepMind, October 2025)：adaptive attacks（gradient, RL, random search, human red-team）攻破了 12 个已发表防御中的 >90%，这些防御最初报告的 attack success rates 接近 0。
+> Indirect prompt injection (IPI) 将指令Embedding外部内容中 — web page、email、shared document、support ticket — 由 agentic system 在没有显式用户操作的情况下消费。IPI 是 2026 年占主导地位的生产威胁：它绕过 user-input filters，因为攻击者从不接触用户；随着 agents 处理更多外部内容，它会静默扩展；并且它针对的是没人阅读 prompt 的自动化工作流。MDPI Information 17(1):54 (January 2026) 综合了 2023-2025 年研究。NDSS 2026 的 IPI-defense paper 将核心挑战表述为：注入的指令在语义上可能是良性的（"please print Yes"），因此检测需要的不只是 keyword filtering。"The Attacker Moves Second" (Nasr et al., joint OpenAI/Anthropic/DeepMind, October 2025)：adaptive attacks（gradient, RL, random search, human red-team）绕过了其测试的全部 12 个已发表防御，对其中大多数的 attack success 超过 90%，尽管这些防御中的大多数最初报告的 attack success rates 接近 0。
 
 **类型：** Build
 **语言：** Python (stdlib, IPI attack + defense harness)
@@ -40,7 +40,7 @@ CaMeL (Microsoft 2025)、ConfAIde (Stanford 2024) 和 NDSS 2026 IPI-defense pape
 
 ### The Attacker Moves Second
 
-Nasr et al. (October 2025) 使用 adaptive attacks（gradient search、RL policies、random search、72-hour human red-team）测试了 12 个已发表的 IPI defenses。每个最初报告 near-zero ASR 的 defense 都被攻破到 >90% ASR。
+Nasr et al. (October 2025) 使用 adaptive attacks（gradient search、RL policies、random search、72-hour human red-team）测试了 12 个已发表的 IPI defenses。每个 defense 都被绕过，其中大多数的 ASR >90%，而它们中的大多数最初报告的是 near-zero ASR。
 
 方法论教训：只有在包含 adaptive-attack evaluation 时才发布 defense。Static-attack benchmarks 不是 robustness 的证据；攻击者会知道 defense。
 

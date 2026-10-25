@@ -1,6 +1,6 @@
 # Model Routing 作为降低成本的基础手段
 
-> 一个 dynamic broker 会评估每个 request（task type、Token length、Embedding similarity、confidence），并把简单 query 发送给便宜 model，把复杂 query 升级到 frontier model。也叫 model cascading。Production case studies 显示，在 US/UK/EU 部署中，iso-quality 下成本可降低 20-60%；在高流量 SaaS 上，30% 的 routing efficiency improvement 会转化为六位数年度节省。2026 年的背景是 LLM inference 价格每年下降约 10x：从 2022 年末到 2026 年，GPT-4-class Token 从 $20/M 降到约 $0.40/M。大部分下降来自更好的 serving stacks（Phase 17 · 04-09），不是 hardware。Routing 是你在不造成 product regression 的情况下，把这种价格下降转化为 margin 的方式。failure mode 是 cheap-model drift：route 把 40% 推给更弱的 model，reasoning tasks 上 quality 下降 3-5%，一个季度内没人注意到。用 online quality metrics 对 route 设 gate，而不是只依赖 offline eval sets。
+> 一个 dynamic broker 会评估每个 request（task type、Token length、Embedding similarity、confidence），并把简单 query 发送给便宜 model，把复杂 query 升级到 frontier model。也叫 model cascading。Production case studies 显示，在 US/UK/EU 部署中，iso-quality 下成本可降低 20-60%；在高流量 SaaS 上，30% 的 routing efficiency improvement 会转化为六位数年度节省。2026 年的背景是，在固定能力水平下，LLM inference 价格每年下降约 10x（a16z LLMflation 估计）；GPT-4 档位的下降较慢：从 2022 年末到 2026 年，从 $20/M 降到约 $0.40/M（约 50x）。大部分下降来自更好的 serving stacks（Phase 17 · 04-09），不是 hardware。Routing 是你在不造成 product regression 的情况下，把这种价格下降转化为 margin 的方式。failure mode 是 cheap-model drift：route 把 40% 推给更弱的 model，reasoning tasks 上 quality 下降 3-5%，一个季度内没人注意到。用 online quality metrics 对 route 设 gate，而不是只依赖 offline eval sets。
 
 **Type:** Learn
 **Languages:** Python (stdlib, toy cascading router simulator)
@@ -44,7 +44,7 @@
 
 AI gateways（Phase 17 · 19）暴露 routing。LiteLLM 有带 fallback 和 cost-routing 的 `router` config。Portkey 有 guards + routing。Kong AI Gateway 有 plugin-based routing。OpenRouter 的 model marketplace 暴露 recommendation API。
 
-Open-source：RouteLLM (LMSYS)、Not Diamond (commercial)、Prompt Mule。
+Open-source：RouteLLM (LMSYS)、Prompt Mule。商业产品：Not Diamond。
 
 ### 2026 价格曲线
 
@@ -69,7 +69,7 @@ Open-source：RouteLLM (LMSYS)、Not Diamond (commercial)、Prompt Mule。
 ### 你应该记住的数字
 
 - 2026 年 iso-quality 下 routing savings：case studies 为 20-60%。
-- LLM price drop 2022-2026：aggregate 约每年 10x。
+- 固定能力水平下的 LLM price drop：约每年 10x（a16z LLMflation 估计）；2022 到 2026 年 GPT-4 档位总计约 50x。
 - GPT-4-level 2022 vs 2026：~$20/M → ~$0.40/M。
 - Cascade latency impact：median 约 1.2x，escalated 约 2x（约 10% traffic）。
 

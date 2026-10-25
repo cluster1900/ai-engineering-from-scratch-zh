@@ -131,7 +131,7 @@ i4-spend-ladder
 1. 运行 `code/main.py`。Kill switch 在什么 z-score 触发？你如何选择阈值？
 2. 设计一个 per-tenant、per-task cost dashboard。你会先构建哪 5 个视图？
 3. 你最大的 tenant 是 unit-economics-negative。按 customer impact 顺序提出三个干预措施。
-4. 为 support product 计算 cost per resolved ticket：3M Token/ticket，约 800 tickets/day，GPT-5 cached rate。
+4. 为 support product 计算 cost per resolved ticket：3M Token/ticket，约 800 tickets/day，全部 input 按 GPT-5 cached rate $0.125/M 计（发布时的标价；请查看实时 rate card）。
 5. 论证 retroactive tagging 是否可能有效。什么时候可以接受？
 
 ## 关键术语

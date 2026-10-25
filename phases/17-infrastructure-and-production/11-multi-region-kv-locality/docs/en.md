@@ -48,7 +48,7 @@ Inter-region RTT：
 - us-east-1 ↔ eu-west-1: ~75 ms。
 - us-east-1 ↔ ap-southeast-1: ~220 ms。
 
-如果 routing 把请求从 us-east-1 送到 ap-southeast-1 的 hot prefix，节省的 prefill（800 → 80 ms）会被 440 ms round-trip 抵消。GORGO（2026 research）把这一点显式化：联合最小化 `prefill_time + network_latency`，而不是只最小化 prefill。答案通常是保持 regional routing，除非是 prefill 占主导的巨大 multi-MB prefixes。
+如果 routing 把请求从 us-east-1 送到 ap-southeast-1 的 hot prefix，节省的 prefill（800 → 80 ms，即 720 ms）在付出约 220 ms RTT 后缩小到约 500 ms；如果远端 region 让请求排队，或已经驱逐了该 prefix，这点余量就会消失。GORGO（2026 research）把这一点显式化：联合最小化 `prefill_time + network_latency`，而不是只最小化 prefill。答案通常是保持 regional routing，除非是 prefill 占主导的巨大 multi-MB prefixes。
 
 ### 商业 "cross-region inference" 在这里帮不上忙
 

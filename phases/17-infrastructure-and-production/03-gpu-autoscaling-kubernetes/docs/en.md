@@ -18,7 +18,7 @@
 
 另外，你使用 Cluster Autoscaler 管理节点。凌晨 2 点来了一个 1M-Token prompt；cluster 花了 3 分钟供给节点，请求超时。
 
-再另外，你部署了一个需要跨 2 个节点使用 8 个 GPU 的 70B model。cluster 有 7 个空闲 GPU，还有 1 个 GPU 分散在 3 个节点上。Cluster Autoscaler 为缺的那 1 个 GPU 供给一个节点。七个节点等待 4 分钟，一边烧钱，一边等 Kubernetes 把最后一个 GPU 拉起来。
+再另外，你部署了一个需要跨 2 个节点使用 8 个 GPU 的 70B model。cluster 有 7 个空闲 GPU，分散在 3 个节点上，还差 1 个。Cluster Autoscaler 为缺的那 1 个 GPU 供给一个节点。已预留的 7 个 GPU 空闲 4 分钟，一边烧钱，一边等 Kubernetes 把最后一个 GPU 拉起来。
 
 三层，三种不同的失败模式。2026 年的 GPU-aware autoscaling 不是“打开 HPA”。它是组合节点供给、gang scheduling 和应用信号 autoscaling。
 

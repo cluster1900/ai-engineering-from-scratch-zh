@@ -103,7 +103,7 @@ mx-sequential-test
 2. 为一个受 healthcare 监管的 on-prem 客户选择 Statsig 或 GrowthBook。
 3. 设计一个 A/B，测试 GPT-4 vs GPT-3.5 在 cost-per-resolved-ticket 上的表现。primary metric、guardrail metric、secondary 分别是什么？
 4. 你的 canary 通过了，但 A/B 显示 -1.2% conversion。你会发布吗？写出 escalation criteria。
-5. 将 CUPED 应用于一个前期方差为后期方差 60% 的 pre-period。计算 effective-sample-size boost。
+5. 应用 CUPED，使用一个能解释 60% 后期方差的 pre-period covariate（相关系数平方为 0.6）。计算 effective-sample-size boost。
 
 ## 关键术语
 | Term | What people say | What it actually means |

@@ -12,7 +12,7 @@ tags: [vllm, paged-attention, continuous-batching, chunked-prefill, serving, sch
 产出：
 
 1. 配置读取。对每个 flag，说明它控制的 scheduler 行为以及 2026 默认值。标记任何设置为非默认值的 flag，并指出原因。
-2. 瓶颈识别。将瓶颈分类为以下之一：PagedAttention 配置不足（KV block starvation）、continuous-batching 停滞（WAITING queue 增长）、chunked-prefill 尺寸不当（TTFT tail spike）、decode compute-bound（ITL floor），或 HBM-bound（无法容纳 batch）。用报告的指标进行论证。
+2. 瓶颈识别。将瓶颈分类为以下之一：PagedAttention 配置不足（KV block starvation）、continuous-batching 停滞（WAITING queue 增长）、chunked-prefill 尺寸不当（ITL tail spike）、decode compute-bound（ITL floor），或 HBM-bound（无法容纳 batch）。用报告的指标进行论证。
 3. 参数建议。给出具体、有顺序的行动：要切换哪个 flag、要尝试哪个值、要观察哪个指标。在耗尽 scheduler 层级调优之前，不要建议“try more GPUs”。
 4. 兼容性检查。专门针对 vLLM v0.18.0：将 `--enable-chunked-prefill` + `--speculative-model` 组合标记为硬性不兼容。如果两者都需要，建议使用 V1 中有文档说明的例外：N-gram GPU speculative decoding。
 5. 接下来读什么。根据诊断暴露的问题，指向 vLLM v0.18.0 release notes、PagedAttention paper，或 Aleksa Gordic V1 scheduler walkthrough 之一。

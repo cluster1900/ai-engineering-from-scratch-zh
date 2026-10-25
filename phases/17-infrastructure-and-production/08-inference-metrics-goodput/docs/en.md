@@ -1,6 +1,6 @@
 # Inference Metrics — TTFT、TPOT、ITL、Goodput、P99
 
-> 四个指标决定一次 inference deployment 是否正常工作。TTFT 是 prefill 加 queue 加 network。TPOT（等价于 ITL）是每个 Token 的 memory-bound decode 成本。端到端 latency 是 TTFT 加上 TPOT 乘以输出长度。Throughput 是整个 fleet 聚合后的每秒 Token 数。但对产品真正重要的是 goodput：同时满足每个 SLO 的请求比例。在低 goodput 下的高 throughput 意味着你正在处理无法按时到达用户的 Token。2026 年 TRT-LLM 上 Llama-3.1-8B-Instruct 的参考数字：mean TTFT 162 ms，mean TPOT 7.33 ms，mean E2E 1,093 ms。始终报告 P50、P90、P99，绝不要只报告 mean。并且注意 measurement trap：GenAI-Perf 在 ITL 计算中排除 TTFT，LLMPerf 则包含它；两个工具会在同一次运行上给出不同的 TPOT。
+> 五个指标决定一次 inference deployment 是否正常工作。TTFT 是 prefill 加 queue 加 network。TPOT（常被报告为 ITL，但各工具对 ITL 是否计入第一个 Token 看法不一）是每个 Token 的 memory-bound decode 成本。端到端 latency 是 TTFT 加上 TPOT 乘以输出长度。Throughput 是整个 fleet 聚合后的每秒 Token 数。但对产品真正重要的是 goodput：同时满足每个 SLO 的请求比例。在低 goodput 下的高 throughput 意味着你正在处理无法按时到达用户的 Token。2026 年 TRT-LLM 上 Llama-3.1-8B-Instruct 的参考数字：mean TTFT 162 ms，mean TPOT 7.33 ms，mean E2E 1,093 ms。始终报告 P50、P90、P99，绝不要只报告 mean。并且注意 measurement trap：GenAI-Perf 在 ITL 计算中排除 TTFT，LLMPerf 则包含它；两个工具会在同一次运行上给出不同的 TPOT。
 
 **Type:** 学习
 **Languages:** Python（stdlib，玩具版 percentile calculator 和 goodput reporter）
@@ -49,7 +49,7 @@ Inference 有多个 latency 轴，每个轴的失败方式都不同。Prefill �
 
 `goodput = fraction of requests meeting (TTFT <= a) AND (TPOT <= b) AND (E2E <= c)`
 
-SLO 是一个 multi-constraint。只有每个 constraint 都满足时，一个请求才是“good”。Goodput 就是这个占比。在 60% goodput 下的高 throughput 是失败。目标是在较低 throughput 下达到 99% goodput。
+SLO 是一个 multi-constraint。只有每个 constraint 都满足时，一个请求才是“good”。Goodput 就是这个占比。一些论文和 dashboards 则把 goodput 报告为速率：满足每个 SLO 的每秒 requests 数。把占比乘以 request rate 即可换算。在 60% goodput 下的高 throughput 是失败。目标是在较低 throughput 下达到 99% goodput。
 
 到 2026 年，goodput 已经成为 MLPerf Inference v6.0 submissions 以及 AI platform providers 内部 SLA tracking 中使用的指标。
 
