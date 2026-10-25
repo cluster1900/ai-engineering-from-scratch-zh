@@ -103,7 +103,7 @@ mx-sequential-test
 2. Para um atendimento à saúde  monitoramento de on-premise  clientes escolher Statsig ou GrowthBook。
 3. Design a A/B, test GPT-4 vs GPT-3.5 em custo-por-resolvido-ticket                                                                                                                                                                                                                                                 
 4. Seu canário 通過, mas A/B 顯示 -1.2% conversão──你會發布嗎?
-5. Para a aplicação de CUPED em um período anterior, a diferença entre a fase posterior e a diferença entre a fase anterior e a fase posterior é de 60% e calcula o aumento efetivo do tamanho da amostra.
+5. 应用 CUPED, usando um one能解释 60% 后期方差的前期可变性(相关系数平方为 0.6) ――计算有效样本大小增强──
 
 ## 关键术语
 | Term | What people say | What it actually means |

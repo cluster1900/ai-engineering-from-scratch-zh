@@ -8,7 +8,7 @@
 **Time:** ~60 minutes
 
 ## Objectivo de aprendizagem
-- 列举六个核心 gateway 功能 routeamento, retrocesso, retiros, limites de taxa, segredos, observabilidade, guarda-route)
+- 列举七个核心 gateway 功能 routeamento, retrocesso, retiros, limites de taxa, segredos, observabilidade, guarda-route)
 - O programa vai incluir quatro gateways para 2026.
 - 引用 Kong benchmark ((相比Portkey 228%,相比LiteLLM 859%),并解释为什么对 >500 RPS 很重要──
 - Em casos de residência de dados e orçamento de operações, optar por auto-hosted ou gerenciado.
@@ -19,7 +19,7 @@ Seu produto é chamado de OpenAI、Anthropic 和一个自主主机 Llama── c
 Na camada de aplicativos, reimplementar estes, permitirá que cada serviço com cada provedor 合──Gateway layer irá integrá-lo em um processo, fornecendo uma API (geralmente compatível com o OpenAI), re-desembolsar para cada provedor──
 
 ## 概念
-### Seis características principais
+### Sete características principais
 
 1. **Provider routing** Colocar OpenAI, Antropic, Gemini, auto-hosting etc numa API 
 2. **Fallback** 遇到429、5xx或质量失败 时,在别处重试──
@@ -104,7 +104,7 @@ mx-gateway-fallback
 
 ## 练习
 1. 运行 `code/main.py` Configuração OpenAI→Antropic→auto-hosted  Rate de erro do provedor em 5%
-2. O seu SLA é TTFT P99 < 200 ms, linha de base é de 300 ms... quais gateways ainda estão dentro do orçamento?
+2. Seu SLA é TTFT P99 < 320 ms, enquanto o modelo está em P99 abaixo de 300 ms... quais gateways ainda estão dentro do orçamento?
 3. Um cliente de saúde  requer auto-hosted + redação de PII + auditoria。 seleccionar OSS Portkey 还是 Kong。
 4. Comparar LiteLLM com Kong: Qual o limite máximo RPS que a equipa deve mudar?
 5. Para multi-tenant SaaS  design rate-limit policy: free tier, trial tier, paid tier, select token-bucket ou sliding-window?

@@ -1,6 +1,6 @@
 # APIs de lote  50%  desconto se tornaram padrões do setor
 
-> Cada principal fornecedor oferece uma API de lote sincronizado, com 50% de desconto e cerca de 24 horas de turnaround. OpenAI, Anthropic, Google, bem como a maioria das plataformas de inferência (Fireworks batch tier, Batch Together) implementaram o mesmo modelo.
+> Cada principal fornecedor oferece uma API de lote sincronizado, com 50% de desconto e cerca de 24 horas de turnaround. OpenAI, Anthropic, Google, bem como a maioria das plataformas de inferência (Fireworks batch tier, Batch Together) implementaram o mesmo modelo. Colocar o lote e o prompt caching 叠加, o custo das linhas de transporte durante a noite vai diminuir para cerca de 10% do custo de produção sincronizada.
 
 **Type:** Learn
 **Languages:** Python (stdlib, toy batch-vs-sync cost simulator)
@@ -49,7 +49,7 @@ Uma resumo de 50k documentos, usando o mesmo sistema de 4K-token prompt:
 
 **Semi-interactive** Utilizador enviar tarefas, alguns minutos depois voltar para ver.
 
-**Batch** Users expect results by morning ou next hour──Content pipelines、massas classificação、análise offline──始终 batch,始终叠加缓存──
+**Batch** Usage expect results by morning ou by end of day──content pipelines、massas classificação、análise offline──始终 batch,始终叠加缓存──
 
 常见错误: pois o pipeline é produção, vamos classificar tudo como interativo.
 

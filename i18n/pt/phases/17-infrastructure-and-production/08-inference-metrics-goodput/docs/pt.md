@@ -1,6 +1,6 @@
 # Metricas de inferência  TTFT、TPOT、ITL、Goodput、P99
 
-> O TFT é preencher加队加网络──TPOT(equivalente ao ITL) é o decodificador de memória-vinculado de cada token 成本──端到端延迟是 TTFT加 TPOT 乘以输出长度──Throughput é toda a frota 聚焦后每秒 Token 数──但对产品真正重要的是 goodput:同时满足每个 SLO 要求比例──在低好put的下高 throughput意味着你无法处理用户的 Token──2026年 TRT-LLM 上 Llama-3.1-8B-Instruct 数字参考: mean TTFT 162 ms, mean TPOT 7.33 ms, mean E2E 1,093 ms, mean E2E 1,093 ms, mean PTFP 50P 909                                                                                                                                                                    
+> 五个指标决定一次推断部署 是否正常工作──TTFT 是预填 加队加网络──TPOT(soumente relatado para ITL, mas cada ferramenta é ou não contada para o primeiro Token 看法不一) é o decodificador de memória-vinculado de cada token 成本──端到端延迟 是 TTFT加上 TPOT 乘以输出长度──Throughput 是整个机队 聚合后每秒 Token 数──但对产品真正重要的是好put:同时满足每个 SLO请求的比例下下面──在好put的高put中意味着正在处理时时无法达到用户的 Token──2026年 TRT-LLM 上 Llama-3.1B-Instruct 的参考数字: mean TTFT 162T,me TPO 7.33M, E2E 报告 TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTFT  TTF  TTF  TTF  TTF  TTF  TTF  TTF  TTF  TTF  TTF  TTF  TTF  TTF  TTF  TTF  TTF  TTF  TTF  TTF  TTF  TTF  TTF  TTF  TTF  TTF  TTF
 
 **Type:** 学习
 **Languages:** Python（stdlib，玩具版 percentile calculator 和 goodput reporter）
@@ -49,7 +49,7 @@ Não posso dizer-lhe o estado de saúde de um único pedido.
 
 `goodput = fraction of requests meeting (TTFT <= a) AND (TPOT <= b) AND (E2E <= c)`
 
-O SLO é uma restrição múltipla. Apenas cada restrição é satisfeita, uma solicitação é boa. O bom desempenho é essa proporção. O bom desempenho é fracasso. O objetivo é o baixo desempenho.
+SLO é uma restrição múltipla. Apenas cada restrição é satisfeita quando uma solicitação é boa. O resultado é esse percentual. Alguns artigos e painéis de trabalho apresentam resultados positivos.
 
 Até 2026, o goodput já se tornou um indicador de uso interno para o rastreamento de SLA para os fornecedores de plataforma de IA e para as apresentações da MLPerf Inference v6.0.
 

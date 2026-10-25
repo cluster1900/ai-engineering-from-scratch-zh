@@ -77,7 +77,7 @@ Se a sua pilha precisar de redeployar para o rollback, antes de ser lançada, pr
 
 ### Cadência de métricas
 
-Canary gates Cada 5-15 minutos de verificação uma vez, depende especificamente do volume de tráfego. 1% de tráfego e 10 req/min.
+Canary gates Cada 5-15 minutos de inspeção uma vez, depende especificamente do volume de tráfego.
 
 ### A/B 步骤是可选的
 

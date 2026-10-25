@@ -48,7 +48,7 @@ RTT interregional:
 - EUA-Leste-1  Eu-Oeste-1: ~75 ms。
 - US-East-1  ap-southeast-1: ~ 220 ms。
 
-Se roteamento Colocar um pedido de US-East-1 送到 ap-southeast-1 的热序号,节省的预填(800 → 80 ms) será colocado 440 ms de ida e volta 抵消──GORGO(2026 research)把这个点显式化:联合最小化`prefill_time + network_latency`, em vez de apenas minimizar o pre-empimento. A resposta é geralmente manter o roteamento regional, exceto se o pre-empimento ocupa predominantes prefixos gigantescos de vários MB.
+Se roteamento colocar a solicitação de US-East-1 送到 ap-southeast-1 的热序号,节省的预填(800 → 80 ms,即 720 ms) 在付出约 220 ms RTT 后缩小到约 500 ms; se distante região 让请求排队,或已经驱逐该序号,这点余量就会消失──GORGO(2026 research)把这一点显式化:联合最小化`prefill_time + network_latency`, em vez de apenas minimizar o pre-empimento. A resposta é geralmente manter o roteamento regional, exceto se o pre-empimento ocupa predominantes prefixos gigantescos de vários MB.
 
 ###  Comércio "infereção transregional"
 

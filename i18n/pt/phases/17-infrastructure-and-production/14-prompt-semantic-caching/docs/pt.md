@@ -2,7 +2,7 @@
 
 > **Pricing snapshot 日期为 2026-04。**A declaração de valor abaixo reflete os cartões de taxas de fornecedores da coleção durante a publicação desta aula; em seguida, antes de citar o seguinte, por favor, primeiro, verifique o link do arquivo.
 
-> Caching 发生在两层──L2(provider-level)prompt/prefix caching 会为重复 prefix 复用注意 KV  Antropic 的快速缓存文件 宣称,在长提示上最高可降低 90% 成本、降低 85%延迟;对于Claude 3.5 Sonnet,cache reads 为$0.30/M，而 fresh 为 $3.00/M,TTL para 5 minutos, 1 hora TTL opções têm 2x escrever prémio(docs.anthropic.com,2026-04)。OpenAI prompt caching 会自动应用于 ≥1024 tokens,并将缓存输入 定价相对新鲜约90%折扣(platform.openai.com,2026-04); preciso por modelo taxa de caching 取决于现金率卡──L1(app-level) 语义缓存 会在嵌入式相似性中完全跳过LLM──Vender 95%精度指的是匹配正确度,而不是  报告的击率  报告的击率不是从10%开封聊) 升级到结构化查询 (不等);
+> Caching 发生在两层──L2(provider-level)prompt/prefix caching 会为重复 prefix 复用注意 KV  Antropic 的快速缓存文件 宣称,在长提示上最高可降低 90% 成本、降低 85%延迟;对于Claude 3.5 Sonnet,cache reads 为$0.30/M，而 fresh 为 $3.00/M,TTL para 5 minutos, 1 hora TTL opções  2x escrever prémio(docs.anthropic.com,2026-04)。OpenAI prompt caching 会自动应用于 ≥1024 tokens,并将缓存输入 定价相对新鲜约90%折扣(platform.openai.com,2026-04); exacta taxa de caching por modelo 取决于现场率卡──L1app-level) 语义缓存 会在嵌入式相似性中完全跳过LLM──Vender 95%精度指的是匹配正确度,而不是  报告的击率  报道的击率不是从10%开启聊) 提升到结构化 FAQ) 不等,  74%  固定项目快速报道的官方报道; 报道的官方报道为发行费率为20%;  发行费率为为20%;                                                                                                                                               
 
 **Type:** Learn
 **Languages:** Python (stdlib, toy two-layer cache simulator)
@@ -52,7 +52,7 @@ As alegações de precisão do fornecedor indicam a resposta em cache de retorno
 
 Seu agente não foi enviado para enviar 10 chamadas de ferramenta. Todas as 10 têm o mesmo sistema de 4K-token prompt. Antropic cache escreve é por pedido. Primeira cache-escrever no provedor. Veja o prompt.
 
-修复:batch com sequencial-first  单独发起请求 1,然后在 1 的缓存 已经填充 后再触发 2-10──给第一工具调用 增加300 ms;节省 5-10x 账单──
+修复:batch com sequencial-primeiro  单独发起请求 1,然后在 1 的缓存 已经填充后再触发 2-10──给第一工具调用 增加300 ms;避免 5-10x 的账单膨胀──
 
 ### O antipatrão de conteúdo dinâmico
 
@@ -88,7 +88,7 @@ Os pontos de preços são dados de 2026-04 recolhidos dos documentos do forneced
 - Antropic em cache:Claude 3.5 Sonnet 上 $0.30/M, cerca de 10x 便宜 便宜 10x ((docs.anthropic.com) ⋅
 - Antropic cache write premium:1.25x(5-min TTL) ou 2x(1-hora TTL)。
 - OpenAI auto-cache: aplicável a ≥1024 pedidos de tokens; em cartões de taxa atual, entrada em caché 定价约为新输入的10%(platform.openai.com) 👇
-- Taxa de hits de cache semântico ((relatado pela comunidade):chat aberto 约 ~ 10%; FAQ estruturada 最高约 ~ 70%── não base documentada pelo fornecedor。
+- Taxa de hits de cache semântico ((relatado pela comunidade): bate-papo aberto 约 ~ 10%; FAQ estruturada 最高约 ~ 70%; conjunto fixo de prompt 上的语音代理为 50-80%──不是供应商文件的基线──
 - ProjectDiscovery: através de 移出前, taxa de sucesso de 7% → 74%
 - Anti-patrão de paralelação: típico relatório mostra, quando N 个 requisições paralelas 错过第一次 cache write 时,账单会膨胀 510x。
 

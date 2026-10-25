@@ -16,7 +16,7 @@
 
 ## 问题
 
-Decodificar é compatível com a memória. Em uma operação Llama 3.3 70B FP8 H100, cada Token decodificado irá receber cerca de 140 GB/s de peso e emitir um Token.
+Decodificar é compatível com a memória. Em uma operação Llama 3.3 70B FP8 H100, cada passo de decodificação vai ser feito em HBM 读取全部约70 GB 权重,并为每序列 输出一个代币──GPU computador Durante o decodificação 几乎空,瓶是HBM带宽,而不是matmul throughput──
 
 A descodificação especulativa aproveitou essa diferença. Usou um modelo de projeto barato para produzir K 个候选标签, então o modelo-alvo em uma única passagem para a frente verificou todos os K 个.
 

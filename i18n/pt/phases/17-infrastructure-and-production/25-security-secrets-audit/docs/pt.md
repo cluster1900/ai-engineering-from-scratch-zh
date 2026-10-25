@@ -20,7 +20,7 @@ Além disso, as instruções do usuário contêm o meu SSN é 123-45-6789.
 
 Além disso, o pod de LLM do seu cluster EKS pode acessar qualquer host de internet. Alguém pode fazer uma pesquisa DNS e exfilhar os dados para um domínio controlado pelo atacante.
 
-A segurança dos serviços de LLM  deve tratar esta categoria de vetores── credenciais apoiadas em cofres―pII esfregar―filtragem de saída de rede―registros de auditoria―
+A segurança dos serviços de LLM ▌deve tratar este tipo de vetor,并能在事后证明这一点──valos-backed credenciales──PII scrubbing──Network exit filtering──Audit logs 作为证据链──
 
 ## 概念
 ### 集中式 vault + IAM-role pull

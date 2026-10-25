@@ -131,7 +131,7 @@ i4-spend-ladder
 1. 运行 `code/main.py`Como é que você escolhe o valor?
 2. Designar um painel de custo por inquilino ⋅ por tarefa ⋅ Você vai primeiro construir qual ⋅ 5 visualizações?
 3. Seu maior inquilino é unit-economico-negativo.
-4. Por produto de suporte  calcular custo por bilhete resolvido:3M Token/ticket, cerca de 800 bilhetes/dia, taxa em cache GPT-5.
+4. Para o suporte do produto  calcular o custo por bilhete resolvido:3M Token/ticket, cerca de 800 bilhetes/dia, todas as entradas  segundo GPT-5 taxa em cache $0.125/M 计(
 5. 论证 Tagging retroativo 是否可能有效── quando é aceitável?
 
 ## 关键术语

@@ -18,7 +18,7 @@ Sua equipa em Kubernetes 上 lançou um serviço de LLM 服务──你把HPA �
 
 Além disso, você usa o Cluster Autoscaler 管理节点──凌晨2点来一个1M-Token prompt; cluster花了3分钟供给节点,请求超时──
 
-Além disso, você implantou um que precisa atravessar 2 nós usando o modelo 70B de 8 GPUs. O cluster tem 7 GPUs vazios, e há 1 GPU distribuído em 3 nós. O Cluster Autoscaler é o único que falta.
+Além disso, você implantou uma necessidade de atravessar 2 nodos usando um modelo 70B de 8 GPUs. Cluster tem 7 GPUs vazios, distribuídos em 3 nodos, também inferior a 1 个. Cluster Autoscaler para a falta de 1 GPU fornece um node.
 
 Três, três diferentes modelos de falha. A autoescalação consciente de GPU de 2026 não é uma combinação de pontos de fornecimento, agendamento de gangues e aplicativos de autoescalação de sinais.
 

@@ -1,6 +1,6 @@
 # Modelo de roteamento  como meio de base para reduzir os custos
 
-> Uma corretora dinâmica irá avaliar cada solicitação ((Typ de tarefa、Longoa de tokens、Similaridade de embedimento、confiança),并把简单查询 发送给便宜模型,把复杂查询 升级到边界模型──也称为模型卡化──Production case studies 显示, no US/UK/EU deployment,iso-quality 下成本可降低2060%; em high-flow SaaS,30% de melhoria da eficiência de roteamento 会降转为六位年度节──2026年背景是LLM 价格下推算每年约10x:从2022年末到2026年,GPT-4-class Token 从$20/M 降到约 $0,40/M。 a maior parte da queda vem de pilas de melhor serviço(Fase 17 · 04-09), não é hardware。 Routing é o que você está fazendo em caso de não causar regressão do produto, transformar esse preço em margem │ modo de falha │ é o modelo barato drift:route │ 40% │ para um modelo mais fraco, tarefas de raciocínio │ qualidade │ 3 │5%, em um trimestre │ não há ninguém observou │
+> Uma corretora dinâmica irá avaliar cada pedido (((tipo de tarefa、Longoa de tokens、Semblança de incorporação、confiança),并把简单查询 发送给便宜模型,把复杂查询 升级到边界模型──也称为模型卡化──Production case studies 显示, no US/UK/EU deployment,iso-quality 下成本可降低20-60%; em high flow SaaS,30% de melhoria da eficiência de roteamento 会转化为六位年度节──2026年背景是,在固定能力水平下,LLMence 价格每年下降约10x(a16z LLMflation 估计);G-4 档位下降较慢:从2022年末到2026年,从$20/M 降到约 $0,40/M(cerca de 50x)。 A maior parte da queda vem de pilas de melhor serviço(Fase 17 · 04-09), não é hardware。O roteamento é o que você está fazendo em caso de não causar regressão do produto, transformar essa baixa de preço em margem ‧ modo de falha ‧ é a deriva do modelo barato: rota ‧ 40%                                                                                                                                                                                                                                                                                                                                                                                                                                         
 
 **Type:** Learn
 **Languages:** Python (stdlib, toy cascading router simulator)
@@ -44,7 +44,7 @@ Se você colocar 70% de rota para um modelo barato, colocar 30% de rota para um 
 
 Portais de IA(Fase 17 · 19) Exposição de roteamento。LiteLLM`router`Config──Portkey tem guardas + roteamento──Kong AI Gateway tem roteamento baseado em plugins──OpenRouter modelo de mercado  Exposição de recomendação API──
 
-Open-source:RouteLLM (LMSYS) 、Não Diamond (comercial) 、Prompt Mule──
+O código aberto:RouteLLM (LMSYS) 、Prompt Mule──商业产品:Not Diamond──
 
 ### 2026 价格曲线
 
@@ -69,7 +69,7 @@ Utilize métricas de qualidade online para o gate de rota:
 ### Você deve lembrar-se de números
 
 - 2026 Anos de isoqualidade: redução da rotação: estudos de caso: 20 a 60%
-- A queda dos preços dos LLM 2022-2026:agregado 约每年10x──
+- Primer redução dos preços do LLM em níveis de capacidade fixa: cerca de 10x por ano;
 - GPT-4 nível 2022 vs 2026:~$20/M → ~$0,40/M:
 - Impacto da latência em cascata: média de cerca de 1,2x, escalada de cerca de 2x ((cerca de 10% do tráfego)
 

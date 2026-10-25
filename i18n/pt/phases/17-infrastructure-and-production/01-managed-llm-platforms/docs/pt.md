@@ -31,7 +31,7 @@ Esta aula trata de três tipos de apostas, atraso, diferença, finalizações, d
 
 ### Distância de latência abaixo da escala 
 
-Análise artificial 运行持续基准──在等效的Llama 3.1 405B 部署上(shared on demand),Azure OpenAI mediana latencia de primeiro token 约为50 ms;Bedrock 约为75 ms── essa diferença não é AWS 失败 它是容量模型差异──Azure 销售PTUs (Provisioned Throughput Units),为您租户 预留 GPU 容量──Bedrock 的等价格──Bedrock 的等价格──也存在,但每单位 起价约$21/小时,大多数共享客户仍然停留在需求──
+Análise artificial 运行持续基准──在等效的Llama 3.1 405B 部署上, usando PTUs, a latencia média de primeiro token do Azure é de cerca de 50 ms; compartilhada on-demand do Bedrock é de cerca de 75 ms── essa diferença não é AWS 失败 它是容量模型差异──Azure 销售 PTUs (Provisioned Throughput Units),为您租户 预留 GPU容量──Bedrock 的等价格──Bedrock 的等价格──也存在,但每单位 起价约21 $/小时,大多数客户仍然停留在需求上的.──
 
 Capacidade compartilhada à procura 会与所有其他客户的流量竞争──Capacidade dedicada 不会── Se o seu produto SLA é TTFT < 100 ms em P99, então você quer comprar PTUs do Azure, quer comprar Bedrock Provisioned Throughput, quer aceitar em conformidade波动──
 
@@ -91,7 +91,7 @@ i4-platform-lanes
 2. Os seus produtos precisam de Claude 3.7 Sonnet e GPT-4o.
 3. Uma plataforma de saúde regida  clientes requerem BAAs  EUA-Leste data residence 和 sub-100ms P99 TTFT── escolher uma plataforma,并使用三个具体功能来论证──
 4. Você descobriu que esta semana o Bedrock                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-5. 阅读Azure OpenAI 和 Bedrock preços páginas。 Para 100M-token/month Claude workload, 哪个更便宜  direct Anthropic API、Bedrock on demand, ou Bedrock Provisioned Throughput?
+5. 阅读Antropic API 和 Bedrock preços páginas。 Para 100M-token/month Claude workload, 哪个更便宜  directAnthropic API、Bedrock on demand, ou Bedrock Provisioned Throughput?
 
 ## 关键术语
 | Term | What people say | What it actually means |
