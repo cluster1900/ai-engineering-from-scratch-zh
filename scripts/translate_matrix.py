@@ -15,9 +15,12 @@ import subprocess
 import sys
 from pathlib import Path
 
+from translation_freshness import drifted_legs, ref_available
+
 REGISTRY = "languages.json"
 PHASE_NAME = re.compile(r"^[0-9]{2}-[a-z0-9-]+$")
 COMMIT = re.compile(r"^(?:[0-9a-f]{40}|[0-9a-f]{64})$")
+TRANSLATIONS = "refs/remotes/origin/translations"
 UI_SOURCES = frozenset({"site/ui-strings.json", "scripts/translate_ui_strings.py"})
 LOGIC_SOURCES = frozenset(
     {
@@ -155,6 +158,30 @@ def push_range(before: str, after: str, forced: str) -> tuple[set[str], list[dic
     return changed, previous
 
 
+def published_translations(root: Path) -> bool:
+    fetch = git(
+        "fetch", "--no-tags", "--no-recurse-submodules", "--depth=1", "origin",
+        f"+refs/heads/translations:{TRANSLATIONS}", check=False,
+    )
+    if fetch.returncode != 0:
+        sys.stderr.write(fetch.stderr)
+        return False
+    return ref_available(root, TRANSLATIONS)
+
+
+def add_drifted(
+    root: Path, lessons: list[tuple[str, str]], langs: list[str], phases: list[str]
+) -> tuple[list[tuple[str, str]], str]:
+    if not published_translations(root):
+        return lessons, "translations branch unavailable; drifted phases not checked"
+    drifted = drifted_legs(root, TRANSLATIONS, langs, phases)
+    wanted = set(lessons) | set(drifted)
+    added = sorted(f"{lang}/{phase}" for lang, phase in set(drifted) - set(lessons))
+    return [leg for leg in every_leg(langs, phases) if leg in wanted], (
+        f"published translations behind English: {listing(added)}"
+    )
+
+
 def main() -> None:
     root = Path.cwd()
     registry = json.loads((root / REGISTRY).read_text(encoding="utf-8"))["languages"]
@@ -185,6 +212,9 @@ def main() -> None:
         else:
             note(f"push {before[:12]}..{after[:12]} changed {len(changed)} file(s)")
             lessons, ui_langs, reasons = select_push(changed, previous, langs, ui_langs, phases)
+            if len(lessons) < len(langs) * len(phases):
+                lessons, reason = add_drifted(root, lessons, langs, phases)
+                reasons.append(reason)
             for reason in reasons:
                 note(reason)
 
