@@ -10,7 +10,7 @@
 ## 學习目标
 - 将 PagedAttention  شرح للمخصص الاحتياطي KV:البلوكات  جداول الاحتياطي، وكذلك لماذا يبقى التجزئة تحت الحمل الإنتاج في 4% أعلاه.
 - في التكرار 层面 رسم سلسلة مستمرة:完成的序列 如何离开批量,新序列 如何加入,而不需要排泄──
-- استخدام كلمة تصف الملفات المضادة المقطوعة،并 يقول أنه يحمي أي متريض التأخير
+- استخدام كلمة واحدة لوصف الملفات المضادة المقطوعة،并说out أنها تحمي أي متريات التأخير
 - ويقولون إن 2026 عام vLLM v0.18.0 سيؤثر على تلك المرات التي يتم فيها إضافة جميع المجموعات المثلى
 
 ## 问题
@@ -41,7 +41,7 @@ PagedAttention 借借鉴了 OS الافتراضية ذاكرة.‬‬‬‬‬�
 
 حجم اللحظة 永远不会被填充到固定数字──输出位置不同序列 共享一次融合前面──在2026年VLLM中,这叫做`V1 scheduler` المجدول: كل إعادة تشكيل 运行 مرة واحدة، بدلا من كل طلب 运行 مرة واحدة‬
 
-### الاحتمالات المسبقة للفئة المقطوعة  حفاظت الذيل TTFT
+### الاحتمالات المزروعة
 
 إعداد مسبق هو الحساب مقيدة للـ: ∙ إلاما 3.3 70B 上的 32k-token prompt 在单张 H100 上需要大约800 ms 的纯预填── قبل إعداد 运行时,batch 中所有其他序列的解码代码都在等待── 在服务循环中,长快速的第一代码延迟(TTFT) 将变成几十其他用户的互联代码延迟(ITL) 动──
 
@@ -124,7 +124,7 @@ tensor-parallel
 | Chunked prefill | “prefill splitting” | 将长 prefill 拆成 512-token 切片并与 decode 交错 |
 | TTFT | “first token time” | Prefill + queue + network；在长 prompts 下由 prefill 主导 |
 | ITL | “inter-token latency” | 连续 decode tokens 之间的时间；由 batch size 主导 |
-| Goodput | “满足 SLO 的 throughput” | 每个 request 仍命中 TTFT 和 ITL targets 时的 tokens/sec |
+| Goodput | “满足 SLO 的 throughput” | 仍命中 TTFT 和 ITL targets 的 requests/sec（Phase 17 · 08 将其报告为 requests 的占比） |
 | V1 scheduler | “new scheduler” | vLLM 的 2026 scheduler；N-gram spec decode 是与 chunked-prefill 兼容的路径 |
 | `--gpu-memory-utilization` | “memory knob” | 在 weights 和 activations 之后为 KV blocks 预留的 HBM 比例 |
 
