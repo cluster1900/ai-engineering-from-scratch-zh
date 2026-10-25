@@ -81,7 +81,7 @@ Her birinin bir tanımı ve bir şema tipi vardır.`action`İpuçlı.
 ### Parametre tasarımı
 
 - **每个封闭集合都使用 Enum。** `units: "celsius" | "fahrenheit"`- Hayır , kullanma .`units: string`◊Enums 会告诉模型可接受值的全集──
-- **Required vs optional。**标记最低限需要的字段──其他全部可选──OpenAI sıkı mod 要求每个字段都在 `required`İçinde; içinde kodunuzda ekle `is_default: true`Konvensiyon,并让 model 省略它──
+- **Required vs optional。**标记最低限需要的字段──其他全部可选──OpenAI sıkı mod 要求每个字段都在 `required`Bu nedenle model hiçbir şeyi kaydetemez.`null`Üyelik, model gönderin değersiz zaman`null`- Evet.
 - **Typed IDs。** `note_id: string`Evet, ama bir ekle.`pattern`(`^note-[0-9]{8}$`Halüsinasyonlu kimlikleri yakalamak için.
 - **不要使用过度灵活的 types。**避免 `type: any`✿ Model ✿ Halüsinasyon şekilleri ✿
 - **描述 field。** `{"type": "string", "description": "ISO 8601 date in UTC, e.g. 2026-04-22"}`◊ description is model prompt'ın bir parçası.

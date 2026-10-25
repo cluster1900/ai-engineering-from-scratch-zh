@@ -10,7 +10,7 @@
 ## Öğrenme hedefi
 - Neden sadece metin üreten bir LLM gerçek dünyaya kendiliğinden hareket edemeyeceğini açıklayın.
 - 画出四步工具-call loop (bkz: Çözüm → karar → yürütme → gözlemle)
-- Bir araç tanımını 写成三部分:name、JSON Schema giriş, yanı sıra kesinlik bir işleyicisi işlevi。
+- Bir araç tanımını 写成四部分:name、description、JSON Schema input,以及确定性的执行器函数──
 - 区分纯工具和副作用工具,并说明为什么这种分分对安全很重要.
 
 ## 问题
@@ -25,7 +25,7 @@ Dört adımlı döngü, bu sistemlerin altındaki değişmezliktir.
 ## 概念
 ### Birinci adım: tanımlayın
 
-Host kullanıyor üç bölüm açıklama her araç için.
+Host Üç Bölüm Modelle Açıklama Her Araç.
 
 - **Name.**Bir sabit  makine okuyabilir bir işaretçi  kullanın`get_weather`Bu hava olayı değil.
 - **Description.**Bir bölüm doğal dil basitleştirmek. Kullanıcılar belirli bir şehrin mevcut hava durumu hakkında sorular sorarken kullanmak. Tarih verileri kullanmak için kullanılmasın.
@@ -109,7 +109,7 @@ tp-tool-loop
 
 需要关注的内容:
 
-- Her bir araç için üç bölüm vardır: isim, açıklama, şema ve uygulayıcı referansı.
+- Her bir araç için araç kayıtları 持有四字段:name、描述、 schema,以及执行器引用──只有前三会发送给模型──
 - Validator en az bir JSON Schema alt kümesi ((types、required、enum、min/max), sadece stdlib kullanılarak 编写。Phase 13 · 04 会提供更完整的版本──
 - Çevre tekrar sayısını sınırlayacak.
 

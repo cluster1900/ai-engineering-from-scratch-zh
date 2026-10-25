@@ -66,7 +66,7 @@ Model                                                                           
 
 Ev sahibi kendi iplerinde  coru veya uzaktan çalışan  上运行每个调用执行器──最简单的使用字段;生产环境使用异步配合 配合 `asyncio.gather`Yapılandırılmış eşzamanlılık, tamamlanıp gerçekleşmesi öngörülemez, sadece bir tanımlama.
 
-Bir adet üzre hata: Çeviri listesi 顺序回复结果, yerine完成顺序回复;;`tool_call_id`Ancak bir sonuç kaybedildiğinde veya tekrarlandığında, düzenli olarak gönderilen düzenleme denemeyi daha zorlaştırır.
+Bir adet üzre hata: Çeviri listesi 顺序回复结果, yerine完成顺序回复;;`tool_call_id`Ancak, bir sonuç kaybedildi veya tekrarlandısa, bir yönlü sonuç sıraya ulaşırken yeniden sıralanmış bir tekrarlama listesi, bu eksikliği daha zorlaştırır.
 
 ### Akış araç çağrıları
 

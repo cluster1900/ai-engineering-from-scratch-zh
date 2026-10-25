@@ -49,12 +49,12 @@ Her tedarikçi beş şey istiyor:
 | Result block | role `tool`, `tool_call_id` | 带 `tool_result`, `tool_use_id` 的 `user` | 带匹配 `id` 的 `functionResponse` |
 | Force-a-tool | `tool_choice: {type: "function", function: {name}}` | `tool_choice: {type: "tool", name}` | `tool_config: {function_calling_config: {mode: "ANY"}}` |
 | Forbid tools | `tool_choice: "none"` | `tool_choice: {type: "none"}` | `mode: "NONE"` |
-| Strict schema | `strict: true` | schema-is-schema（始终 enforce） | request level 的 `responseSchema` |
+| Strict schema | `strict: true` | 每个 tool 上的 `strict: true`（opt-in） | request level 的 `responseSchema` |
 
 ### Gerçekte karşılaştığın kısıtlamalar
 
 - **OpenAI.**Her istek en fazla 128 个工具──Schema derinliği 5──Argument İpi <= 8192 bytes──Strict mode 要求没有 `$ref`, üst üste geçişleri yok .`oneOf`- Ne ?`anyOf`- Ne ?`allOf`Her mülk bir yerde .`required`İçeride.
-- **Anthropic.**Her talep en fazla 64 araçtır. Şema derinliği aslında sınır yoktur, ama pratik sınır 10tır.
+- **Anthropic.**Her istek en fazla 64 araçtır. Şema derinliği  aslında sınır yoktur, ama pratik sınır 10 ‒Strict tool use 需要在工具定义上设置 `strict: true`Seçim yapma. Şema, garanti yerine, genellikle sözleşmeye uymaya yönelik bir modeldir.
 - **Gemini.**Her istek en fazla 64 个函数──Schema türleri OpenAPI 3.0 alt kümesi olur.
 
 ### `tool_choice`davranış
@@ -91,7 +91,7 @@ Geçersiz-argument hatalarının göstergesi de farklıdır.
 
 - **OpenAI (non-strict).**Model 返回 `arguments: "{bad json}"`, JSON parse  başarısız, sen bir hata mesajı girdi ve yeniden aramak
 - **OpenAI (strict).**Validasyon sırasında gerçekleşir; geçersiz JSON görünmesi mümkün değil, ancak ortaya çıkabilir `refusal`- Evet.
-- **Anthropic.** `input`Belki beklenmedik alanlar içerir; şema tavsiyedir.
+- **Anthropic（non-strict）。** `input`Belki beklenmedik alanlar içerir; şema tavsiyelidir.`strict: true`时, örnekleme 之内 之内 会被束在方案中
 - **Gemini.**OpenAPI 3.0 garipliği: nesne alanları 上的 `enum`Huzursuzluktan uzak durursun. Kendini doğrula.
 
 ### Tercüman örneği

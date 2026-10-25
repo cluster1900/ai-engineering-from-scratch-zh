@@ -352,7 +352,7 @@ Birinci emir, bağlanan göndericinin kayıt ve Token 验证ın tam kontrol taba
 
 ## 课后深练习
 
-1. 运行  İşlem`code/main.py`◊仔细追踪执行流──观察 IdP 在步骤 6 中轮换密钥,定时 `refresh_jwks`重新拉取已发行公钥集合,验证旧代币(重叠窗口期内) ile yeni签发的代币 如何均均在未重启服务的情况下顺利验证签通过──
+1. 运行  İşlem`code/main.py`◊仔细追踪执行流──观察 IdP 在脚本输出步骤 6 ((即上文流程的步骤 7) 中轮换密钥,定时 `refresh_jwks`重新拉取已发行公钥集合,验证旧代币(重叠窗口期内) ile yeni签发的代币 如何均均在未重启服务的情况下顺利验证签通过──
 2. Korunmuş kaynaklar için veri`authorization_servers`Listede yeni bir yasal IDP oluşturuldu. Yeni bir IDP imzaladığı Token, verification verification visa例例程顺利放行.`WWW-Authenticate: Bearer error="invalid_token", error_description="iss not allowed"`- Evet.
 3. Çı`register_client`增加速率限制检查,在注册机真正处理请求前执行拦截──在内存中使用按来源IP 为键字典实现轻量级的代币桶 限流器──
 4. 研读 RFC 7591 规范,指出示例代码中 `/register`处理器尚未校验的两个协议字段,并补全校验逻辑──(提示:`software_statement`ile`redirect_uris`URI Scheme 协议检查) 』
