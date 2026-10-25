@@ -1,6 +1,6 @@
 # HDF5标记化语料库
 
-> 下载好的语料必须落在一个训练师可以以行速流式读取的布局里.磁盘上的JSONL 不住16个数据加载工作者.带可调整大小,分块整数数据集的HDF5 可以.本课程将构建流式代码化到可调整大小的HDF5数据集,跨多文件的碎片写,训练时的内存映射阅读,以及一个滑动窗口数据加载器,使用正确的包装生长的固定长度序列.
+> 下载好的语料必须落在一个训练师可以以行速流式读取的布局里.磁盘上的JSONL不住16个数据加载工作者.带可调整大小,分块整数数据集的HDF5可以.本课程将构建流式代码化到可调整大小的HDF5数据集,跨多文件的碎片写,训练时的碎片阅读,以及一个滑动窗口数据加载器,使用正确的包装生定成长度序列.
 
 **Type:** Build
 **Languages:** Python
@@ -18,7 +18,7 @@
 
 现代语言模型训练运行会在数十名工人上以每秒数十万个样本的速度读取代码.磁盘上的JSONL 在第一次冷缓存页面错误时就会崩:JSON解析器很慢,文档边界无法寻址,而寻找"样本4.217.884"需要扫描文件.即使压缩效果很好,Parquet也不适合这里,因为教练不想要列;它想要一个带.$O(1)$随机访问的平码流.
 
-由于它提供一个可调整大小的数据集,它的部分在读取时对页面缓存友好──培训员 请问`tokens[3,200,000 : 3,200,8192]`通过HDF5将请求的超级标签从页面缓存复制到新分配的NumPy阵列. 费用是每个工作者一个开放的文件处理器,以及一个小部分的页面缓存脚印.
+由于它提供一个可调整大小的数据集,它的部分在读取时对页面缓存友好──培训员 请问`tokens[3_200_000 : 3_208_192]`通过HDF5将请求的超级标签从页面缓存复制到新分配的NumPy阵列. 费用是每个工作者一个开放的文件处理器,以及一个小部分的页面缓存脚印.
 
 构建问题在于让写入端诚实可靠. 可测量数据集 易被误用:一次写一个文档,HDF5 文件会被碎片化到不可用. 一次大小写入所有文档,进程死亡会丢掉整个片段.
 
@@ -48,9 +48,9 @@ flowchart TD
 
 单个HDF5文件是单点故障──管道 会并行写入片段:阶段19课42中每个输入片段产生一个HDF5输出片段──`shards.json`记录文件路径,代币计数,文件计数以及代币的 Sha256──trainer 读取`shards.json`计算全球抵消并验证语料库.
 
-### 记忆图阅读
+### 碎片阅读
 
-训练时,每个工人会`swmr=True`打开自己负责的 HDF5 文件,并请求`tokens[start:stop]`△一旦块变热,HDF5的块布局就会让它成为页面缓存支持的阅读. 工作者永远不会实现整个文件:片段将被复制到数据加载器的批量缓冲器,然后数据加载器在批量时间将其复制到固定记忆训练子.
+训练时,每个工人会`swmr=True`打开自己负责的 HDF5 文件,并请求`tokens[start:stop]`△一旦块变热,HDF5的块布局就会让它成为一次低成本的读:h5py 不会内存地图文件,而是通过 HDF5块缓存和OS页面缓存读取整个块,再把请求的超级测试器复制出来――工作者永远不会实现整个文件:片段将被复制到数据载体的批量缓冲器,然后数据载体在批量时间将其复制到固定内存训练子――热路径在每个块过渡时一次系统调用;其余是 RAM 访问――
 
 ### 滑窗数据加载器
 
@@ -68,10 +68,10 @@ cc-hdf5-corpus
 - `Tokenizer`对于演示,足够好.`encode(text) -> list[int]`和 `vocab_size`,我知道.
 - `HDF5ShardWriter`- 打开一个可调整的整数数据集,将代币缓冲到块大小,按固定大小步骤大小并写入,在关闭时把`token_count`和 `sha256`记录为HDF5属性──
 - `ShardedTokenizationPipeline`- 通过输入文件,将它们路由到作者,并输出`shards.json`索引
-- `MmapTokenStore`- 打开碎片文件 进行内存映射阅读,计算全球偏移,暴露单个`get_slice(start, stop)`子
+- `MmapTokenStore`- 打开碎片文件 进行碎片阅读(这个名字只是为了方便;h5py 读取是碎片,不是图纸文件),计算全球抵消,暴露单个 `get_slice(start, stop)`子
 - `SlidingWindowDataloader`- 从全球流中选择随机窗户,并产生`(input_ids, target_ids)`许多数组.
 
-文件底部的演示会构建一个很小的内存库,将两个片段代码,通过内存地图打开它们,运行数据加载器10批量,并打印每个批量的形状和检查数量.
+文件底部的演示会构建一个很小的内存库,将两个碎片代码,以碎片的方式打开它们,运行数据加载器10批量,并打印每个批量的形状和检查数量.
 
 运行:
 
@@ -118,7 +118,7 @@ python3 code/main.py
 | Term | What people say | What it actually means |
 |------|-----------------|------------------------|
 | Resizable dataset | "Append-only" | 一个带 `maxshape=(None,)` 的 HDF5 dataset，通过按 chunk 大小 stride 调用 `resize` 增长 |
-| Chunked layout | "How HDF5 stores it" | 固定大小的 on-disk pages，kernel 可 memory-map，dataloader 可连续读取 |
+| Chunked layout | "How HDF5 stores it" | 固定大小的 on-disk blocks，HDF5 将其作为一个单元读取并缓存，因此 dataloader 能以低成本读取连续范围 |
 | `swmr` mode | "Read-while-write" | Single-Writer-Multiple-Reader mode，使 dataloader workers 能安全共享文件 |
 | Shard index | "shards.json" | 包含 offsets 和 content hashes 的所有 token shards 的 durable index |
 | Sliding window | "Training sample" | global token stream 的固定长度 slice，trainer 会把它与 shift-by-one target 配对 |
@@ -127,7 +127,7 @@ python3 code/main.py
 
 - [HDF5 chunking documentation](https://docs.hdfgroup.org/hdf5/v1_14/)- 本课使用的分块化,可扩展的数据集布局
 - [h5py user guide](https://docs.h5py.org/en/stable/)- HDF5 的Python绑定
-- [NumPy memory mapping](https://numpy.org/doc/stable/reference/generated/numpy.memmap.html)- 通过h5py 暴露的读侧原始
+- [h5py chunked storage](https://docs.h5py.org/en/stable/high/dataset.html#chunked-storage)- h5py 如何读取分块数据集以及如何设置分块缓存大小
 - 阶段19 · 42 - 输出由本课代币化的下载器
 - 19 阶段 · 44 - 消费这个数据加载器的代码时间表
 - 19 阶段 · 45 包裹训练阶段的AMP循环

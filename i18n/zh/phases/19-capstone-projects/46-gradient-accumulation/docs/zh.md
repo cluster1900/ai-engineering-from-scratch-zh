@@ -9,7 +9,7 @@
 
 ## 学习目标
 
-- 推导有效批量恒等式:`effective_batch = micro_batch * accum_steps`,我知道.
+- 推导有效批量恒等式:`effective_batch = micro_batch * accum_steps * world_size`在本课中使用的单个设备上.`micro_batch * accum_steps`,我知道.
 - 实现每微批量损失规模化,让积累的渐变量 匹配一次完整的全批次倒退.
 - 在最后一个微批次之前跳过优化同步
 - 读取产量与有效批量曲线相比,并解释降低回报――

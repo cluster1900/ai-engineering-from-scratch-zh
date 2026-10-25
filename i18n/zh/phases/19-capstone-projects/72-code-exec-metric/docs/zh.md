@@ -70,7 +70,7 @@ DENIED = {
 
 每个过程都有一个默认预算.`subprocess.run(..., timeout=t)`如果超时,跑者会被捕.`TimeoutExpired`终止进程,并记录任务`timeout`退出原因――该任务分数为零――运行者继续进步――
 
-每个任务的超时可通过.`task.metadata.timeout_s`进行配置.长时间运行的单元测试可能需要更多;第70课程的验证器将将该值限制在30秒内,以保持套件的边界.
+超时是`run_candidate`的`timeout_s`参数;第75课的跑步者通过`code_exec_timeout_s`长时间运行单元测试可能需要更多,但`run_candidate`设置在0.1到30秒之间,以保持套件的边界.
 
 ## 输出上限
 
@@ -84,7 +84,7 @@ DENIED = {
 pass_at_k(n, c, k) = 1 - C(n - c, k) / C(n, k)
 ```
 
-当 当`n - c < k`时,分子未定义,值为 `1`应实现直接处理边缘情况. 我们在第74课中公开了`pass_at_k(n, c, k)`供排行榜层使用――
+当 当`n - c < k`时,按照通常的约定,分子`C(n - c, k)`为零(你不能从少于`k`个失败中选出`k`个),所以值为`1`应实现直接处理边缘情况. 我们在第74课中公开了`pass_at_k(n, c, k)`供排行榜层使用――
 
 ```mermaid
 flowchart LR
