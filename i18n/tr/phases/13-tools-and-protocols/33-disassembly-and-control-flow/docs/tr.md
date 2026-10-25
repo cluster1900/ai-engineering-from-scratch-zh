@@ -471,6 +471,29 @@ Kağıt üzerinde beş parça çiz, önce kontrol noktasını hesapla sonra sonu
 
 Başarılılık standartları:`python3 code/main.py cfg`能列出每可能被调用者及证明其重定位,并所有目标文件仍通过参考对照.
 
+## 评分实验
+
+Bu ders düzenlemeleri hakkında beş soru. Her cevapı oluşturduğunuz kodla bulup yazın.`code/lab_answers.json`△数字写成数字,或写成 `"0x40"`Bu da bir JSON listesi olarak yazılmış bir metin.
+
+1. `t1`-O1'ün derecesinde:递归下降在 -O1'ün derecesinde 中解码出的指示数――
+2. `t2`:-O1'in toplamı Orta temel blokların sayısı。
+3. `t3`:-O1'ün toplam orta döngünün adresi, yazılı olarak
+4. `t4`: in sweep-trap.o, coverage 0x14 ′ın 線性掃描指示の起始地址,写成十六进制──
+5. `t5`:-O0'un derecesi 中跳转表的条目数──
+
+Cevabını kontrol et:
+
+```bash
+cd phases/13-tools-and-protocols/33-disassembly-and-control-flow
+python3 code/lab.py
+```
+
+检查器在已提交的固定 上使用 `code/main.py`計算每期值──它为每道题输出 `PASS`- Evet.`FAIL`Ya da`TODO`Ve tüm soruların hepsi 0'dan çıkmak için geçer.`python3 code/lab.py my-answers.json`Başka bir dosya kontrol edebilirsiniz.`code/tests/test_lab.py`証明検查器正确答案を接受并拒绝誤答を。
+
+### Görüyor mu ?
+
+[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler?program=trap&sweep=linear)Makine bu dersi onun çözümü olarak ve temel blok panelenin çalışması için kullanıyor.`sweep-trap.o`Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Çözüm: Ç Ç Ç Ç Ç Ç Ç Çözüm: Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç Ç`0x13`- Ne ?`addq`内部、地址 `0x14`Bu verilerin üzerinden atlama görebilirsiniz.
+
 ## 本课产物
 
 本课包含 `outputs/skill-disassembly-and-control-flow.md` Kontrol edilmiş bir liste, temel bloklar, tip tipleri, kontrol noktaları ve tüm çözülmemiş kontrol transferleri için hedef dosya ve işlev adlarını dönüştürmek için kullanılır.

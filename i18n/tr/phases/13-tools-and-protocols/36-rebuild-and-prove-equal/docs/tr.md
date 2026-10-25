@@ -389,6 +389,29 @@ python3 code/main.py --live
 
 Başarılı Standart: kanıt kayıtları dört işlevi listeler, her bir ifade ile birlikte kanıt tanımlayıcı, ve bir etiket çizgi farklı zaman `grade_label`- Başaramayacağım.
 
+## 评分实验
+
+Bu ders düzenlemeleri hakkında beş soru. Her cevapı oluşturduğunuz kodla bulup yazın.`code/lab_answers.json`△数字写成数字,或写成 `"0x40"`Bu da bir JSON listesi olarak yazılmış bir metin.
+
+1. `t1`:x86_64 上的 %_change_model(3, 105)。
+2. `t2`:x86_64 上的 %_change_model(0, 5)。
+3. `t3`:grade_model(100)。
+4. `t4`:input_grid() 中的单元格数量──
+5. `t5`:x86_64 模型发生陷的网格单元数──
+
+Cevabını kontrol et:
+
+```bash
+cd phases/13-tools-and-protocols/36-rebuild-and-prove-equal
+python3 code/lab.py
+```
+
+检查器在已提交的固定 上使用 `code/main.py`計算每期值──它为每道题输出 `PASS`- Evet.`FAIL`Ya da`TODO`Ve tüm soruların hepsi 0'dan çıkmak için geçer.`python3 code/lab.py my-answers.json`Başka bir dosya kontrol edebilirsiniz.`code/tests/test_lab.py`証明検查器正确答案を接受并拒绝誤答を。
+
+### Görüyor mu ?
+
+[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler)Makine sonunda sahte kod çıkardı ve onu arşivine kaydetti: sayfa bunu kanıtlamadı.
+
 ## 输出技能
 
 本课产 出 `outputs/skill-rebuild-and-prove-equal.md` Bu beceri, işlev kanıtları ve aday yeniden oluşturmalarını iki yollu kanıt ve kanıt kayıtlarına dönüştürür. Bu beceri öncelikle düzlem, tekrar okuma, sahte kodları, her tür riskleri kapsayacak bir giriş, yeniden konumlandırmayı ve kontrol düzenini korumak, ayrıca koruma başarısızlığı ilkesini benimsemek gerektirir.

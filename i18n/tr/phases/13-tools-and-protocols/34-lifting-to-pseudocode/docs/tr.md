@@ -533,6 +533,29 @@ Her zamanki gibi.`uVar1`Doğru ifadeler okumak zor, ama emirler.`xorl %eax, %eax
 
 Başarılılık standartları:`-O0`Aşağıda `grade`ile`-O1`Aşağıda `grade`Tüm ağda aynı çıkış ve kurtarma sonucu içerir.`switch`- Hayır .`goto`- Evet.
 
+## 评分实验
+
+Bu ders düzenlemeleri hakkında beş soru. Her cevapı oluşturduğunuz kodla bulup yazın.`code/lab_answers.json`△数字写成数字,或写成 `"0x40"`Bu da bir JSON listesi olarak yazılmış bir metin.
+
+1. `t1`-O1'de %_change'in parametrelerini belirle.
+2. `t2`:-O1'in toplamı SSA 形式中 phi 函数的个数──
+3. `t3`0x66666667 için:magic_divisor
+4. `t4`:-O1'in %_change 伪代码的最后一条语句,写成一行文本──
+5. `t5`:-O1'in toplamı 中 param_1 恢复出的 C 类型。
+
+Cevabını kontrol et:
+
+```bash
+cd phases/13-tools-and-protocols/34-lifting-to-pseudocode
+python3 code/lab.py
+```
+
+检查器在已提交的固定 上使用 `code/main.py`計算每期值──它为每道题输出 `PASS`- Evet.`FAIL`Ya da`TODO`Ve tüm soruların hepsi 0'dan çıkmak için geçer.`python3 code/lab.py my-answers.json`Başka bir dosya kontrol edebilirsiniz.`code/tests/test_lab.py`証明検查器正确答案を接受并拒绝誤答を。
+
+### Görüyor mu ?
+
+[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler?opt=O0)Makine bu dersleri onun yükseltme basınç makinesi, tip çubuk, yapılandırma çap makinesi olarak kullanıyor ve kullanıyor.`code/main.py`Çıkış IR、SSA 和偽代码── This link opens `-O0`目標文件: üç 槽 into局部变量, 具为 if/else 合上两爪──
+
 ## 交付产物
 
 本课产 出 `outputs/skill-lifting-to-pseudocode.md` Bir işlevi yükseltmek, her satır için bir yönlendirme sağlamak ve anti-kompilatör metninin fark çizelgesini doldurmak için kullanmak. Bu ürün referans karşılığı oluşturmak, yeniden konumlandırmak, düzenlemek, düzenleme kontrolü yapmak, davranış karşılaştırması yapmak ve her bir bölüm için farklı kodların yargılamasını sağlamak gerektirir.

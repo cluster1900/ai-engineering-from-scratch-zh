@@ -426,6 +426,29 @@ ledger.verify_unknown_chain(unknown_id)
 
 Başarılı Standart: Rapor'un her cümlesi, kanıt paketindeki belirtecilere ve bu cümleye değinir.`unknown`Kesinlikle yok oldu.
 
+## 评分实验
+
+Bu ders düzenlemeleri hakkında beş soru. Her cevapı oluşturduğunuz kodla bulup yazın.`code/lab_answers.json`△数字写成数字,或写成 `"0x40"`Bu da bir JSON listesi olarak yazılmış bir metin.
+
+1. `t1`:compute_evidence_id 为 rea-evidence-grade.json 给出的证据 id──
+2. `t2`:grad 记录中 sınırlamalar 
+3. `t3`:grade 记录的关系_coverage 状态──
+4. `t4`:grade 记录的信心和权威,写成由两个字符串组成的列表──
+5. `t5`SHA-256: 记录中科目 的 SHA-256: 记录中科目 的 SHA-256: 记录中科目 的 SHA-256: 记录中科目 的 SHA-256: 记录中科目 的 SHA-256: 记录中科目 的 SHA-256: 记录中科目 的 SHA-256: 记录中科目 的 SHA-256: 记录中科目 的 SHA-256: 记录中科目 的 SHA-256: 记录中科目 的 SHA-256: 记录中科目 的 SHA-256:
+
+Cevabını kontrol et:
+
+```bash
+cd phases/13-tools-and-protocols/35-evidence-confidence-and-unknowns
+python3 code/lab.py
+```
+
+检查器在已提交的固定 上使用 `code/main.py`計算每期值──它为每道题输出 `PASS`- Evet.`FAIL`Ya da`TODO`Ve tüm soruların hepsi 0'dan çıkmak için geçer.`python3 code/lab.py my-answers.json`Başka bir dosya kontrol edebilirsiniz.`code/tests/test_lab.py`証明検查器正确答案を接受并拒绝誤答を。
+
+### Görüyor mu ?
+
+[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler?symbols=off)机器维护一本证据账本,分为四托盘:observed、derived、inferred 和 unknown── bu bağlantı, bir belirtilen metin durumunda açılır, bu nedenle işlev adı ve işlev sonucunda bilinmeyen, başlangıç konumunun geri alınması sonucu olarak oluşur────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
 ## 本课产物
 
 本课产 出 `outputs/skill-evidence-ledger.md` Akıllı bedenin her bulguyu güven sınıfı, yetki kaynağı, sınırlama ve bağlantı kayıtları olarak yazacağını, değiştirilmiş sürümleri nasıl koruyacağını ve ne zaman karar verildiğini açıklayacağını gösterir.`pass`- Evet.`fail`- Evet.`unknown`Ya da`unsupported`- Evet.

@@ -28,14 +28,14 @@ Bu ders, iki kez bir not oluşturulacak: Server:Python ve TypeScript  sürümler
 ### 现代请求分发循环 (Diplâtörün Çeviri)
 
 ```text
-读取一行 JSON-RPC 文本
-解析外层 Envelope
-若为通知（Notification），则不予响应
-针对当前请求校验 params._meta
-根据 method 执行路由分发
-使用 resultType 与 serverInfo 封装成功结果
-写回一行 JSON-RPC 响应文本
-立即遗忘当前请求作用域的元数据
+read one JSON-RPC line
+parse the envelope
+if it is a notification, do not respond
+validate params._meta for this request
+route by method
+wrap success with resultType and serverInfo
+write one JSON-RPC response line
+forget request-scoped metadata
 ```
 
 Studio Mode'da üç önemli kural vardır:
@@ -116,7 +116,7 @@ Host, bu bilgileri iletişim doğrulama ve kullanıcı araları sunumları için
 
 Kullanıcıya ait özel not verileri için kullanılması gerekir.`cacheScope: "private"` 共享缓存绝不能跨授权上下文复用私有响应──
 
-现代数据变更推送 artık kullanılmıyor `resources/subscribe`Müşteriyi gönderiyorum.`subscriptions/listen`Açıklama`resourceSubscriptions`Ya da listesi değişir olaylar için uzun bağlantı gönderme
+现代数据变更推送 artık kullanılmıyor `resources/subscribe`Müşteriyi gönderiyorum.`subscriptions/listen`Açıklama`resourceSubscriptions`Ya da listeler değişir ve bu süreç oluşturulur.
 
 ### İpuçlar (提示模板)
 
@@ -141,7 +141,13 @@ List, Okuş ve Servis Bulma İşçisi Ekstra Ekstra`ttlMs`ile`cacheScope`❖ Kes
 
 Modern Server'ın gönderilmesi ve istemciyle doğrudan ilgili bildirim istemek veya istemci tarafından açılması mümkündür.`subscriptions/listen`流中推送通知──但服务器 **绝不能**主动发起独立的 JSON-RPC 請願──
 
-İşleyici  örnekleme   Çıkış  Roots 输入时, it returns a `input_required`Sonuç: Müşteri, talebini yerine getirmek için yeni bir talebinin kimliğini kullanır.
+İşleyici  örnekleme   Çıkış  Roots 输入时, it returns a `input_required`结果── Client 在满足所请求的输入后,全新请求 ID を使用 重新发起原始方法调用──第 11 课将详细讲解这种多轮往返请求(Multi Round-Trip Request)模式──
+
+### 显式的 Legacy 兼容
+
+双时代(iki çağ) Server de bir ayrıntılı miras bölümü üzerinde gerçekleşebilir `2025-11-25`握手──当请求中存在现代规范要求的 `_meta`字段时,它选择现代行为;当收到 `initialize`时,则走 Miras 行为。
+
+Kapatma .`2026-07-28`Lütfen geçmişi geçin.`resultType`字段塞进 Legacy'ın başlangıç sonuçları arasında.
 
 ```figure
 t3-dispatch-loop
@@ -172,8 +178,8 @@ Gösterim süreci gönderilir`server/discover`、 her orijinal dilini 、 kullan
 ## 练习与思考
 
 1. Bir istek içinde taşıma yetenekleri 字段,证明 Server 绝不会复用前请求中声明的旧能力──
-2. 颠倒     altüst`TOOLS`- Evet.`PROMPTS`及笔记数据的录入顺序, tüm listeler sorgu sonuçlarının sabit kalmış olduğunu doğrulayın.
-3. Yeni bir yıkıcı `notes_delete`工具, ve executor内部加入鉴权检查,验证 `destructiveHint`Sadece bir önceki görüşme.
+2. 颠倒     altüst`TOOLS`- Evet.`PROMPTS`及笔记数据的录取顺序, tüm listeler sorgu sonuçlarının sabit kalmış olduğunu doğrula.
+3. Yeni bir yıkıcı `notes_delete`工具, ve executor内部加入鉴权检查,并让 `destructiveHint`Sadece UX 提示 olarak.
 4. 补充 `resources/templates/list`接口,要求附带 `ttlMs`- Evet.`cacheScope`Ve kesinlik sırası.
 5. Çı`2025-11-25`编写一个完全隔离的 Legacy 适配器,并通过测试证明现代请求绝不会错进 Legacy 处理路径──
 
@@ -184,9 +190,9 @@ Gösterim süreci gönderilir`server/discover`、 her orijinal dilini 、 kullan
 | 无状态 Server (Stateless server) | 仅从每个请求自身的元数据处理调用，无任何协议 Session 内存记忆 |
 | `server/discover` | 强制实现的现代方法，用于向调用方公布支持的版本与功能集 |
 | 完整结果 (Complete result) | 携带 `resultType: "complete"` 的成功现代结果 |
-| 可缓存结果 (Cacheable result) | 附带强制 `ttlMs` 与 `cacheScope` 提示的发现、列表或只读结果 |
+| 可缓存结果 (Cacheable result) | 附带强制 `ttlMs` 与 `cacheScope` 提示的发现、列表或资源读取结果 |
 | 确定性列表 (Deterministic list) | 逻辑相同的注册表必须输出完全一致、可复现的条目顺序 |
-| Server 身份 (Server identity) | 在结果 `_meta` 中携带的 `io.modelcontextprotocol/serverInfo` 标识 |
+| Server 身份 (Server identity) | 推荐在结果 `_meta` 中携带的 `io.modelcontextprotocol/serverInfo` 标识 |
 | Tool 业务错误 (Tool error) | Tool 调用正常被解析执行，但业务逻辑失败，返回包含 `isError: true` 的 content |
 | 协议错误 (Protocol error) | 非法的 JSON-RPC 格式或无效的 MCP 请求参数，直接通过顶层 `error` 报错返回 |
 

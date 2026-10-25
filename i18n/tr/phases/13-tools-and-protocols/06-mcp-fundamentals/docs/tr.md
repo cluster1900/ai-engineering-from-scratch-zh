@@ -150,6 +150,10 @@ Bu zorlu düzen, farklı yapılandırmalar arasında anlaşılmazlıklar yaratma
 
 Ancak iki çağın tamamen ayırılması gerekir. Modern istekler zorunlu her istek için veri tanımlamaktadır. Eski sürüm bağlantıları yalnızca özel bir belge düzenlemesi yoluyla geri dönüş yolları ile belirlenir.**绝不能把 `initialize` 当作连接 `2026-07-28` Server 的默认行为。**
 
+Bu nedenle, Stateless farklı dönemlerde farklı anlamlara sahip.`2026-07-28`中, bir protokol değişmez: her sıradan istek bağımsız olarak açıklanabilir ve MCP Sessiyonu yoktur.`2025-11-25`及更早版本中,初始化和协商出的 Capabilities 属于某个连接,所以兼容适配器可以保留这旧版本连接状态――双时代实现不是宽松的状态机,而是一个无状态的现代核心,旁边放置一个隔离的 Legacy 适配器,并且在任一解析器运行前做出明确的选择――
+
+Bu iki anlam da sürekli uygulama durumunu yasaklamaz. İş akımı, görev veya taslak, ortak depoda saklanan bir şeffaf olmayan elden geçerek yapılabilir. Müşteri bu elden geçirmeyi normal bir giriş ve gönderim olarak koyup, her kopyasının kullanımına onay ve yetki vermesi gerekir.
+
 ```figure
 mcp-tool-call
 ```

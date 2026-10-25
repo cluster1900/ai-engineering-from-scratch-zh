@@ -87,7 +87,7 @@ npx skills add cluster1900/ai-engineering-from-scratch-zh --skill skill-contract
 - Ben de .`SKILL_ROOT`設置器所報告の絶対路径── 設置器所報告の絶対路径── 設置器所報告の絶対路径── 設置器所報告の絶対路径── 設置器所報告の絶対路径── 設置器所報告の絶対路径── 設置器所報告の絶対路径── 設置器所報告の絶対路径── 設置器所報告の絶対路径── 設置器所報告の絶対路径── 設置器所報告の絶対路径── 設置済み路径── 設置済み路径── 設置済み路径── 設置済み路径── 設置済み路径── 設置済み路径── 設置済み路径── 設置済み路径── 設置済み路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路路`SKILL.md`Program kaynak defteri değil, ne de mevcut çalışma bölgesi:
 
 ```bash
-# 将占位符替换为安装器打印出的绝对路径
+# Replace the placeholder with the destination printed by the installer.
 SKILL_ROOT="$(cd "/absolute/path/to/skill-contract-reviewer" && pwd -P)"
 test -f "$SKILL_ROOT/SKILL.md"
 printf 'SKILL_ROOT=%s\n' "$SKILL_ROOT"

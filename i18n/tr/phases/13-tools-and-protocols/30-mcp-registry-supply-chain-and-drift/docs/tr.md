@@ -201,9 +201,9 @@ Giriş kontrol cihazı, bulma ve yol arasında yerleştirilir:
 
 ```text
 Registry sync -> artifact verifier -> live discovery -> admission controller -> route table
-                                                |                 |
-                                                v                 v
-                                           evidence store    admission ledger
+                                               |                 |
+                                               v                 v
+                                          evidence store    admission ledger
 ```
 
 Bu görevlerin birbirinden ayrı olarak en az yetkiyi paylaşması için: Registry and the step tasks only need only read permissions of data; Work item verification tasks need to access software packages; route by adjustment and controllers need to activate the permission to obtain approval fingerprints;; hiçbir bileşen tüm yetkiyi öğrenmek zorunda değildir.

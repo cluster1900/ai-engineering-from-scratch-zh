@@ -85,9 +85,9 @@ Bağlantı nesneye sadece bir kez eklenmesi gerekmez. Net bir bağlantı bağlan
 - `-32021`EksikKlientKabilliği (Klient 能力)
 - `-32022`Desteklenmeyen ProtokolVersion(不支持的协议版本)
 
-Hatta, bir gün bile çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaş hatalar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağdaşlar, çağlar, çağlar, çağlar, çağlar, çağlar, çağlar, çağlar, çağlar, çağlar, çağlar, çağlar, çağlar, çağlar, çağlar, çağlar, çağlar, çağlar, çağlar, çağlar, çağlar, çağlar, çağlar, çağlar, çağlar, çağlar, çağlar, çağlar, çağlar, çağlar, çağlar,`initialize`Bu tehlikeli bir saldırı.
+Hatta, bir gün bile çağdaş hatalar, çağdaş hatalar da ortaya çıkmış ve bu da modern Server için de kanıtlanmıştır.`initialize`Bu bir aşağı sınıf oluşturmak.
 
-Kesinlikle yapamazsın.`-32601`(metod uncovered) Legacy'ye girme hakkının tam olarak kanıtlanması için, yalnızca bir kez sınırlı süreyle bir Legacy araştırması başlatmak için yeterli durumda olduğunu temsil eder.
+Kesinlikle yapamazsın.`-32601`(metod uncovered) Legacy girişinin tam bir kanıtı olarak sadece bir kez sınırlı süre ile Legacy arama başlatmaya yeterli durumda olan bir terminalın temsil ettiği gibi, bu kural da uygulanmaktadır.
 
 ### BİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİNİN
 
@@ -99,7 +99,7 @@ client.add_server("archive", archive_transport, allow_legacy=True)
 
 Bu seçeneği belirgin bir konumu belirlemek için bağlamak gerekir.`allow_legacy=True`Bu yüzden, bu konuda bir şey yapmamalıyız.`initialize`- Evet.
 
-White List sadece arama başlatma hakkını veriyor. Müşteri, nakliye aşamasında zorunlu bir süre içinde tek bir gönderiyor.`initialize`Lütfen, sonra ciddi şekilde aşağıdaki şartları yerine getirmek için:
+White List sadece arama başlatma hakkını vermiştir. Bu, sonun zamanını belirlemez. Müşteri, nakliye aşamasında zorunlu bir süre içinde tek bir gönderi gönderir.`initialize`Lütfen, sonra ciddi şekilde aşağıdaki şartları yerine getirmek için:
 
 -  Bu talebe uygun bir JSON-RPC alındı `2.0`响应;
 - Sadece içerir`result`字段,且无 `error`- ...
@@ -107,7 +107,29 @@ White List sadece arama başlatma hakkını veriyor. Müşteri, nakliye aşamas�
 - 包含对象类型 `capabilities`字段;
 - 包含非空字符串 `name`ile`version``serverInfo`- Önemli bir şey.
 
-任何超时、断开、报错、形结果、ID 错乱或未支持的版本均直接失败──只有结构完全合规的正向结果才能对端标记为Legacy 时代──
+任何超时、断开、报错、形结果、ID 错乱或未支持的版本均直接失败──只有结构完全合规的正向结果才能对端标记为Legacy 时代──代码会将`legacy_probe_timeout_ms`传给传输适配器; gerçek studio veya HTTP 适配器 bu son süreyi gerçek anlamda gerçekleştirmelidir, sadece kaydetemez.
+
+Bu yüzden, her seferinde yeniden araştırılmadan önce, bu transfer için seçilen zamanın içinde,
+
+### Miras bir uyumlu bölge
+
+Bir kez sınırlı arama geçerli olan doğru doğru mirasçılık kanıtına geri döndükten sonra, Müşteri, seçilen mirasçılık versiyonunun bu modified edition'un tanımına göre sıkı bir şekilde kullanılır:
+
+1. 校验响应信封与关联 ID──
+2. 校验协商出的修订版属于已配置的遗产集合──
+3. 记录经过校验的能力与服务器身份──
+4. Sadece tüm kontroller sonrası gönderme`notifications/initialized`- Evet.
+5. Bu nakliye yaşam döngüsünde kullanılır.
+
+Bu bölge sadece bilinen bir uç bağlantısı için var, yeni bir sunucu veya yeni bir istek için öntanımlı bir tasarım değildir. Eğer aktarım yeniden başlanırsa veya uç noktası değişirse, uç zamanı için kaydı bırakıp yeniden görüşür.
+
+### 工具发现与缓存
+
+Her aktif için de kullanılır.`tools/list`❖现代结果包含 `resultType`- Evet.`ttlMs`ile`cacheScope`                                                                                                                                                                                                                                                              
+
+ 对于 Legacy Server 缺失 `resultType`Bu durumdan sonra müşteriye göre`"complete"`◊ daha erken müzakere zamanın ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊ağzıtı ◊a
+
+Sunucu 应返回确定性排序──Client de应在合并前排序,使本地注册表顺序不依赖进程启动时序──
 
 ### 命名空间无冲突合并
 
@@ -117,17 +139,33 @@ White List sadece arama başlatma hakkını veriyor. Müşteri, nakliye aşamas�
 2. **冲突时拒绝（Reject on collision）**:不加载重复工具,并抛出清晰的配置报错──
 3. **静默覆盖（Silent overwrite）**- ...**坚决杜绝**❖ Bu modelin gerçekte kullanıldığı hedef sunucuyu gizler.
 
+Aynı zamanda kaydetme kural adı ile yerel adı.`tools/call`Uygulamada kullanılan sunucu 声明的本地名──
+
 ### 调用路由机械
 
 路由是纯粹的映射查找:
 
 ```text
-规范工具名
-  -> 对端名称 + 本地工具名
-  -> 生成全新的 JSON-RPC 请求 ID
-  -> 现代请求元数据 或 显式 Legacy 结构
-  -> 匹配响应 ID 并返回
+canonical tool name
+  -> peer name + local tool name
+  -> new JSON-RPC request id
+  -> modern request metadata or explicit legacy shape
+  -> matching response id
 ```
+
+Eğer bağlantı bağlantısı kullanılamazsa, bağlantı bağlantısı yeniden başlatılmasın.`tools/list`◊ Transfert kesinti sırasında kaybolan modern istekler, eğer operasyonun güvenlik stratejisi izin verirse, yeni JSON-RPC ID'yi yeniden deneyin.
+
+### 通知与订阅
+
+Modern list & resources only through Client  Open `subscriptions/listen`流到达──Client 发送通知过器,等待 `notifications/subscriptions/acknowledged`,并用通知元数据中的听 请求身份证 关联事件──
+
+断开后发起新听 请求并重新拉取相关列表或资源──现代流不使用 `Last-Event-ID`                                                                                                                                                                                                                                                              
+
+### Server 发起的请求存在
+
+现代 Server 不会为样本化、征集或根向客户端发起独立的 JSON-RPC 请求──它们回归 `input_required`,Müşteri, içinde yerleştirilen giriş isteklerini yerine getirirken, orijinal istekleri tekrar denemek için.
+
+满足输入期间 do not block on the end of the response reader── keep connected,并为重试生成新的 JSON-RPC ID──
 
 ```figure
 tp-client-merge
@@ -135,7 +173,7 @@ tp-client-merge
 
 ## 动手实践
 
-`code/main.py`內存對端函数 通過內存對端函数 透過清晰顯示了整个协议决策树──它連接到兩现代對端和一顯白名单标志的傳承對端,合并并路由它们的工具:
+`code/main.py`通过内存对端函数清晰显示整个协议决策树──它连接到两个现代对端和一个显然白单标记的遗产对端,合并并并路由它们的工具──传输可调用对象会收到一个超时预算,使兼容分支无法隐藏无限探测──
 
 ```bash
 cd code
@@ -147,14 +185,23 @@ python3 -m unittest discover tests -v
 
 - 现代请求逐次重复元数据;
 - - Görüşmek .`-32022`时重试现代发现,绝不退化为握手;
-- 已识别的现代错误绝不发生降级;
-- 超时、断开与未知错误在无白名单时绝不触发 `initialize`- ...
+- 已识别的现代错误绝不发生降级 (yaz listede bile bile gerçekleşmez);
+- 超时、连接关闭、空响应与未识别的错误在无白名单时绝不触发 `initialize`- ...
 - Yeni listeler sadece yeni standartlara göre kabul edilir.`initialize`响应后才成立为遗产;
+-                                                                                                                                                                                                                                                               
 - Seçilen zaman, son nakliye yaşam döngüsünde sabit olarak varlığını sürdürmektedir.
 
 ## 交付物
 
-本课交付 `outputs/skill-mcp-client-harness.md`◊ bu, modern istekler için kullanılabilir.
+本课交付 `outputs/skill-mcp-client-harness.md`△ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △ △
+
+## 练习与思考
+
+1. 让一个模拟 Server 返回 `-32022`Ve her iki tarafın da desteklediği bir versiyon yok, Müşteri'nin doğrudan başarısız olduğunu ve gönderilmediğini doğrula.`initialize`- Evet.
+2. Bir serveri oluşturmak için 加入白名单,让它受限 `initialize`探测超时, kanıtlamak için `unknown`Ve kullanılmaz.
+3. İki yetkiye sahip olmak için aşağıdaki eklemeler`cacheScope: "private"`Bu listede, Client'in bir sonraki kaydının sonuçlarını başka birine paylaşmayacağını belirtiyor.
+4. Çatışmayı reddetmek için değiştirmek ve başarısızlıktan sonra başlatmak için iki hatayı içerir.
+5. 添加一个有限的 `subscriptions/listen`模拟器;流丢失时用新请求 ID 重新听并重新拉取工具──
 
 ## 核心专业术语
 
@@ -168,6 +215,8 @@ python3 -m unittest discover tests -v
 | 正向 Legacy 证据 (Positive legacy evidence) | 针对受支持旧版协议返回的有效、ID 匹配的 `initialize` 结果 |
 | 合并命名空间 (Merged namespace) | 跨所有活跃对端规范化后的工具全局名称集合 |
 | 冲突策略 (Collision policy) | 处理重名工具的加前缀或报错拒绝规则 |
+| 时代缓存 (Era cache) | 为单个传输对端保存的已选现代或 Legacy 行为 |
+| 传输恢复 (Transport recovery) | 重启或重连、重新发现、重新列出，并以新 ID 安全重试 |
 
 ## 延伸阅读
 
@@ -175,3 +224,4 @@ python3 -m unittest discover tests -v
 - [MCP Server Discovery](https://modelcontextprotocol.io/specification/2026-07-28/server/discover)
 - [MCP stdio Transport](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio)
 - [MCP Versioning](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning)
+- [MCP Tools](https://modelcontextprotocol.io/specification/2026-07-28/server/tools)
