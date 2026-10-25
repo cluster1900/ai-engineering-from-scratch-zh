@@ -1,6 +1,6 @@
 # 浏览器代理与长时程 Web 任务
 
-> 聊天GPT代理 (ChatGPT agent) 将运营商和深度研究 合并为一个浏览器/终端代理,并在BrowseComp上以68.9% 创立SOTA.OpenAI 于2025年8月31日关闭运营商这是产品层次整合.
+> 聊天GPT代理(7月2025年) 将运营商和深度研究 合并为一个浏览器/终端代理,并在BrowseComp上以68.9% 创立SOTA。OpenAI于2025年8月31日关闭运营商这是产品层面的整合──人类收购 经cept 之后,将Claude Sonnet在OSWorld上表现从15%以下升至72.5%Web──Arena-Verified.
 
 **Type:** Learn
 **Languages:** Python (stdlib, indirect prompt-injection attack surface model)
