@@ -389,6 +389,29 @@ Việc mở rộng hai phương pháp chứng minh thành một tập tin mục 
 
 Kiểm chuẩn thành công: chứng minh ghi chép liệt kê bốn hàm, mỗi câu nói đều mang theo chứng minh ký hiệu, và để một ký hiệu string khác nhau khi `grade_label`会失败.
 
+## 评分实验
+
+5 cách về các bài học này. Sử dụng mã xây dựng của bạn để tìm ra mỗi câu trả lời, sau đó viết vào.`code/lab_answers.json`◊ số viết thành số, hoặc viết thành `"0x40"`Như vậy, các chuỗi được tạo thành các chuỗi JSON.
+
+1. `t1`:x86_64 上的百分比_变化_模型(3, 105) 』
+2. `t2`:x86_64 上的百分比_变化_模型(0, 5)。
+3. `t3`:grade_model(100)。
+4. `t4`:input_grid() 中的单元格数量──
+5. `t5`:x86_64 模型发生陷 的网格单元数量──
+
+检查你的答案:
+
+```bash
+cd phases/13-tools-and-protocols/36-rebuild-and-prove-equal
+python3 code/lab.py
+```
+
+检查器在已提交的固定 上使用 `code/main.py`计算每个期望值── nó cho mỗi bài toán输出 `PASS``FAIL`Hoặc`TODO`Và tất cả, chỉ có 5 câu hỏi được thông qua khi chỉ có 0  xuất phát.`python3 code/lab.py my-answers.json`可检查另一个文件.`code/tests/test_lab.py`证明检查器 chấp nhận đúng câu trả lời并拒绝错误答案──
+
+### Xem nó hoạt động
+
+[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler)机器最终输出伪代码,并归档为推断:页面不证明它. 本课就是把这个主张变成过检查的主张的那一步.
+
 ## 输出技能
 
 本课产 出 `outputs/skill-rebuild-and-prove-equal.md` Sử dụng nó sẽ chuyển đổi chứng minh hàm và ứng cử viên tái tạo thành chứng minh và chứng minh ghi chép hai đường.

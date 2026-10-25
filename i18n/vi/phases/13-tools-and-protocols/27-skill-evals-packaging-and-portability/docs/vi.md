@@ -482,7 +482,7 @@ npx skills add cluster1900/ai-engineering-from-scratch-zh --skill skill-release-
 sẽ`SKILL_ROOT`设置为安装器报告的绝对安装目录―― nó phải chứa đã được cài đặt `SKILL.md`- Có thể là:
 
 ```bash
-# 将占位符替换为安装器打印的目标路径
+# Replace the placeholder with the destination printed by the installer.
 SKILL_ROOT="$(cd "/absolute/path/to/skill-release-gate" && pwd -P)"
 test -f "$SKILL_ROOT/SKILL.md"
 printf 'SKILL_ROOT=%s\nTARGET_BUNDLE=%s\n' "$SKILL_ROOT" "$TARGET_BUNDLE"

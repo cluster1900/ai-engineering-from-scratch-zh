@@ -426,6 +426,29 @@ Lần đầu tiên dùng 2... lần thứ hai ném ra`EvidenceIntegrityError`, v
 
 Kiểm chuẩn thành công: mỗi câu trong báo cáo đều trích dẫn các dấu hiệu trong gói chứng cứ, và điều đó `unknown`断言已消除──
 
+## 评分实验
+
+5 cách về các bài học này. Sử dụng mã xây dựng của bạn để tìm ra mỗi câu trả lời, sau đó viết vào.`code/lab_answers.json`◊ số viết thành số, hoặc viết thành `"0x40"`Như vậy, các chuỗi được tạo thành các chuỗi JSON.
+
+1. `t1`:compute_evidence_id 为 rea-evidence-grade.json 给出的证据 id──
+2. `t2`:grade 记录中限制的数量──
+3. `t3`:grade 记录的关系_coverage 状态──
+4. `t4`:grade 记录的信心和权威, được viết thành từ hai chữ cái bao gồm danh sách:
+5. `t5`:grade 记录中 đối tượng của SHA-256。
+
+检查你的答案:
+
+```bash
+cd phases/13-tools-and-protocols/35-evidence-confidence-and-unknowns
+python3 code/lab.py
+```
+
+检查器在已提交的固定 上使用 `code/main.py`计算每个期望值── nó cho mỗi bài toán输出 `PASS``FAIL`Hoặc`TODO`Và tất cả, chỉ có 5 câu hỏi được thông qua khi chỉ có 0  xuất phát.`python3 code/lab.py my-answers.json`可检查另一个文件.`code/tests/test_lab.py`证明检查器 chấp nhận đúng câu trả lời并拒绝错误答案──
+
+### Xem nó hoạt động
+
+[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler?symbols=off)机器维护一本证据账本,分为四托盘:observed、derived、inferred 和 unknown──
+
 ## 本课产物
 
 本课产 出 `outputs/skill-evidence-ledger.md` Nó hướng dẫn các nhà thông minh sẽ ghi lại từng phát hiện như một danh mục tin tưởng, nguồn quyền lực, giới hạn và ghi lại các liên kết, giải thích cách sử dụng phiên bản sửa đổi để duy trì những điều chưa biết, và khi nào sẽ đưa ra phán quyết`pass``fail``unknown`Hoặc`unsupported`

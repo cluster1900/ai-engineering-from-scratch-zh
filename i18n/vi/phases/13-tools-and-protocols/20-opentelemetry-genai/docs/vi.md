@@ -144,7 +144,7 @@ t3-span-waterfall
 | Span | "Timed operation" | 一个具有 start、end 和 attributes 的 work unit |
 | Trace | "Cross-span ancestry" | 共享同一个 trace id 的 spans 树 |
 | SpanKind | "CLIENT / SERVER / INTERNAL" | 关于 span direction 的提示 |
-| OTLP | "OpenTelemetry Line Protocol" | exporters 使用的 wire format |
+| OTLP | "OpenTelemetry Protocol" | exporters 使用的 wire format |
 | Opt-in content | "Prompt / completion capture" | 默认关闭；通过 env var 启用 |
 | traceparent | "W3C header" | 跨 services 传播 trace context |
 | Exporter | "Backend-specific shipper" | 将 spans 发送到 Jaeger / Datadog / 等的组件 |

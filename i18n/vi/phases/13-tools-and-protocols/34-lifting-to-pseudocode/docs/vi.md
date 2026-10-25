@@ -533,6 +533,29 @@ Vì vậy`-O0`下的 `grade`添加 `switch`恢复:
 
 Định nghĩa thành công là:`-O0`下的 `grade`Với`-O1`下的 `grade`Trong toàn bộ mạng lưới xuất phát giống nhau, và kết quả khôi phục chứa một `switch`, không có `goto`
 
+## 评分实验
+
+5 cách về các bài học này. Sử dụng mã xây dựng của bạn để tìm ra mỗi câu trả lời, sau đó viết vào.`code/lab_answers.json`◊ số viết thành số, hoặc viết thành `"0x40"`Như vậy, các chuỗi được tạo thành các chuỗi JSON.
+
+1. `t1`:调用约定在 -O1 下给 %_change 的参数数量――
+2. `t2`:-Tổng số của O1 trong hình thức SSA 中 phi 函数的个数──
+3. `t3`:magic_divisor đối với 0x66666667  shift 34 求出除数
+4. `t4`:-O1 của %_change 伪代码的最后一条语句,写成一行文本──
+5. `t5`:-O1 tổng số 中 param_1 恢复出的 C 类型。
+
+检查你的答案:
+
+```bash
+cd phases/13-tools-and-protocols/34-lifting-to-pseudocode
+python3 code/lab.py
+```
+
+检查器在已提交的固定 上使用 `code/main.py`计算每个期望值── nó cho mỗi bài toán输出 `PASS``FAIL`Hoặc`TODO`Và tất cả, chỉ có 5 câu hỏi được thông qua khi chỉ có 0  xuất phát.`python3 code/lab.py my-answers.json`可检查另一个文件.`code/tests/test_lab.py`证明检查器 chấp nhận đúng câu trả lời并拒绝错误答案──
+
+### Xem nó hoạt động
+
+[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler?opt=O0)Máy trộn bài học này như là máy áp suất nâng cao, loại cây đinh, cấu trúc, thiết bị và máy in để chạy, và sử dụng`code/main.py`输出 IR、SSA 和伪代码──这个链接打开`-O0`目标文件:三个槽变成局部变量,具为如果/else 合上两爪──
+
 ## 交付产物
 
 本课产 出 `outputs/skill-lifting-to-pseudocode.md` Sử dụng nó để nâng cao một hàm, cung cấp hướng dẫn cho mỗi dòng, và lấp đầy bảng khác biệt của văn bản chống biên dịch viên.

@@ -380,6 +380,29 @@ macho.function_bytes("_percent_change")[:4].hex()
 
 Kiểm chuẩn thành công: nhập danh sách, phân đoạn lập trình và mỗi hàm đều phù hợp với các công cụ thu thập, và không chạy trong thời gian thử nghiệm.
 
+## 评分实验
+
+5 cách về các bài học này. Sử dụng mã xây dựng của bạn để tìm ra mỗi câu trả lời, sau đó viết vào.`code/lab_answers.json`◊ số viết thành số, hoặc viết thành `"0x40"`Như vậy, các chuỗi được tạo thành các chuỗi JSON.
+
+1. `t1`:ledger-x86_64-O1.o 的 e_shoff,写成数字──
+2. `t2`:ledger-x86_64-O1.o Trung phần trăm_chang của st_size。
+3. `t3`:ledger-x86_64-O1.o 中 .text 的文件偏移,写成十六进制──
+4. `t4`:ledger-x86_64-O0.o 中的重定位类型名,排序后写成列表──
+5. `t5`:ledger-x86_64-O1.o 中 .rodata+0x14 处的五个 int 值,写成列表──
+
+检查你的答案:
+
+```bash
+cd phases/13-tools-and-protocols/32-program-anatomy-elf-from-scratch
+python3 code/lab.py
+```
+
+检查器在已提交的固定 上使用 `code/main.py`计算每个期望值── nó cho mỗi bài toán输出 `PASS``FAIL`Hoặc`TODO`Và tất cả, chỉ có 5 câu hỏi được thông qua khi chỉ có 0  xuất phát.`python3 code/lab.py my-answers.json`可检查另一个文件.`code/tests/test_lab.py`证明检查器 chấp nhận đúng câu trả lời并拒绝错误答案──
+
+### Xem nó hoạt động
+
+[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler)机器把本课作为它的前两个工位来运行.`percent_change`Mục tiêu của tài liệu đầu, thùng mở`.text`并读取这个符号──关闭 Các biểu tượng, bạn có thể xem những sự thật được cung cấp bởi biểu tượng──
+
 ## 本课产物
 
 本课产 出 `outputs/skill-program-anatomy-elf-from-scratch.md` Có thể sử dụng nó cho Claude,Cursor,Codex,OpenClaw,Hermes hoặc bất kỳ một phần nào của SKILL.md.

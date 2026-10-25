@@ -28,14 +28,14 @@ Bài học này sẽ xây dựng một bản ghi nhớ Server:Python và phiên 
 ### 现代请求分发循环(Dòng chuyển tiếp)
 
 ```text
-读取一行 JSON-RPC 文本
-解析外层 Envelope
-若为通知（Notification），则不予响应
-针对当前请求校验 params._meta
-根据 method 执行路由分发
-使用 resultType 与 serverInfo 封装成功结果
-写回一行 JSON-RPC 响应文本
-立即遗忘当前请求作用域的元数据
+read one JSON-RPC line
+parse the envelope
+if it is a notification, do not respond
+validate params._meta for this request
+route by method
+wrap success with resultType and serverInfo
+write one JSON-RPC response line
+forget request-scoped metadata
 ```
 
 Trong chế độ studio, có 3 quy tắc quan trọng:
@@ -116,7 +116,7 @@ Người chủ nhà nên sử dụng chúng để xác nhận giao tiếp và UI
 
  Đối với dữ liệu ghi chép riêng của người dùng, nên sử dụng `cacheScope: "private"` chia sẻ缓存绝不能跨授权上下文复用私有响应──
 
-现代数据变更推送 không còn được sử dụng `resources/subscribe`✿ Khách hàng 通过发起 `subscriptions/listen``resourceSubscriptions`Hoặc danh sách sự kiện thay đổi để nhận dài liên kết tiếp xúc
+现代数据变更推送 không còn được sử dụng `resources/subscribe`✿ Khách hàng 通过发起 `subscriptions/listen``resourceSubscriptions`Hoặc danh sách biến đổi sự kiện để nhận dài liên kết tiếp xúc.
 
 ### Lời khuyên (提示模板)
 
@@ -142,6 +142,12 @@ def complete(payload):
 现代 Server có thể gửi với khách hàng yêu cầu thông báo liên quan trực tiếp, hoặc tại khách hàng  mở `subscriptions/listen`流中推送通知──但服务器 **绝不能**主动发起独立的 JSON-RPC 求求
 
 Khi người xử lý cần lấy mẫu, tạo ra hoặc gốc, nó sẽ quay lại một`input_required`Kết quả: Sau khi nhập yêu cầu của khách hàng, sử dụng ID yêu cầu mới 重新发起原始方法调用.
+
+### 显式的 Legacy 兼容
+
+双时代(double-era) Server cũng có thể được thực hiện trong một sự tách biệt rõ ràng di sản phân chia trên phân chia `2025-11-25`握手──当请求中存在现代规范要求的 `_meta`字段时,它选择现代行为;当收到 `initialize`时,则走 Di sản 行为。
+
+Đừng để `2026-07-28`Xin hãy đi qua truyền thống, đừng để lại thời đại`resultType`字段塞进 Legacy 的初始化结果中──本课代码刻意只实现现代规范,以便让这些不变量保持清晰可见──
 
 ```figure
 t3-dispatch-loop
@@ -172,8 +178,8 @@ npx tsx main.ts --demo
 ## 练习与思考
 
 1. Từ một yêu cầu chuyển năng lực 字段, chứng minh Server 绝不会复用前请求声明的旧能力──
-2. 颠倒 `TOOLS``PROMPTS`及笔记数据的录入顺序, xác nhận tất cả các bảng điều tra kết quả vẫn duy trì ổn định chữ cái序列.
-3. Một sự phá hoại mới.`notes_delete`工具, và bên trong trình thực hiện gia nhập kiểm tra quyền kiểm tra, xác nhận`destructiveHint`仅作前端交互提示──
+2. 颠倒 `TOOLS``PROMPTS`及笔记数据的录入顺序, xác nhận tất cả các bảng điều tra kết quả vẫn giữ vững.
+3. Một sự phá hoại mới.`notes_delete`工具, và bên trong trình thực hiện gia nhập kiểm tra quyền nhận,并让 `destructiveHint`仅作为 UX提示──
 4. 补充 `resources/templates/list`接口, yêu cầu kèm `ttlMs``cacheScope`Và sự xác định của nó.
 5. Vì vậy`2025-11-25`编写一个完全隔离的 Legacy 适配器,并通过测试证明现代请求绝不会错进 Legacy 处理路径──
 
@@ -184,9 +190,9 @@ npx tsx main.ts --demo
 | 无状态 Server (Stateless server) | 仅从每个请求自身的元数据处理调用，无任何协议 Session 内存记忆 |
 | `server/discover` | 强制实现的现代方法，用于向调用方公布支持的版本与功能集 |
 | 完整结果 (Complete result) | 携带 `resultType: "complete"` 的成功现代结果 |
-| 可缓存结果 (Cacheable result) | 附带强制 `ttlMs` 与 `cacheScope` 提示的发现、列表或只读结果 |
+| 可缓存结果 (Cacheable result) | 附带强制 `ttlMs` 与 `cacheScope` 提示的发现、列表或资源读取结果 |
 | 确定性列表 (Deterministic list) | 逻辑相同的注册表必须输出完全一致、可复现的条目顺序 |
-| Server 身份 (Server identity) | 在结果 `_meta` 中携带的 `io.modelcontextprotocol/serverInfo` 标识 |
+| Server 身份 (Server identity) | 推荐在结果 `_meta` 中携带的 `io.modelcontextprotocol/serverInfo` 标识 |
 | Tool 业务错误 (Tool error) | Tool 调用正常被解析执行，但业务逻辑失败，返回包含 `isError: true` 的 content |
 | 协议错误 (Protocol error) | 非法的 JSON-RPC 格式或无效的 MCP 请求参数，直接通过顶层 `error` 报错返回 |
 

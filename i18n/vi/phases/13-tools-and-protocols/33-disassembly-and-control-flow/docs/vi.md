@@ -471,6 +471,29 @@ Ví dụ: thêm một điểm điều chỉnh trực tiếp,并 mở rộng phâ
 
 Định nghĩa thành công là:`python3 code/main.py cfg`能列出每一个可能被调用者及证明其重定位, và tất cả các tài liệu mục tiêu vẫn thông qua tham khảo đối chiếu.
 
+## 评分实验
+
+5 cách về các bài học này. Sử dụng mã xây dựng của bạn để tìm ra mỗi câu trả lời, sau đó viết vào.`code/lab_answers.json`◊ số viết thành số, hoặc viết thành `"0x40"`Như vậy, các chuỗi được tạo thành các chuỗi JSON.
+
+1. `t1`:递归下降在 -O1 的级 中解码出的指令数――
+2. `t2`:- Tổng số khối cơ bản của O1
+3. `t3`:- Tổng địa chỉ của vòng trung của O1, viết成十六进制──
+4. `t4`Trong các trang web, bao gồm 0x14 của chỉ thị quét đường, viết成十六进制
+5. `t5`:-O0 của điểm số 中跳转表的条目数──
+
+检查你的答案:
+
+```bash
+cd phases/13-tools-and-protocols/33-disassembly-and-control-flow
+python3 code/lab.py
+```
+
+检查器在已提交的固定 上使用 `code/main.py`计算每个期望值── nó cho mỗi bài toán输出 `PASS``FAIL`Hoặc`TODO`Và tất cả, chỉ có 5 câu hỏi được thông qua khi chỉ có 0  xuất phát.`python3 code/lab.py my-answers.json`可检查另一个文件.`code/tests/test_lab.py`证明检查器 chấp nhận đúng câu trả lời并拒绝错误答案──
+
+### Xem nó hoạt động
+
+[Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler?program=trap&sweep=linear)Máy tính đưa bài học này như là giải mã của nó và các khối cơ bản để chạy.`sweep-trap.o`: giải mã台 hiển thị được coi là mã giải mã bốn chữ cái dữ liệu, và một dấu hiệu được chỉ ra nằm ở`0x13`处 `addq`内部、地址 `0x14`                                                                                                                                                                                                                                                              
+
 ## 本课产物
 
 本课包含 `outputs/skill-disassembly-and-control-flow.md` Sử dụng nó để chuyển đổi tên tập tin mục tiêu và hàm thành các đơn sơ đã được kiểm tra, các khối cơ bản, các loại bên cạnh, các nút kiểm soát, cũng như tất cả các chuyển giao kiểm soát chưa được giải quyết. Nó yêu cầu cung cấp các phương pháp kiểm tra tham khảo, hai phương pháp lập lại, tính toán chữ cái, chứng cứ vị trí lại của mỗi bảng phục hồi, cũng như các thông tin nội dung vẫn chưa được biết.

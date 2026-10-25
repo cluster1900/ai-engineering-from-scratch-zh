@@ -85,9 +85,9 @@ Không cần chỉ thêm một lần dữ liệu trên đối tượng kết n�
 - `-32021`ThiếuCái năng của khách hàng
 - `-32022`Không hỗ trợProtocolVersion(不支持的协议版本)
 
-Ngay cả khi đã được đưa vào danh sách Warisan White List, đã nhận ra những sai lầm hiện đại cũng chứng minh nó là Server hiện đại. Một khi Server đã thể hiện được khả năng hiểu biết của từ ngữ hiện đại, gửi `initialize`Nó tạo nên một phiên bản nguy hiểm của các cuộc tấn công hạ cấp.
+Ngay cả khi đã được đưa vào danh sách Warisan White List, đã nhận ra những sai lầm hiện đại cũng chứng minh nó là Server hiện đại. Một khi Server đã thể hiện được khả năng hiểu biết của từ ngữ hiện đại, tái gửi.`initialize`就构成降级.
 
-绝不能把 `-32601`(方法未找到) như là bằng chứng đầy đủ về việc vào Legacy. Nó chỉ đại diện cho việc đối tác có đủ điều kiện để khởi động một lần có thời gian hạn chế về Legacy 探测.
+绝不能把 `-32601`(method unfound) như là bằng chứng đầy đủ về việc vào Legacy. Nó chỉ đại diện cho việc đối tác có quyền khởi động một lần có thời gian giới hạn.
 
 ### 白名单代表运维意图,而非协议证据
 
@@ -99,7 +99,7 @@ client.add_server("archive", archive_transport, allow_legacy=True)
 
 必须将此选项绑定到明确配置的命令或端点──严禁使用通配符让任意未知 Server tự động hạ cấp为较弱语义──未配置`allow_legacy=True`Đáng lẽ, những người đã gặp phải những sự khác biệt sau khi phát hiện ra kết quả, sẽ không nhận được.`initialize`
 
-Đơn chỉ cấp quyền khởi động cuộc điều tra. Khách hàng gửi đơn trong thời gian hạn trong quá trình chuyển tiếp.`initialize`Xin vui lòng, rồi nghiêm túc yêu cầu đáp ứng tất cả các điều kiện sau:
+Đơn chỉ cấp quyền khởi động cuộc thăm dò. Nó không quyết định thời gian của thời điểm. Khách hàng gửi đơn trong thời gian hạn trong quá trình chuyển tiếp.`initialize`Xin vui lòng, rồi nghiêm túc yêu cầu đáp ứng tất cả các điều kiện sau:
 
 -  Gửi nhận JSON-RPC phù hợp với ID yêu cầu `2.0`响应;
 - Chỉ chứa`result`字段,且无 `error`-
@@ -107,7 +107,29 @@ client.add_server("archive", archive_transport, allow_legacy=True)
 - 包含对象类型 `capabilities`字段;
 - 包含非空字符串 `name`Với`version`của `serverInfo`Đối tượng:
 
-Bất kỳ phiên bản nào siêu thời gian, cắt, báo lỗi, hình thành kết quả, ID 错乱 hoặc không được hỗ trợ đều thất bại trực tiếp. Chỉ có kết quả đúng hướng của cấu trúc hoàn toàn phù hợp mới có thể được đánh dấu là Legacy 时代.
+Bất kỳ phiên bản nào siêu thời gian, cắt, báo lỗi, kết quả hình dạng, ID, sai lầm hoặc không được hỗ trợ đều thất bại trực tiếp. Chỉ có kết quả đúng hướng của cấu trúc hoàn toàn phù hợp mới có thể đánh dấu kết quả như Legacy 时代.`legacy_probe_timeout_ms`传给传输适配器; thực tế studio hoặc HTTP 适配器 phải thực hiện thời gian hạn này, chứ không chỉ ghi lại nó.
+
+Để truyền tải vào thời đại được chọn, đừng tìm lại trước mỗi lần sử dụng.
+
+### Di sản là một phần chia sẻ
+
+Một khi truy vấn hạn chế trở lại chứng chỉ Legacy đúng đắn, Khách hàng sẽ sử dụng Legacy  phiên bản được chọn nghiêm ngặt theo định nghĩa của phiên bản sửa đổi này:
+
+1. 校验响应信封与关联 ID──
+2. 校验协商出的修订版 thuộc về bộ sưu tập Legacy đã được phân bổ.
+3. ghi lại khả năng qua các bài kiểm tra với Server Identity
+4. Chỉ trong tất cả kiểm tra thông qua sau khi gửi `notifications/initialized`
+5. Trong vòng đời truyền tải sử dụng Legacy yêu cầu cấu trúc
+
+Chiếc phân đoạn này chỉ tồn tại cho kết nối với kết nối đã biết, nó không phải là thiết kế mặc định của máy chủ mới hoặc yêu cầu mới. Nếu chuyển tiếp khởi động lại hoặc kết nối thay đổi, bỏ lại lưu trữ và đàm phán lại cho thời điểm kết nối.
+
+### 工具 phát hiện và lưu trữ
+
+Đối với mỗi hoạt động đối với kết thúc`tools/list`现代结果包含 `resultType``ttlMs`Với`cacheScope`                                                                                                                                                                                                                                                              
+
+ Đối với Legacy Server 缺失 `resultType`Tình huống, Khách hàng phải xem xét`"complete"`❖ không yêu cầu trước khi đàm phán thời đại của đáp ứng mang theo hiện đại缓存字段──
+
+Server 应返回确定性排序──Client cũng nên ở trong 合并前排序, để tựa trình đăng ký địa phương không phụ thuộc vào quá trình khởi động 时序──
 
 ### 命名空间无冲突合并
 
@@ -117,17 +139,33 @@ Hai máy chủ có thể đã bị lộ tên.`search`Các công cụ:
 2. **冲突时拒绝（Reject on collision）**:不加载重复工具,并抛出清晰的配置报错.
 3. **静默覆盖（Silent overwrite）**- Có thể là:**坚决杜绝**Nó sẽ ẩn mô hình thực sự được sử dụng mục tiêu của máy chủ.
 
+Đồng thời lưu giữ quy định danh với địa danh.`tools/call`使用所属 Server 声明的本地名──
+
 ### 调用路由机械
 
 路由是纯粹的映射查找:
 
 ```text
-规范工具名
-  -> 对端名称 + 本地工具名
-  -> 生成全新的 JSON-RPC 请求 ID
-  -> 现代请求元数据 或 显式 Legacy 结构
-  -> 匹配响应 ID 并返回
+canonical tool name
+  -> peer name + local tool name
+  -> new JSON-RPC request id
+  -> modern request metadata or explicit legacy shape
+  -> matching response id
 ```
+
+Khi truyền tải không thể sử dụng, đừng gửi đi.`tools/list` Trong các yêu cầu trong quá trình chuyển tải bị mất, nếu các chiến lược an ninh của hoạt động cho phép, có thể sử dụng ID JSON-RPC mới để thử lại
+
+### 通知与订阅
+
+现代的列表与资源变更只通过客户 开放 `subscriptions/listen`流到达──Client 发送通知过器, chờ `notifications/subscriptions/acknowledged`,并用通知元数据中的听 请求身份证 关联事件──
+
+断开后发起新听 请求并重新拉取相关列表或资源──现代流不使用 `Last-Event-ID`恢复:
+
+### Không có Server 发起的请求
+
+现代 Server 不会为样本化、征集或根向客户端发起独立的 JSON-RPC 请求──它们返回 `input_required`,Client trong đáp ứng trong đó được đặt vào yêu cầu sau khi thử lại yêu cầu ban đầu:.
+
+满足输入期间不要阻塞端的响应读取器──保持关联关系,并为重试生成新的 JSON-RPC ID──
 
 ```figure
 tp-client-merge
@@ -135,7 +173,7 @@ tp-client-merge
 
 ## 动手实践
 
-`code/main.py`Thông qua bộ nhớ đối với hàm kết thúc rõ ràng cho thấy toàn bộ cây quyết định giao thức. Nó kết nối với hai kết thúc hiện đại và một biểu thức biểu thị biểu tượng của các công cụ của họ:
+`code/main.py`Thông qua bộ nhớ đối với hàm kết thúc minh bạch cho thấy toàn bộ cây quyết định giao thức. Nó kết nối với hai kết thúc hiện đại và một biểu tượng biểu tượng trắng.
 
 ```bash
 cd code
@@ -147,14 +185,23 @@ python3 -m unittest discover tests -v
 
 - 现代请求逐次重复元数据;
 - 遇到 `-32022`时重试现代发现,绝不退化为握手;
-- 已识别的现代错误绝不发生降级;
-- 超时、断开与未知错误在无白名单时绝不触发 `initialize`-
+- 已识别的现代错误绝不会发生降级 (đặc dù nó nằm trong danh sách trắng);
+- 超时、连接关闭、空响应与未识别的错误在无白名单时绝不触发 `initialize`-
 - Đơn chỉ đơn chỉ nhận được quy định đúng hướng `initialize`响应后才 được thiết lập cho Di sản;
+- Kết quả của Legacy không được hình thành hoặc không được hỗ trợ khiến cho nó không thể sử dụng được;
 - Thời đại được chọn được xác định là tồn tại trong chu kỳ đời sống truyền tải.
 
 ## 交付物
 
-本课交付 `outputs/skill-mcp-client-harness.md` Nó có thể được sử dụng cho các yêu cầu hiện đại 盖、studio 时代协商、确定性命名空间合并、安全路由以及安全关闭的 Legacy 兼容分支提供规范脚手架。
+本课交付 `outputs/skill-mcp-client-harness.md`△ nó có thể được sử dụng cho các yêu cầu hiện đại 盖、studio 时代协商、确定性命名空间合并、路由以及失败即关闭(fail-closed) của Legacy 兼容分支提供规范脚手架。
+
+## 练习与思考
+
+1. 让一个模拟 Server  quay lại `-32022`Không có phiên bản được cả hai bên hỗ trợ, xác nhận Khách hàng  trực tiếp thất bại không gửi `initialize`
+2. Để tạo ra một trình duyệt của Legacy Server 加入白名单,让它受限 `initialize`探测超时, chứng minh phải đối đầu giữ `unknown`Và không thể sử dụng được.
+3. Vì hai quyền trên văn bản thêm `cacheScope: "private"`Các công cụ danh sách, xác nhận Khách hàng sẽ không bao giờ chia sẻ kết quả lưu trữ của một trên một bên dưới cho một bên khác.
+4. Thay đổi chiến lược xung đột thành từ chối, và đưa ra báo cáo thất bại có chứa hai tên đối đầu.
+5. 添加一个有限的 `subscriptions/listen`模拟器;流丢失时使用新的请求ID 重新听并重新拉取工具──
 
 ## 核心专业术语
 
@@ -168,6 +215,8 @@ python3 -m unittest discover tests -v
 | 正向 Legacy 证据 (Positive legacy evidence) | 针对受支持旧版协议返回的有效、ID 匹配的 `initialize` 结果 |
 | 合并命名空间 (Merged namespace) | 跨所有活跃对端规范化后的工具全局名称集合 |
 | 冲突策略 (Collision policy) | 处理重名工具的加前缀或报错拒绝规则 |
+| 时代缓存 (Era cache) | 为单个传输对端保存的已选现代或 Legacy 行为 |
+| 传输恢复 (Transport recovery) | 重启或重连、重新发现、重新列出，并以新 ID 安全重试 |
 
 ## 延伸阅读
 
@@ -175,3 +224,4 @@ python3 -m unittest discover tests -v
 - [MCP Server Discovery](https://modelcontextprotocol.io/specification/2026-07-28/server/discover)
 - [MCP stdio Transport](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio)
 - [MCP Versioning](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning)
+- [MCP Tools](https://modelcontextprotocol.io/specification/2026-07-28/server/tools)

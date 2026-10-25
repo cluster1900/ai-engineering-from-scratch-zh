@@ -150,6 +150,10 @@ Sự sắp xếp nghiêm ngặt này có thể tạo ra sự hiểu biết khôn
 
 Nhưng phải phân biệt hoàn toàn hai thời đại. Các yêu cầu hiện đại thông qua việc xác định dữ liệu của mỗi lần yêu cầu bắt buộc; các kết nối phiên bản cũ chỉ có thể được xác định thông qua các đường ngược đã được quy định bởi các tài liệu đặc biệt.**绝不能把 `initialize` 当作连接 `2026-07-28` Server 的默认行为。**
 
+Vì vậy, vô quốc tịch có ý nghĩa khác nhau trong các thời đại khác nhau.`2026-07-28`Trung, nó là một hiệp ước không thay đổi: mỗi yêu cầu thường đều có thể được giải thích độc lập, và không có MCP Session.`2025-11-25`Trong phiên bản trước, các khả năng khởi tạo và đàm phán thuộc về một kết nối nào đó, vì vậy bộ điều chỉnh có thể giữ lại trạng thái kết nối phiên bản cũ này.
+
+Hai nghĩa này không cấm trạng thái ứng dụng lâu dài. Các quy trình làm việc, nhiệm vụ hoặc bản thảo có thể được lưu trữ trong kho lưu trữ chung thông qua một cái tay không minh bạch. Khách hàng đặt cái tay này như một mục nhập thông thường, mỗi bản sao sẽ được chứng nhận và ủy quyền sử dụng nó.
+
 ```figure
 mcp-tool-call
 ```

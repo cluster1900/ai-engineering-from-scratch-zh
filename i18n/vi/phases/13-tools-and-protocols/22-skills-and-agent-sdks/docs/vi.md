@@ -87,7 +87,7 @@ npx skills add cluster1900/ai-engineering-from-scratch-zh --skill skill-contract
 sẽ`SKILL_ROOT`设置 cho bộ cài đặt  báo cáo 绝对路径.`SKILL.md`Đăng ký, thay vì danh mục nguồn của khóa học, cũng không là hiện tại:
 
 ```bash
-# 将占位符替换为安装器打印出的绝对路径
+# Replace the placeholder with the destination printed by the installer.
 SKILL_ROOT="$(cd "/absolute/path/to/skill-contract-reviewer" && pwd -P)"
 test -f "$SKILL_ROOT/SKILL.md"
 printf 'SKILL_ROOT=%s\n' "$SKILL_ROOT"

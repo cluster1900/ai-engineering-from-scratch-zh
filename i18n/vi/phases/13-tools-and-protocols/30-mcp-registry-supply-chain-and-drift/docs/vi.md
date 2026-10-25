@@ -201,9 +201,9 @@ sẽ được đặt giữa các thiết bị điều khiển và các đường
 
 ```text
 Registry sync -> artifact verifier -> live discovery -> admission controller -> route table
-                                                |                 |
-                                                v                 v
-                                           evidence store    admission ledger
+                                               |                 |
+                                               v                 v
+                                          evidence store    admission ledger
 ```
 
 Để phân bổ các nhiệm vụ trên với nhau, nhiệm vụ Registry cũng như các nhiệm vụ liên tục chỉ cần quyền đọc dữ liệu; nhiệm vụ kiểm tra công trình cần quyền truy cập gói phần mềm; đường dẫn điều chỉnh và điều khiển cần kích hoạt quyền nhận dấu vân tay. Không một bộ phận nào cần nắm bắt toàn bộ bằng chứng.
