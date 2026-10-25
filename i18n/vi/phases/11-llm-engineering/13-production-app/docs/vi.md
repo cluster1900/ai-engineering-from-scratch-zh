@@ -143,7 +143,7 @@ Give up: return fallback response
 **Fallback model chain。**Khi mô hình chính không thể sử dụng, trên đường dẫn hướng xuống:
 
 ```
-claude-sonnet-4-20250514 -> gpt-4o -> gpt-4o-mini -> cached response -> "Service temporarily unavailable"
+claude-sonnet-5 -> gpt-4o -> gpt-4o-mini -> cached response -> "Service temporarily unavailable"
 ```
 
 Mỗi bước đều có chất lượng thay đổi khả dụng. Người dùng luôn nhận được một số phản ứng.
@@ -301,9 +301,23 @@ from typing import AsyncGenerator
 
 
 class ModelName(Enum):
-    CLAUDE_SONNET = "claude-sonnet-4-20250514"
+    CLAUDE_SONNET = "claude-sonnet-5"
     GPT_4O = "gpt-4o"
     GPT_4O_MINI = "gpt-4o-mini"
+
+
+def resolve_primary_model() -> ModelName:
+    override = (os.environ.get("LLM_MODEL") or "").strip()
+    if not override:
+        return ModelName.CLAUDE_SONNET
+    for model in ModelName:
+        if model.value == override:
+            return model
+    known = ", ".join(m.value for m in ModelName)
+    raise ValueError(f"LLM_MODEL={override!r} is not in the pricing registry (known: {known})")
+
+
+PRIMARY_MODEL = resolve_primary_model()
 
 
 MODEL_PRICING = {
@@ -312,7 +326,7 @@ MODEL_PRICING = {
     ModelName.GPT_4O_MINI: {"input": 0.15, "output": 0.60},
 }
 
-FALLBACK_CHAIN = [ModelName.CLAUDE_SONNET, ModelName.GPT_4O, ModelName.GPT_4O_MINI]
+FALLBACK_CHAIN = [PRIMARY_MODEL] + [m for m in ModelName if m is not PRIMARY_MODEL]
 
 
 @dataclass
@@ -1083,7 +1097,7 @@ Sử dụng SDKs thực tế của nhà cung cấp  thay thế các cuộc gọi
 #         yield delta
 #
 #
-# async def call_anthropic(prompt, model="claude-sonnet-4-20250514"):
+# async def call_anthropic(prompt, model="claude-sonnet-5"):
 #     client = anthropic.AsyncAnthropic()
 #     async with client.messages.stream(
 #         model=model,

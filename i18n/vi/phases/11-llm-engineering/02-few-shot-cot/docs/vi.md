@@ -439,22 +439,20 @@ def tree_of_thought_solve(question, client, model, breadth=3, depth=3):
 
 ```python
 def solve_with_escalation(question, examples, client, model):
-    system, user = build_cot_prompt(question, examples)
-    single_response = call_llm(client, model, system, user, temperature=0.0)
-    single_answer = extract_answer(single_response)
+    single_answer, _ = few_shot_cot_solve(question, examples, client, model)
 
     sc_answer, confidence, _, _ = self_consistency_solve(
         question, examples, client, model, n_samples=5
     )
 
-    if confidence >= 0.8:
+    if confidence >= 0.8 and single_answer == sc_answer:
         return sc_answer, "self_consistency", confidence
 
     tot_answer, _ = tree_of_thought_solve(question, client, model)
     return tot_answer, "tree_of_thought", None
 ```
 
-升级逻辑:先尝试便宜方案(单次 CoT) ・・・ Nếu sự tự tin nhất quán 低于0.8(5 样本中低于4 个一致), thì nâng cấp đến ToT──这样能平衡成本和准确率大多数问题便宜地解决,难题获得更多计算──
+升级逻辑:先尝试便宜方案(单次 CoT) ――单条确定性路径没有投票占比, vì vậy kiểm tra chất lượng của nó là đồng nhất: nhiệt độ 0 của câu trả lời phải giống như hầu hết các câu trả lời của các đường mẫu. Nếu khác, hoặc sự tự tin nhất quán 低于 0.8 (((5 trong số 5 mẫu ít hơn 4 一致), thì nâng cấp đến ToT── như vậy có thể cân bằng chi phí và tỷ lệ chính xác Hầu hết các vấn đề dễ dàng giải quyết, khó khăn để có được nhiều tính toán hơn.
 
 ## Sử dụng nó
 
