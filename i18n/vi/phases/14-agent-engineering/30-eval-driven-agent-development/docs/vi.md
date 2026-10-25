@@ -19,7 +19,7 @@ Các đại lý có thể thông qua demo. Chúng sẽ thất bại trong quá t
 ## 概念
 ### 3 cấp đánh giá
 
-1. **Static benchmarks** dùng để mã hóa của SWE-bench Verified(Dạy 19) 、 dùng để duyệt web trên bàn WebArena/OSWorld(Dạy 20) 、 dùng để nói chung GAIA(Dạy 19) 、 dùng để sử dụng công cụ của BFCL V4(Dạy 06)  dùng để xuyên mô hình so sánh và tháo quay gập。污染 là hiện hữu thực sự:SWE-bench+ 发现 32.67% giải pháp rò rỉ──始终报告 Verified / +-audit 分数──
+1. **Static benchmarks** Sử dụng mã hóa của SWE-bench Verified(Dạy 19) 、 dùng để duyệt web trên bàn WebArena/OSWorld(Dạy 20) 、 dùng để nói chung GAIA(Dạy 19) 、 dùng để sử dụng công cụ của BFCL V4(Dạy 06)  dùng để so sánh mô hình và khép lại  Bẩn là hiện hữu thực sự:SWE-bench+  phát hiện 32,67% của giải pháp rò rỉ──始终报告 SWE-bench Verified 上的分数,或SWE-bench+ 这类经过泄漏分分数 trên tập dữ liệu kiểm toán
 
 2. **Custom offline evals**  您的产品形态:
    - LLM-as-judge ((Langfuse、Phoenix、Opik  Bài học 24)。
@@ -51,7 +51,7 @@ Chuyện liên quan:
 
 ### Chuyện 14 sẽ xảy ra
 
-Mỗi lớp học trong giai đoạn 14 sẽ tạo ra các trường hợp đánh giá:
+Phần lớn các lớp học trong giai đoạn 14 sẽ tạo ra các trường hợp đánh giá.
 
 | Lesson | 它生成的 Eval case |
 |--------|------------------------|
@@ -74,7 +74,7 @@ Mỗi lớp học trong giai đoạn 14 sẽ tạo ra các trường hợp đán
 | 28 Orchestration | Supervisor 路由到正确 specialist |
 | 29 Runtime Shapes | DLQ 处理 N% failure |
 
-Nếu bộ đánh giá của bạn bao gồm từng phần, bạn đã bao gồm giai đoạn 14.
+Nếu bộ đánh giá của bạn đã chuẩn bị cho mỗi vụ án, bạn đã bao gồm các yếu tố chính của giai đoạn 14.
 
 ### Eval 驱动开发会在哪里失败
 

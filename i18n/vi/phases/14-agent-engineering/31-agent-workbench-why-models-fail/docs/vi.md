@@ -121,7 +121,7 @@ Thuyết sử dụng trên mô hình hiện có dữ liệu. Nó đáng để hi
 
 Đó là một phần của việc bạn không cần khách hàng.
 
-- LangChain của *Anatomy of an Agent Harness* đã đưa ra mười một bộ phận  các lời nhắc, công cụ, móng, hộp rác, dàn nhạc, bộ nhớ, kỹ năng, phụ kiện, cũng như một vòng lặp runtime thảm đạm── nó không có danh sách hàng đợi ‒ như một đơn vị triển khai nhân viên ‒ triggers semantics、 như một điểm chú ý độc lập của việc duy trì phiên, hoặc chính sách ủy quyền── nó đưa các harness như một đối tượng bạn sắp xếp, chứ không phải là một hệ thống bạn triển khai──
+- LangChain của *Anatomy of an Agent Harness* từng giới thiệu các bộ phận của bộ phận: các thiết bị, công cụ, móng, hộp rác, dàn xếp, bộ nhớ, kỹ năng, phụ tùng, cũng như một vòng lặp thảm đạm── nó không có danh sách hàng đợi ‒ như một đơn vị triển khai nhân viên ‒ triggers semantics─ như một sự kiên trì của phiên tập trung độc lập, hoặc chính sách ủy quyền── nó coi bộ phận như một đối tượng bạn configure, chứ không phải là một hệ thống bạn triển khai.
 - Addy Osmani của * Cơ sở kỹ thuật vận động viên *  đề xuất `Agent = Model + Harness`Các mô hình khung và dao, nhưng không có lời giải thích thêm về việc vòng xoắn được tạo thành từ gì. Nó trông giống như một hình dáng, chứ không phải là một spec.
 - Anthropic 和 OpenAI đối với bề mặt  thảo luận sâu sắc nhất, nhưng vẫn còn ở trong thời gian chạy riêng trong 内── Tháng 4 năm 2026 Agents SDK trong harness-computing separation thông báo là đầu tiên xác nhận rõ ràng có thể kiểm soát-vầu / dữ liệu-vầu phân chia các nhà cung cấp mảnh── đó là một ý tưởng nguyên thủy, không phải là một thứ mới──
 - Agent_harness book 将 harness 视为 config object(Jaymin West của *Agentic Engineering*, chương 6), trong đó có một câu mạnh nhất là:
@@ -185,7 +185,7 @@ Hãy coi chúng như các điểm dữ liệu, chứ không phải quyền lực
 Các khung của nhà cung cấp:
 
 - [Addy Osmani, Agent Harness Engineering](https://addyosmani.com/blog/agent-harness-engineering/) `Agent = Model + Harness`和 ratchet pattern; cơ sở hạ tầng phần còn yếu hơn
-- [LangChain, The Anatomy of an Agent Harness](https://blog.langchain.com/the-anatomy-of-an-agent-harness/) 十一个组件: các lời nhắc, công cụ, móng, dàn nhạc, hộp cát, bộ nhớ, kỹ năng, phụ kiện, thời gian chạy;省略 queues, deployment, autz
+- [LangChain, The Anatomy of an Agent Harness](https://blog.langchain.com/the-anatomy-of-an-agent-harness/) 核心 harness 组件:phản ứng, công cụ, móng, dàn nhạc, hộp rác, bộ nhớ, kỹ năng, phụ kiện, thời gian chạy;省略 queues、deployment、authz
 - [OpenAI, Harness engineering: leveraging Codex in an agent-first world](https://openai.com/index/harness-engineering/) Codex 团队 đối với thời gian chạy của nó  xung quanh bề mặt
 - [OpenAI, Unrolling the Codex agent loop](https://openai.com/index/unrolling-the-codex-agent-loop/) 将 đại lý vòng lặp 归约为函数调用 上一个 `while`
 - [Anthropic, Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)  bề mặt đường chân trời dài trong thời gian chạy cụ thể

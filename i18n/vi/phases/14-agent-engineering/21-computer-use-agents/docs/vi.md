@@ -10,7 +10,7 @@
 ## Học mục tiêu
 
 - 描述 Claude sử dụng máy tính:输入截图,输出键盘/鼠标命令,不使用访问性 API。
-- Nói ra ba mô hình này trên OSWorld / WebArena / Online-Mind2Web trên tiêu chuẩn số chữ số:
+- Gặp lại các bài học được trích dẫn trong bài đăng này: OpenAI CUA trên OSWorld / WebArena / WebVoyager, cũng như Gemini 2.5 Computer Use trên Online-Mind2Web.
 - 解释 Gemini 2.5 Sử dụng máy tính 文档中的逐步安全模式──
 - 总结 these three models co-executed不可信的输入契约──
 

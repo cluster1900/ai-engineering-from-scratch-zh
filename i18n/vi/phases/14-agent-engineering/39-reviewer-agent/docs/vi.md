@@ -40,7 +40,7 @@ flowchart LR
 | Verification quality | acceptance command 是否真的证明了目标，还是只证明了一个更弱的版本？ |
 | Handoff readiness | 下一个 session 是否能从当前状态干净地接手？ |
 
-总分 10 分──低于 7 分是软失败;低于 5 分是硬失败──
+Tổng分 10 分── dưới 7 分 là thất bại mềm; dưới 5 分, hoặc để một độ là 0 分, là thất bại khó.
 
 ### Reviewers là một vai trò độc lập, không phải một mô hình độc lập.
 

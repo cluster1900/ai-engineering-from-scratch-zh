@@ -76,7 +76,7 @@ Mỗi thất bại xác nhận đều phải quay lại quan sát cấu trúc, �
 
 ### Sandboxing
 
-Việc thực hiện công cụ là ranh giới hộp rác。详情见 Bài học 09。简短版本: Mỗi công cụ 都应指定读写表面、网络访问、timeout、memory cap。通用`run_shell(cmd)`là tín hiệu nguy hiểm; cụ thể `git_status()`Thêm an toàn hơn.
+Việc thực hiện công cụ là ranh giới hộp rác。详情见阶段 13 · 26。简短版本: mỗi công cụ 都应指定读写面、网络访问、timeout、记忆 cap。通用`run_shell(cmd)`là tín hiệu nguy hiểm; cụ thể `git_status()`Thêm an toàn hơn.
 
 
 ```figure

@@ -109,7 +109,7 @@ Có ba mô hình có thể phân biệt một tập hợp quy tắc có thể k�
 
 **规则过期作为强制机制。**Mỗi quy tắc đều có.`expires_at`日期(默认是编写后 90 天)  Khi một điều khoản không quá hạn quy tắc连续 60 天没有任何违规时, kiểm tra器 sẽ phát hành cảnh báo; lần tiếp theo Quarterly Review hoặc giải thích lý do để giữ lại nó, hoặc sẽ làm suy yếu nó vì`info`, hoặc xóa nó. AI Code Review của Cloudflare sản xuất dữ liệu: 2026 năm 4 月,30 天内跨 5,169 repo运行 131,246 lần xem xét) cho thấy, có quy tắc của cơ chế hết hạn rõ ràng có thể duy trì trong mỗi repo 30 条 quy tắc; không có cơ chế hết hạn quy tắc tập hợp tăng lên 80+, và hầu hết không bao giờ chạm vào.
 
-**Markdown 作为 source，JSON 作为 cache。** `agent-rules.md`là tác giả và bảo vệ tài liệu;`agent-rules.lock.json`là kiểm tra器 trong đường nóng 中读取的缓存──lock bởi pre-commit hook 重新生成──Markdown khác nhau 便于评审; JSON parsing sẽ không vào mỗi lượt──形态与`package.json`- `package-lock.json`和 `Cargo.toml`- `Cargo.lock`Tương tự như vậy.
+**Markdown 作为 source，JSON 作为 cache。** `agent-rules.md`là tác giả và bảo vệ tài liệu;`agent-rules.lock.json`là kiểm tra viên trong đường nóng 中读取的缓存──lock bởi pre-commit hook 重新生成──Markdown khác nhau 便于评审;Markdown parsing sẽ không vào mỗi lượt, vì kiểm tra viên chỉ tải trước được cấu trúc tốt JSON nhỏ hình dạng với `package.json`- `package-lock.json`和 `Cargo.toml`- `Cargo.lock`Tương tự như vậy.
 
 ## Sử dụng nó
 

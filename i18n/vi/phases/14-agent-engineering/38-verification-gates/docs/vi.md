@@ -84,7 +84,7 @@ python3 code/main.py
 
 ## Thực tế trong tình hình sản xuất
 
-4 kiểu sẽ đưa cánh cổng từ một công việc khác  nâng cao cho cạnh quyết định 。
+5 kiểu sẽ đưa cánh cổng từ một công việc khác  nâng cao cho cạnh quyết định 。
 
 **Defense-in-depth，而不是 single gate。**Hook trước giao dịch → kiểm tra tình trạng CI → hook trước công cụ authz → trước kết hợp cổng。 mỗi tầng đều xác định, do đó thất bại trong một tầng 会被下一层捕获。microservices.io của 2026 年 3 月 playbook 明确指出: hook trước giao dịch là không thể vượt qua, bởi vì với kỹ năng bên mô hình khác nhau, nó không phụ thuộc vào đại lý 遵循指令。 kiểm tra cổng 位于 CI / pre-merge 层。
 

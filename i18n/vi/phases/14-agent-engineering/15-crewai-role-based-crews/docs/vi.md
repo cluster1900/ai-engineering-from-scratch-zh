@@ -3,7 +3,7 @@
 > CrewAI là một framework đa đại lý dựa trên vai trò năm 2026 . Có bốn thành phần cơ bản: Agent, Task, Crew, Process.
 
 **类型：**Học tập + xây dựng
-**语言：**Python (stdlib)
+**语言：**Python(使用 numpy)
 **先修：**Giai đoạn 14 · 12 (Tình mẫu lưu lượng làm việc), Giai đoạn 14 · 14 (Tình mẫu diễn viên)
 **时间：**约75分钟
 
@@ -14,8 +14,8 @@
 - 区分 Crews (tổ chức dựa trên vai trò của chủ nhân) với Flow (tổ chức của các nhóm)
 - Sử dụng `@tool`trang trí và `BaseTool`Phân loại 接入 công cụ; hiểu các kết quả cấu trúc và lấy văn bản tự do.
 - Nói ra bốn loại bộ nhớ của CrewAI, cũng như mỗi loại có giá trị sử dụng vào thời điểm nào.
-- 实现一个工作三 经纪人团队 研究员,作家,编辑,产出一份简报
-- 识别三种 CrewAI thất bại: tức thời-blowat, quản lý-LLM thuế, giao hàng hỏng lẻo.
+- Sử dụng Python thông thường để thực hiện một nhóm đại lý, nhà nghiên cứu, nhà văn, biên tập viên, sản xuất một bản ngắn.
+- 识别四种 CrewAI thất bại: ngay lập tức-blowat, quản lý-LLM thuế, giao hàng hỏng lẻo, Crew-as-production.
 
 ## 问题
 
@@ -120,7 +120,7 @@ Trong đội ngũ trên sử dụng`memory=True`        
 - 亚秒级延迟预算――Trang bậc sẽ tăng chuyến đi vòng lại―― ngay cả các trình tự cũng sẽ có chứa các câu chuyện sau và các lời nhắc về các kết quả trước đây――
 - Một vòng lặp đại lý đơn ⋅ nhảy qua khung; một vòng lặp đại lý ⋅ Bài học 1) thêm sổ đăng ký công cụ ⋅ 更短。
 
-Bài học 17 ((Quả hợp tác cơ quan) sử dụng Matrix  đã chứng minh điều này.
+Bài học 28 ((Orchestration Patterns) 把这些拓学并排比较──简短版本:CrewAI 位于合作角色基于角落──
 
 ### Hình dạng phụ thuộc
 
@@ -129,7 +129,7 @@ Bài học 17 ((Quả hợp tác cơ quan) sử dụng Matrix  đã chứng minh
 ### Mô hình này sẽ xuất hiện ở đâu
 
 - **Backstories 导致 prompt-bloat。**Mỗi đại lý một câu chuyện sau 2000 từ, thêm 5 nhân viên của đội ngũ, sẽ được gọi lần đầu tiên trước khi đốt cháy ngân sách ngữ cảnh.
-- **Manager-LLM token tax。**Quá trình phân cấp 会在每个专业调用前增加一个经理 LLM调用五个任务 五次LLM调用会从五次LLM调用变成六次,并且经理调用携带完整任务列表加上前输出──除非路由依赖输出,否则切换到序列──
+- **Manager-LLM token tax。**Quá trình phân cấp 会在每个专业调用前增加一个经理 LLM调用五个任务 五次LLM调用会从五次LLM调用变成十次,并且经理调用携带完整任务列表加上前输出──除非路由依赖输出,否则切换到序列──
 - **Brittle handoffs。**Nhiệm vụ N của `expected_output`Đó là một đường viền.`context`读取,并尝试 parse 三个节目──LLM 生成四个──下游 Agent 即兴处理──修复方式在任务 N 上使用 `output_pydantic`,让Task N+1 读取 được đánh máy đối tượng, chứ không phải là văn bản tự do.
 - **Crew-as-prod。**Freedom Forma Crew trong trường hợp không có vòng gói dòng chảy được phát hành đến sản xuất.
 
@@ -140,7 +140,7 @@ ae-crew-vs-flow
 
 ##  xây dựng nó
 
-`code/main.py`实现了两种形式的 stdlib 版本,以及一个三位代理机组.
+`code/main.py`Sử dụng Python thông thường 实现了两种形态,以及一个三 Agent crew.
 
 形态:
 

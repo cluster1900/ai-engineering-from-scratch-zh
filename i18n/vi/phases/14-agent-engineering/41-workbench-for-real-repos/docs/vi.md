@@ -1,6 +1,6 @@
 # Trong thực tế Repo 上 sử dụng bàn làm việc
 
-> 十一节 về bề mặt, nếu không thể chịu đựng được kiểm tra cơ sở mã thực tế, thì không có giá trị.
+> 十一节 Về bề mặt bàn làm việc, nếu không thể chịu đựng kiểm tra cơ sở mã thực tế, thì không có giá trị.
 
 **Type:** Build
 **Languages:** Python (stdlib)
