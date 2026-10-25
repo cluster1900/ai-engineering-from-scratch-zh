@@ -19,7 +19,7 @@ Ajanlar 能通过示范──它们会在生产中以示范 无法预测的方�
 ## 概念
 ### Üç değerlendirme seviyesine
 
-1. **Static benchmarks** Kode kullanımı için SWE-bench Verified(Desin 19) 、 için Browsing / 桌面的 WebArena/OSWorld(Desin 20) 、 için generalist GAIA(Desin 19) 、 için tool use of BFCL V4(Desin 06)  için kullanılır
+1. **Static benchmarks** Kodu kullanmak için SWE-bench Verified(Desin 19) 、 Browsing için 桌面的 WebArena/OSWorld için Desin 20) 、 Generalist için GAIA için Desin 19) 、 Tool kullanımı için BFCL V4 için Desin 06) Dönüşümsel karşılaştırma ve geri dönüş kapıları için  contamination is real existent:SWE-bench+ Desin 32.67% çözümü sızıntıları 始终报告 SWE-bench Verified 上的分数,或 SWE-bench+ 这类经过过的泄漏分分分数 审计的数据集上的数据集──
 
 2. **Custom offline evals**                                                                                                                                                                                                                                                              
    - Yargıç olarak LLM ((Langfuse、Phoenix、Opik  Ders 24)。
@@ -51,7 +51,7 @@ Bu, genelleştirilmesinden sonra Self-Refine'dir. Önemli olduğun her şey, gü
 
 ### 14 . Faseyi başlatırız .
 
-Fase 14'te her ders değerlendirme vakaları üretir:
+Fase 14'te çoğu ders değerlendirme vakaları oluşturur.
 
 | Lesson | 它生成的 Eval case |
 |--------|------------------------|
@@ -74,7 +74,7 @@ Fase 14'te her ders değerlendirme vakaları üretir:
 | 28 Orchestration | Supervisor 路由到正确 specialist |
 | 29 Runtime Shapes | DLQ 处理 N% failure |
 
-Eğer değerlendirme süiti her bir bölümü kapsarsa, 14. aşamayı kapsarsın.
+Eğer değerlendirme süiti her satır için bir dava hazırlarsa, 14. aşamanın çekirdeğini kaplamış olursun.
 
 ### Eval 驱动开发会在哪里失败
 

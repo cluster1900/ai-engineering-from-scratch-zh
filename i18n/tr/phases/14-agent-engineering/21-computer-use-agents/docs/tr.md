@@ -10,7 +10,7 @@
 ## Öğrenme hedefi
 
 - 描述 Claude bilgisayar kullanımı:输入截图,输出键盘/鼠标命令,不使用访问性 API──
-- Bu üç modelin OSWorld / WebArena / Online-Mind2Web'in üstü referans simgesi olarak belirtildiği belirtildi.
+- Hatırlayın bu ders alıntıları yayınlama zaman referansı sayı:OpenAI CUA OSWorld / WebArena / WebVoyager'da üst düzey sayıları, yanı sıra Gemini 2.5 Bilgisayar Kullanımı Online-Mind2Web'de üst düzey sayıları:.
 - 解释 Gemini 2.5 Bilgisayar Kullanımı 文档中的逐步安全模式──
 - Bu üç modelin ortak uygulanması için bir anlaşma yapılması gerekmektedir.
 

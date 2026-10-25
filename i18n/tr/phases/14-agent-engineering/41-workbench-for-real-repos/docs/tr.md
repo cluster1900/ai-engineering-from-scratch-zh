@@ -1,6 +1,6 @@
 # Çalışma desti kullan
 
-> 十一节 Yüzey hakkında dersler, gerçek kod tabanı kontrolünü geçirmemişse, değersiz olacaktır. Bu ders küçük bir örnek uygulamada iki kez aynı görevi gerçekleştirecektir:
+> 十一节 İşleme masası yüzeyine ilişkin ders, eğer gerçek kod tabanı kontrolünü geçirmeseydi, değersiz olurdu.
 
 **Type:** Build
 **Languages:** Python (stdlib)

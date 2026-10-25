@@ -40,7 +40,7 @@ flowchart LR
 | Verification quality | acceptance command 是否真的证明了目标，还是只证明了一个更弱的版本？ |
 | Handoff readiness | 下一个 session 是否能从当前状态干净地接手？ |
 
-总分 10 分──7 分以下は軟失敗; 5 分以下はハード失敗──
+总分 10 分──7 分以下は軟失敗; 5 分以下,或任一维度为0 分,硬失敗──
 
 ### eleştirmen bağımsız rol, bağımsız model değil.
 

@@ -3,7 +3,7 @@
 > CrewAI, 2026 yılında rol tabanlı çoklu ajan çerçevesidir.
 
 **类型：**Öğrenim + yapı
-**语言：**Python (stdlib)
+**语言：**Python(使用 numpy)
 **先修：**Fase 14 · 12 (Yapışım Düzenleri), Fase 14 · 14 (Aktör Model)
 **时间：**75 dakika kadar .
 
@@ -14,8 +14,8 @@
 - 区分 Crews (özel yöneticinin rolüne dayalı) ve Flow (event driven of determination) ile),并解释文档中的生产建议──
 - Kullanım`@tool`dekorator 和 `BaseTool`Alt sınıf 接入 araçlar; yapılandırılmış çıkışları ve serbest metinlerin alınmasını anlamak
 - Dört çeşit CrewAI hafıza türünü ve her biri ne zaman kullanılması gerektiğini anlatın.
-- Bir çalışma gerçekleştirmek için üç ajan ekibi, araştırmacı, yazar, editör, bir kısa yayın yapmak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlamak için bir çalışma hazırlanmaktadır.
-- 识别三种 CrewAI başarısızlık modları: hızlı-bölümseme, yöneticiler-LLM vergisi, kırılgan elveriler
+- Python'da bir araştırmacı, yazar, editör, bir rapor hazırlamak için bir ekip oluşturmak için.
+- 识别四种 CrewAI başarısızlık modları:Hızlı-bölüm-menyer-LLM vergisi、çabuk teslimat、Halk-özel-prod­
 
 ## 问题
 
@@ -120,7 +120,7 @@ Ekibin üstü kullanılır.`memory=True`Ya da yapılandırma biçimlerine göre 
 - 亚秒级延迟预算──hierarşik 会增加回路──即使序列化也会序列化包含背景故事和前输出的提示──
 - Tek ajan döngüleri── geç çerçeve; bir ajan döngüsü(Deneyim 1) ek araç kayıtları 更短──
 
-Ders 17 ((Agent Framework Tradeoffs) Matrix ile bunu göstermiştir.
+Ders 28 ((Orkestralama Şablonları) bunları topolojiye yerleştirmek ve onları bir araya getirmek için kullanmak.
 
 ### Bağımlılık şekli
 
@@ -129,7 +129,7 @@ Ders 17 ((Agent Framework Tradeoffs) Matrix ile bunu göstermiştir.
 ### Bu tip bir hata olur.
 
 - **Backstories 导致 prompt-bloat。**Her ajan bir 2000 词的背景故事,再加五个代理的团队,会在第一次工具电话 前烧掉文脈预算――把背景故事 控制在200 词内――跨代理 复用短语;不要把房风重复五遍――
-- **Manager-LLM token tax。**Yerarşik süreçler her uzmanın aramasında olacaktır Önceden bir yöneticinin aramasında olacaktır LLM aramasında olacaktır. Beş görevden ekibin aramasında ise beş görevden altı kez gerçekleşecek.
+- **Manager-LLM token tax。**Yerarşik süreçler her uzmanın aramasında olacaktır Önceden bir yöneticinin araması yapılacak. Beş görevden ekibin araması yapılacak. Beş görevden sonraki görevler 10 kez gerçekleşecek.
 - **Brittle handoffs。**Görev N' `expected_output`Bu bir çizgi. N+1 Görevini bir çizgi olarak koy.`context`读取,并尝试 parse 三个节目──LLM 生成四个──下游 Agent 即兴处理──修复方式在任务 N 上使用 `output_pydantic`,让Task N+1 读取 typed object, not free text──
 - **Crew-as-prod。**Özgürlük Şekil Ekibi Flow paketleri olmadan üretim için yayınlanır. Çıkış değişkenliği Yüksek; tekrarlayamaz; çağrıda  olamaz bir kötü运行 ve bir iyi运行. Flow ile 包起来。
 
@@ -140,7 +140,7 @@ ae-crew-vs-flow
 
 ## Yapın onu.
 
-`code/main.py`İki çeşit stdlib sürümleri ve üç ajan ekibi gerçekleştirildi.
+`code/main.py`Normal Python'la iki biçim ve üç ajan ekibi gerçekleştirildi. Standart Kütüphaneden başka tek bağımlılık, alaylı benzerliklere yöneliktir.
 
 形态:
 

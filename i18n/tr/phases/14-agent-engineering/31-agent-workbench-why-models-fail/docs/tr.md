@@ -121,7 +121,7 @@ Harness-over-model ifadesi şimdi veri tabanına sahip. Bu da anlamaya değer, �
 
 Bu senin müşterinin bir parçası değil.
 
-- LangChain'ın *Anatomy of an Agent Harness*'da on bir bileşeni toplanmıştır  istekler, araçlar, haklar, kum kutuları, orkestrasyon, hafıza, beceri, alt üstelik bir çalıştırma süresi  aptal bir döngü ── bu, sırada isimlendirilmemiş ‒ dağıtım birimi çalışanları ‒ tetikleyici semantikası ‒ bağımsız odak noktası oturum devamlılığı veya yetki politikası olarak ‒ harness'i bir sizin yerleştirdiğiniz nesne olarak kullanıyor, bir sizin yerleştirdiğiniz sistem değil ‒──
+- LangChain'ın *Anatomy of an Agent Harness* 逐一介绍了核心 harness 组件:prompts, tools, hooks, sandboxes, orchestration, memory, skills, subagents, as well as a runtime dumb loop── it has no named queues、 as deployment unit of workers、 trigger semantics、 as independent focus point session persistence, or authorization policy── it considers harness as an object you configure, rather than a system you deploy―
 - Addy Osmani ' nin * Ajan Harness Mühendisliği *  önerdi `Agent = Model + Harness`Çerçeve ve çubuk örneği, ama harness ne tarafından oluşturulduğunu daha fazla açıklamıyor.
 - Antropik ve OpenAI yüzeyler üzerinde en derin bir tartışmaya girdi, ancak hala kendi çalışma süresinde kaldı.
 - Agent_harness kitabı 将 harness 视为 config object(Jaymin West'ın *Agentic Engineering*, bölüm 6), en güçlü cümlelerden biri ise harness bir ajan sistemindeki ana güvenlik sınırıdır──这是只是授权政策的重新表述──
@@ -185,7 +185,7 @@ Bu bilgiyi bir yetki yerine bir veri noktası olarak kullanın. Her bir makale b
 Satıcı çerçeveleri:
 
 - [Addy Osmani, Agent Harness Engineering](https://addyosmani.com/blog/agent-harness-engineering/) `Agent = Model + Harness`Ürünler ve altyapılar
-- [LangChain, The Anatomy of an Agent Harness](https://blog.langchain.com/the-anatomy-of-an-agent-harness/) 十一个组件:bkz:coldings, tools, hooks, orchestration, sandbox, memory, skills, subagents, runtime,省略 queues, deployment, autz
+- [LangChain, The Anatomy of an Agent Harness](https://blog.langchain.com/the-anatomy-of-an-agent-harness/) 核心 harness 组件:prompts, tools, hooks, orchestration, sandboxs, memory, skills, subagents, runtime;省略 queues, deployment, autz
 - [OpenAI, Harness engineering: leveraging Codex in an agent-first world](https://openai.com/index/harness-engineering/) Codex 团队                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
 - [OpenAI, Unrolling the Codex agent loop](https://openai.com/index/unrolling-the-codex-agent-loop/)                                                                                                                                                                                                                                                              `while`
 - [Anthropic, Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents) 特定 runtime 内 uzun ufuk yüzeyleri

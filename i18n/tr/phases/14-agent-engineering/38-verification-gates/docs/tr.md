@@ -84,7 +84,7 @@ python3 code/main.py
 
 ## Gerçek sahne içindeki üretim modeli
 
-Dört tane model, kapıyı bir diğer çamaşır işinden çıkaracak.
+5 tane model olacak. Bir diğerinden çıkartılacak.
 
 **Defense-in-depth，而不是 single gate。**Önbulduk hok → CI durum kontrolü → ön alet authz hok → ön birleşim kapısı。 her bir katman belirtilmiş, bu nedenle bir katmanın başarısızlığı 会被下一层捕获──microservices.io'nun 2026 yılının 3 aylık oyun kitabı 明确指出: önbulduk hok kaçınılmaz, çünkü model taraflı beceriyle farklıdır, ajanın  अनुसरण etmesine bağımlı değildir── doğrulama kapısı 位于 CI / pre-merge 层。
 

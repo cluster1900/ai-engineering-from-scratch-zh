@@ -109,7 +109,7 @@ python3 code/main.py
 
 **规则过期作为强制机制。**Her kural var.`expires_at`Gün boyunca, bir kontrol cihazı herhangi bir ihlal olmadığı zaman uyarı yayınlar; bir sonraki dönem değerlendirmesi, tutmanın nedenini veya zayıflamasını açıklar.`info`Cloudflare'ın üretimi AI Code Review DATA(2026 yıl 4 月,30 天内跨 5,169 repo 运行 131,246 kez inceleme) gösterir ki, belirli bir sürenin geçmişi mekanizmasının kuralları bir araya gelerek her repo'nun 30 条 kuralları içinde kalabilir; sürenin geçmişi mekanizmasının kuralları toplanması 80'e kadar büyüdü ve çoğu asla başlamadı.
 
-**Markdown 作为 source，JSON 作为 cache。** `agent-rules.md`Yapılan işlevlerin yazarı;`agent-rules.lock.json`Yapılan işlemler için kullanılan bir sistem olarak, bu sistemin kullanımı için kullanılan bir sistem olarak, bu sistemin kullanımı için kullanılır.`package.json`- Ne ?`package-lock.json`和 `Cargo.toml`- Ne ?`Cargo.lock`Benzer.
+**Markdown 作为 source，JSON 作为 cache。** `agent-rules.md`Yapılan işlevlerin yazarı;`agent-rules.lock.json`Bu işlem, kontrol cihazının öntanımlı olarak oluşturulan küçük JSON biçimleri ve biçimleri ile yüklendiği için her dönüşte giriş yapmaz.`package.json`- Ne ?`package-lock.json`和 `Cargo.toml`- Ne ?`Cargo.lock`Benzer.
 
 ## Kullan
 
