@@ -82,4 +82,4 @@ Chỉ số chạy tạo ra một báo cáo JSON, trong đó chứa từng loại
 
 ## 进一步阅读
 
-Bài 84 đến 87 trong chương trình này.
+Bài 84 đến 87 trong bài học này. Các máy kiểm tra ở đây là một trong bốn tín hiệu kết thúc đến kết thúc, còn ba là bộ lọc token, phân loại và động cơ quy tắc.

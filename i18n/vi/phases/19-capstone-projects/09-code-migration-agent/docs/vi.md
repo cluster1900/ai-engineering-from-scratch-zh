@@ -16,7 +16,7 @@ Bạn sẽ xây dựng một đại lý, nó nhận một Java 8 repo (hoặc Py
 ## 概念
 Đường ống có hai tầng.**deterministic substrate**(Java dùng OpenRewrite, Python dùng libcst) an toàn thực hiện rất nhiều máy tính: nhập khẩu, ký hiệu phương pháp, chỉnh sửa không an toàn, thử với các nguồn lực, thay thế API bị suy giảm.**agent layer**(OpenAI Agents SDK hoặc LangGraph, dựa trên Claude Opus 4.7 và GPT-5.4-Codex) xử lý công thức 无法覆盖的情况: build-file upgrades(Maven/Gradle/pyproject) ]]
 
-Mỗi repo sẽ nhận được một dự kiến mục tiêu chạy thời gian của Daytona sandbox. Ứng viên 代 thực hiện: chạy build, phân loại thất bại, ứng dụng sửa chữa, tái chạy. Ứng dụng cứng hạn chế: mỗi repo 30 phút, mỗi repo $ 8,20 Ứng viên quay.
+Mỗi repo sẽ nhận được một dự kiến mục tiêu chạy thời gian của Daytona sandbox. Ứng viên 代 thực hiện: chạy xây dựng, phân loại thất bại, ứng dụng sửa chữa, tái chạy. Ứng dụng cứng hạn chế: mỗi repo 30 phút, mỗi repo $ 8, 20 Ứng viên quay lại. Nếu tất cả các thử nghiệm  thông qua và bảo hiểm giảm không vượt quá 2 百分点, hãy mở PR. Nếu không thông qua, hãy đưa repo  theo phân loại thất bại lưu trữ và kết hợp chứng cứ.
 
 失败分类体系是交付物品. Trong 50 repo, có gì xấu? Transitive deps?Custom annotations?Build tool version?与迁移无关的测试片? Mỗi loại đều cần có số và mô hình khác biệt.
 
@@ -73,7 +73,7 @@ ce-migration-funnel
 
 4. **Budget caps.**Mỗi repo 30 phút tường đồng hồ ≈ $8 成本、20 ≈ đại lý quay ≈ Bất kỳ giới hạn nào đều sẽ dừng lại,并以当前差归档到"预算_尽尽"─
 
-5. **Test + coverage gate.**xây dựng 通過後,运行测试套件──将覆盖与基 repo đối với  Nếu bảo hiểm 下降超过2%,归档到"coverage_regression"──
+5. **Test + coverage gate.**xây dựng 通過後,运行测试套件──将覆盖与基 repo đối với đối với──如果覆盖下降超过2个百分点,归档到"覆盖_回归"──
 
 6. **PR open.**Sau thành công, đẩy 分支,打开 PR,附上不同,以及哪些食谱被应用,哪些承诺由代理编写的摘要──
 

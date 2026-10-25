@@ -88,7 +88,7 @@ Công cụ không giả định tin cậy từ Softmax.`[0, 1]`Trong số bất 
 
 - Tất cả các dự đoán đều sai: ECE là trung bình, Brier là giá trị cao, bối rối là mô hình đối với quan điểm của văn bản.
 - 所有预测均以高信任度正确:ECE 接近零,Brier 接近零──
-- p=0.5 时 hoàn toàn không xác định yếu tố dự đoán:ECE là 0.5  giảm độ chính xác,Brier là 0.25  giảm độ chính xác.
+- p=0.5 时 hoàn toàn không xác định yếu tố dự đoán: mỗi dự đoán đều rơi vào cùng một thùng, vì vậy ECE là `|0.5 - accuracy|`✿Brier 恰好为0.25,因为无论 `y`là 0 và là 1,`(0.5 - y)^2 = 0.25`
 - 空输入:ECE、Brier 和可靠性返回 `0.0`(或零填充数组) ⋅ Đối với tình huống零token, Khác hoạn  trả lại `NaN` Những con đường này không phát ra cảnh báo; người chạy kiểm tra các giá trị này và quyết định liệu có báo cáo hay nhảy qua hay không.
 
 Những trường hợp này được đưa vào thử nghiệm. Mô hình thực tế trong thử nghiệm thực tế không đánh bại chúng, nhưng có một bộ điều chỉnh hoặc mô hình nhỏ bị hỏng sẽ đánh bại chúng, và các bộ điều hành không nên bị sụp đổ.

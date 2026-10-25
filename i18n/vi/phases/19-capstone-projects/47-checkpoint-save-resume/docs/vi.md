@@ -16,7 +16,7 @@
 
 ## 问题
 
-Bạn đã đặt một nhiệm vụ đào tạo, dự kiến sẽ chạy 18 小时. Wallclock lên hạn là 4 小时.
+Bạn đã đặt một nhiệm vụ đào tạo, dự kiến chạy 18 giờ. Bạn đặt mỗi lần phân bổ giới hạn 4 giờ, vì vậy lần này chạy, đây là một loạt các công việc tiếp tục. Sau đó trong lần thứ 11 chạy, cluster khởi động lại, vì một người nào đó ở cấp độ lương cao hơn bạn đã phê duyệt nâng cấp lõi. Không kiểm tra điểm, bạn phải bắt đầu từ đầu. Không có tiếp tục, bạn cũng sẽ mất trước 11 giờ học được trạng thái tối ưu hóa, vì vậy ngay cả khi trọng lượng mô hình đã giảm, thời điểm AdamW cũng đã mất, bước tiếp theo đột nhiên sẽ vượt quá hướng đào tạo.
 
 Thực tế là một tài liệu duy nhất, trong đó lưu giữ tất cả mọi thứ cần thiết để tiếp tục đào tạo: mô hình tham số, trạng thái tối ưu hóa, trạng thái lập trình, sử dụng để vẽ Loss lịch sử, bước trước và thời đại và các bộ đếm hàng loạt thời đại, còn mỗi sự ngẫu nhiên nguồn gốc của trạng thái RNG. Không có trạng thái RNG, sau khi phục hồi, đường cong Loss sẽ là một đường cong khác.
 

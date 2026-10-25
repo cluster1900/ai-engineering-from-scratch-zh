@@ -57,7 +57,7 @@ Transformer có hàng ngàn số lượng tham số. Mỗi số lượng sẽ gi
 
 ### Tại sao phải cố định hạt giống
 
-Mỗi cấp phải được điều chỉnh`torch.manual_seed(seed + rank)` để làm rửa, nhưng调用`torch.manual_seed(seed)` tiến hành khởi tạo các tham số.  Một hạt chia sẻ có nghĩa là mỗi cấp đều thấy cùng một chuỗi hàng loạt.  Đánh bại dữ liệu;  Một hạt cụ thể của các tham số có nghĩa là các tham số ban đầu không phù hợp với float epsilon, và thang đồng đều không còn làm cho bản sao giống nhau.
+Mỗi cấp phải được điều chỉnh`torch.manual_seed(seed + rank)` để làm rửa, nhưng调用`torch.manual_seed(seed)`进行参数初始化. 洗牌使用单共种子意味着每个级别都看着相同的批次序列. 对于参数,构建时排列0的广播才是让副本相同的原因,它将覆盖每个级别的自我初始化值. 共有的初始化种子是后备: Nếu广播被跳过或出错,具体的级别初始化将让每个副本有不同的起重权,而只有梯度和步骤永远无法将它们拉回一致.
 
 
 ```figure

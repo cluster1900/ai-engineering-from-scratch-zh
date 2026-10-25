@@ -52,7 +52,7 @@ Ba trận đấu đều có trọng lượng.`world_size`Để làm cho các đ�
 
 ### 原子写入
 
-标准模式:将每个分片写入 `<name>.tmp`,将清单写入 `manifest.json.tmp`,fsync Mỗi phân đoạn, sau đó đặt tên lại. POSIX trong hệ thống tài liệu đó đặt tên lại là nguyên tử; hoặc là tài liệu mới hoàn toàn tồn tại, hoặc là tài liệu cũ hoàn toàn tồn tại.
+标准模式:将每个分片写入 `<name>.tmp`,将清单写入 `manifest.json.tmp`,fsync Mỗi tệp, đặt tên lại phân đoạn, đặt tên lại phân đoạn, đặt tên lại phân đoạn. Trong hệ thống tệp giống nhau, đặt tên lại là nguyên tử: hoặc là tệp mới hoàn toàn tồn tại, hoặc là tệp cũ hoàn toàn tồn tại. Một nhóm đặt tên lại không phải là một vấn đề, vì vậy đặt tên lại phân đoạn là điểm gửi, tải sẽ kiểm tra từng phân đoạn dựa trên danh sách. Đặt từng phân đoạn vào bước của nó. Như vậy, sự sụp đổ xảy ra trước khi đặt tên lại phân đoạn sẽ làm cho một điểm kiểm tra trước đó trở thành điểm kiểm tra hoạt động.
 
 ### 模式 phải phòng thủ của 3 kiểu cố định
 

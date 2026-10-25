@@ -18,7 +18,7 @@
 
 视觉语言模型需要两项技能――它必须排名: given headline,在众多图像中找到正确图像――它必须生成: given one image, write one headline―― chỉ nhắm vào một kỹ năng để chuẩn bị cho mô hình có thể có được một nửa hệ thống―― CLIP xác định xếp hạng, nhưng không thể cung cấp phụ đề―― GPT-4V có thể thêm phụ đề, nhưng sử dụng một cái nhìn riêng biệt để chuẩn bị―― nhiều mục tiêu chuẩn bị một lần để đạt được hai mục tiêu này――
 
-InfoNCE  chịu trách nhiệm xếp hạng một nửa. Đối với một loạt các đối tượng, mô hình sẽ N 个 phù hợp với các đối tượng như đúng, sẽ `N^2 - N`Không phù hợp với ví dụ tiêu cực, sau đó đối với tạo ra`(N, N)`Sự tương tự của mô hình vận hành giao thông  mất mát. LM 损失处理生成的一半:以图像为条件的标准下一个代码预测.
+InfoNCE  chịu trách nhiệm xếp hạng một nửa. Đối với một loạt các đối tượng, mô hình sẽ N 个 phù hợp với các đối tượng như đúng, sẽ `N^2 - N`Không phù hợp với ví dụ tiêu cực, sau đó đối với tạo ra`(N, N)`Sự tương tự của các mô hình: LM Loss Processing: một nửa: theo tiêu chuẩn của hình ảnh, các mô hình được định nghĩa là:
 
 ## 概念
 
@@ -54,7 +54,7 @@ flowchart TB
 
 ### 合并损失
 
-`total = contrastive + lm_weight * lm`, trong số đó `lm_weight`Đây là một hệ thống đa nhiệm sử dụng CoCa và BLIP, có trọng lượng khác nhau. SigLIP chỉ giữ lại các mô tương phản, và không sử dụng lỗ cặp sigmoid thay thế cho softmax.
+`total = contrastive + lm_weight * lm`, trong số đó `lm_weight`Đây là một phương pháp xử lý nhiều nhiệm vụ sử dụng CoCa và BLIP, có trọng lượng khác nhau. SigLIP chỉ giữ lại các phần tương phản, và thay thế cho so với so sánh so với so sánh.
 
 |组件|损失面|影响|
 |-----------|--------------|---------|

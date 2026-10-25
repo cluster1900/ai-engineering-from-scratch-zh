@@ -89,7 +89,7 @@ Tracer hoặc UI có thể xem nó như là bước đột phá của các bư�
 
 ## 两个硬性预算
 
-`max_steps`限制 toàn bộ phiên, bao gồm cả kế hoạch lại, 默认是十二── một kế hoạch 5 bước đường, nếu kế hoạch lại hai lần và mỗi lần tăng 3 bước, sẽ đạt được 16 lần thực hiện, do đó vượt quá ngân sách.
+`max_steps`限制整个会议中总步骤执行,包括重复计划.默认是十二.`step_budget`n lại thất bại.
 
 `max_replans`限制第一次计划 后规划者 被调用次数――默认是五――这是更重要的限制――一个连续五次回与一个破碎的计划规划者,否则会一直循环,直到步骤预算 抓住它――限制重规划会让失败更快发生,原因也更清楚――
 

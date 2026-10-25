@@ -1,6 +1,6 @@
 # Capstone 07  端到端 Fine-Tuning Pipeline(Dữ liệu đến SFT đến DPO đến Serve)
 
-> Một mô hình 8B dựa trên đào tạo dữ liệu của riêng bạn, dựa trên sở thích của bạn để hoàn thành DPO đối với nhau, hoàn thành định lượng, giải mã định lượng, và có thể đo lường được $ / 1M token 成本提供服务.
+> Một mô hình cấp 8B dựa trên đào tạo dữ liệu của riêng bạn, dựa trên sở thích của bạn hoàn thành DPO đối với nhau, hoàn thành định lượng, giải mã định lượng, và có thể đo lường $ / 1M token 成本提供服务.
 
 **Type:** Capstone
 **Languages:** Python (pipeline), YAML (configs), Bash (scripts)
@@ -11,7 +11,7 @@
 ## 问题
 Năm 2026, mỗi nhóm AI nghiêm ngặt sẽ luôn sẵn sàng để tạo ra một đường ống điều chỉnh tinh tế không phải vì họ sẽ phát hành mô hình cơ sở biên giới, mà vì sự thích hợp, đó là tên miền SFT, DPO có lợi cho các nhãn hiệu ưa thích, sử dụng các bản thảo khử trùng để giải mã phỏng đoán, cũng như sử dụng dịch vụ của EAGLE-3, chỉ là nơi có thể đo lường lợi nhuận thực sự xuất hiện.
 
-Bạn sẽ đặt một cơ sở 8B(Llama 3.3、Qwen3 hoặc Gemma 3) trên dữ liệu cụ thể nhiệm vụ 上依次完成 SFT 和 DPO, sau đó để phục vụ thực hiện định lượng,并 sử dụng lm- đánh giá-tài dụng、RewardBench-2、MT-Bench-v2 和 MMLU-Pro 衡升.
+Bạn sẽ đặt một cơ sở 8B đến 14B (Llama 3.1 8B、Qwen3 14B hoặc Gemma 3 12B) trên dữ liệu cụ thể nhiệm vụ 上次完成 SFT 和 DPO, sau đó phục vụ làm định lượng,并使用 lm- đánh giá-tài liệu、RewardBench-2、MT-Bench-v2 和 MMLU-Pro 衡量升级── bạn sẽ dựa trên 2026 Model Openness Framework 产出一份模型卡──重点是可复现性:一个命令到端重跑整条管道──
 
 ## 概念
 Hãng đường ống này có 5 giai đoạn.**Data**:dedup(MinHash / Datatrove) ∙ lọc chất lượng(Nemotron-CC 风格 phân loại) PII scrub、 đối với các tiêu chuẩn công cộng phân chia kiểm tra vệ sinh của ô nhiễm.**SFT**:Axolotl YAML、8xH100 上的ZERO-3、cosine lịch trình、packed sequences、2-3 epochs──**DPO or GRPO**:TRL cấu hình ∞1 epoch ∞ các cặp ưu tiên có thể từ đánh dấu nhân tạo hoặc đánh giá mô hình ∞beta tuning∞**Quantize**:GPTQ + AWQ + GGUF,保证 linh hoạt triển khai.**Serve**:vLLM 0.7 + EAGLE-3 đầu tiên đầu tiên (hoặc SGLang + SpecForge)  K8s triển khai  dựa trên HPA chờ đợi hàng đợi 
@@ -52,7 +52,7 @@ model card (2026 MOF) + safety eval (Llama Guard 4)
 
 ## 技术
 - Dữ liệu: Datatrove dùng cho dedup, Nemotron-CC phân loại dùng cho chất lượng, Presidio dùng cho PII
-- Cơ sở: Llama 3.3 8B、Qwen3 14B hoặc Gemma 3 12B
+- Cơ sở: Llama 3.1 8B、Qwen3 14B hoặc Gemma 3 12B
 - SFT: Axolotl v0.8, cộng tác với ZeRO-3 ✓ Flash Attention 3 ✓ gói các chuỗi
 - Tích thích: TRL 0.15 dùng cho DPO hoặc GRPO; Unsloth dùng cho lặp lại GPU đơn
 - Số lượng: GPTQ (Marlin) 、AWQ、 thông qua llama.cpp 生成 GGUF
@@ -113,7 +113,7 @@ $ ./pipeline.sh config/llama3.3-8b-domainX.yaml
 ## 练习
 1. Trong cùng một tiêu chuẩn cụ thể về nhiệm vụ 上运行 SFT-only、SFT+DPO、SFT+GRPO── báo cáo phương pháp ưu tiên 胜出,以及领先多少──
 
-2. 将 Llama 3.3 8B 替换为 Qwen3 14B──在匹配质量下测量 $/1M token──
+2. 将 Llama 3.1 8B 替换为 Qwen3 14B──在匹配质量下测量 $/1M token──
 
 3. 测量 domain data với mức chấp nhận EAGLE-3 trên chung ShareGPT ∙ báo cáo差值, cũng như nó đối với ngân sách trễ có nghĩa là gì ∙
 
@@ -139,5 +139,5 @@ $ ./pipeline.sh config/llama3.3-8b-domainX.yaml
 - [DeepSeek R1 paper (arXiv:2501.12948)](https://arxiv.org/abs/2501.12948) GRPO 方法
 - [vLLM + EAGLE-3 documentation](https://docs.vllm.ai) 参考 hàng phục vụ
 - [SGLang SpecForge](https://github.com/sgl-project/SpecForge)  Một huấn luyện viên giải mã đầu cơ khác
-- [Model Openness Framework 2026](https://isocpp.org/) mở phát hành 评分标准
+- [Model Openness Framework (arXiv:2403.13784)](https://arxiv.org/abs/2403.13784): mở phát hành 评分标准
 - [lm-evaluation-harness](https://github.com/EleutherAI/lm-evaluation-harness) canonical eval runner

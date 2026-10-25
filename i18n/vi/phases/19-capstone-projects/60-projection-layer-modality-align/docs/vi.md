@@ -119,7 +119,7 @@ python3 -m unittest code/test_main.py
 
 4. Trong trọng lượng của thiết bị chiếu, thêm một hình phạt nhỏ L2, và xem nó tương tác như thế nào với các dây còn lại với nhau.
 
-5. Bảo quản trọng lượng của thiết bị chiếu, sau đó tải lại và chạy theo dõi, không cần thiết thiết bị chỉnh sửa hình ảnh để chuyển tiếp sau, chỉ cần thiết bị chiếu khi được triển khai để xác minh.
+5. 保存投影仪权重, sau đó tải lại chúng cùng với 结视觉编码器, và vận hành mà không có sự phản chiếu truyền tải. 验证投影仪 là một tạo vật mới duy nhất bạn cần giao; khi triển khai, bộ编码器 vẫn phải vận hành và truyền tải.
 
 ## 关键术语
 

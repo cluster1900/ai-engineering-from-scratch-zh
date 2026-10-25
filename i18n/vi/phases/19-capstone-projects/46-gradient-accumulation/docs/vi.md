@@ -9,7 +9,7 @@
 
 ## Mục tiêu học tập
 
-- 推导 hiệu quả lô 恒等式:`effective_batch = micro_batch * accum_steps`
+- 推导 hiệu quả lô 恒等式:`effective_batch = micro_batch * accum_steps * world_size`, trên một thiết bị sử dụng trong lớp học này là`micro_batch * accum_steps`
 - 实现 per-micro-batch mất quy mô, để tích lũy Gradient 匹配 một lần hoàn toàn toàn-batch ngược lại.
 - Trong micro-batch cuối cùng  trước nhảy qua đồng bộ hóa tối ưu hóa
 - 读取 thông qua so với đường cong lô hiệu quả,并解释 giảm lợi nhuận.

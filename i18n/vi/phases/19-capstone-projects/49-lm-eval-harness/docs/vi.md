@@ -20,7 +20,7 @@ Mỗi tuần sẽ có mô hình ngôn ngữ mới xuất hiện. Marketing nói 
 
 Nếu repo của bạn không có cục, bạn chỉ có thể cảm nhận so sánh hai mô hình. Nếu có cục, bạn có thể đặt một tập hợp nhiệm vụ cố định, so sánh các métric cố định, và có thể tạo ra các kết quả JSON khác nhau. Cục là hợp đồng giữa các hoạt động hôm qua và các hoạt động hôm nay. Nếu không có nó, sự lùi sẽ được phát hành.
 
-陷是让 harness 过适合到单个模型──修复方式是反过来使用同一个陷:harness 小到十五分钟能读完,任务小到可以随随 repo 发布,计量从零编写以便同事审计,而适配器是唯一放置模型特定代码的地方──替代适配器,领袖板 会变;替代任务,领袖板 会变――其他一切不应该变──
+陷是让harness 过适合单个模型──修复方式是让所有模型特定的选择都留在harness 之外:harness 小到十五分钟能读完,任务小到可以随随 repo 发布,计量从零编写以便同事审计,而适配器是唯一模型特定代码的地方──替代适配器,领袖板 会变;替代任务,领袖板 会变――其他东西都不应该变──
 
 ## 概念
 

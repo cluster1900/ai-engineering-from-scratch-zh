@@ -44,7 +44,7 @@ stateDiagram-v2
     DONE --> [*]
 ```
 
-`IDLE`Đó là điểm nhập cảnh hợp pháp duy nhất.`DONE`Đó là xuất khẩu hợp pháp duy nhất.`AWAITING_TOOL`Chính là trạng thái duy nhất sẽ tạo ra điểm kéo. Tất cả các chuyển đổi khác đều là nội bộ.
+`IDLE`Đó là điểm nhập cảnh hợp pháp duy nhất.`DONE`Đó là xuất khẩu hợp pháp duy nhất.`AWAITING_TOOL`Là trạng thái duy nhất tự tạo ra điểm kéo.`on_pause`Không trạng thái: khi ngân sách sử dụng hết hoặc một cái móng yêu cầu xem xét, nó sẽ từ bất kỳ trạng thái hoạt động nào 触发.
 
 Máy trạng thái này là xác định. Được định nghĩa với cùng một nhật ký sự kiện, phần tử sẽ được tái nhập vào cùng một trạng thái.
 

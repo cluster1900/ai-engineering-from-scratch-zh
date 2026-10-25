@@ -109,7 +109,7 @@ python3 code/main.py
 
 Mỗi chỉ số được trực tiếp chiếu vào cơ sở sản xuất:
 
-- **检索。**MS-COCO 5K val、Flickr30K、ImageNet 零样本都是同一相似性矩阵上的R@K 问题──将合成 eval 替换为真文件,函数签名保持不变──
+- **检索。**MS-COCO 5K val và Flickr30K là vấn đề R@K trên các mô hình tương tự. ImageNet 零样本 cũng sử dụng mô hình này, mỗi mô hình được tích hợp prompt, nhưng nó báo cáo là top-1 分类准确率, đó là trên các mô hình R@1.
 - **VQA。**VQA v2、GQA、OK-VQA sử dụng hình dạng phù hợp chính xác giống nhau, sử dụng soft-acc thay vì đơn trả lời EM của VQA v2).
 - **BLEU-4.**MS-COCO 字幕、NoCaps、Flickr30K 字幕均使用BLEU-4加 CIDER 和 METEOR──添加 CIDER 是另一项功能──
 

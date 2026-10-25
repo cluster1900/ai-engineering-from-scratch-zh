@@ -71,7 +71,7 @@ người đánh giá 运行三个独立计算, và đưa ra phán quyết 路径
 
 Sự bối rối so với tổn thất là mối quan hệ chỉ số. Sự mất mát giảm 0.1 sẽ làm cho sự bối rối xuất hiện nhiều hơn.
 
-本课会对 `scale`字段为 `"log"`Trong bất kỳ phép tính nào trong toán học cải thiện trước lấy log tự nhiên. ngưỡng sau đó sẽ được áp dụng trong log space.`log(28) - log(32) = -0.133`, cao hơn ngưỡng của phần trăm hai.
+本课会对 `scale`字段为 `"log"`Bất kỳ phép tính nào trong toán học được cải thiện trước lấy log.người tự nhiên.người ngưỡng. sau đó sẽ được áp dụng trong log space.`log(32) = 3.466`Đối với`log(28) = 3.332`Ở dưới là tốt hơn métric 上, tương đối cải thiện là`(3.466 - 3.332) / 3.466 = 0.039`, vượt quá ngưỡng của phần trăm hai.
 
 ```text
 if scale == "log":

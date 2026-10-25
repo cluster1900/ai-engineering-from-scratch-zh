@@ -92,7 +92,7 @@ python3 code/main.py
 
 **交叉编码器不对称。** `rerank(q, d)`和 `rerank(d, q)`Đúng là khác nhau. Đúng là khác nhau.
 
-**N 太低，无法暴露该 bug。**Nếu cài đặt N = K,交叉编码器 không thể sắp xếp lại; nó chỉ có thể được gọi lại重──电梯看起来为零──选择 N 至少三倍 K──
+**N 太低，无法暴露该 bug。**Nếu cài đặt N = K, bộ lập trình giao thông có thể sắp xếp lại đối với K 个候选人, nhưng không thể đưa ứng cử viên mới vào phía trên K。 Nhớ lại tại K 不会变化, vì vậy nâng cấp trông như không.。 chọn N 至少三倍 K。
 
 **训练数据泄漏到评估中。**Nếu các bài tập của các mã thông báo được thực hiện với các câu hỏi đánh giá, thì xếp hạng lại trông rất kỳ lạ.
 

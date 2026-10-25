@@ -69,7 +69,7 @@ ViT-Base là một bộ lập trình số 86M. Theo tiêu chuẩn năm 2026, gi�
 
 ### Ý nghĩa của mặt nạ không?
 
-Vision Transformer chỉ chứa bộ lập trình và là hai chiều: token`i`Bạn có thể tham gia bất kỳ đối tượng nào `j` Không có mặt  Trong bài học 61  , sự chú ý giao tiếp sẽ sử dụng ẩn dấu kết quả, nhưng bên trong bộ lập trình video, sự chú ý là hoàn toàn kết nối 
+Vision Transformer chỉ chứa bộ lập trình và là hai chiều: token`i`Bạn có thể tham gia bất kỳ đối tượng nào `j`△ không có mặt nạ. ◦ Bài học 61  tập trung trong máy tính sẽ sử dụng ẩn dấu kết quả.
 
 ### CLS token học đã học được gì
 

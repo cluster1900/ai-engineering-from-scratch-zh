@@ -48,7 +48,7 @@ flowchart TB
   H --> D[coverage chart]
 ```
 
-Mỗi bộ phận đều là một bản ghi, trong đó có`id``category``subtype``prompt``target_behavior`和 `severity` phân loại đối tượng tải bộ phận, phân loại đối với chúng,并公开 `match`API: given determination tip, return the closest fixture and its class.
+Mỗi bộ phận đều là một bản ghi, trong đó có`id``category``subtype``prompt``target_behavior`和 `severity` phân loại đối tượng tải bộ phận, phân loại đối với chúng,并公开 `match`API:给定候选提示,返回最接近的固定及其类别──匹配是字符三元余弦:粗略、快速,并且只基于 numpy 构建──它不是探测器──检测器位于第83 课──这是标签生成器──
 
 严重程度遵循 1-5等级──1 là một cuộc tấn công không đúng đắn nhằm mục tiêu tốt đẹp 请假装是海盗)──5 là một loại tấn công, nếu thành công, sẽ tạo ra một hệ thống đã được triển khai phải phát hành ra ((细节操作操作的危险活动) 🏼 Phần lớn các vụ tấn công đều là 2-3, vì các vụ tấn công thực sự trên quy mô triển khai thường đơn giản và ăn cắp──严重性由 fixture作者设置──两审稿人分歧超过一个级别,说明该章 需要改进──
 

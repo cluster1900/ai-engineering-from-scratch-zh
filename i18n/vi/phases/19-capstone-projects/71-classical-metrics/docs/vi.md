@@ -28,7 +28,7 @@ Stdlib加上numpy就足够了──BLEU là tính toán và vị trí──ROUGE
 
 ## token hóa
 
-分词器是`re.findall(r"\w+", text.lower())`✿小写、字母数字运行、删标点符号── trong bài học này, mỗi chỉ số đều sử dụng cụ thể phân từ này── runner không có quyền chọn── nếu bạn trao đổi phân từ, bạn sẽ chạy các bài kiểm tra chuẩn khác──
+分词器是`re.findall(r"\w+", text.lower())`▽小写,保留连续的单词字符(字母、数字和下划线), xóa tất cả các ký tự khác。 mỗi chỉ số trong khóa học này đều sử dụng cụ thể này分词器。 runner không có quyền chọn。 Nếu bạn trao đổi分词器, bạn sẽ chạy các bài kiểm tra基准 khác。
 
 ```python
 TOKEN_RE = re.compile(r"\w+", re.UNICODE)
@@ -67,7 +67,7 @@ flowchart LR
 
 ## BLEU-4
 
-BLEU là chỉ số dịch thuật máy tính quy định, nó vẫn xuất hiện trong việc rút ngắn. Công thức chúng tôi sử dụng là BLEU-4, có tiêu chuẩn đơn giản về trừng phạt và số lượng n nguyên ngữ pháp lý được sửa đổi sau đó được tăng lên một lần, do đó 4 nguyên ngữ pháp bị thiếu sót sẽ không đưa số điểm xuống 0.
+BLEU là chỉ số dịch thuật máy tính quy định, nó vẫn xuất hiện trong việc rút ngắn. Công thức chúng tôi sử dụng là BLEU-4 của giai đoạn, đối với mỗi dự đoán và tham chiếu đến phân loại đánh, có tiêu chuẩn đơn giản và có tính toán n 元 ngữ pháp được sửa đổi sau đó được thêm một lần, do đó 4 元 ngữ pháp bị thiếu sót đơn lẻ sẽ không đưa số điểm xuống 0.
 
 Đối với mỗi ứng cử viên - tham khảo đối với, chúng ta tính toán n chính xác ngôn ngữ sau khi sửa đổi 1、2、3、4 giờ.
 
@@ -110,7 +110,7 @@ Numpy 表使实现清晰易读;纯Python 列表也可以工作──选择 ROUGE
 
 ## 准确度
 
-Đối với nhiều mục tiêu phân loại nhiệm vụ, độ chính xác sẽ giảm xuống để phù hợp chính xác với mục tiêu tiêu tiêu chuẩn hóa đơn lẻ. Chúng tôi sẽ mở nó thành một chức năng riêng biệt, để các quy trình điều chỉnh có thể được`metric_name`Trên để điều chỉnh, và không cần phải trong runner để thực hiện các chữ cái liên kết so sánh.
+Đối với các nhiệm vụ phân loại, độ chính xác sẽ giảm xuống để phù hợp chính xác: Nếu dự đoán phù hợp với mục tiêu tiêu tiêu chuẩn hóa trong danh sách, thì có 1 分. Chúng tôi sẽ mở nó thành hàm riêng biệt, để điều chỉnh các quy trình có thể được`metric_name`Trên để điều chỉnh, và không cần phải trong runner để thực hiện các chữ cái liên kết so sánh.
 
 ## 派遣合同
 

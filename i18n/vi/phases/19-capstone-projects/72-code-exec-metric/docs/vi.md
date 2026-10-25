@@ -70,7 +70,7 @@ Chúng tôi đã qua qua trước mặt thêm `import sys`Và một thông qua �
 
 Mỗi quá trình của con có một ngân sách mặc định trong 3 giây.`subprocess.run(..., timeout=t)`Nếu quá thì người chạy sẽ bị bắt.`TimeoutExpired`, kết thúc quá trình, ghi lại nhiệm vụ `timeout`退出原因──该任务分数为零──跑者继续进──
 
-Mỗi nhiệm vụ có thể vượt quá thời gian.`task.metadata.timeout_s`进行配置――长时间运行的单元测试可能会要求更多; 证证器 trong lớp 70 sẽ giới hạn giá trị này trong 30 giây, để giữ được biên giới của bộ.
+超时是 `run_candidate`của `timeout_s`参数; 第 75 课的跑者 通过 `code_exec_timeout_s`Để mỗi lần chạy được đặt một lần.`run_candidate`Sẽ giới hạn giá trị này trong khoảng từ 0,1 đến 30 giây, để giữ biên giới của bộ.
 
 ## 输出上限
 
@@ -84,7 +84,7 @@ Pass-at-k là một thiết bị đánh giá không phân biệt sử dụng b�
 pass_at_k(n, c, k) = 1 - C(n - c, k) / C(n, k)
 ```
 
-Khi đó`n - c < k`时, molecules未定义, giá trị为 `1`◊ phải thực hiện việc xử lý trực tiếp tình hình bên cạnh.`pass_at_k(n, c, k)`供排行榜层使用──
+Khi đó`n - c < k`时, theo quy định thường, phân tử `C(n - c, k)`Vì vậy, bạn không thể làm gì ít hơn.`k`个失败中选出 `k`个), vì vậy giá trị为 `1`◊ phải thực hiện việc xử lý trực tiếp tình hình bên cạnh.`pass_at_k(n, c, k)`供排行榜层使用──
 
 ```mermaid
 flowchart LR

@@ -38,7 +38,7 @@ flowchart LR
 
 BM25 thông qua các yêu cầu về thuật ngữ truy vấn, sẽ nhân nhân nhân nhân nhân nhân nhân bao gồm độ dài của sự thống nhất chính xác của các  và các yếu tố tần suất thuật ngữ, để đánh giá các hồ sơ truy vấn.`k1`Control词频和度;默认值 1.5 là đề xuất đã được xuất bản, bạn không nên di chuyển nó trong tình huống không có cơ sở.`b`控制文档长度的重要性;默认值 0.75 表示较长文档会受到惩罚,但不是线性──
 
-IDF 公式使用平滑的 Robertson 和 Spark Jones 定义,即 `log((N - df + 0.5) / (df + 0.5) + 1)`◊ Khi một thuật ngữ xuất hiện trong hơn một nửa bộ nhớ ngôn ngữ, việc gia tăng trong日志 sẽ giúp IDF giữ giá trị chính xác.
+IDF 公式使用平滑的 Robertson 和 Spark Jones 定义,即 `log((N - df + 0.5) / (df + 0.5) + 1)` Khi một thuật ngữ xuất hiện trong hơn một nửa bộ bưu trữ ngôn ngữ, việc thêm trong日志 sẽ giúp IDF giữ giá trị chính xác.
 
 字段加权可让你告诉 BM25, sự phù hợp trên tên mã là quan trọng hơn so với sự phù hợp trong văn bản chính xác.
 

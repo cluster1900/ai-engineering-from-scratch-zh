@@ -9,7 +9,7 @@
 
 ## 问题
 
-Các phần 82-86 của khóa học này bao gồm một phần: phân loại pháp luật, kiểm tra nhập khẩu, khung đánh giá, phân loại ra ngoài, cơ chế quy tắc. Cổng an toàn thực sự phải kết hợp chúng, vận hành chúng vào đúng thời điểm trong chu kỳ sống yêu cầu, quyết định hành động nào khi chúng không đồng ý, và tạo ra các kiểm tra viên có thể đọc theo dõi vào sáng thứ nhất.
+Mỗi phần của bài học này gồm một phần: phân loại pháp luật, kiểm tra nhập, khung đánh giá, phân loại ra ngoài, cơ chế quy tắc. Một cánh cổng an toàn thực sự phải được kết hợp với các phần của nó.
 
 Đại门 nằm ở ba điểm kiểm tra. Trước khi mô hình được gọi, trước khi được phát hành: kiểm tra trong lớp 83 xem gợi ý, sau đó hoặc thông qua nó, hoặc hoàn toàn ngăn chặn nó (high confidence attack), hoặc thêm một token để kiểm tra tầng dưới. Trong khi mô hình phát hành, bộ lọc sẽ bốc bốc, và xuất hiện trong lệnh cấm短语时提前终止流 (nếu chỉ nhìn ra, thì đầu vào sẽ tồn tại sau khi nó được phát hành).
 
@@ -35,11 +35,11 @@ flowchart TB
 
 |信号状态 |行动|
 |---|---|
+|检测器在非 benign 类别上置信度 >= 0.85 |生成前 block|
 |任何高严重性 |块|
-|任何中等严重程度 |编辑|
-|任何低严重程度 |警告|
-|全部无 + 检测器置信度 < 0.5 |允许 |
-|检测器置信度 0.5-0.85，无其他信号 |警告|
+|任何中等严重程度（检测器置信度 0.5 到 0.85，或提前终止 stream） |编辑|
+|任何低严重程度（检测器在非 benign 类别上置信度低于 0.5） |警告|
+|检测器判定为 benign 且无其他信号 |允许 |
 
 块返回拒绝── Redact 发送经过分类器编辑的文本并应用规则引擎修复程序──警告在发送原件时附带软件通知──允许运送原件──每个请求都发发出一个`RequestTrace`, bao gồm:`request_id``prompt``pre_gen`(检测器判决)`during_gen`(được chỉ qua 器触发器)`post_gen`(分类器操作 + 规则报告)`final_action``final_output`和 `latency_ms`
 

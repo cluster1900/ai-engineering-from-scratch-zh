@@ -1,6 +1,6 @@
 # HDF5 Tokenized 语料库
 
-> Download Good语料 phải rơi vào một huấn luyện viên có thể sử dụng tốc độ lưu lượng đọc trong cấu trúc. JSONL trên đĩa không chứa 16 người lao động tải dữ liệu.
+> Download Good语料 phải rơi vào một cách huấn luyện viên có thể sử dụng tốc độ lưu lượng đọc trong cấu trúc. JSONL trên đĩa không chứa 16 người lao động tải dữ liệu.
 
 **Type:** Build
 **Languages:** Python
@@ -18,7 +18,7 @@
 
 现代语言模型培训运会在数十名工人上以每秒数万样本的速度读取代码. JSONL trên đĩa trong lần đầu tiên lỗi trang lưu trữ lạnh 时就会崩: JSON parser 很慢,文档边界无法寻址,而寻找到"样本 4,217,884" 需要扫描文件──即使压缩效果很好.$O(1)$truy cập ngẫu nhiên của 平 token stream
 
-HDF5  thích hợp, vì nó cung cấp một bộ dữ liệu nhỏ, có thể điều chỉnh, chỉ có số, các bộ dữ liệu của nó 在读取时对页面缓存 友好──trainer 请求`tokens[3,200,000 : 3,200,8192]`Phần này, HDF5 sẽ đưa ra các yêu cầu của hyperslab từ trang cache  sao chép đến phân phối mới NumPy mảng.
+HDF5  thích hợp, vì nó cung cấp một bộ dữ liệu nhỏ, có thể điều chỉnh, chỉ có số, các bộ dữ liệu của nó 在读取时对页面缓存 友好──trainer 请求`tokens[3_200_000 : 3_208_192]`Phần này, HDF5 sẽ đưa ra các yêu cầu của hyperslab từ trang cache  sao chép đến phân phối mới NumPy mảng.
 
 构建问题在于让写入端诚实可靠――Dữ liệu có thể đo lường được dễ bị nhầm lẫn: một lần viết một tài liệu, HDF5 文件会碎碎化到不可用―― một lần kích thước 写入所有文件,进程死亡会丢失整个碎片―― đúng 纪律 là búffer-then-extend, búffer size phải phù hợp với kích thước của mảnh,并用碎片写把工作量拆分成多个文件,这样崩 最多只会丢失一个碎片――
 
@@ -48,9 +48,9 @@ token dataset 使用 `maxshape=(None,)`Và cố định `chunks=(chunk_size,)`�
 
 单个 HDF5 文件是单点故障──管线 会并行写入片段:Phase 19 lesson 42 Trong mỗi input shard 生成一个 HDF5 output shard──`shards.json`index 会按片 记录 file path、tōken count、document count,以及 tōken của sha256──trainer 读取`shards.json`Để tính toán các khoản bù trừ toàn cầu và xác minh các khoản bù trừ.
 
-### Đọc theo bộ nhớ
+### Đọc phần nhỏ
 
-Trong quá trình đào tạo, mỗi công nhân sẽ được`swmr=True`Mode 打开自己负责的 HDF5 file,并请求 `tokens[start:stop]`Một khi phần 变热, bố cục phần của HDF5 就会让它成为页面缓存-backed read──worker 永远不会实现 整个文件:slice 会被复制到数据库的批量缓冲,之后数据库在批量时间将其复制到固定记忆训练器──热路 在每次块转换时有一个系统调用;其余是 RAM访问──
+Trong quá trình đào tạo, mỗi công nhân sẽ được`swmr=True`Mode 打开自己负责的 HDF5 file,并请求 `tokens[start:stop]`◊ một khi phần 变热, bố cục của HDF5 sẽ làm cho nó trở thành một lần chi phí thấp đọc: h5py không sẽ bộ nhớ-map 文件, mà qua HDF5 phần cache và OS page cache 读取 toàn bộ các phần, tái đưa yêu cầu của hyperslab 复制出来──worker 永远不会 hiện thực hóa toàn bộ file: slice sẽ được sao chép vào bộ nhớ dataloader của bộ nhớ đệm, sau đó bộ nhớ dataloader trong thời gian đệm sẽ sao chép nó vào tensor đào tạo ghi nhớ đệm──hot path trong mỗi lần chuyển đổi phần  một lần gọi hệ thống; phần còn lại là RAM 
 
 ### Bộ tải dữ liệu cửa sổ trượt
 
@@ -68,10 +68,10 @@ cc-hdf5-corpus
 - `Tokenizer`- Một token định nghĩa cấp độ byte, đối với demo 足够好──接口是`encode(text) -> list[int]`和 `vocab_size`
 - `HDF5ShardWriter`-  mở một bộ dữ liệu toàn bộ có thể điều chỉnh kích thước, sẽ buffer token đến kích thước của phần, cố định kích thước bước nhỏ và ghi vào, trong thời gian đóng 把 `token_count`和 `sha256`记录为 HDF5 thuộc tính。
 - `ShardedTokenizationPipeline`- Tham khảo các tài liệu nhập, sẽ chuyển chúng đến nhà văn,并输出`shards.json`chỉ số
-- `MmapTokenStore`- 打开 shard file  thực hiện đọc được lập bản đồ bộ nhớ, tính toán các sự bù đắp toàn cầu, tiết lộ đơn lẻ `get_slice(start, stop)`API.
+- `MmapTokenStore`- 打开碎片文件 进行碎片阅读(这个名字只是为了方便;h5py 读取是碎片,不是mmap 文件),计算全球抵消,暴露单个 `get_slice(start, stop)`API.
 - `SlidingWindowDataloader`- Từ dòng chảy toàn cầu 中 chọn cửa sổ ngẫu nhiên,并 yield `(input_ids, target_ids)`Số lượng các mảng:
 
-文件底部的演示会构建一个很小的内存库,代码到两个片段,通过内存地图打开它们,运行数据载体10批,并打印每个批的形状和检查数量――
+文件底部的演示会构建一个很小的内存库,代码到两个碎片,以碎片阅读方式打开它们,运行数据包10批,并打印每个批的形状和检查数量――
 
 运行:
 
@@ -118,7 +118,7 @@ Trong một dự án thực tế,`outputs/skill-hdf5-tokenized-corpus.md`会 mô
 | Term | What people say | What it actually means |
 |------|-----------------|------------------------|
 | Resizable dataset | "Append-only" | 一个带 `maxshape=(None,)` 的 HDF5 dataset，通过按 chunk 大小 stride 调用 `resize` 增长 |
-| Chunked layout | "How HDF5 stores it" | 固定大小的 on-disk pages，kernel 可 memory-map，dataloader 可连续读取 |
+| Chunked layout | "How HDF5 stores it" | 固定大小的 on-disk blocks，HDF5 将其作为一个单元读取并缓存，因此 dataloader 能以低成本读取连续范围 |
 | `swmr` mode | "Read-while-write" | Single-Writer-Multiple-Reader mode，使 dataloader workers 能安全共享文件 |
 | Shard index | "shards.json" | 包含 offsets 和 content hashes 的所有 token shards 的 durable index |
 | Sliding window | "Training sample" | global token stream 的固定长度 slice，trainer 会把它与 shift-by-one target 配对 |
@@ -127,7 +127,7 @@ Trong một dự án thực tế,`outputs/skill-hdf5-tokenized-corpus.md`会 mô
 
 - [HDF5 chunking documentation](https://docs.hdfgroup.org/hdf5/v1_14/)- 本课使用的碎片式,可 dimension hóa dataset layout
 - [h5py user guide](https://docs.h5py.org/en/stable/)- HDF5 của Python liên kết
-- [NumPy memory mapping](https://numpy.org/doc/stable/reference/generated/numpy.memmap.html)- HDF5  thông qua h5py 暴露 读侧 nguyên thủy
+- [h5py chunked storage](https://docs.h5py.org/en/stable/high/dataset.html#chunked-storage)- h5py  làm thế nào để đọc tập hợp dữ liệu phân mảnh và làm thế nào để thiết lập bộ nhớ cache phân mảnh
 - Giai đoạn 19 · 42 - 输出由本课代码的下载器
 - Giai đoạn 19 · 44 - 消费这个数据包的 cosine时间表
 - Giai đoạn 19 · 45 - 包裹 training step của vòng AMP

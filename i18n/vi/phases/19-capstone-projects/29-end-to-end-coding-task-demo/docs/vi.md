@@ -21,7 +21,7 @@ Hầu hết các đại lý demo đều là các công việc riêng biệt: m�
 
 chuỗi cổng  cấp phép, nhưng sandbox vì chuỗi  không có lý do dự đoán được từ chối                                                                                                                                                                                                                                                    
 
-Chương trình này là thử nghiệm tích hợp toàn bộ đường đua. Đại lý phải hoàn thành theo thứ tự bốn điều: đọc dự án, chạy thử nghiệm, từ thất bại thử nghiệm, nhận ra lỗi, viết ra sửa chữa, chạy lại thử nghiệm, sau đó dừng lại. Mỗi hoạt động đều đi qua chuỗi cổng.
+Chương trình này là thử nghiệm tích hợp toàn bộ đường đua. Đại lý phải hoàn thành theo thứ tự sáu điều: đọc dự án, chạy thử nghiệm, từ thất bại thử nghiệm, nhận ra lỗi, viết ra sửa chữa, chạy lại thử nghiệm, sau đó dừng lại. Mỗi hoạt động đều đi qua chuỗi cổng.
 
 ## Khái niệm
 

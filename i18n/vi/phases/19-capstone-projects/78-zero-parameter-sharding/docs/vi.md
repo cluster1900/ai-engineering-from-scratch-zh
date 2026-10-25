@@ -16,7 +16,7 @@
 
 ## 问题
 
-Vanilla DDP đã sao chép tất cả mọi thứ: các tham số, thang và trạng thái tối ưu hóa ở mỗi cấp độ đều hoàn toàn tồn tại. Đối với mô hình tham số 7B trong fp16, điều này có nghĩa là mỗi cấp độ 14 GB tham số, 14 GB thang và 28 GB trạng thái tối ưu hóa.
+Vanilla DDP đã sao chép tất cả mọi thứ: các tham số, thang và trạng thái tối ưu hóa ở mỗi cấp độ đều hoàn chỉnh. Đối với mô hình tham số 7B trong fp16, điều này có nghĩa là mỗi cấp độ 14 GB tham số, 14 GB thang và 56 GB trạng thái tối ưu hóa. Hai float32 Adam khoảnh khắc.
 
 ZeRO giai đoạn thứ nhất thực hiện phân đoạn cho trạng thái tối ưu hóa. Mỗi cấp có 1/N của Adam 时刻. Sau đó, ZeRO sẽ không giảm toàn bộ phân đoạn và tiến vào địa phương, mà giảm_scatter, do đó mỗi cấp chỉ nhận được tổng số phân đoạn của mình.
 
@@ -93,7 +93,7 @@ python3 code/main.py
 
 **混合精度是重点。**ZeRO là một công nghệ độ chính xác hỗn hợp; fp32 主副本是分片的. Trong trường hợp không có độ chính xác hỗn hợp, ZeRO sẽ đưa ra thuế lưu trữ trong fp32 master, mà không có tương ứng của fp16 trước để chiến thắng.
 
-**第一阶段几乎是免费的。**通信在带宽方面与DDP相似──内存节省与N 成线性关系──唯一成本是优化器分片的簿记──生产堆默认为阶段1,除非参数分片内存也是一个问题;然后第二或第三阶段用通信换取内存──
+**第一阶段几乎是免费的。**通信在带宽方面与DDP相似──内存节省与N 成线性关系──唯一的成本是优化器分片的簿记──生产堆默认为阶段1,除非梯度或参数内存也是一个问题──阶段2 在不增加带宽的情况下对梯度分片;只有阶段3对参数本身分片,它使用逐层通信来换这个部分内存──
 
 ## Sử dụng nó
 

@@ -64,7 +64,7 @@ Hai chương trình xếp hạng phục vụ các mục tiêu khác nhau.
 
 平均分数 là giá trị trung bình của mỗi mô hình của mỗi nhiệm vụ. Đây là báo cáo xếp hạng số tiêu đề. Nó rất nhạy cảm với các giá trị bất thường và sự mất cân bằng của nhiệm vụ.
 
-胜率计算模型在同一任务中击败所有其他模型的频率── đối với mỗi任务, điểm số cao nhất của模型 đạt được胜率──胜率等于赢得次数除了模型得分的任务数──它 không quá nhạy cảm với sự khác biệt về giá trị và quy mô, nhưng sẽ mất thông tin──
+胜率计算模型在同一任务中击败所有其他模型的频率―― Đối với mỗi nhiệm vụ, số điểm cao nhất của模型 thắng
 
 ```python
 def win_rate(model_id, runs_by_task, all_models):
@@ -132,4 +132,4 @@ Từ trên xuống đọc `main.py` Data形状`EvalRun``LeaderboardRow`(văn)
 
 ## Hơn nữa nữa
 
-Bước tiếp theo của tự nhiên là sự quan trọng của nhiệm vụ đối tác, chứ không phải là một quy trình hướng dẫn không đối tác. Nếu mô hình A và B đều chạy cùng một trăm nhiệm vụ, thì thử nghiệm thích hợp là một quy trình hướng dẫn đối tác mà chúng ta thực hiện đối với sự khác biệt của từng nhiệm vụ. Ngoài ra, bạn cũng cần một quy trình hướng dẫn phân cấp của chuỗi nhiệm vụ tôn trọng.
+Các phân đoạn của mỗi mô hình không tương ứng, nhưng so sánh giữa các mô hình nên là tương ứng. Nếu mô hình A và B đều chạy cùng một trăm nhiệm vụ, thì thử nghiệm thích hợp là hướng dẫn cho các sự khác biệt về nhiệm vụ riêng lẻ,`bootstrap_pairwise_diff`已实现它. Ngoài ra, bạn còn cần một trình dẫn phân cấp của chuỗi nhiệm vụ tôn trọng.
