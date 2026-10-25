@@ -53,7 +53,7 @@ Peut-être dans un mauvais endroit:
 
 - l' écart de récompense implicite `beta * (log(pi/pi_ref)_w - log(pi/pi_ref)_l)`Il y a aussi une différence de taille.
 - Cette perte sera choisie et les log-probes rejetés 往相反方向推──只要拒绝下降更快,它就可以把选定的绝对 log-prob也往下推──这是 dégradé 选择反应现象──
-- Les préférences hors de distribution (échantillons rares contre échantillons rares) génèrent des récompenses implicites arbitraires.
+- Les deux réponses dans la politique de référence (en dehors de la distribution) génèrent des récompenses implicites.
 
 ### Les actions d'investissement (Azar et coll., 2024)
 

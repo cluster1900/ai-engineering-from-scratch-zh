@@ -26,7 +26,7 @@ Gao、Schulman、Hilton(2023) a directement mesuré ce point.  Utiliser des �
 
 Le jeu de RLHF est un jeu de jeu de l'agent adverse.
 
-Gao et al. ont donné une forme fonctionnelle.`d = sqrt(KL(pi || pi_init))`Il est en train de mourir.`R_proxy(d)`Pour une récompense de proxy,`R_gold(d)`Pour la récompense en or.
+Gao et al. ont donné une forme fonctionnelle de récompense en or.`d = sqrt(KL(pi || pi_init))`,并令 `R_gold(d)`Pour la récompense en or.
 
 ```math
 \begin{aligned}
@@ -35,7 +35,7 @@ R_{\text{gold}}^{\text{RL}}(d) &= d\,(\alpha_{\text{RL}} - \beta_{\text{RL}} \lo
 \end{aligned}
 ```
 
-Parmi eux `beta_gold > beta_proxy`◊ Tous deux vont de zéro KL à la hausse, tous deux atteindront le sommet, mais le pic d'or est plus proche du point d'origine.`d`À la même époque, même si le proxy continue à augmenter, l'or tombera également à la limite de référence.
+两种形式都从零 KL上升,达到峰值,然后下降──论文中代理分数 没有干净的拟合; il continuera à augmenter,大 KL 时大致随着`d`线性增长── donc dans une plus grande `d`Même si le proxy continue à augmenter, l'or tombera également à la limite de référence ci-dessous.
 
 C'est la courbe de suroptimisation. Ce n'est pas un bug de modèle de récompense spécifique.
 
@@ -90,7 +90,7 @@ rlhf-reward-kl
 
 2. Rendre la distribution du bruit de Gauss 改为低自由度的学生-t(heavy-tailed) ・ maintenir la configuration de formation RM proxy 不变── pic location 和 post-peak collapse
 
-3. 阅读 Gao et al. Figure 1 ((ICML 2023) ⋅论文为代理-gold gap 提出一个功能形式──把它适应到练习1的模拟曲线,并比较参数──
+3. 阅读 Gao et al. Figure 1 ((ICML 2023) ⋅论文为金奖励 提出一个关于 `d`La forme fonctionnelle de l'exercice 1 est adaptée aux courbes simulées, et les paramètres sont comparés.
 
 4. 找一篇 最近声称已解奖励黑客的RLHF论文(这个短语是红旗) ――识别论文测试了四种服装中哪些,又没有测试哪些──
 

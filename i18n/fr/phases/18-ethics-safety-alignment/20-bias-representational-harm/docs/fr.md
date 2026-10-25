@@ -12,7 +12,7 @@
 - ☐ définir les préjudices et les préjudices de distribution, et donner chacun un exemple dans le cadre de la déploiement du MLL:
 - Il a été démontré que les trois catégories d'indicateurs d'évaluation de Gallegos et coll.
 - Décrire la croisée et pourquoi la mesure de l'équité basée sur l'incertitude de la WinoIdentity a comblé le manque d'évaluation du biais de l'axe unique.
-- 描述两种偏见的机制可解释性方法:
+- 描述三种偏见的机制可解释性方法(néurones de genre、façons de se faire connaître par la SAE、manipulation de la tête de l'attention)
 
 ##  problématique
 

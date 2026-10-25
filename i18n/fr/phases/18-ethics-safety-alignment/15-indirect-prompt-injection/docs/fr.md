@@ -1,6 +1,6 @@
 # Injection directe indirecte  生产攻击面
 
-> L'injection indirecte de prompt (IPI) ordonnera d'intégrer le contenu externe  page web 、 e-mail 、 document partagé 、 ticket de support  par le système agent  sans opération utilisateur manifeste  Consommer ∞ IPI est une menace de production dominante en 2026: elle contourne les filtres d'entrée utilisateur, car l'attaquant ne communique jamais avec l'utilisateur; avec les agents   Traiter plus de contenu externe, elle s'étendra silencieusement; et elle vise à ce que personne ne lise pas le flux d'automatisation du prompt ∞ MDPI Informations 171) ∞ 54 (janvier 2026) ∞ Complète 2023-2025 ∞ NDSS 2026 Papers de défense IPI vont présenter le défi de base nécessaire à l'expression: les instructions d'injection initiale en rouge en sens de " imprimé " Oui), donc les tests ne sont pas seulement des mots clés filtrant " Les rapports d'attaque des attaques humaines approximatives (Anthropode et défense, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED
+> L'injection indirecte de prompt (IPI) ordonnera d'intégrer le contenu externe  page web 、 e-mail 、 document partagé 、 ticket de support  par le système agent  sans opération utilisateur manifeste  Consommer  IPI est une menace de production dominante en 2026: elle contourne les filtres d'entrée utilisateur, car l'attaquant ne communique jamais avec l'utilisateur; avec les agents    Traiter plus de contenu externe, elle s'étend silencieusement; et elle vise à ne pas lire les flux d'automatisation du prompt  MDPI Information 171)  54 (janvier 2026)       Complète 2023-2025  NDSS 2026 Le papier de défense IPI va décrire le défi principal: les instructions d'injection initiale peuvent être " imprimées " Oui ", donc la recherche ne consiste pas seulement à filtrer ces mots clés  Le rapport de l'attaque d'attaque d'humanité (Anthropode et de défense en ligne) a été publié à près de 90%, la plupart des tentatives de défense de défense de l'attaque d'humanité, en octobre 2025, ont dépassé les taux de succès de défense de l'attaque de défense de l'humanité.
 
 **类型：**Construire
 **语言：**Python (stdlib, attaque IPI + harnais de défense)
@@ -40,7 +40,7 @@ CaMeL (Microsoft 2025)、ConfAIde (Stanford 2024) 和 NDSS 2026 Papers de défen
 
 ### L'attaquant se déplace en deuxième
 
-Nasr et coll. (octobre 2025) Utilisant des attaques adaptatives ((recherche gradée, politiques de RL, recherche aléatoire, équipe rouge humaine de 72 heures) testé 12 défenses IPI publiées.
+Nasr et coll. (octobre 2025) Utilisant des attaques adaptatives ((gradient search、RL policies、random search、72-hour human red-team) testé 12 défenses IPI publiées ⋅ chaque défense ont été contournées, dont la plupart ASR > 90%, tandis que la plupart d'entre elles ont été signalées initialement comme ASR presque zéro ⋅
 
 方法論教训: seulement dans la compréhension de l'évaluation de l'attaque adaptative 时才发布防御──Statisque-attaque benchmarks Non sont des preuves de robustesse; attaquant va savoir la défense──
 
