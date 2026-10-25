@@ -16,7 +16,7 @@
 
 ##  problemas
 
-El decodificación es de memoria-limitada. En una operación Llama 3.3 70B FP8 de H100, cada Token decodificado 会读取约140 GB/s的权重并输出一个 Token──GPU computación En el decodificación 期间 casi空,瓶是HBM bandwidth, y no matmul throughput──
+En una operación Llama 3.3 70B FP8 de H100, cada paso de decodificación se realiza desde HBM 读取全部约70 GB 权重,并为每序列 输出一个代币──GPU计算 在解码期间 几乎空,瓶是HBM带宽,而不是 matmul throughput──
 
 La descifrado especulativo aprovechó esta diferencia. Utilizó un modelo de proyecto barato para producir K 个候选标记, luego hizo que el modelo objetivo en un solo pase adelante, verificara todos los K 个. Cada token que pasó fue verificado.
 

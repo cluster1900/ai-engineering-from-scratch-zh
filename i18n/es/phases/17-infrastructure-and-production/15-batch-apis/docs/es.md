@@ -1,6 +1,6 @@
 # Las APIs de lote  50%  descuento se convirtieron en estándar de la industria
 
-> Cada proveedor principal ofrece una API de lote sincronizado, con un 50% de descuento y alrededor de 24 horas de redirección. OpenAI, Google, y la mayoría de las plataformas de inferencia (Fireworks batch tier, Together batch) implementan el mismo modelo. Se colocan en caché los lotes y los caches rápidos, el costo de las tuberías durante la noche disminuye hasta el 10% del costo de la caché sin sincronizada. La regla es muy simple: si no es interactivo, debe colocarse en caché.
+> Cada proveedor principal ofrece una API de lote sincronizado, con un 50% de descuento y alrededor de 24 horas de redirección. OpenAI, Anthropic, Google, y la mayoría de las plataformas de inferencia (Fireworks batch tier, Together batch) implementan el mismo modelo. Se colocan en caché los lotes y los caches rápidos, el costo de las tuberías durante la noche disminuye hasta el 10% del costo de la producción sin caché. La regla es muy simple: si puede tolerar varias horas de retraso, debe colocarse en caché.
 
 **Type:** Learn
 **Languages:** Python (stdlib, toy batch-vs-sync cost simulator)
@@ -49,7 +49,7 @@ Una resumen de 50k documentos, usando el mismo sistema de 4K-token:
 
 **Semi-interactive** Usuario enviar tareas, pocos minutos después volver a ver.
 
-**Batch** Usuario espera resultados por la mañana o la próxima hora──contento pipelines、grandes dimensiones Clasificación、análisis fuera de línea──始终批,始终叠加缓存──
+**Batch** Users expect results by morning o by the end of the day──content pipelines、grandes dimensiones Clasificación、análisis fuera de línea──始终批,始终叠加缓存──
 
 常见错误: puesto que el pipeline es producción, debemos clasificar todo en interactivo.
 

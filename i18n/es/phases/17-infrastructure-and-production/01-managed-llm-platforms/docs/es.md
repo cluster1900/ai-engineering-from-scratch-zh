@@ -31,7 +31,7 @@ Este curso se trata de tres tipos de apuestas, diferencias de latencia, diferenc
 
 ### Latencia  Diferencia bajo la escala
 
-Análisis Artificial 运行持续基准──在等效的 Llama 3.1 405B 部署上(shared on demand),Azure OpenAI mediana latencia de primer token 约为50 ms;Bedrock 约为75 ms── esta diferencia no es AWS 失败 它是容量模型差异──Azure 销售PTUs (Provisioned Throughput Units),为你的租户 预留 GPU 容量──Bedrock 的等价格──Bedrock 的等价格──也存在,但每单位 起价约$21/小时,大多数共享客户仍然停留在需求──
+Análisis Artificial 运行持续基准──在等效的Llama 3.1 405B 部署上,使用PTUs的Azure mediana primera latencia de tokens 约为50 ms;Shared on-demand的Bedrock 约为75 ms──这个差距不是AWS 失败 它是容量模型差异──Azure 销售PTUs (Provisioned Throughput Units),为你的租户 预留 GPU容量──Bedrock的等价格──Bedrock的等价也存在,但每单位 起价约$21/小时,大多数客户仍然停留在需求上的──
 
 Capacidad compartida a pedido 会与所有其他客户的流量竞争──Capacidad dedicada 不会──Si su producto SLA es TTFT < 100 ms en P99, entonces usted debe comprar PTUs de Azure, comprar Bedrock Provisioned Throughput, o aceptar un embrazo de la potencia──
 
@@ -91,7 +91,7 @@ i4-platform-lanes
 2. Tu producto necesita Claude 3.7 Sonnet y GPT-4o... diseñar un despliegue de dos proveedores... ¿quién pone a cual hiperescalador, ¿qué puerta de entrada, ¿qué política de fallas es?
 3. Una plataforma de salud 客户要求BAAs、US-East data residency 和 sub-100ms P99 TTFT── seleccionar una plataforma, y utilizar tres funciones específicas para obtener resultados.
 4. ¿Cuándo encontraras el culpable? ¿Cuánto tiempo tardarás en encontrar el culpable?
-5. 阅读Azure OpenAI 和 Bedrock precios páginas。 Para 100M-token/mes Claude carga de trabajo, ¿qué es más conveniente  directos API Antropic、Bedrock a pedido, o Bedrock Provisioned Throughput?
+5. 阅读Antropic API 和 Bedrock precios páginas。 para 100M-token/mes Claude carga de trabajo, ¿qué es más conveniente  directos Antropic API、Bedrock a pedido, o Bedrock Provisioned Throughput?
 
 ## 关键术语: "El hombre es un hombre"
 | Term | What people say | What it actually means |

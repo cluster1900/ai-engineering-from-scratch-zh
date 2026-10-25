@@ -18,7 +18,7 @@ Tu equipo en Kubernetes publicó un servicio de LLM 服务──你把HPA 设置
 
 Además, usaste el Cluster Autoscaler 管理节点──凌晨2点来一个1M-Token prompt; cluster pasó 3 minutos suministrando节点,请求超时──
 
-Además, se despliega un nodo que necesita atravesar 2 nodos usando un modelo 70B de 8 GPUs. El cluster tiene 7 GPUs vacíos, y hay 1 GPU distribuido en 3 nodos.
+Además, usted desplegó una necesidad de atravesar 2 nodos utilizando un modelo 70B de 8 GPUs. Cluster tiene 7 GPUs vacíos, distribuidos en 3 nodos, también de 1 个. Cluster Autoscaler para la falta de 1 GPUs.
 
 Tres niveles, tres diferentes modelos de fracaso. La autoescalación consciente de la GPU de 2026 no es un sistema de conexión de datos.
 

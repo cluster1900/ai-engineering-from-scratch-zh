@@ -1,6 +1,6 @@
 # Modelo de enrutamiento  como medio básico de reducción de costes
 
-> Un corredor dinámico evaluará cada solicitud (título de tarea, longitud de los tokens, similitud de los embedidos, confianza), y enviará una consulta simple, enviará un modelo barato, y actualizará una consulta compleja a un modelo fronterizo. También se llama cascada de modelos. Estudios de caso de producción muestran que en la implementación de los Estados Unidos/Reino Unido/UE, la calidad de la tecnología puede disminuir en un 20% a un 60%; en el SaaS de alta circulación, un 30% de mejora de la eficiencia de enrutamiento se convertirá en un ciclo anual de seis dígitos.$20/M 降到约 $La mayor parte de la disminución proviene de mejores estacas de servicio (Fase 17 · 04-09), no es hardware. En caso de que el enrutamiento no cause regresión del producto, se convierte en un modo de margen.
+> Un corredor dinámico evaluará cada solicitud (título de tarea, longitud de token, similitud de incorporación, confianza), y enviará una consulta simple, enviará un modelo barato, y actualizará una consulta compleja a un modelo fronterizo. También se llama cascada de modelos. Estudios de caso de producción muestran que en la implementación de los Estados Unidos/Reino Unido/UE, la calidad de la tecnología puede disminuir en un 20% a un 60%; en el SaaS de alta circulación, un 30% de mejora de la eficiencia de enrutamiento se reducirá en un período de seis años.$20/M 降到约 $La mayor parte de la disminución proviene de mejores estacas de servicio (fase 17 · 04-09), no es hardware. En caso de que el enrutamiento no cause regresión del producto, se convierte en un modo de margen.
 
 **Type:** Learn
 **Languages:** Python (stdlib, toy cascading router simulator)
@@ -44,7 +44,7 @@ Si usted pone el 70% de la ruta en un modelo barato, si pone el 30% de la ruta e
 
 Las nuevas tecnologías de inteligencia artificial (AI) (Fase 17 · 19) expone el enrutamiento.`router`Config──Portkey tiene guardias + enrutamiento──Kong AI Gateway tiene enrutamiento basado en plugins──OpenRouter modelo de mercado  Exposure Recommendation API──
 
-Fuente abierta:RouteLLM (LMSYS) 、No Diamond (comercial) 、Prompt Mule。
+Fuente abierta:RouteLLM (LMSYS)  Muñeco de la Promptura  Productos comerciales: No diamante 
 
 ### 2026 价格曲线
 
@@ -69,7 +69,7 @@ Utilice métricas de calidad en línea para la ruta 设 gate:
 ### Debes recordar el número
 
 - 2026  Iso-qualidad  Reducción de los costes de ruta: estudios de caso  20-60% 
-- La caída de los precios de los LLM 2022-2026:agregado 约每年10x──
+- Primera reducción del precio del LLM bajo el nivel de capacidad fija: aproximadamente 10 veces al año a16z LLMflation  estimativa);
 - GPT-4 nivel 2022 vs 2026: ~$20/M → ~$0,40/M:
 - Impacto de la latencia en cascada: media 约1.2x, escalada 约2x ((约10% de tráfico) 
 

@@ -20,7 +20,7 @@ Además, las instrucciones del usuario contienen mi SSN es 123-45-6789.
 
 Además, el módulo de LLM de tu grupo EKS puede acceder a cualquier host de Internet. Alguien puede buscar datos en DNS y exfillarlos a un dominio controlado por el atacante.
 
-La seguridad de los servicios de LLM 必须处理这三类矢量──Vault-backed credentials──PII scrubbing──Network exit filtering──Audit logs──
+La seguridad de los servicios de LLM 必须处理这三类矢量,并能在事后证明这一点――value-backed credentials――PII scrubbing――网络输出过──审核日志 作为证据链――
 
 ## 概念
 ### 集中式 vault + IAM-role pull

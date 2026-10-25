@@ -131,7 +131,7 @@ i4-spend-ladder
 1. 运行                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `code/main.py`¿Cómo elegir el valor?
 2. Diseñar un panel de costos por inquilino, por tarea. ¿Construirás primero cuáles son las 5 imágenes?
 3. Su mayor inquilino es unidad-economía-negativo.
-4. Por el producto de soporte  calcular el coste por boleto resuelto:3M Token/ticket, aproximadamente 800 boletos/día, tasa caché de GPT-5.
+4. Por el producto de soporte  calcular el costo por boleto resuelto:3M Token/ticket, aproximadamente 800 boletos/día, todas las entradas  según la tasa caché GPT-5 $0.125/M 计(
 5. 论证 etiquetado retroactivo ¿si no es posible efectiva...cuándo se puede aceptar?
 
 ## 关键术语: "El hombre es un hombre"

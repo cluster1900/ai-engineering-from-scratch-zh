@@ -103,7 +103,7 @@ mx-sequential-test
 2. Para un paciente de salud  supervisado en el lugar  clientes seleccionan Statsig o GrowthBook。
 3. Design a/b, test GPT-4 vs GPT-3.5 en costo por billete resuelto                                                                                                                                                                                                                                                    
 4. Su canario ha pasado, pero A/B muestra -1,2% de conversión. ¿Estoy publicando?
-5. Para aplicar el CUPED a un período previo, el aumento de la muestra se calcula en un 60% de la pre-periodo.
+5. 应用 CUPED, usando una能解释 60% 后期方差的前期可变化(相关系数平方为 0.6) ――计算有效样本大小增强──
 
 ## 关键术语: "El hombre es un hombre"
 | Term | What people say | What it actually means |

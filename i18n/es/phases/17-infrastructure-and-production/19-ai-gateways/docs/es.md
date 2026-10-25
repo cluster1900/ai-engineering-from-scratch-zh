@@ -8,7 +8,7 @@
 **Time:** ~60 minutes
 
 ## El objetivo del aprendizaje
-- 列举六个核心 gateway 功能 路由,倒退,retries,rate limits,secretes,observabilidad,guardrails)
+- 列举七个核心 gateway 功能 路由,倒退,retries,rate limits,secretos,observabilidad,gardails)
 - Se han creado cuatro puertas de acceso para 2026.
 - 引用 Kong benchmark ((相比Portkey 228%,相比LiteLLM 859%),并解释为什么对 >500 RPS 很重要──
 - En el caso de la residencia de datos y el presupuesto de operaciones, optar por ser alojado o administrado.
@@ -19,7 +19,7 @@ Su producto es OpenAI, Antropic y un Llama auto-hosted. Cada proveedor tiene dif
 En la capa de aplicación, volver a implementar esto, permitirá que cada servicio se ajuste a cada proveedor. La capa de puerta de entrada lo integrará en un proceso, proporcionando una API (normalmente compatible con OpenAI), re-dividida a cada proveedor.
 
 ## 概念
-### Seis características centrales
+### Siete características centrales
 
 1. **Provider routing** colocar OpenAI, Antropic, Gemini, auto-hosted etc en una API 后面.
 2. **Fallback** 遇到429、5xx o de calidad fallo 时,在别处重试──
@@ -104,7 +104,7 @@ mx-gateway-fallback
 
 ##  ejercicios
 1. 运行                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `code/main.py` Configurar OpenAI→Antropic→auto-hosted de fallback──En 5% de la tasa de error del proveedor, ¿cuál es la tasa de impacto esperada?
-2. Su SLA es TTFT P99 < 200 ms, base para 300 ms... ¿Qué puertas de acceso están dentro del presupuesto?
+2. Su SLA es TTFT P99 < 320 ms, mientras que el modelo está en P99 abajo tiene 300 ms... ¿Qué puertas de entrada están todavía dentro del presupuesto?
 3. Un cliente de atención médica  requirió auto-hosted + redacción de PII + auditoría。 seleccionar OSS de llave de puerto 还是 Kong。
 4. Comparar LiteLLM con Kong: ¿Qué equipo debería mudarse al límite máximo de RPS?
 5. ¿Por qué no se ha creado una política de límite de tarifas para múltiples inquilinos? ¿Por qué no se ha creado una política de límite de tarifas para múltiples inquilinos? ¿Por qué no se ha creado una política de tarifas de tipo libre?

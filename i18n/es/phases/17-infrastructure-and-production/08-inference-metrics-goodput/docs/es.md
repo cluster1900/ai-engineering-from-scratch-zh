@@ -1,6 +1,6 @@
 # Metricas de inferencia  TTFT、TPOT、ITL、Goodput、P99
 
-> El TFT es el preempleo 加队加网络──TPOT(valor igual a ITL) es el decodificación de memoria-vinculada de cada token 成本──端到端延迟是 TTFT加上 TPOT 乘以输出长度──Throughput es toda la flota 聚焦后每秒的代币 数──Pero para el producto lo que realmente importa es el buen rendimiento: al mismo tiempo satisfacer la proporción de cada SLO requisito──在低好put的下高输出意味着你正在处理无法在用户的代币中到达──2026年 TRT-LLM 上 Llama-3.1-8B-Instruct 数字的参考: mean TTFT 162 ms, mean TPOT 7.33 ms, mean E2E 1,093 ms, mean E2E 1,093 ms, mean PTFP50P90p9 DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA DATA 
+> 五个指标决定一次推断部署 是否正常工作──TTFT 是预填 加队加网络──TPOT(sometimes reported for ITL, but every tool on ITL 是否计入第一代令牌 看法不一) es el decodificador de memoria-vinculada de cada token 成本──端到端延迟是 TTFT加上 TPOT 乘以输出长度──Throughput 是整个舰队 聚合后的每秒代令号──但对产品真正重要的是好put:同时满足每次SLO请求的比例下下面──在好put的高put中意味着正在处理时时无法达到用户的代令──2026年 TRT-LLM 上面 Llama-3.1B-Instruct的参考数字: mean TTFT 162T,me TPO 7.33M,E2E 报告 PTFE 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 报告 
 
 **Type:** 学习
 **Languages:** Python（stdlib，玩具版 percentile calculator 和 goodput reporter）
@@ -49,7 +49,7 @@ En la misma secuencia con preempleo en pedazos de la pila Llama-3.3-70B H100 arr
 
 `goodput = fraction of requests meeting (TTFT <= a) AND (TPOT <= b) AND (E2E <= c)`
 
-SLO es una restricción múltiple. Sólo cada restricción se satisface cuando una solicitud es buena.
+SLO es una restricción múltiple. Sólo cada restricción se satisface cuando una solicitud es buena. Buena potencia es esa proporción. Algunos artículos y tableros de control llegan a producir buena potencia.
 
 Para 2026, Goodput ya se ha convertido en una de las presentaciones de MLPerf Inference v6.0 y en indicadores de uso de los proveedores de plataformas de IA en el seguimiento interno de SLA.
 

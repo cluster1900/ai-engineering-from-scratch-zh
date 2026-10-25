@@ -10,7 +10,7 @@
 ## El objetivo del aprendizaje
 - 将 PagedAttention  Explicar el alocador de caché KV:bloques, tablas de bloques, y por qué la fragmentación se mantiene en el 4% de carga de producción abajo:
 - En la iteración 层面画出连续批发:完成的序列 如何离开批发,新序列 如何加入,而不需要排水──
-- Usar una frase para describir el preempleo en pedazos,并说出它保护的是哪哪个延迟度度 (título: es la cola TTFT, y no el rendimiento medio)
+- Usar una frase para describir el preempleo en pedazos, y decir que protege las métricas de latencia de la ITL, en lugar de la media de rendimiento.
 - Explicar que 2026 vLLM v0.18.0 afectará a aquellos que una vez activaron todos los equipos optimizados de la gotcha.
 
 ##  problemas
@@ -41,7 +41,7 @@ Batchamiento continuo en cada paso de decodificación 之间运行──把正�
 
 Tamaño del lote  Nunca será empolvado hasta el número fijo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               `V1 scheduler` Key Invariant: Scheduler Cada iteración de decodificación 运行一次, en lugar de cada solicitud 运行一次。
 
-### Precarga en pedazos  protección de cola TTFT
+### Precarga en pedazos  proteger cola de ITL
 
 Prefill es un proceso de computación. En el ciclo de servicio, la latencia de un primer token de un largo prompt se convertirá en la latencia de un par de otros usuarios.
 
@@ -124,7 +124,7 @@ tensor-parallel
 | Chunked prefill | “prefill splitting” | 将长 prefill 拆成 512-token 切片并与 decode 交错 |
 | TTFT | “first token time” | Prefill + queue + network；在长 prompts 下由 prefill 主导 |
 | ITL | “inter-token latency” | 连续 decode tokens 之间的时间；由 batch size 主导 |
-| Goodput | “满足 SLO 的 throughput” | 每个 request 仍命中 TTFT 和 ITL targets 时的 tokens/sec |
+| Goodput | “满足 SLO 的 throughput” | 仍命中 TTFT 和 ITL targets 的 requests/sec（Phase 17 · 08 将其报告为 requests 的占比） |
 | V1 scheduler | “new scheduler” | vLLM 的 2026 scheduler；N-gram spec decode 是与 chunked-prefill 兼容的路径 |
 | `--gpu-memory-utilization` | “memory knob” | 在 weights 和 activations 之后为 KV blocks 预留的 HBM 比例 |
 

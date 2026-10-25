@@ -48,7 +48,7 @@ RTT interregional:
 - Estados Unidos-este-1  eu-oeste-1: ~75 ms。
 - Estados Unidos-este-1  ap-sureste-1: ~ 220 ms。
 
-Si el enrutamiento Coloca una solicitud desde el este de los EE.UU.-1 送到 ap-southeast-1 的热前,节省的预填(800 → 80 ms) será objeto de 440 ms de viaje de ida y vuelta 抵消──GORGO(2026 investigación)把这一点显式化:联合最小化`prefill_time + network_latency`, en lugar de sólo minimizar el pre-cargamento. La respuesta es mantener el enrutamiento regional, a menos que el pre-cargamento ocupa la mayor parte de los prefijos de múltiples MB.
+Si el enrutamiento Coloca la solicitud desde el este-1 送到 ap-southeast-1 的热前,节省的预填(800 → 80 ms,即 720 ms) 在付出约 220 ms RTT 后缩小到约 500 ms; si la región de la extremidad lejana 让请求排队, o ya ha expulsado el prefijo, este punto sobrevalor desaparecerá―GORGO(2026 investigación) Coloca este punto en forma clara: unida minimización `prefill_time + network_latency`, en lugar de sólo minimizar el pre-cargamento. La respuesta es mantener el enrutamiento regional, a menos que el pre-cargamento ocupa la mayor parte de los prefijos de múltiples MB.
 
 ###  Comercio "inferencia transregional" aquí ayuda no está ocupado
 

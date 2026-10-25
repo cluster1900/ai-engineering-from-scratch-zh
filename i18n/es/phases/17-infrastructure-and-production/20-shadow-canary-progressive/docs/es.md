@@ -77,7 +77,7 @@ Si tu pila necesita redistribuir para volver a la rotación, antes de la rotaci�
 
 ### Cadencia de las métricas
 
-Puertas Canarias Cada 5-15 minutos de inspección una vez, dependiendo de volumen de tráfico. El 1% del tráfico ▌y 10 req/min ▌, cada ventana tiene 50-150 puntos de datos  para la latencia ▌suficiente, pero para la retroalimentación del usuario de decir ruido mayor ▌10% ▌Trabajará con aproximadamente 10 veces más datos ▌Los avances ▌deberían suspenderse lo suficiente en cada paso, para acumular suficientes muestras ▌
+Puertas Canarias Cada 5-15 minutos de inspección una vez, dependiendo de la cantidad de tráfico. 1.000 req/min de 1% de la información.
 
 ### A/B 步骤是可选的
 
