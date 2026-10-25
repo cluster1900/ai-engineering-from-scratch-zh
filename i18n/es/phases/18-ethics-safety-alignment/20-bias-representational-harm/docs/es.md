@@ -12,7 +12,7 @@
 - ☐ la reducción de los costes de trabajo y de la prestación de servicios de trabajo, y
 - Explicó que Gallegos et al. en 2024 describió uno de los tres indicadores de evaluación.
 - Describir la interconexión y por qué la medición de la equidad basada en la incertidumbre de la identidad vinícola ha compensado la falta de evaluación de la prejuicio de un solo eje.
-- 描述两种偏见的机制可解释性方法(neuronas de género ✓ características de la ESA ✓ manipulación de la cabeza de la atención) ✓
+- 描述三种偏见的机制可解释性方法(neuronas de género ✓ características de la ESA ✓ manipulación de la cabeza de la atención) ✓
 
 ##  problemas
 

@@ -53,7 +53,7 @@ Puede que haya un error:
 
 - la brecha implícita de recompensas `beta * (log(pi/pi_ref)_w - log(pi/pi_ref)_l)`Es un poco pequeño, pero también puede haber una gran brecha.
 - Esta pérdida se elege y los log-probos rechazados se vuelven en dirección opuesta.
-- Las preferencias fuera de distribución (recurso de muestras raras a muestras raras) generarán recompensas implícitas arbitrarias.
+- Las preferencias fuera de distribución (en la política de referencia, las dos respuestas a este tipo son muy raras) generan recompensas implícitas arbitrarias.
 
 ### El mercado de la inversión se ha convertido en un mercado de inversión.
 

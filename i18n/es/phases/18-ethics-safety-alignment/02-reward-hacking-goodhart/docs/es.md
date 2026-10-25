@@ -26,7 +26,7 @@ Gao、Schulman、Hilton(2023) directamente midió este punto.  Usar etiquetas
 
 Cuando una medida se convierte en un objetivo, deja de ser una buena medida. Manheim y Garrabrant(2018)区分了四种变种:regressional(finite-sample)、extremal(tail)、causal(proxy 是目标的下游) 和逆境代理游戏)。对RLHF来说,extremal +逆境是主导模式──
 
-Gao et al. 给出了一个功能形式──令 `d = sqrt(KL(pi || pi_init))`¿Qué es eso?`R_proxy(d)`Para la recompensa de la proxy,`R_gold(d)`Por el precio de oro.
+Gao et al.  dieron la forma funcional de recompensa de oro `d = sqrt(KL(pi || pi_init))`,并令 `R_gold(d)`Por el precio de oro.
 
 ```math
 \begin{aligned}
@@ -35,7 +35,7 @@ R_{\text{gold}}^{\text{RL}}(d) &= d\,(\alpha_{\text{RL}} - \beta_{\text{RL}} \lo
 \end{aligned}
 ```
 
-Entre ellos `beta_gold > beta_proxy`◊ ambos se elevan desde cero KL, ambos alcanzan la cima, pero el pico de oro está más cerca del punto de partida.`d`arriba, incluso si el proxy  continúa subiendo, el oro también caerá al nivel de referencia abajo.
+两种形式都从零 KL上升,达到峰值,然后下降──论文中代理分数 没有干净的拟合;`d`线性增长── por lo tanto en mayor `d`arriba, incluso si el proxy  continúa subiendo, el oro también caerá al nivel de referencia abajo.
 
 Ésta es la curva de optimización de exceso. No es un error de un modelo de recompensa específico. Es la forma del problema en sí mismo.
 
@@ -90,7 +90,7 @@ rlhf-reward-kl
 
 2. ¿Qué cambios hay en la configuración de entrenamiento de RM proxy? ¿Qué cambios hay en la ubicación de pico y el colapso posterior al pico?
 
-3. 阅读 Gao et al. Figura 1 ((ICML 2023) ⋅论文为代理-gold gap 提出一个功能形式──把它适应到练习1的模拟曲线,并比较参数──
+3. 阅读 Gao et al. Figura 1 ((ICML 2023) ⋅论文为金奖励 提出一个关于 `d`La forma funcional de la aplicación se adapta a las curvas simuladas del ejercicio 1,并比较参数.
 
 4. 找一篇 最近声称已解奖励黑客的 RLHF paper(这个短语是红旗) ――识别论文测试了四种服装中哪些,又没有测试哪些──
 
