@@ -2,28 +2,28 @@
 id: vlm-model-families
 title: Open VLM Families: LLaVA, Qwen-VL, InternVL
 code: OV
-subtitle: LLaVA, LLaVA-OneVision, Qwen-VL and InternVL3 side by side: connector, resolution, video, tokens and training.
+subtitle: LLaVA、LLaVA-OneVision、Qwen-VL 与 InternVL3 并排对比：连接器、分辨率、视频、token 与训练。
 hue: 265
 sources: phases/12-multimodal-ai/05-llava-visual-instruction-tuning, phases/12-multimodal-ai/06-any-resolution-patch-n-pack, phases/12-multimodal-ai/08-llava-onevision-single-multi-video, phases/12-multimodal-ai/09-qwen-vl-family-dynamic-fps, phases/12-multimodal-ai/10-internvl3-native-multimodal
 source_hash: 854d13f0d4ee45ed
 ---
 
-## Families side by side
+## 各家族并排对比
 type: comparison
 span: 2
 from: phases/12-multimodal-ai/05-llava-visual-instruction-tuning/docs/en.md, phases/12-multimodal-ai/08-llava-onevision-single-multi-video/docs/en.md, phases/12-multimodal-ai/09-qwen-vl-family-dynamic-fps/docs/en.md, phases/12-multimodal-ai/10-internvl3-native-multimodal/docs/en.md, phases/12-multimodal-ai/10-internvl3-native-multimodal/code/main.py
 
-| Factor | LLaVA-NeXT | LLaVA-OneVision | Qwen-VL family | InternVL3 |
+| 因素 | LLaVA-NeXT | LLaVA-OneVision | Qwen-VL 家族 | InternVL3 |
 |---|---|---|---|---|
-| Vision to LLM | 2-layer MLP, GELU | Same MLP projector | Qwen2-VL: 2-layer MLP on merged patches | Native, no align stage |
-| Recipe | Post-hoc on a text LLM | Post-hoc on a text LLM | Post-hoc on a text LLM | Native multimodal pretrain |
-| High resolution | AnyRes: 336 tiles plus thumbnail | AnyRes-9 or AnyRes-4, 384 tiles | Qwen2-VL: any H and W divisible by 28 | ViR picks low, medium or high |
-| Video | Per-frame concat | 32 frames, 196 tokens each | Dynamic FPS, absolute-time M-RoPE | 5% video-text in pretrain |
-| Visual tokens | 576 base, 2880 AnyRes | 6000-9000 per sample, balanced | Scales with input | 256, 576 or 2048+ via ViR |
-| Training | Align, then instruct | Stages SI, OV, TT | Qwen3-VL: stages stress OCR, grounding, agents | One pretrain stage, then instruct |
-| Swap the LLM | Retrain the projector | Retrain the projector | Retrain the adapter | Not possible later |
+| 视觉到 LLM | 2 层 MLP，GELU | 同样的 MLP 投影器 | Qwen2-VL：在合并后的 patch 上用 2 层 MLP | 原生，无对齐阶段 |
+| 配方 | 在文本 LLM 上事后对齐 | 在文本 LLM 上事后对齐 | 在文本 LLM 上事后对齐 | 原生多模态预训练 |
+| 高分辨率 | AnyRes：336 的 tile 加缩略图 | AnyRes-9 或 AnyRes-4，384 的 tile | Qwen2-VL：任意能被 28 整除的 H 和 W | ViR 选择低、中或高 |
+| 视频 | 逐帧拼接 | 32 帧，每帧 196 个 token | 动态 FPS，绝对时间 M-RoPE | 预训练中 5% 为视频-文本 |
+| 视觉 token | 基础 576，AnyRes 2880 | 每个样本 6000-9000，保持均衡 | 随输入缩放 | 通过 ViR 为 256、576 或 2048+ |
+| 训练 | 先对齐，再指令微调 | SI、OV、TT 三个阶段 | Qwen3-VL：各阶段侧重 OCR、定位、智能体 | 一个预训练阶段，再指令微调 |
+| 更换 LLM | 重训投影器 | 重训投影器 | 重训适配器 | 之后无法更换 |
 
-## LLaVA forward pass
+## LLaVA 前向传播
 type: architecture
 from: phases/12-multimodal-ai/05-llava-visual-instruction-tuning/docs/en.md
 
@@ -41,43 +41,43 @@ edge | prompt | splice |
 edge | splice | llm | full sequence
 ```
 
-## Qwen-VL lineage
+## Qwen-VL 演进
 type: flow
 from: phases/12-multimodal-ai/09-qwen-vl-family-dynamic-fps/docs/en.md, phases/12-multimodal-ai/09-qwen-vl-family-dynamic-fps/code/main.py
 
-1. **Qwen-VL (2023)**: 448 res, grounding boxes as text, Q-Former with 256 queries.
-2. **Qwen2-VL (2024)**: M-RoPE, native dynamic resolution, MLP projector.
-3. **Qwen2.5-VL (2025)**: dynamic FPS, absolute-time M-RoPE, window attention in the ViT.
-4. **Qwen2.5-VL agents**: JSON tool calls. ScreenSpot goes from 55% to 84%.
-5. **Qwen3-VL (2025)**: Qwen3 base, thinking mode, more OCR data. ViT and M-RoPE stay.
+1. **Qwen-VL (2023)**：448 分辨率，定位框以文本表示，Q-Former 用 256 个 query。
+2. **Qwen2-VL (2024)**：M-RoPE，原生动态分辨率，MLP 投影器。
+3. **Qwen2.5-VL (2025)**：动态 FPS，绝对时间 M-RoPE，ViT 中使用窗口注意力。
+4. **Qwen2.5-VL 智能体**：JSON 工具调用。ScreenSpot 从 55% 提高到 84%。
+5. **Qwen3-VL (2025)**：Qwen3 基座，思考模式，更多 OCR 数据。ViT 和 M-RoPE 保持不变。
 
-## Use each family when
+## 各家族的适用场景
 type: tips
 from: phases/12-multimodal-ai/05-llava-visual-instruction-tuning/docs/en.md, phases/12-multimodal-ai/06-any-resolution-patch-n-pack/docs/en.md, phases/12-multimodal-ai/06-any-resolution-patch-n-pack/code/main.py, phases/12-multimodal-ai/08-llava-onevision-single-multi-video/docs/en.md, phases/12-multimodal-ai/09-qwen-vl-family-dynamic-fps/docs/en.md, phases/12-multimodal-ai/10-internvl3-native-multimodal/docs/en.md
 
-- **LLaVA**: you need a cheap, reproducible recipe. Stage 2 takes ~20 hours on 8xA100.
-- **LLaVA-OneVision**: one model serves single image, multi-image and video at a predictable cost.
-- **Qwen2.5-VL**: video with timestamps, GUI agents with JSON output, `min_pixels` and `max_pixels` caps.
-- **InternVL3**: text skills must not regress and you can pay for native pretraining.
-- **Post-hoc recipe**: you want to swap in a new LLM later. It stays cheaper for most projects.
-- **AnyRes tiling**: the encoder is frozen at 336x336, but you need detail.
+- **LLaVA**：需要便宜、可复现的配方。第 2 阶段在 8xA100 上约需 20 小时。
+- **LLaVA-OneVision**：一个模型以可预测的成本服务单图、多图和视频。
+- **Qwen2.5-VL**：带时间戳的视频，输出 JSON 的 GUI 智能体，`min_pixels` 和 `max_pixels` 上限。
+- **InternVL3**：文本能力不能退化，且付得起原生预训练的成本。
+- **事后对齐配方**：之后想换上新的 LLM。对大多数项目来说它仍然更便宜。
+- **AnyRes 分块**：编码器固定在 336x336，但你需要细节。
 
-## Toy code by lesson
+## 各课的玩具代码
 type: task-table
 from: phases/12-multimodal-ai/05-llava-visual-instruction-tuning/code/main.py, phases/12-multimodal-ai/06-any-resolution-patch-n-pack/code/main.py, phases/12-multimodal-ai/08-llava-onevision-single-multi-video/code/main.py, phases/12-multimodal-ai/10-internvl3-native-multimodal/code/main.py
 
-| Task | Code |
+| 任务 | 代码 |
 |---|---|
-| Project ViT patches | `MLPProjector(PATCH_DIM, HIDDEN_DIM, LLM_DIM)` |
-| Build a LLaVA prompt | `build_llava_prompt(system, user, 576)` |
-| Pack a mixed batch | `pack_batch(images, patch)` |
-| Dense block-diagonal mask | `build_dense_mask(pack)` |
-| AnyRes token cost | `anyres_cost(img, tile=336, thumb=336)` |
-| Square-resize cost | `square_cost(img, side=336, patch=14)` |
-| OneVision video plan | `plan_video(budget)` |
-| ViR average tokens | `vir_sim(tiers)` |
+| 投影 ViT patch | `MLPProjector(PATCH_DIM, HIDDEN_DIM, LLM_DIM)` |
+| 构造 LLaVA 提示 | `build_llava_prompt(system, user, 576)` |
+| 打包混合 batch | `pack_batch(images, patch)` |
+| 稠密的块对角掩码 | `build_dense_mask(pack)` |
+| AnyRes 的 token 开销 | `anyres_cost(img, tile=336, thumb=336)` |
+| 正方形缩放的开销 | `square_cost(img, side=336, patch=14)` |
+| OneVision 视频规划 | `plan_video(budget)` |
+| ViR 平均 token 数 | `vir_sim(tiers)` |
 
-## M-RoPE, dynamic FPS, tool calls
+## M-RoPE、动态 FPS、工具调用
 type: annotated-code
 lang: python
 from: phases/12-multimodal-ai/09-qwen-vl-family-dynamic-fps/code/main.py
@@ -95,76 +95,76 @@ plan.total_tokens()             # frames times tokens_per_frame
 parse_tool_call(raw)            # json.loads, then slice { to }
 ```
 
-## Token math
+## Token 计算
 type: concepts
 from: phases/12-multimodal-ai/05-llava-visual-instruction-tuning/docs/en.md, phases/12-multimodal-ai/06-any-resolution-patch-n-pack/docs/en.md, phases/12-multimodal-ai/08-llava-onevision-single-multi-video/docs/en.md, phases/12-multimodal-ai/09-qwen-vl-family-dynamic-fps/docs/en.md
 
-- **LLaVA base**: 576 tokens per image. At 2048 context, 1472 tokens stay for text.
-- **AnyRes 2x2**: 4 * 576 + 576 = 2880 visual tokens.
-- **AnyRes 4x4**: a 1344x1344 image gives 9216 + 576, about 9800 tokens.
-- **Qwen2-VL native**: 1120x672 gives 40x24 merged patches, 960 tokens.
-- **OneVision image**: AnyRes-9 with 2x2 pool, 9 * 182 + 182 = 1820 tokens.
-- **OneVision video**: 32 frames with 2x2 pool, 32 * 196 = 6272 tokens.
-- **Dynamic FPS cap**: $fps_{max} = B / (T \cdot \text{tokens per frame})$
-- **Qwen2.5-VL video**: 60 s at 4 FPS with 81 tokens per frame is 19440 tokens.
+- **LLaVA 基础**：每张图 576 个 token。2048 上下文下，留给文本 1472 个 token。
+- **AnyRes 2x2**：4 * 576 + 576 = 2880 个视觉 token。
+- **AnyRes 4x4**：1344x1344 的图像得到 9216 + 576，约 9800 个 token。
+- **Qwen2-VL 原生**：1120x672 得到 40x24 个合并 patch，960 个 token。
+- **OneVision 图像**：AnyRes-9 配 2x2 池化，9 * 182 + 182 = 1820 个 token。
+- **OneVision 视频**：32 帧配 2x2 池化，32 * 196 = 6272 个 token。
+- **动态 FPS 上限**：$fps_{max} = B / (T \cdot \text{tokens per frame})$
+- **Qwen2.5-VL 视频**：60 s、4 FPS、每帧 81 个 token，共 19440 个 token。
 
-## Training recipes
+## 训练配方
 type: comparison
 from: phases/12-multimodal-ai/05-llava-visual-instruction-tuning/docs/en.md, phases/12-multimodal-ai/08-llava-onevision-single-multi-video/docs/en.md, phases/12-multimodal-ai/08-llava-onevision-single-multi-video/code/main.py, phases/12-multimodal-ai/10-internvl3-native-multimodal/docs/en.md
 
-| Step | LLaVA | OneVision | InternVL3 |
+| 步骤 | LLaVA | OneVision | InternVL3 |
 |---|---|---|---|
-| First | Train MLP only, 558k captions | SI: single image, AnyRes | Native pretrain |
-| Second | MLP + LLM, 158k GPT-4 turns | OV: 0.5 / 0.3 / 0.2 mix | Instruction tuning |
-| Third | None | TT: target task mix | None |
-| Frozen | ViT and LLM in stage 1 | No weight reset | No freezing stage |
-| Data | LAION-CC-SBU, LLaVA-Instruct | LLaVA-NeXT data plus own | 40/35/20/5 text, interleaved, caption, video |
+| 第一步 | 只训练 MLP，558k 条 caption | SI：单图，AnyRes | 原生预训练 |
+| 第二步 | MLP + LLM，158k 轮 GPT-4 对话 | OV：0.5 / 0.3 / 0.2 的混合 | 指令微调 |
+| 第三步 | 无 | TT：目标任务混合 | 无 |
+| 冻结 | 第 1 阶段冻结 ViT 和 LLM | 不重置权重 | 没有冻结阶段 |
+| 数据 | LAION-CC-SBU, LLaVA-Instruct | LLaVA-NeXT 数据加自有数据 | 40/35/20/5 的文本、交错、caption、视频 |
 
-## Defaults in the lessons
+## 课程中的默认值
 type: defaults
 from: phases/12-multimodal-ai/05-llava-visual-instruction-tuning/code/main.py, phases/12-multimodal-ai/06-any-resolution-patch-n-pack/code/main.py, phases/12-multimodal-ai/08-llava-onevision-single-multi-video/code/main.py, phases/12-multimodal-ai/09-qwen-vl-family-dynamic-fps/docs/en.md, phases/12-multimodal-ai/09-qwen-vl-family-dynamic-fps/code/main.py, phases/12-multimodal-ai/10-internvl3-native-multimodal/code/main.py
 
-| Setting | Default | Note |
+| 设置 | 默认值 | 说明 |
 |---|---|---|
-| `anyres_cost` tile, thumb | 336 | 576 tokens per tile at patch 14 |
-| `square_cost` side | 336 | Fixed 576 tokens per image |
-| LLaVA prompt image_tokens | 576 | Replaces the image placeholder |
-| `MRoPEConfig` base | 10000.0 | RoPE frequency base per band |
-| Qwen2-VL video sampling | 1-2 FPS | Accepts any frame count |
-| OneVision toy planner budget | 4096 | Visual tokens per sample in the lesson code |
-| Dynamic-FPS demo budget | 32768 | 81 tokens per frame after 3x pool |
-| `dvd_throughput` llm_tokens | 128 | Output tokens per request |
+| `anyres_cost` 的 tile、thumb | 336 | patch 14 时每个 tile 576 个 token |
+| `square_cost` 的 side | 336 | 每张图固定 576 个 token |
+| LLaVA 提示的 image_tokens | 576 | 替换图像占位符 |
+| `MRoPEConfig` 的 base | 10000.0 | 每个频带的 RoPE 频率基数 |
+| Qwen2-VL 视频采样 | 1-2 FPS | 接受任意帧数 |
+| OneVision 玩具规划器预算 | 4096 | 课程代码中每个样本的视觉 token 数 |
+| 动态 FPS 演示预算 | 32768 | 3x 池化后每帧 81 个 token |
+| `dvd_throughput` 的 llm_tokens | 128 | 每个请求的输出 token 数 |
 
-## Troubleshooting
+## 故障排查
 type: troubleshooting
 from: phases/12-multimodal-ai/06-any-resolution-patch-n-pack/docs/en.md, phases/12-multimodal-ai/08-llava-onevision-single-multi-video/docs/en.md, phases/12-multimodal-ai/09-qwen-vl-family-dynamic-fps/docs/en.md, phases/12-multimodal-ai/10-internvl3-native-multimodal/docs/en.md
 
-| Symptom | Cause | Fix |
+| 现象 | 原因 | 解决 |
 |---|---|---|
-| Squished text, lost chart labels | Square resize to 336 | Native aspect ratio with a max-pixels cap |
-| Large image fills the context | AnyRes 4x4 is about 9800 tokens | Native pack or M-RoPE, no tile overhead |
-| Patches attend across images | No block-diagonal mask | Mask from cumulative offsets, or use the `cu_seqlens` path |
-| Weak image skills after training | Video-first or multi-image-first order | Train SI, then OV, then TT |
-| GSM8K drops 5-10 points | Post-hoc alignment debt | Native pretrain with a 40% text floor |
-| Long video runs out of frequency range | Fixed position scale | MRoPE-v2 scaling with max input size |
+| 文字被压扁，图表标签丢失 | 正方形缩放到 336 | 保持原生宽高比，并设 max-pixels 上限 |
+| 大图占满上下文 | AnyRes 4x4 约 9800 个 token | 原生打包或 M-RoPE，没有 tile 开销 |
+| patch 跨图像相互注意 | 没有块对角掩码 | 由累计偏移量构造掩码，或走 `cu_seqlens` 路径 |
+| 训练后图像能力弱 | 先训视频或先训多图的顺序 | 先 SI，再 OV，再 TT |
+| GSM8K 下降 5-10 分 | 事后对齐欠下的债 | 原生预训练，文本占比不低于 40% |
+| 长视频超出频率范围 | 位置尺度固定 | 按最大输入尺寸做 MRoPE-v2 缩放 |
 
-## Abbreviations
+## 缩写
 type: glossary
 from: phases/12-multimodal-ai/06-any-resolution-patch-n-pack/docs/en.md, phases/12-multimodal-ai/08-llava-onevision-single-multi-video/docs/en.md, phases/12-multimodal-ai/09-qwen-vl-family-dynamic-fps/docs/en.md, phases/12-multimodal-ai/10-internvl3-native-multimodal/docs/en.md
 
-- **M-RoPE**: Multimodal RoPE. Time, height and width bands in the hidden dim.
-- **V2PE**: variable visual position encoding. Learned band split per modality.
-- **NaFlex**: SigLIP 2 native-flex mode. One checkpoint serves 256, 729 or 1024 tokens.
-- **ViR**: Visual Resolution Router. Picks the minimum resolution before encoding.
-- **DvD**: Decoupled Vision-Language deployment. Encoder and LLM on separate GPUs.
-- **SI, OV, TT**: OneVision stages. Single-image, OneVision mix, task transfer.
+- **M-RoPE**：多模态 RoPE。在隐藏维度中划分时间、高度、宽度频带。
+- **V2PE**：可变视觉位置编码。按模态学习频带划分。
+- **NaFlex**：SigLIP 2 的原生灵活模式。一个 checkpoint 支持 256、729 或 1024 个 token。
+- **ViR**：Visual Resolution Router。在编码前选出最低可用分辨率。
+- **DvD**：视觉-语言解耦部署。编码器和 LLM 放在不同 GPU 上。
+- **SI, OV, TT**：OneVision 的阶段。单图、OneVision 混合、任务迁移。
 
-## Questions
+## 问答
 type: qa
 from: phases/12-multimodal-ai/05-llava-visual-instruction-tuning/docs/en.md, phases/12-multimodal-ai/08-llava-onevision-single-multi-video/docs/en.md, phases/12-multimodal-ai/09-qwen-vl-family-dynamic-fps/docs/en.md, phases/12-multimodal-ai/10-internvl3-native-multimodal/docs/en.md
 
-- **Why did MLP beat Q-Former?** LM loss only and easy LLM swap. Contexts grew to 32k-128k+, so 576 tokens became cheap.
-- **OneVision or Qwen2.5-VL budget?** OneVision fixes the budget and scales the pooling. Qwen2.5-VL budget scales with input.
-- **Why does M-RoPE need no position table?** Each token rotates by its (t, h, w) position. Images use t = 0.
-- **Why not always pretrain native?** Compute is like a text LLM. Interleaved data is rare. The LLM cannot change later.
-- **What does DvD give?** For an 8B LLM with a 400M encoder, about 2x per-node throughput.
+- **为什么 MLP 胜过 Q-Former？** 只用 LM 损失，且容易更换 LLM。上下文增长到 32k-128k+，576 个 token 变得便宜。
+- **OneVision 和 Qwen2.5-VL 的预算有何不同？** OneVision 固定预算、调整池化。Qwen2.5-VL 的预算随输入缩放。
+- **为什么 M-RoPE 不需要位置表？** 每个 token 按其 (t, h, w) 位置旋转。图像使用 t = 0。
+- **为什么不总是原生预训练？** 算力与文本 LLM 相当。交错数据稀少。之后也无法更换 LLM。
+- **DvD 带来什么？** 对 8B LLM 配 400M 编码器，每节点吞吐约 2x。

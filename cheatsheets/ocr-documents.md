@@ -2,13 +2,13 @@
 id: ocr-documents
 title: OCR and Document Understanding
 code: OD
-subtitle: Train CTC OCR, pick a document stack, retrieve pages with MaxSim and approve fields against exact source spans.
+subtitle: 训练 CTC OCR，选择文档技术栈，用 MaxSim 检索页面，并按精确的源文本片段审批字段。
 hue: 165
 sources: phases/04-computer-vision/19-ocr-document-understanding, phases/12-multimodal-ai/22-document-diagram-understanding, phases/12-multimodal-ai/23-colpali-vision-native-rag, phases/19-capstone-projects/04-multimodal-document-qa, projects/document-extraction-desk
 source_hash: 31f050e1ba845909
 ---
 
-## Classical OCR pipeline
+## 经典 OCR 流水线
 type: architecture
 from: phases/04-computer-vision/19-ocr-document-understanding/docs/en.md
 
@@ -30,21 +30,21 @@ edge | txt | lay |
 edge | lay | out |
 ```
 
-## Tasks in code
+## 代码中的任务
 type: task-table
 from: phases/04-computer-vision/19-ocr-document-understanding/docs/en.md, phases/04-computer-vision/19-ocr-document-understanding/code/main.py, phases/12-multimodal-ai/22-document-diagram-understanding/code/main.py, phases/12-multimodal-ai/23-colpali-vision-native-rag/code/main.py, phases/19-capstone-projects/04-multimodal-document-qa/code/main.py
 
-| Task | Code |
+| 任务 | 代码 |
 |---|---|
-| CTC loss | `ctc_loss(log_probs, targets, ...)` |
-| Greedy CTC decode | `greedy_ctc_decode(log_probs, blank=0)` |
-| Line recogniser | `TinyCRNN(vocab_size=40, hidden=128, feat=32)` |
-| Production OCR | `PaddleOCR(lang="en").ocr(image_path)` |
-| LayoutLMv3 input | `layoutlm_input(tokens)` |
+| CTC 损失 | `ctc_loss(log_probs, targets, ...)` |
+| 贪心 CTC 解码 | `greedy_ctc_decode(log_probs, blank=0)` |
+| 文本行识别器 | `TinyCRNN(vocab_size=40, hidden=128, feat=32)` |
+| 生产级 OCR | `PaddleOCR(lang="en").ocr(image_path)` |
+| LayoutLMv3 输入 | `layoutlm_input(tokens)` |
 | Donut JSON schema | `donut_schema("invoice")` |
-| Top-k pages by MaxSim | `retrieve(query, pages, k=3)` |
+| 按 MaxSim 取 top-k 页面 | `retrieve(query, pages, k=3)` |
 
-## Train a CRNN with CTC
+## 用 CTC 训练 CRNN
 type: annotated-code
 lang: python
 from: phases/04-computer-vision/19-ocr-document-understanding/docs/en.md, phases/04-computer-vision/19-ocr-document-understanding/code/main.py
@@ -61,7 +61,7 @@ loss = F.ctc_loss(log_probs, targets, input_lens, target_lens,
 opt.zero_grad(); loss.backward(); opt.step()                # ~3 to ~0.2 in 200 steps
 ```
 
-## MaxSim late interaction
+## MaxSim 后期交互
 type: annotated-code
 lang: python
 from: phases/12-multimodal-ai/23-colpali-vision-native-rag/code/main.py, phases/19-capstone-projects/04-multimodal-document-qa/code/main.py
@@ -79,100 +79,100 @@ idx = build_index(prune=True)                   # DocPruner on, 50% patches
 hits = idx.retrieve(q, k=3)
 ```
 
-## Commands
+## 命令
 type: command-table
 span: 2
 from: projects/document-extraction-desk/README.md, projects/document-extraction-desk/solution/cli.py, phases/19-capstone-projects/04-multimodal-document-qa/code/ts/README.md, phases/19-capstone-projects/04-multimodal-document-qa/code/main.py
 
-| Command | What it does |
+| 命令 | 作用 |
 |---|---|
-| `python3 cli.py sample.txt --schema schema.json --output output/review.html` | Builds the HTML review desk and a JSON report |
-| `--proposals <file>` | Loads external OCR or model candidates |
-| `--approve <file>` | Applies decisions downloaded from the HTML desk |
-| `python3 scripts/project_test.py document-extraction-desk --all --solution --strict` | Grades the reference solution |
-| `python main.py` | Runs the capstone MaxSim and DocPruner scaffold |
-| `npm start` | Runs the viewer self-check once and exits 0 |
-| `npm run serve` | Starts the viewer HTTP server on 127.0.0.1 |
+| `python3 cli.py sample.txt --schema schema.json --output output/review.html` | 生成 HTML 审核台和一份 JSON 报告 |
+| `--proposals <file>` | 载入外部 OCR 或模型给出的候选 |
+| `--approve <file>` | 应用从 HTML 审核台下载的决定 |
+| `python3 scripts/project_test.py document-extraction-desk --all --solution --strict` | 给参考解答评分 |
+| `python main.py` | 运行毕业项目的 MaxSim 与 DocPruner 脚手架 |
+| `npm start` | 运行一次查看器自检，然后以 0 退出 |
+| `npm run serve` | 在 127.0.0.1 上启动查看器 HTTP 服务 |
 
-## Vision-first document QA
+## 视觉优先的文档问答
 type: flow
 from: phases/19-capstone-projects/04-multimodal-document-qa/docs/en.md
 
-1. **Ingest**: render each PDF page to a 1536x2048 PNG. Keep `{doc_id, page_num, image_path}`.
-2. **Embed**: run ColQwen2.5-v0.2. Get ~2048 patch vectors of dim 128 per page.
-3. **Prune**: DocPruner keeps the highest-signal half of the patches.
-4. **Query**: embed query tokens. Run MaxSim. Return the top-k pages.
-5. **Synthesize**: give the query and the top-5 page images to the VLM. Cite (doc_id, page).
-6. **Evidence**: draw the cited bounding boxes as overlays in the viewer.
-7. **OCR fallback**: run Nougat or dots.ocr on equation-dense pages.
-8. **Eval**: report ViDoRe v3 nDCG@5 and M3DocVQA against OCR-then-text.
+1. **导入**：把每个 PDF 页面渲染成 1536x2048 的 PNG。保留 `{doc_id, page_num, image_path}`。
+2. **嵌入**：运行 ColQwen2.5-v0.2。每页得到约 2048 个 128 维的 patch 向量。
+3. **剪枝**：DocPruner 保留信号最强的一半 patch。
+4. **查询**：嵌入查询 token。运行 MaxSim。返回 top-k 页面。
+5. **合成**：把查询和 top-5 页面图像交给 VLM。引用 (doc_id, page)。
+6. **证据**：在查看器里把引用的边界框画成叠加层。
+7. **OCR 兜底**：对公式密集的页面运行 Nougat 或 dots.ocr。
+8. **评测**：报告 ViDoRe v3 nDCG@5 和 M3DocVQA，并与先 OCR 再走文本的方案对比。
 
-## Formulas and numbers
+## 公式与数字
 type: concepts
 from: phases/04-computer-vision/19-ocr-document-understanding/docs/en.md, phases/12-multimodal-ai/23-colpali-vision-native-rag/docs/en.md
 
-- **CTC collapse**: merge repeats, then remove blanks. "h h h _ _ e e l l _ l l o _ _" gives "hello".
-- **CER**: Levenshtein distance divided by the reference length. WER is the same per word.
-- **MaxSim**: $\sum_i \max_j \cos(q_i, p_j)$ over query tokens $q_i$ and page patches $p_j$.
-- **ColPali storage**: 50 pages x 729 patches x 128 dims x 4 bytes = ~18 MB raw, ~2.3 MB after 8x PQ.
-- **Text-RAG storage**: 50 chunks x 768 dims x 4 bytes = ~150 kB. ColPali is ~120x more raw, ~15x after PQ.
-- **ViDoRe**: ColPali-v1 scores ~80% nDCG@5. Text-RAG scores ~50-60%.
+- **CTC 折叠**：先合并重复，再去掉 blank。"h h h _ _ e e l l _ l l o _ _" 得到 "hello"。
+- **CER**：Levenshtein 距离除以参考文本长度。WER 是按词计算的同一指标。
+- **MaxSim**：对查询 token $q_i$ 与页面 patch $p_j$ 求 $\sum_i \max_j \cos(q_i, p_j)$。
+- **ColPali 存储**：50 页 x 729 patch x 128 维 x 4 字节 = 原始约 18 MB，8x PQ 后约 2.3 MB。
+- **文本 RAG 存储**：50 个 chunk x 768 维 x 4 字节 = 约 150 kB。ColPali 原始约多 120x，PQ 后约多 15x。
+- **ViDoRe**：ColPali-v1 的 nDCG@5 约 80%。文本 RAG 约 50-60%。
 
-## Defaults and limits
+## 默认值与上限
 type: defaults
 from: phases/04-computer-vision/19-ocr-document-understanding/docs/en.md, phases/19-capstone-projects/04-multimodal-document-qa/docs/en.md, projects/document-extraction-desk/solution/main.py
 
-| Setting | Default | Note |
+| 设置 | 默认值 | 说明 |
 |---|---|---|
-| CER target | < 2% | On clean scans |
-| CRNN input height | 32 | CNN pools height to 1. Width is time |
-| Page render | 180 DPI | PyMuPDF in the capstone |
-| DocPruner | 50% | Under 0.5% accuracy loss |
-| Schema fields | 1 to 30 | Lowercase names, unique labels |
-| Document size | 100000 | Characters at most |
-| Candidates | 300 | Proposals at most per review |
+| CER 目标 | < 2% | 在干净的扫描件上 |
+| CRNN 输入高度 | 32 | CNN 把高度池化到 1。宽度就是时间轴 |
+| 页面渲染 | 180 DPI | 毕业项目中用 PyMuPDF |
+| DocPruner | 50% | 准确率损失低于 0.5% |
+| Schema 字段 | 1 to 30 | 小写名称，标签唯一 |
+| 文档大小 | 100000 | 最多这么多字符 |
+| 候选数 | 300 | 每次审核最多这么多个候选 |
 
-## Pick a document stack
+## 选择文档技术栈
 type: concepts
 from: phases/12-multimodal-ai/22-document-diagram-understanding/docs/en.md, phases/12-multimodal-ai/23-colpali-vision-native-rag/docs/en.md, phases/04-computer-vision/19-ocr-document-understanding/docs/en.md
 
-- **Printed invoices at scale**: LayoutLMv3 + rules. Cost-efficient.
-- **Mixed, handwritten, forms**: VLM-native (PaliGemma 2 or Qwen2.5-VL).
-- **arXiv papers**: Nougat for math, a VLM for figures.
-- **Regulated**: OCR pipeline + VLM validator as a cross-check.
-- **Receipts with fixed structure**: fine-tune Donut.
-- **Pure-text documents**: text-RAG. It is simpler and uses less storage.
-- **Visually rich PDFs**: ColPali for quality, VisRAG for scale.
+- **大规模印刷发票**：LayoutLMv3 + 规则。成本效率高。
+- **混合、手写、表单**：VLM 原生方案（PaliGemma 2 或 Qwen2.5-VL）。
+- **arXiv 论文**：数学用 Nougat，图用 VLM。
+- **受监管场景**：OCR 流水线 + VLM 校验器交叉核对。
+- **结构固定的收据**：微调 Donut。
+- **纯文本文档**：文本 RAG。更简单，占用存储更少。
+- **视觉信息丰富的 PDF**：要质量用 ColPali，要规模用 VisRAG。
 
-## Troubleshooting
+## 故障排查
 type: troubleshooting
 from: projects/document-extraction-desk/solution/main.py, projects/document-extraction-desk/solution/cli.py, projects/document-extraction-desk/stages/03-review-and-approve/docs/en.md, phases/12-multimodal-ai/22-document-diagram-understanding/docs/en.md, phases/12-multimodal-ai/23-colpali-vision-native-rag/docs/en.md
 
-| Symptom | Cause | Fix |
+| 现象 | 原因 | 解决 |
 |---|---|---|
-| "Approval belongs to another document version" | Text changed, `sourceSha256` differs | Review the new version again |
-| "Proposal does not match its exact source span" | Quote is not at `start`, `end` | Fix the offsets of the proposal |
-| "Use an ISO date: YYYY-MM-DD" | Date field text is not ISO | Correct the source text |
-| Field state is ambiguous | Two Seats quotes | Choose one span with `--approve` |
-| Donut fails on a paper | OCR-free models are specialists | Use Nougat for papers |
-| Chart data missing in RAG | OCR drops chart data | Embed page images with ColPali |
+| "Approval belongs to another document version" | 文本变了，`sourceSha256` 不同 | 重新审核新版本 |
+| "Proposal does not match its exact source span" | 引文不在 `start`、`end` 处 | 修正候选的偏移量 |
+| "Use an ISO date: YYYY-MM-DD" | 日期字段的文本不是 ISO 格式 | 修正源文本 |
+| 字段状态为 ambiguous | 有两处 Seats 引文 | 用 `--approve` 选定一个片段 |
+| Donut 处理论文失败 | 免 OCR 模型是专才 | 论文改用 Nougat |
+| RAG 中缺少图表数据 | OCR 丢掉了图表数据 | 用 ColPali 嵌入页面图像 |
 
-## Abbreviations
+## 缩写
 type: glossary
 from: phases/04-computer-vision/19-ocr-document-understanding/docs/en.md, phases/12-multimodal-ai/22-document-diagram-understanding/docs/en.md, phases/12-multimodal-ai/23-colpali-vision-native-rag/docs/en.md
 
-- **CTC**: Connectionist Temporal Classification. Trains without per-timestep labels.
-- **CRNN**: conv features + BiLSTM + CTC. The 2015 baseline.
-- **VLM-OCR**: a vision-language model trained or prompted for OCR.
-- **DocVQA**: the document VQA standard. The most-cited score.
-- **ViDoRe**: Visual Document Retrieval Evaluation. Metric is nDCG@5.
-- **PQ**: product quantization. Shrinks storage ~8x.
+- **CTC**：Connectionist Temporal Classification。无需逐时间步标签即可训练。
+- **CRNN**：卷积特征 + BiLSTM + CTC。2015 年的基线。
+- **VLM-OCR**：为 OCR 训练或提示的视觉语言模型。
+- **DocVQA**：文档 VQA 的标准基准。引用最多的分数。
+- **ViDoRe**：Visual Document Retrieval Evaluation。指标是 nDCG@5。
+- **PQ**：乘积量化。把存储缩小约 8x。
 
-## Questions
+## 问答
 type: qa
 from: phases/04-computer-vision/19-ocr-document-understanding/docs/en.md, phases/12-multimodal-ai/22-document-diagram-understanding/docs/en.md, phases/12-multimodal-ai/23-colpali-vision-native-rag/docs/en.md, projects/document-extraction-desk/README.md
 
-- **Why CTC?** It trains without character-level alignment.
-- **When do OCR pipelines still win?** Massive scan scale, deterministic failures, auditable output.
-- **Why MaxSim over a mean?** Each query token picks its best patch. Irrelevant patches do not wash it out.
-- **Do offsets prove the value is right?** No. They prove provenance. A reviewer confirms the field.
+- **为什么用 CTC？** 它不需要字符级对齐就能训练。
+- **OCR 流水线什么时候仍然占优？** 海量扫描件、确定性的失败模式、可审计的输出。
+- **为什么用 MaxSim 而不是取平均？** 每个查询 token 挑出自己最匹配的 patch。无关的 patch 不会把它冲淡。
+- **偏移量能证明值是对的吗？** 不能。它们证明的是出处。要由审核人确认字段。

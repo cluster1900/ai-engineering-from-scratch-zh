@@ -2,7 +2,7 @@
 
 Abbreviations: L0419 = phases/04-computer-vision/19-ocr-document-understanding, L1222 = phases/12-multimodal-ai/22-document-diagram-understanding, L1223 = phases/12-multimodal-ai/23-colpali-vision-native-rag, C04 = phases/19-capstone-projects/04-multimodal-document-qa, DESK = projects/document-extraction-desk. d = docs/en.md, c = code/main.py.
 
-## Classical OCR pipeline (architecture, 8 nodes, 7 edges)
+## 经典 OCR 流水线 (architecture, 8 nodes, 7 edges)
 - Image: L0419/d:35
 - Text detection (DB, EAST, CRAFT): L0419/d:35
 - Word/line bounding boxes: L0419/d:36
@@ -12,7 +12,7 @@ Abbreviations: L0419 = phases/04-computer-vision/19-ocr-document-understanding, 
 - Layout ordering, reading order: L0419/d:40, 50
 - Reading-order text: L0419/d:41
 
-## Tasks in code (task-table, 7 rows)
+## 代码中的任务 (task-table, 7 rows)
 - ctc_loss(log_probs, targets, input_lengths, target_lengths, blank=0): L0419/c:10, L0419/d:100
 - greedy_ctc_decode(log_probs, blank=0): L0419/c:15
 - TinyCRNN(vocab_size=40, hidden=128, feat=32): L0419/d:137
@@ -21,7 +21,7 @@ Abbreviations: L0419 = phases/04-computer-vision/19-ocr-document-understanding, 
 - donut_schema("invoice"): L1222/c:44, 92
 - retrieve(query, pages, k=3): L1223/c:70
 
-## Train a CRNN with CTC (annotated-code, 9 lines)
+## 用 CTC 训练 CRNN (annotated-code, 9 lines)
 - vocab with "_" first, blank at index 0: L0419/d:198, 102
 - TinyCRNN(vocab_size=len(vocab)), Adam lr=1e-3: L0419/d:208-209
 - build_batch(strings, vocab), H = 32: L0419/d:185, 213
@@ -31,14 +31,14 @@ Abbreviations: L0419 = phases/04-computer-vision/19-ocr-document-understanding, 
 - opt.zero_grad(); loss.backward(); opt.step(): L0419/d:217
 - loss ~3 to ~0.2 over 200 steps: L0419/d:220
 
-## MaxSim late interaction (annotated-code, 10 lines)
+## MaxSim 后期交互 (annotated-code, 10 lines)
 - maxsim loop, max cosine over patches, sum: L1223/c:35-42
 - scored list with p.doc_id and maxsim: L1223/c:71
 - sort by -score: L1223/c:72
 - build_index(prune=True), 50% patches: C04/c:122, 135, 134
 - idx.retrieve(q, k=3): C04/c:147
 
-## Commands (command-table, 7 rows)
+## 命令 (command-table, 7 rows)
 - python3 cli.py sample.txt --schema schema.json --output output/review.html: DESK/README.md:13
 - writes HTML and companion JSON: DESK/solution/cli.py:24-25
 - --proposals, external candidates: DESK/solution/cli.py:13
@@ -48,7 +48,7 @@ Abbreviations: L0419 = phases/04-computer-vision/19-ocr-document-understanding, 
 - npm start, one self-check pass, exits 0: C04/code/ts/README.md:32
 - npm run serve, HTTP server on 127.0.0.1: C04/code/ts/README.md:33
 
-## Vision-first document QA (flow, 8 steps)
+## 视觉优先的文档问答 (flow, 8 steps)
 1. Render to 1536x2048 PNG, persist {doc_id, page_num, image_path}: C04/d:64
 2. ColQwen2.5-v0.2, ~2048 patch embeddings of dim 128: C04/d:66
 3. DocPruner keeps the highest-signal half: C04/d:66
@@ -58,7 +58,7 @@ Abbreviations: L0419 = phases/04-computer-vision/19-ocr-document-understanding, 
 7. Nougat or dots.ocr on equation-dense pages: C04/d:74
 8. ViDoRe v3 nDCG@5, M3DocVQA, OCR-then-text baseline: C04/d:76
 
-## Formulas and numbers (concepts, 6 bullets)
+## 公式与数字 (concepts, 6 bullets)
 - CTC merge repeats and remove blanks, "hello" example: L0419/d:54, 57-58
 - CER Levenshtein / reference length, WER word level: L0419/d:80-81
 - MaxSim sum_i max_j cos(q_i, p_j): L1223/d:53
@@ -66,7 +66,7 @@ Abbreviations: L0419 = phases/04-computer-vision/19-ocr-document-understanding, 
 - 50 chunks x 768 x 4 bytes ~150 kB, ~120x raw and ~15x after PQ: L1223/d:99, 101
 - ColPali-v1 ~80% nDCG@5, text-RAG ~50-60%: L1223/d:82
 
-## Defaults and limits (defaults, 7 rows)
+## 默认值与上限 (defaults, 7 rows)
 - CER target < 2% on clean scans: L0419/d:80
 - input height 32, CNN pools height to 1, width is time: L0419/d:185, 160
 - 180 DPI PyMuPDF: C04/d:49
@@ -75,7 +75,7 @@ Abbreviations: L0419 = phases/04-computer-vision/19-ocr-document-understanding, 
 - at most 100000 characters: DESK/solution/main.py:33-34
 - at most 300 candidates: DESK/solution/main.py:67
 
-## Pick a document stack (concepts, 7 bullets)
+## 选择文档技术栈 (concepts, 7 bullets)
 - Pure-printed invoices at scale, LayoutLMv3 + rules: L1222/d:125
 - Mixed documents, VLM-native PaliGemma 2 or Qwen2.5-VL: L1222/d:126
 - arXiv, Nougat for math, VLM for figures: L1222/d:127
@@ -84,7 +84,7 @@ Abbreviations: L0419 = phases/04-computer-vision/19-ocr-document-understanding, 
 - Pure-text documents, text-RAG simpler and cheaper: L1223/d:105
 - ColPali for quality, VisRAG for scale: L1223/d:72
 
-## Troubleshooting (troubleshooting, 6 rows)
+## 故障排查 (troubleshooting, 6 rows)
 - 'Approval belongs to another document version', sourceSha256 check: DESK/solution/main.py:69-73
 - 'Proposal does not match its exact source span': DESK/solution/main.py:84-85
 - 'Use an ISO date: YYYY-MM-DD': DESK/solution/main.py:59-60
@@ -92,7 +92,7 @@ Abbreviations: L0419 = phases/04-computer-vision/19-ocr-document-understanding, 
 - Donut on a scientific paper fails: L1222/d:63
 - OCR drops chart data, ColPali embeds page image: L1223/d:3
 
-## Abbreviations (glossary, 6 bullets)
+## 缩写 (glossary, 6 bullets)
 - CTC: L0419/d:13, 259
 - CRNN: L0419/d:260
 - VLM-OCR: L0419/d:265
@@ -100,7 +100,7 @@ Abbreviations: L0419 = phases/04-computer-vision/19-ocr-document-understanding, 
 - ViDoRe, nDCG@5: L1223/d:80
 - PQ ~8x: L1223/d:150
 
-## Questions (qa, 4 bullets)
+## 问答 (qa, 4 bullets)
 - CTC trains without character-level alignment: L0419/d:54
 - OCR pipelines win on scale, reliability, auditable output: L1222/d:95-99
 - MaxSim vs mean, irrelevant patches wash out the mean: L1223/c:97-99, L1223/d:43

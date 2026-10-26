@@ -2,7 +2,7 @@
 
 Abbreviations: L23 = phases/12-multimodal-ai/23-colpali-vision-native-rag, L24 = phases/12-multimodal-ai/24-multimodal-rag-cross-modal, C04 = phases/19-capstone-projects/04-multimodal-document-qa, VEL = projects/visual-evidence-library. d = docs/en.md, c = code/main.py.
 
-## Architecture: Vision-first document QA pipeline (8 nodes, 7 edges)
+## Architecture: 视觉优先的文档问答流水线 (8 nodes, 7 edges)
 - PDFs, page renderer 180 DPI: C04/d:25, 49
 - ColQwen2.5-v0.2, ~2048 patches: C04/d:28
 - DocPruner 50% compression: C04/d:30
@@ -12,7 +12,7 @@ Abbreviations: L23 = phases/12-multimodal-ai/23-colpali-vision-native-rag, L24 =
 - VLM answerer, query + top-k page images: C04/d:38-39
 - Answer with cited pages + evidence regions, viewer with boxes on source page: C04/d:42, 45
 
-## Tasks in code (task-table, 8)
+## 代码中的任务 (task-table, 8)
 - maxsim(query_tokens, patches): L23/c:35-36
 - retrieve(query, pages, k=3): L23/c:70
 - doc_prune(patches, keep_fraction=0.5): C04/c:54
@@ -22,7 +22,7 @@ Abbreviations: L23 = phases/12-multimodal-ai/23-colpali-vision-native-rag, L24 =
 - validate_manifest(manifest, root): VEL/solution/main.py:14
 - search(assets, query, limit=20): VEL/solution/main.py:87
 
-## Run the lessons and the project (command-table, 8)
+## 运行课程与项目 (command-table, 8)
 - python main.py: C04/c:9, ablation C04/c:151-160
 - npm start, --demo, exits 0: C04/code/ts/README.md:32, C04/code/ts/package.json:8
 - npm run serve, 127.0.0.1, PORT unset gives a free port: C04/code/ts/README.md:33, 36
@@ -32,12 +32,12 @@ Abbreviations: L23 = phases/12-multimodal-ai/23-colpali-vision-native-rag, L24 =
 - main.py --manifest ... --query "return dry seeds" --out ./visual-output: VEL/README.md:29, writes index.html and evidence.json VEL/README.md:5, 32
 - python3 demo.py: VEL/README.md:32-35
 
-## MaxSim late interaction (annotated-code, 12 lines)
+## MaxSim 后期交互 (annotated-code, 12 lines)
 - max_sim_score loop body: C04/c:71-83
 - build_index(prune=True), keep_fraction 0.5: C04/c:122-129, 135
 - idx.retrieve(q, k=3) returns (Page, score): C04/c:97-101, 147
 
-## Score fusion and agentic retry (flow, 8 steps)
+## 分数融合与智能体式重试 (flow, 8 steps)
 1. Decompose quiet / vegan brunch / natural light: L24/d:81-85
 2. text_retrieve keyword counts divided by keyword count: L24/c:36-44
 3. image_retrieve tag hints natural_light, airy: L24/c:47-60
@@ -47,7 +47,7 @@ Abbreviations: L23 = phases/12-multimodal-ai/23-colpali-vision-native-rag, L24 =
 7. round 2 weights 0.3, 0.5, 0.2: L24/c:113
 8. grounded_generate cites review, img tags, ambient dB: L24/c:89-96
 
-## Options side by side (comparison, 6 rows)
+## 方案并排对比 (comparison, 6 rows)
 - Page vectors: ColPali N_p patches L23/d:51, VisRAG single vector L23/d:70, text-RAG one vector per chunk L23/d:25
 - Scoring: MaxSim L23/d:53, bi-encoder L23/d:70, cosine L23/d:26
 - OCR: none L23/d:92, text-RAG OCR / pdftotext L23/d:23
@@ -55,7 +55,7 @@ Abbreviations: L23 = phases/12-multimodal-ai/23-colpali-vision-native-rag, L24 =
 - Recall: strong L23/d:45, weaker L23/d:70, charts and tables lost L23/d:29
 - Use for: quality vs scale L23/d:72, pure-text L23/d:105
 
-## Use X when (tips, 6)
+## 何时用 X (tips, 6)
 - ColPali for financial reports, papers, contracts, medical records: L23/d:109
 - VisRAG faster indexing, smaller storage: L23/d:70-72
 - text-RAG for wiki, chat logs, multi-million-page archives: L23/d:105-106
@@ -63,7 +63,7 @@ Abbreviations: L23 = phases/12-multimodal-ai/23-colpali-vision-native-rag, L24 =
 - CLIP / SigLIP 2, CLAP: L24/d:37
 - score fusion first, MoE on A/B wins: L24/d:49
 
-## Formulas and numbers (concepts, 8)
+## 公式与数字 (concepts, 8)
 - MaxSim formula: L23/d:53
 - ColPali storage ~18 MB, ~2.3 MB after 8x PQ: L23/d:98
 - Text-RAG ~150 kB: L23/d:99
@@ -73,7 +73,7 @@ Abbreviations: L23 = phases/12-multimodal-ai/23-colpali-vision-native-rag, L24 =
 - DocPruner 50% at < 0.5% accuracy loss: C04/d:52
 - 10k pages, answers under 2s: C04/d:14, top-5 page images: C04/d:70
 
-## Defaults (defaults, 8)
+## 默认值 (defaults, 8)
 - EMB_DIM 16: C04/c:24
 - keep_fraction 0.5, max(1, ...): C04/c:54, 59
 - retrieve k 5: C04/c:97
@@ -83,7 +83,7 @@ Abbreviations: L23 = phases/12-multimodal-ai/23-colpali-vision-native-rag, L24 =
 - --model default local-vision-model, --vision-image: VEL/solution/main.py:315, 317
 - --out default visual-output: VEL/solution/main.py:314, outputs VEL/solution/main.py:282, 298
 
-## Manifest and proposal errors (troubleshooting, 8)
+## Manifest 与候选错误 (troubleshooting, 8)
 - Asset IDs must be nonempty and unique: VEL/solution/main.py:26
 - Image dimensions must be positive integers at most 20000: VEL/solution/main.py:29-30
 - Asset must be an image inside the manifest directory: VEL/solution/main.py:33-38
@@ -93,7 +93,7 @@ Abbreviations: L23 = phases/12-multimodal-ai/23-colpali-vision-native-rag, L24 =
 - Vision extraction requires --provider-url, --width and --height: VEL/solution/main.py:322-325
 - Image bytes do not match the extension: VEL/solution/main.py:173-176
 
-## Abbreviations (glossary, 8)
+## 缩写 (glossary, 8)
 - MaxSim: L23/d:145
 - ViDoRe, nDCG@5: L23/d:80
 - PQ / OPQ: L23/d:60, 150
@@ -103,7 +103,7 @@ Abbreviations: L23 = phases/12-multimodal-ai/23-colpali-vision-native-rag, L24 =
 - MuRAG 2022: L24/d:73
 - Evidence region: C04/d:123
 
-## Questions (qa, 5)
+## 问答 (qa, 5)
 - MaxSim vs mean washed out: L23/c:97-99
 - Citations [1], [img 3], [audio 2 at 0:34]: L24/d:55-57
 - Recall@k per modality, fused top-k accuracy: L24/d:104-105

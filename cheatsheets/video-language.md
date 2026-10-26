@@ -2,13 +2,13 @@
 id: video-language
 title: Video-Language Models and Long Video
 code: VV
-subtitle: Sample frames, budget tokens, encode time, ground events and index long video with timestamped answers.
+subtitle: 采样帧、规划 token 预算、编码时间、定位事件，并为长视频建索引，给出带时间戳的回答。
 hue: 320
 sources: phases/12-multimodal-ai/17-video-language-temporal-grounding, phases/12-multimodal-ai/18-long-video-million-token, phases/04-computer-vision/12-video-understanding, phases/19-capstone-projects/12-video-understanding-pipeline
 source_hash: 196574547a8febbc
 ---
 
-## Scene index pipeline (capstone)
+## 场景索引流水线（毕业项目）
 type: architecture
 from: phases/19-capstone-projects/12-video-understanding-pipeline/docs/en.md
 
@@ -33,84 +33,84 @@ edge | rrf | ground | top scene
 edge | ground | synth | window
 ```
 
-## Video VLM designs
+## 视频 VLM 设计
 type: comparison
 span: 2
 from: phases/12-multimodal-ai/17-video-language-temporal-grounding/docs/en.md, phases/12-multimodal-ai/17-video-language-temporal-grounding/code/main.py
 
-| Factor | Video-LLaMA | Video-LLaVA | Qwen2.5-VL |
+| 因素 | Video-LLaMA | Video-LLaVA | Qwen2.5-VL |
 |---|---|---|---|
-| Frames | 16-frame clips at 2 FPS | 8 frames | Dynamic FPS |
-| Compressor | Video Q-former, 32 queries | MLP | time-aligned M-RoPE per token |
-| Time position | 1D temporal RoPE | Learned temporal embeddings | Absolute timestamp (t, h, w) |
-| Note | Audio branch, ImageBind | Shared image+video encoder | Best open 2025 |
-| Answer to "when" | "early in the clip" | 8-16 frame system | "at 4.2 seconds" |
-| Weakness | Fixed clip length | No long video | None stated |
+| 帧 | 2 FPS 下的 16 帧片段 | 8 帧 | 动态 FPS |
+| 压缩器 | 视频 Q-former，32 个 query | MLP | 逐 token 的时间对齐 M-RoPE |
+| 时间位置 | 1D 时间 RoPE | 可学习的时间嵌入 | 绝对时间戳 (t, h, w) |
+| 备注 | 音频分支，ImageBind | 图像与视频共享编码器 | 2025 年最好的开源模型 |
+| 对“何时”的回答 | "early in the clip" | 8-16 帧的系统 | "at 4.2 seconds" |
+| 弱点 | 片段长度固定 | 不支持长视频 | 未说明 |
 
-## Long video: four paths
+## 长视频：四条路径
 type: comparison
 span: 2
 from: phases/12-multimodal-ai/18-long-video-million-token/docs/en.md, phases/12-multimodal-ai/18-long-video-million-token/code/main.py
 
-| Factor | Brute context | Ring attention | Token compression | Agentic retrieval |
+| 因素 | 硬塞上下文 | Ring attention | Token 压缩 | 智能体式检索 |
 |---|---|---|---|---|
-| Example | Gemini 1.5, Gemini 2.5 Pro | LWM, LongVILA | Video-XL, LongVA | VideoAgent |
-| Mechanism | All tokens in one pass | Chunks rotate across devices | One summary token per clip | LLM queries a clip tool |
-| Cost | Millions of tokens | Linear in context | Small context | Only relevant clips |
-| Weakness | Closed, not open-source | Spreads over many devices | Misses exact frames | Retrieval quality |
-| Pick for | >1h general QA | 15-60 min | 15-60 min | >1h specific query |
+| 示例 | Gemini 1.5, Gemini 2.5 Pro | LWM, LongVILA | Video-XL, LongVA | VideoAgent |
+| 机制 | 一次前向放入全部 token | 分块在设备间轮转 | 每个片段一个摘要 token | LLM 调用片段检索工具 |
+| 成本 | 数百万 token | 与上下文成线性 | 上下文小 | 只处理相关片段 |
+| 弱点 | 闭源 | 要分布到多台设备 | 会漏掉精确帧 | 依赖检索质量 |
+| 适合 | >1h 的通用问答 | 15-60 分钟 | 15-60 分钟 | >1h 的具体查询 |
 
-## VideoAgent loop
+## VideoAgent 循环
 type: flow
 from: phases/12-multimodal-ai/18-long-video-million-token/docs/en.md, phases/12-multimodal-ai/18-long-video-million-token/code/main.py
 
-1. **LLM**: reads the question.
-2. **LLM**: calls `find_clips(keyword='<word>')` for relevant clips.
-3. **Tool**: returns matching clip timestamps.
-4. **VLM**: encodes 3 x 30s clips (~7290 tokens total).
-5. **LLM**: composes the answer or asks follow-up queries.
+1. **LLM**：读问题。
+2. **LLM**：调用 `find_clips(keyword='<word>')` 找相关片段。
+3. **工具**：返回匹配片段的时间戳。
+4. **VLM**：编码 3 个 30s 片段（共约 7290 个 token）。
+5. **LLM**：组织回答，或者继续追问。
 
-## Token math
+## Token 计算
 type: concepts
 from: phases/12-multimodal-ai/17-video-language-temporal-grounding/docs/en.md, phases/12-multimodal-ai/18-long-video-million-token/docs/en.md, phases/12-multimodal-ai/18-long-video-million-token/code/main.py
 
-- **Budget**: `tokens(duration_s, fps, per_frame)` is duration times FPS times tokens per frame.
-- **Raw**: 1 minute at 30 FPS and 196 tokens per frame is 352k tokens.
-- **3x3 pool**: 64 tokens per frame. 5 minutes at 1 FPS is 19,200 tokens.
-- **384 native**: ~729 tokens per frame. 3x3 pooling gives 81.
-- **30 min**: 1 FPS at 81 tokens is 145,800 tokens. 2 FPS is 291,600.
-- **2 hours**: 1 FPS at 81 tokens is 583k tokens.
-- **Retrieval**: `3 * 30 * 81 + 200` tokens for 3 clips. 99% cheaper.
+- **预算**：`tokens(duration_s, fps, per_frame)` 等于时长乘以 FPS 再乘以每帧 token 数。
+- **原始**：1 分钟、30 FPS、每帧 196 个 token，共 352k 个 token。
+- **3x3 池化**：每帧 64 个 token。5 分钟、1 FPS 为 19,200 个 token。
+- **384 原生分辨率**：每帧约 729 个 token。3x3 池化后为 81 个。
+- **30 分钟**：1 FPS、每帧 81 个 token 为 145,800 个 token。2 FPS 为 291,600 个。
+- **2 小时**：1 FPS、每帧 81 个 token 为 583k 个 token。
+- **检索**：3 个片段用 `3 * 30 * 81 + 200` 个 token。便宜 99%。
 
-## Video model families (vision)
+## 视频模型家族（视觉）
 type: concepts
 from: phases/04-computer-vision/12-video-understanding/docs/en.md
 
-- **2D + pool**: 2D CNN per frame, average over time. Cannot model motion.
-- **3D conv**: kernels over (T, H, W). C3D, I3D, SlowFast.
-- **I3D inflation**: copy a 2D kernel along time. 3x3 becomes 3x3x3.
-- **(2+1)D**: 2D spatial conv, then 1D temporal conv. Fewer parameters.
-- **Joint attention**: one attention over (t, h, w). Quadratic in `T*H*W`.
-- **Divided attention**: one attention over time, one over space, per block.
-- **Factorised attention**: time and space attention alternate across blocks.
+- **2D + 池化**：每帧用 2D CNN，再在时间上取平均。无法建模运动。
+- **3D 卷积**：卷积核覆盖 (T, H, W)。C3D、I3D、SlowFast。
+- **I3D 膨胀**：沿时间轴复制 2D 卷积核。3x3 变成 3x3x3。
+- **(2+1)D**：先 2D 空间卷积，再 1D 时间卷积。参数更少。
+- **联合注意力**：在 (t, h, w) 上做一次注意力。复杂度是 `T*H*W` 的平方。
+- **分离注意力**：每个块里一次时间注意力、一次空间注意力。
+- **分解注意力**：时间注意力和空间注意力在块之间交替。
 
-## Functions in code
+## 代码中的函数
 type: task-table
 span: 2
 from: phases/12-multimodal-ai/17-video-language-temporal-grounding/code/main.py, phases/04-computer-vision/12-video-understanding/code/main.py, phases/19-capstone-projects/12-video-understanding-pipeline/code/main.py
 
-| Task | Code |
+| 任务 | 代码 |
 |---|---|
-| Uniform timestamps | `uniform_sample(duration, n)` |
-| Motion-aware timestamps | `dynamic_sample(motion, fps_cap=4, total_budget=32)` |
-| Score grounding | `evaluate_grounding(predictions, ground_truth, tol_iou=0.3)` |
-| Interval overlap | `iou(a_start, a_end, b_start, b_end)` |
-| Uniform frame indices | `sample_uniform(num_frames_total, T)` |
-| Random contiguous window | `sample_dense(num_frames_total, T, rng=None)` |
-| Lift 2D conv to 3D | `inflate_2d_to_3d(conv2d, time_kernel=3)` |
-| Search three vectors | `multi_vector_search(query, scenes, k=5)` |
+| 均匀时间戳 | `uniform_sample(duration, n)` |
+| 感知运动的时间戳 | `dynamic_sample(motion, fps_cap=4, total_budget=32)` |
+| 给定位结果打分 | `evaluate_grounding(predictions, ground_truth, tol_iou=0.3)` |
+| 区间重叠 | `iou(a_start, a_end, b_start, b_end)` |
+| 均匀帧索引 | `sample_uniform(num_frames_total, T)` |
+| 随机连续窗口 | `sample_dense(num_frames_total, T, rng=None)` |
+| 把 2D 卷积提升为 3D | `inflate_2d_to_3d(conv2d, time_kernel=3)` |
+| 用三个向量搜索 | `multi_vector_search(query, scenes, k=5)` |
 
-## Sample, ground, inflate
+## 采样、定位、膨胀
 type: annotated-code
 lang: python
 span: 2
@@ -126,69 +126,69 @@ c3d = inflate_2d_to_3d(c2d, time_kernel=3)                 # repeat on time, div
 c21 = Conv2Plus1D(3, 16)                                   # spatial, BN, ReLU, temporal
 ```
 
-## Run the capstone
+## 运行毕业项目
 type: command-table
 from: phases/19-capstone-projects/12-video-understanding-pipeline/code/main.py, phases/19-capstone-projects/12-video-understanding-pipeline/code/ts/README.md, phases/19-capstone-projects/12-video-understanding-pipeline/code/ts/src/server.ts, phases/19-capstone-projects/12-video-understanding-pipeline/code/ts/src/types.ts
 
-| Command | What it does |
+| 命令 | 作用 |
 |---|---|
-| `python main.py` | Index demo: RRF search, grounded window |
-| `npm run typecheck` | Type checks the UI half |
-| `npm test` | Job state and store tests |
-| `npm start` | Self-terminating demo |
-| `npm run serve` | HTTP server on :8123 |
-| `GET /jobs` | Job summaries as JSON |
-| `GET /job/:id` | Stage timeline, 404 when unknown |
-| Stages | chunk, embed, index, qa |
+| `python main.py` | 索引演示：RRF 搜索，定位窗口 |
+| `npm run typecheck` | 对 UI 部分做类型检查 |
+| `npm test` | 任务状态与存储测试 |
+| `npm start` | 自动结束的演示 |
+| `npm run serve` | 在 :8123 上启动 HTTP 服务 |
+| `GET /jobs` | 以 JSON 返回任务摘要 |
+| `GET /job/:id` | 阶段时间线，未知 id 返回 404 |
+| 阶段 | chunk, embed, index, qa |
 
-## Defaults
+## 默认值
 type: defaults
 span: 1
 from: phases/12-multimodal-ai/17-video-language-temporal-grounding/code/main.py, phases/12-multimodal-ai/17-video-language-temporal-grounding/docs/en.md, phases/04-computer-vision/12-video-understanding/code/main.py, phases/04-computer-vision/12-video-understanding/docs/en.md, phases/19-capstone-projects/12-video-understanding-pipeline/code/main.py
 
-| Setting | Default | Note |
+| 设置 | 默认值 | 说明 |
 |---|---|---|
-| `fps_cap` | 4 | Max samples per second |
-| `total_budget` | 32 | Total dynamic samples |
-| `tol_iou` | 0.3 | IoU for a grounding hit |
-| `time_kernel` | 3 | Inflation time depth |
-| RRF constant | 60 | Adds `1.0 / (60 + rank + 1)` |
-| `k` in search | 5 | Top scenes after fusion |
-| Clip length T | 8 | Also 16, 32 or 64 |
+| `fps_cap` | 4 | 每秒最多采样数 |
+| `total_budget` | 32 | 动态采样总数 |
+| `tol_iou` | 0.3 | 算作定位命中的 IoU |
+| `time_kernel` | 3 | 膨胀的时间深度 |
+| RRF 常数 | 60 | 累加 `1.0 / (60 + rank + 1)` |
+| 搜索中的 `k` | 5 | 融合后的 top 场景 |
+| 片段长度 T | 8 | 也可以是 16、32 或 64 |
 
-## Troubleshooting
+## 故障排查
 type: troubleshooting
 span: 2
 from: phases/04-computer-vision/12-video-understanding/docs/en.md, phases/12-multimodal-ai/17-video-language-temporal-grounding/docs/en.md, phases/12-multimodal-ai/18-long-video-million-token/docs/en.md, phases/19-capstone-projects/12-video-understanding-pipeline/docs/en.md
 
-| Symptom | Cause | Fix |
+| 现象 | 原因 | 解决 |
 |---|---|---|
-| "open door" equals "close door" | Temporal pooling is order-invariant | Use 3D conv or a transformer |
-| Near-chance on motion classes | Appearance alone is insufficient | Train R(2+1)D, not FramePool |
-| Inflated model breaks batch norm | Activation scale grows | Divide by `time_kernel` |
-| Joint attention runtime balloons | Quadratic in `T*H*W` | Use divided attention |
-| Uniform sampling misses the action | Loses motion peaks | Use dynamic FPS with a max-frame cap |
-| Answer says "early in the clip" | No absolute time position | Use time-aligned M-RoPE and JSON output |
-| Context overflow on 2h video | 583k tokens at 1 FPS | Pool more or use VideoAgent |
-| Miscounts "how many X" | Counting hallucination | Report counting accuracy separately |
+| "open door" 等同于 "close door" | 时间池化与顺序无关 | 使用 3D 卷积或 transformer |
+| 运动类别接近随机水平 | 只靠外观不够 | 训练 R(2+1)D，不要用 FramePool |
+| 膨胀后的模型破坏了 batch norm | 激活值尺度变大 | 除以 `time_kernel` |
+| 联合注意力的运行时间暴涨 | 复杂度是 `T*H*W` 的平方 | 使用分离注意力 |
+| 均匀采样漏掉了动作 | 丢失运动峰值 | 使用带最大帧数上限的动态 FPS |
+| 回答说 "early in the clip" | 没有绝对时间位置 | 使用时间对齐的 M-RoPE 和 JSON 输出 |
+| 2h 视频上下文溢出 | 1 FPS 下 583k 个 token | 加大池化或使用 VideoAgent |
+| 数错“有多少个 X” | 计数幻觉 | 单独报告计数准确率 |
 
-## Questions
+## 问答
 type: qa
 from: phases/12-multimodal-ai/17-video-language-temporal-grounding/docs/en.md, phases/12-multimodal-ai/18-long-video-million-token/docs/en.md, phases/04-computer-vision/12-video-understanding/docs/en.md, phases/19-capstone-projects/12-video-understanding-pipeline/docs/en.md
 
-- **What does time-aligned M-RoPE add?** Absolute time per token. It handles uneven dynamic FPS spacing.
-- **Which output format?** Structured JSON with time and event fields.
-- **Which pooling?** 3x3 bilinear for most tasks. 6x6 for agent workflows.
-- **Which path for a 15-minute clip?** Open 72B with native context.
-- **Which path for 2+ hours?** VideoAgent or hierarchical summaries.
-- **78% clip, 82% video?** The model relies on test-time averaging.
-- **Why three vectors per scene?** One pooled vector gives a retrieval regression.
+- **时间对齐的 M-RoPE 增加了什么？** 每个 token 的绝对时间。它能处理动态 FPS 带来的不均匀间隔。
+- **用什么输出格式？** 带时间和事件字段的结构化 JSON。
+- **用哪种池化？** 大多数任务用 3x3 双线性。智能体工作流用 6x6。
+- **15 分钟的片段走哪条路径？** 使用原生上下文的开源 72B 模型。
+- **2 小时以上走哪条路径？** VideoAgent 或分层摘要。
+- **片段级 78%，视频级 82%？** 模型依赖测试时的平均。
+- **为什么每个场景三个向量？** 只用一个池化向量会让检索效果退化。
 
-## Benchmarks
+## 基准
 type: concepts
 from: phases/12-multimodal-ai/17-video-language-temporal-grounding/docs/en.md, phases/12-multimodal-ai/18-long-video-million-token/docs/en.md
 
-- **VideoMME**: short, medium and long video. 2500+ samples.
-- **TempCompass**: "before" / "after" ordering questions.
-- **EgoSchema**: long-horizon first-person video.
-- **Needle-in-a-haystack**: hide a marker at a random point. Score Recall@k.
+- **VideoMME**：短、中、长视频。2500+ 个样本。
+- **TempCompass**：“before” / “after” 的顺序问题。
+- **EgoSchema**：长时程的第一人称视频。
+- **Needle-in-a-haystack**：在随机位置藏一个标记。按 Recall@k 打分。
