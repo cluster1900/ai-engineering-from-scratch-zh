@@ -1,6 +1,6 @@
 # Môi trường phát triển
 
-> Công cụ của bạn sẽ hình thành cách suy nghĩ của bạn. Một lần định vị, đúng định vị.
+> Công cụ của bạn sẽ hình thành cách suy nghĩ của bạn. Một lần bạn sẽ được sắp xếp tốt, và phải được sắp xếp tốt.
 
 **Type:** Build
 **Languages:** Python, Node.js, Rust
@@ -8,18 +8,21 @@
 **Time:** ~45 分钟
 
 ## Học mục tiêu
-- Từ zero bắt đầu thiết lập Python 3.11+、Node.js 20+ và Rust toolchains
--  cấu hình môi trường ảo và quản lý gói, để thực hiện xây dựng có thể tái tạo
-- Sử dụng CUDA/MPS 验证 GPU truy cập,并运行一个测试 Tensor hoạt động
-- Nghĩ 4 tầng: hệ thống, gói, thời gian chạy, thư viện AI
+
+- Từ零 xây dựng Python 3.11+、Node.js 20+ 和 Rust 工具链
+- 配置虚拟环境和包管理器, đảm bảo xây dựng có thể thực hiện
+- Sử dụng CUDA/MPS 验证 GPU 访问,并跑一次测试张量运算
+- Nghĩ bốn tầng kỹ thuật: hệ thống, quản lý gói, vận hành, thời gian, AI 库
 
 ## 问题
-Bạn sẽ học được 500+ bài học về kỹ thuật AI bằng Python, TypeScript, Rust và Julia. Nếu môi trường của bạn bị hỏng, mỗi bài học sẽ trở thành một công cụ để đấu tranh, thay vì học.
 
-Nhiều người sẽ bỏ qua cài đặt môi trường. Sau đó họ dành vài giờ để gỡ lỗi nhập khẩu, xung đột phiên bản và thiếu tài xế CUDA. Chúng tôi phải làm điều này một lần và đúng.
+Bạn sẽ học được 500+ bài học về kỹ thuật AI bằng Python, TypeScript, Rust và Julia. Nếu môi trường xấu đi, mỗi bài học sẽ trở thành một phần của một hệ thống công cụ, thay vì học.
+
+Nhiều người sẽ nhảy qua môi trường xây dựng. Sau đó mất vài giờ để gỡ lỗi nhập khẩu lỗi.
 
 ## 概念
-Một môi trường kỹ thuật AI có bốn tầng:
+
+Một kỹ thuật AI  môi trường có bốn tầng:
 
 ```mermaid
 graph TD
@@ -30,15 +33,15 @@ graph TD
 
 Chúng ta tự đặt lên tầng dưới. Mỗi tầng đều phụ thuộc vào tầng dưới.
 
-
 ```figure
 s0-env-stack
 ```
 
 ##  xây dựng nó
-### 步骤 1: Hệ thống Foundation
 
-Kiểm tra hệ thống của bạn và cài đặt các bộ phận cơ bản.
+### 步骤 1: hệ thống cơ sở
+
+检查你的系统并安装基础组件──
 
 ```bash
 # macOS
@@ -52,9 +55,9 @@ sudo apt update && sudo apt install -y build-essential git curl wget unzip
 wsl --install -d Ubuntu-24.04
 ```
 
-### 步骤 2: Python với uv
+### 步骤 2: sử dụng uv cài đặt Python
 
-Chúng tôi sử dụng `uv`Nó nhanh hơn pip 10-100x, và sẽ tự động xử lý môi trường ảo.
+Chúng tôi sử dụng `uv`Nó nhanh hơn pip 10 100 lần, và sẽ tự động xử lý môi trường ảo.
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -79,7 +82,7 @@ a = np.array([1, 2, 3])
 print(f"Vector: {a}, dot product with itself: {np.dot(a, a)}")
 ```
 
-### 步骤 3: Node.js với pnpm
+### 步骤 3: sử dụng pnpm cài đặt Node.js
 
 Sử dụng TypeScript 课程(agent、MCP server、web apps)
 
@@ -103,9 +106,9 @@ echo 'eval "$(fnm env --use-on-cd)"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-### 步骤 4: Rust
+### Bước 4:Thất định
 
-Sử dụng cho các hệ thống quan trọng về hiệu suất (các môn học)
+Sử dụng cho các khóa học nhạy cảm với hiệu suất (Inference, Systems)
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -114,9 +117,9 @@ rustc --version
 cargo --version
 ```
 
-### 步骤 5: Julia (Tự chọn)
+### 步骤 5:Julia(可选)
 
-Với Julia, nó rất giỏi về toán học.
+Với Julia, nó là một bài học về toán học.
 
 ```bash
 curl -fsSL https://install.julialang.org | sh
@@ -151,7 +154,7 @@ if torch.cuda.is_available():
     print(f"GPU: {torch.cuda.get_device_name(0)}")
 ```
 
-没有 GPU?没有问题──大多数课程可在CPU上运行──对于训练重的课程,使用Google Colab或云 GPU──
+Không có GPU? Không vấn đề. Phần lớn các khóa học có thể chạy trên CPU.
 
 ### Bước 7: Thử nghiệm con đường bạn bắt đầu
 
@@ -186,7 +189,8 @@ Next: python3 phases/01-math-foundations/01-linear-algebra-intuition/code/vector
 ```
 
 ## Sử dụng nó
-Môi trường của bạn đã có thể bắt đầu kiểm tra các tuyến đường bạn đã kiểm tra. Các khóa học cần phải cài đặt lại, không cần phải để toàn bộ bộ công nghệ cản trở bài học đầu tiên của bạn. Dưới đây là nội dung sẽ được sử dụng trong toàn bộ khóa học:
+
+Môi trường của bạn đã có thể bắt đầu kiểm tra các tuyến đường bạn đã kiểm tra. Các khóa học cần phải được cài đặt lại, không cần phải để toàn bộ bộ công nghệ ngăn cản bài học đầu tiên của bạn.
 
 | Language | Used In | Package Manager |
 |----------|---------|-----------------|
@@ -196,14 +200,16 @@ Môi trường của bạn đã có thể bắt đầu kiểm tra các tuyến �
 | Julia | Phase 1 (Math foundations) | Pkg |
 
 ## 交付 nó
-Bài học này được tạo ra một bản văn chứng minh mà bất cứ ai cũng có thể sử dụng, để kiểm tra thiết lập của mình.
 
-查看 `outputs/prompt-env-check.md`, trong đó có một, có thể giúp trợ lý AI  chẩn đoán các vấn đề môi trường.
+Bài học này được tạo ra một cuốn sách kiểm tra mà bất cứ ai cũng có thể sử dụng, để kiểm tra môi trường của mình.
+
+查看 `outputs/prompt-env-check.md`, trong đó có một vấn đề nhanh chóng, có thể giúp AI 助手诊断环境.
 
 ## 练习
+
 1. 运行验证脚本并修复 bất kỳ thất bại nào
-2. Trong khóa học này tạo ra một môi trường ảo Python, và cài đặt PyTorch
-3. Sử dụng tất cả bốn ngôn ngữ  viết một "hào thế giới",并逐个运行
+2. Đối với các khóa học tạo một Python  ảo môi trường, và cài đặt PyTorch
+3. Sử dụng tất cả bốn ngôn ngữ viết một "hào thế giới",并逐个运行
 
 ### 提示
 
