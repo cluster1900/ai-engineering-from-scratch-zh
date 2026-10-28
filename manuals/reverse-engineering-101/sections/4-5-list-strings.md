@@ -70,7 +70,7 @@ Packed or undefined literals, Rust strings among them, can be missing from the l
 
 把 39 个地址排序，它们落入六段。每一段是[第 3.2 节](#s-inspect-binary-layout-and-the-load-image) 里的一条 load command。
 
-| Where | Addresses | Count | Examples |
+| 位置 | 地址 | 计数 | 示例 |
 |---|---|---|---|
 | 头部里的 load command 字符串 | `0x100000404`, `0x100000490` | 2 | `/usr/lib/dyld`, `/usr/lib/libSystem.B.dylib` |
 | `__TEXT,__cstring`，文件偏移 1904 | `0x100000770` to `0x1000007cf` | 10 | `F`, `D`, `C`, `B`, `A`, `usage: ledger <before> <after> [score...]\n`, `change %d%%\n`, `total %d\n`, `score %d grade %s\n`, and one empty string |

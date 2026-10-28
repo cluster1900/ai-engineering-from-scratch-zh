@@ -12,22 +12,22 @@ rea，也就是 6.7.0 的 `rea-agents` 包，配 Ghidra 12.1.4 provider，从第
 
 ## 文件
 
-| Path | Holds |
+| 路径 | 内容 |
 |---|---|
-| `manual.json` | the manifest: the pin, the parts, the palette, the sources, the cover plate |
-| `front.md`, `sections/` | the text, one file per section |
-| `figures/src/` | the figure sources, built to `figures/*.svg` |
-| `capture/` | the kit, its fixtures, and its recorded output in `capture/out/` |
-| `examples/` | `mcp-registration.json`, the MCP registration that section 8.1 lists |
+| `manual.json` | 清单：钉选、各部分、调色板、源，以及封面 |
+| `front.md`, `sections/` | 正文，每节一个文件 |
+| `figures/src/` | 图源，构建到 `figures/*.svg` |
+| `capture/` | 套件、其 fixture，以及录制输出在 `capture/out/` |
+| `examples/` | `mcp-registration.json`，第 8.1 节列出的 MCP 注册 |
 
 ## 版本钉
 
-| Item | Value |
+| 项 | 值 |
 |---|---|
-| rea | `rea-agents` 6.7.0, published 2026-10-18, tag `rea-agents-6.7.0`, commit `27dc42d10249f0410904a75c0997842eb03b931c` |
-| Ghidra | 12.1.4 PUBLIC, built 2026-Sep-21 |
+| rea | `rea-agents` 6.7.0，发布于 2026-10-18，标签 `rea-agents-6.7.0`，提交 `27dc42d10249f0410904a75c0997842eb03b931c` |
+| Ghidra | 12.1.4 PUBLIC，构建于 2026-Sep-21 |
 | JDK | OpenJDK 21.0.12.1 |
-| Verified | 2026-10-18 |
+| 已验证 | 2026-10-18 |
 
 Release 6.7.0 包含 6.6.0 的改动，后者打了标签但未发布到 npm。WebAssembly 与 Go provider、raw-binary 格式，以及 `DISCLAIMER.md` 出现在 6.5.0。本手册每一条主张都描述 6.7.0，每一次捕获也都用它重新录过。
 
@@ -35,13 +35,13 @@ Release 6.7.0 包含 6.6.0 的改动，后者打了标签但未发布到 npm。W
 
 套件录在一台装 macOS 26.2 的 Apple silicon Mac 上，版本如下：
 
-| Item | Version |
+| 项 | 版本 |
 |---|---|
-| rea | `rea-agents` 6.7.0 from the npx cache, Node 22.22.0 |
-| Ghidra | 12.1.4 from Homebrew, `GHIDRA_INSTALL_DIR=/opt/homebrew/Cellar/ghidra/12.1.4/libexec` |
-| JDK | OpenJDK 21.0.12.1 from Homebrew, `JAVA_HOME=/opt/homebrew/opt/openjdk@21` |
+| rea | 来自 npx 缓存的 `rea-agents` 6.7.0，Node 22.22.0 |
+| Ghidra | 来自 Homebrew 的 12.1.4，`GHIDRA_INSTALL_DIR=/opt/homebrew/Cellar/ghidra/12.1.4/libexec` |
+| JDK | 来自 Homebrew 的 OpenJDK 21.0.12.1，`JAVA_HOME=/opt/homebrew/opt/openjdk@21` |
 | clang | Apple clang 17.0.0 |
-| WABT | 1.0.42 from Homebrew. `inspect-wasm-artifact` runs its tools through `REA_WABT_BIN_DIRECTORY`. |
+| WABT | 来自 Homebrew 的 1.0.42。`inspect-wasm-artifact` 通过 `REA_WABT_BIN_DIRECTORY` 跑其工具。 |
 
 ## 跑套件
 

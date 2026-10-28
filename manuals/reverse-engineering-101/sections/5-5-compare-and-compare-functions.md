@@ -1,4 +1,4 @@
-# compare_functions and rea compare
+# compare_functions 与 rea compare
 
 > compare_functions 在八个维度上对两份 dossier 做 diff，并把每一个报告为 unchanged、changed 或 unknown，而其汇编维度是一次没有重定位规范化的文本 diff。
 
@@ -60,16 +60,16 @@ note: The dimensions, the changes, and the limitations are cut.
 
 当任一份 dossier 在 `facet_availability` 里声明所需 facet 不可用时，一个维度也是带空计数的 `unknown`。没有声明的空 facet 有同样效果。调用维度还读 `relationship_coverage`。
 
-| Dimension | What is compared | `_percent_change` | `_total` |
+| 维度 | 比较什么 | `_percent_change` | `_total` |
 |---|---|---|---|
-| `identity` | the normalized identity of the procedure | unchanged | unchanged |
-| `pseudocode` | the decompiler text, as lines | unchanged, 272 and 272 code points | changed, 300 to 2904 code points |
-| `assembly` | the listing text, as lines | unchanged, 161 and 161 | changed, 336 to 1866 |
-| `comments` | comment text at normalized offsets | unchanged, 0 and 0 | unchanged, 0 and 0 |
-| `calls` | the resolved callees | unchanged, 1 and 1 | unchanged, 1 and 1 |
-| `references` | reference endpoints and kinds | unknown, 3 and 3 | changed, 4 to 13 |
-| `strings_names` | referenced strings and names | unchanged, 1 and 1 | changed, 2 to 11 |
-| `cfg` | the basic blocks and edges, address-normalized | unchanged, 3 and 3 | changed, 5 to 16 |
+| `identity` | 过程的规范化身份 | 未变 | 未变 |
+| `pseudocode` | 反编译文本，按行 | 未变，272 与 272 个码点 | 已变，300 到 2904 个码点 |
+| `assembly` | listing 文本，按行 | 未变，161 与 161 | 已变，336 到 1866 |
+| `comments` | 规范化偏移上的注释文本 | 未变，0 与 0 | 未变，0 与 0 |
+| `calls` | 已解析的被调用者 | 未变，1 与 1 | 未变，1 与 1 |
+| `references` | 引用端点与种类 | 未知，3 与 3 | 已变，4 到 13 |
+| `strings_names` | 引用的字符串与名称 | 未变，1 与 1 | 已变，2 到 11 |
+| `cfg` | 基本块与边，地址已规范化 | 未变，3 与 3 | 已变，5 到 16 |
 
 ## 一个未知维度 {#s-compare-and-compare-functions-one-unknown-dimension}
 

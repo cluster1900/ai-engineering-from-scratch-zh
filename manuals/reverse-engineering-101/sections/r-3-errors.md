@@ -1,4 +1,4 @@
-# Errors seen in the captures
+# 捕获中见到的错误
 
 > 捕获里出现三种错误信封、两个不可用代码、一次 setup 拒绝，以及两个被拒绝的结论，且每一个 rea 错误都有同样五个字段。
 
@@ -125,7 +125,7 @@ note: The availability objects of hopper and ida. The diagnostics that follow ea
 
 ## 每个 rea 错误共有的形状 {#s-ref-errors-the-shape-every-rea-error-has}
 
-| Field | Meaning |
+| 字段 | 含义 |
 | --- | --- |
 | `code` | 判别器，下面列出的 20 个代码之一 |
 | `category` | 十个之一：`invalid_input`、`unsupported_provider`、`unsupported_target`、`integrity_mismatch`、`truncated`、`cancelled`、`timeout`、`resource_constraint`、`unavailable`、`execution_failure` |

@@ -1,4 +1,4 @@
-# xrefs and the jump table
+# xrefs 与跳转表
 
 > xrefs 列出引用某一个地址的那些地址，而对 _grade 的那一次引用，展示出优化器对 switch 及其调用者做了什么。
 
@@ -99,7 +99,7 @@ caption: Read across each row. Green boxes on the left are call sites inside ent
 
 抓取里每一个 dossier 的 `native_api` facet 都有 `"jump_tables": []`，而配置文件把契约命名为 `jump_table_evidence: "typed-case-default-blocks-v1"`。如果 Ghidra 找到一张，就会填这个字段。它一张都没找到，因为在 `-O1` 下两个编译器都没有为 `grade` 里的 switch 发出跳转表。两者都把五种情形变成五个返回值的表与一次边界检查。
 
-| Build | Transfer | Table | Blocks in `grade` |
+| 构建 | 转移 | 表 | `grade` 里的块 |
 |---|---|---|---|
 | `ledger-x86_64-O0.o`，第 33 课 fixture | `jmpq *%rax` | `.rodata+0x0`，五个 `R_X86_64_PC32` 重定位，目标 `0x91`, `0x88`, `0x7f`, `0x76`, `0x76` | 有表 8 个，无表 3 个 |
 | `ledger-x86_64-O1.o`，本次抓取 | 无，一次 `JA` | `DAT_001000b4`，`.rodata+0x14`，值 `1, 2, 3, 4, 4` | 3 |

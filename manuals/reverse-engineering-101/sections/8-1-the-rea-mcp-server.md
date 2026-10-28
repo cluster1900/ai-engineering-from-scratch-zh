@@ -1,4 +1,4 @@
-# rea mcp: initialize, tools/list, and the startup deadline
+# rea mcp：initialize、tools/list 与启动截止期
 
 > rea mcp 在一次 initialize 握手之后经 stdio 提供 207 个工具，而第一次由 Ghidra 支撑的调用在客户端不共享的服务器截止期限下为导入付账。
 
@@ -207,7 +207,7 @@ note: One property of the open_binary input schema. The other five properties ar
 
 **启动截止期限：** rea 允许 Ghidra 导入目标、跑默认自动分析、连接桥并报告健康的时间。默认是 330,000 ms，用 `REA_GHIDRA_STARTUP_TIMEOUT_MS` 设置。`open_binary` 不启动那个时钟。它验证文件、检查提供者安装、绑定提供者，并在任何导入之前返回。第一次由 Ghidra 支撑的调用启动引擎并等待，且客户端自己的按调用截止期限同时跑 {{mcp Ghidra first-query deadlines and recovery}}。
 
-| Deadline | Owner | Value |
+| 截止期 | 所有者 | 值 |
 |---|---|---|
 | `initialize` | 客户端 | 在任何目标查询之前 |
 | Ghidra 启动 | rea | 默认 330,000 ms，`REA_GHIDRA_STARTUP_TIMEOUT_MS` 从 1 到 2,147,483,647 ms |

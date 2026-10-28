@@ -81,7 +81,7 @@ caption: Read the field, its value for the analyze_function group in the ghidra 
 
 一组的 `effects` 列表从固定的七个标志里点名。列表未点名的标志对该组每一个操作都为 false。
 
-| Flag | Meaning | True in the capture for |
+| 旗标 | 含义 | 在捕获里为真的情况 |
 |---|---|---|
 | `mutates_artifact` | 操作改分析数据库：名字或注释 | 3 个 Ghidra 操作，6 个 Hopper 操作 |
 | `launches_process` | 操作启动程序，这里是 Ghidra JVM 或 macOS 工具 | 每一个 Ghidra、Hopper 与 Kuna 操作，12 个不需要目标的 |

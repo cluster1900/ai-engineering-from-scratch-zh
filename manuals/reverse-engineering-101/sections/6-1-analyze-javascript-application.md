@@ -1,4 +1,4 @@
-# analyze-javascript-application and the application graph
+# analyze-javascript-application 与应用图
 
 > rea 解析 ledger-desk 的六个文件而不运行它们，并返回一份派生记录，其图有 42 个节点与 59 条边，每一条有自己的权威。
 
@@ -111,7 +111,7 @@ note: Events 1, 3, 4, 5, and 19 of the first analyze-javascript-application call
 
 `15-js-app-graph.json` 里 ledger-desk 的图有 42 个节点与 59 条边。它自己的覆盖是 `complete`，且什么都不省略。四个源模块每一个都把其自己文件的 SHA-256 记为 `source_sha256`。那个摘要就是 `00-fixtures.txt` 为该文件列出的那个，所以你可以在没有目录摘要的情况下把模块对上其字节。
 
-| Node kind | Count | In ledger-desk |
+| 节点种类 | 计数 | 在 ledger-desk 里 |
 |---|---|---|
 | `javascript-module` | 11 | 四个文件作为模块，外加按需的 `electron`、`node:path` 与 `./ledger` |
 | `javascript-expression` | 9 | 三个桥接成员 `ledger.percentChange`、`ledger.gradeLabel` 与 `ledger.log` 各自的三步（暴露、闭包、终端调用） |
@@ -122,7 +122,7 @@ note: Events 1, 3, 4, 5, and 19 of the first analyze-javascript-application call
 | `electron-renderer` | 2 | `index.html`，从 `loadFile` 与从 HTML 引用看到 |
 | `package`、`electron-main`、`browser-window`、`electron-preload`、`context-bridge-api`、`endpoint`、`storage` | 各 1 | `ledger-desk`、`main.js`、`BrowserWindow@8:17-16:4`、`preload.js`、`ledger`、`/api/ledger/latest`、`ledger:latest` |
 
-| Relation | Count | Evidence on the edges |
+| 关系 | 计数 | 边上的证据 |
 |---|---|---|
 | `contains` | 19 | 7 条从工件字节观察到，8 条从 AST 观察到，4 条推断 |
 | `imports` | 11 | 推断 |

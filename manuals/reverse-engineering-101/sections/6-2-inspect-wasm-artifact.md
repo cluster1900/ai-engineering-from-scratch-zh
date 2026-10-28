@@ -1,4 +1,4 @@
-# inspect-wasm-artifact and the WABT provider
+# inspect-wasm-artifact 与 WABT provider
 
 > rea 6.7.0 在模块的一份私有副本上跑三个 WABT 1.0.42 程序，并返回一份观察到的 Evidence 记录，带着 section、类型化接口，以及解码后的 WAT。
 

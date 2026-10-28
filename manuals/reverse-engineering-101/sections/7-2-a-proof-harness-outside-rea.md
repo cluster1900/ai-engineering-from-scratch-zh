@@ -1,4 +1,4 @@
-# A proof harness beyond compare_functions
+# 超出 compare_functions 的证明 harness
 
 > compare_functions 对 Ghidra 文本做按行 diff，所以重建函数的相等性需要一个 harness：在一个输入网格上跑两者，并在掩码重定位之后比较字节。
 
@@ -205,16 +205,16 @@ note: One of the eight candidate entries. The source path, the differing offsets
 
 每一个 `grade` 候选里加数都不同，`+0x10` 对 `-0x4`。原件对象在 switch 表之前持有 `grade_label` 的 `labels` 表于 `.rodata`，而候选对象没有。不同的加数是不同的偏移，所以 harness 比较记录的形状，然后经它读表。对两个正确重建，两张表都读出 `1, 2, 3, 4, 4`。
 
-| Candidate | Source text | Size | Masked bytes | Relocation records | Table | Status |
+| 候选 | 源文本 | 大小 | 掩去的字节 | 重定位记录 | 表 | 状态 |
 |---|---|---|---|---|---|---|
-| `percent_change_mul_first` | `100 * (after - before) / before` | 16 and 16 | equal | none | none | pass |
-| `percent_change_split` | `(after * 100 - before * 100) / before` | 16 and 16 | equal | none | none | pass |
-| `percent_change_wide` | 伪代码的 `long` | 16 and 26 | size differs | none | none | fail |
-| `percent_change_div_first` | `(after - before) / before * 100` | 16 and 18 | size differs | none | none | fail |
-| `grade_switch` | 原件的 `switch` | 46 and 46 | equal | same shape | 两侧都是 `1, 2, 3, 4, 4` | pass |
-| `grade_table` | 带边界检查的 `points[slot]` | 46 and 46 | equal | same shape | 两侧都是 `1, 2, 3, 4, 4` | pass |
-| `grade_thresholds` | 四个 `if` 语句 | 46 and 39 | size differs | 1 against 0 | none | fail |
-| `grade_case10_wrong` | `case 10: return 3;` | 46 and 46 | equal | same shape | `1, 2, 3, 4, 4` 对 `1, 2, 3, 4, 3` | fail |
+| `percent_change_mul_first` | `100 * (after - before) / before` | 16 与 16 | 相等 | 无 | 无 | pass |
+| `percent_change_split` | `(after * 100 - before * 100) / before` | 16 与 16 | 相等 | 无 | 无 | pass |
+| `percent_change_wide` | 伪代码的 `long` | 16 与 26 | size differs | 无 | 无 | fail |
+| `percent_change_div_first` | `(after - before) / before * 100` | 16 与 18 | size differs | 无 | 无 | fail |
+| `grade_switch` | 原件的 `switch` | 46 与 46 | 相等 | 同形 | 两侧都是 `1, 2, 3, 4, 4` | pass |
+| `grade_table` | 带边界检查的 `points[slot]` | 46 与 46 | 相等 | 同形 | 两侧都是 `1, 2, 3, 4, 4` | pass |
+| `grade_thresholds` | 四个 `if` 语句 | 46 与 39 | size differs | 1 对 0 | 无 | fail |
+| `grade_case10_wrong` | `case 10: return 3;` | 46 与 46 | 相等 | 同形 | `1, 2, 3, 4, 4` 对 `1, 2, 3, 4, 3` | fail |
 
 两行说明字节匹配意味着什么。`percent_change_split.c` 有不同的源文本与相同的字节，因为 clang 把有符号溢出当作未定义，并把两次乘法折成一次。`grade_table.c` 从数组索引到达与原件从 `switch` 到达的同一张表。一次匹配证明：带这些标志的这个编译器从该候选产生了相同代码。它不证明该候选是原件文本。
 

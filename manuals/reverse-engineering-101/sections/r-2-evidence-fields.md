@@ -1,4 +1,4 @@
-# Evidence fields
+# Evidence 字段
 
 > 6.7.0 时每一份 Evidence 记录的 16 个字段，带着它们的类型、允许的值，以及来自 `_percent_change` 已捕获 dossier 的各一个值。
 
@@ -8,7 +8,7 @@ dossier 列取其自 `ledger-arm64-O1` 里 `_percent_change` 的 `analyze_functi
 
 ## 16 个字段 {#s-ref-evidence-fields-the-16-fields}
 
-| Field | Type | In the dossier of _percent_change | In the verification record |
+| 字段 | 类型 | 在 `_percent_change` 的 dossier 里 | 在校验记录里 |
 |---|---|---|---|
 | `evidence_id` | `ev_` 与 64 个十六进制数字，语义投影的 SHA-256 | `ev_b492c85eb9570bd5f8e866f94523122c8600ea0106603d90e9ea5445cf757b2a` | `ev_ccbaea4b45697017422c68a0dcabbe574c7e1b498aa3f0f3a0b47e351b389e23` |
 | `subject` | 被分析的文件，`{ name, digest.sha256, format, architecture, local_path }`，或 `null` | `ledger-arm64-O1`，`01b5d08b…`，`mach-o`，`arm64`，`$CAPTURE/fixtures/ledger-arm64-O1` | `null` |
@@ -31,7 +31,7 @@ dossier 列取其自 `ledger-arm64-O1` 里 `_percent_change` 的 `analyze_functi
 
 ## 枚举 {#s-ref-evidence-fields-the-enumerations}
 
-| Field | Allowed values |
+| 字段 | 允许取值 |
 | --- | --- |
 | `confidence` | `observed`、`derived`、`inferred` |
 | `authority` | `shipped-artifact`、`controlled-replay`、`historical-reference`、`external-service`、`analyst-inference` |

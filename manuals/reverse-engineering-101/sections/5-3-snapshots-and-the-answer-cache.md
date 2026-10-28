@@ -1,4 +1,4 @@
-# AnalysisSnapshot and the exact-match answer cache
+# AnalysisSnapshot 与精确匹配答案缓存
 
 > 快照在绑定到目标摘要与配置摘要的查询 id 下缓存精确答案，而一次变更调用的分发会关掉缓存。
 

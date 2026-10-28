@@ -1,4 +1,4 @@
-# The Evidence record
+# Evidence 记录
 
 > 每一次成功的 rea 观察都是一份带十六个字段的严格记录，而其 id 是对语义内容的 SHA-256，文件路径留在外面。
 
@@ -59,7 +59,7 @@ note: The profile parameters, the raw result, the normalized result, nine of the
 "evidence_links": []
 ```
 
-| Field | In this record | What it holds |
+| 字段 | 在本记录里 | 它持有什么 |
 |---|---|---|
 | `evidence_id` | `ev_b492c85eb957` 再加 52 个十六进制数字 | `ev_` 与一个 SHA-256 |
 | `subject` | `ledger-arm64-O1`，sha256 `01b5d08b08fb`，`mach-o`，`arm64`，一条路径 | 被分析的文件，或 `null` |
@@ -90,7 +90,7 @@ MCP 处理器可以在引擎启动之前跑一次预检。它在引擎回答之�
 
 **置信度：** 三个词之一，`observed`、`derived` 或 `inferred`。它是一个类别，绝不是一个数字。**权威：** 事实背后的来源种类，`shipped-artifact`、`controlled-replay`、`historical-reference`、`external-service` 或 `analyst-inference` 之一。这两个字段由生产者设定，而抓取展示四个生产者。
 
-| Producer | `confidence` | `authority` | Record |
+| 生产者 | `confidence` | `authority` | 记录 |
 |---|---|---|---|
 | `analyze_function`，provider `ghidra` | `observed` | `shipped-artifact` | `10-mcp-09-analyze-function-percent-change-O1.json` |
 | `binary_overview`，provider `rea-workflow` | `derived` | `shipped-artifact` | `05-analyze-arm64-O1.json` |

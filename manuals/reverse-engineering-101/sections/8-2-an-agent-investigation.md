@@ -1,4 +1,4 @@
-# One agent investigation over list_procedures, analyze_function, and list_strings
+# 一次覆盖 list_procedures、analyze_function 与 list_strings 的 agent 调查
 
 > 经 rea 工作的 agent 保持一份账本，记录每一份 Evidence 记录观察到了什么、推断了什么，以及它从未读过什么，并把目标文本当作数据。
 
@@ -164,11 +164,11 @@ caption: Read top down. Plum is the agent's question, indigo boxes are the MCP c
 
 这些种类是 Evidence `confidence` 字段的三个值，`observed`、`derived` 与 `inferred`。背后没有记录的主张是 `unknown`。下面是本次会话的账本：
 
-| Claim | Kind | Evidence | Boundary |
+| 主张 | 种类 | 证据 | 边界 |
 |---|---|---|---|
 | `_grade` 从 `0x100000518` 开始，在一个范围里是 60 字节 | observed | `ev_41e8ca1c`，`procedure.body` | Ghidra 的函数管理器，在默认自动分析之后 |
-| `_grade` 把它的参数除以 10 | derived | `ev_41e8ca1c`，乘以 `0x66666667` 与那些移位 | 对 listing 的一次阅读，伪代码确认 |
-| 从 6 到 10 的十位数索引 `0x1000007d0` 处五个 4 字节条目 | derived | `ev_41e8ca1c`，`cmp w8, #0x4` 与 `ldr w0, [x9, w8, UXTW #0x2]` | 条目计数来自比较，宽度来自移位 |
+| `_grade` 把它的参数除以 10 | 推导出的 | `ev_41e8ca1c`，乘以 `0x66666667` 与那些移位 | 对 listing 的一次阅读，伪代码确认 |
+| 从 6 到 10 的十位数索引 `0x1000007d0` 处五个 4 字节条目 | 推导出的 | `ev_41e8ca1c`，`cmp w8, #0x4` 与 `ldr w0, [x9, w8, UXTW #0x2]` | 条目计数来自比较，宽度来自移位 |
 | 那张表里的五个值 | unknown | 无，带长度 20 的 `read_bytes 0x1000007d0` 会观察到它们 | 本次会话没有调用读内存 |
 | 这个构建里没有东西用调用指令调用 `_grade` | observed | `ev_41e8ca1c` `callers: []`，`ev_644b3495` 一个地址 | 来自 `0x10000811a` 的一次 `DATA` 引用，也就是[第 4.4 节](#s-xrefs-and-the-jump-table) 的函数起点条目。调用者覆盖仅对已解析调用引用是 `complete`。 |
 | `_grade_label` 返回 `0x100004030` 处 `_labels` 的一个条目 | observed | `ev_b201cfd0`，`referenced_names` | 索引经过 `0x1000007e8` 处的 8 字节条目，未读 |

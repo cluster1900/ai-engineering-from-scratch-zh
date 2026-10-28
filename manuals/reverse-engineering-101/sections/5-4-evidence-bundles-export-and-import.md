@@ -1,4 +1,4 @@
-# export_evidence_bundle, evidence-export, and evidence-import
+# export_evidence_bundle、evidence-export 与 evidence-import
 
 > Evidence 包是规范 JSON 里的七个已排序数组，所以同样的记录从 MCP 服务器与从 CLI 给出同样的字节。
 

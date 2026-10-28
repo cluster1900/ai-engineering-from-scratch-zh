@@ -1,10 +1,10 @@
-# Glossary
+# 术语表
 
 > 下面每一个术语在本手册里有一个含义，并点名定义它的那一节。
 
 每一个术语只定义一次，在最后一列点名的那一节里，带着该节引用的那些源。下面的含义来自标签上的 rea 源、其文档、规范，以及捕获。
 
-| Term | Meaning in this manual | Defined in |
+| 术语 | 本手册中的含义 | 定义于 |
 |---|---|---|
 | Analysis profile | provider 已提交的设置，对 RFC 8785 规范 JSON 做哈希，因此变更的契约版本会改变摘要 | [1.2](#s-rea-function-end-to-end) |
 | Analysis snapshot cache | 一次会话的内存表，为一个目标身份持有最多 10,000 个缓存答案 | [5.3](#s-snapshots-and-the-answer-cache) |
