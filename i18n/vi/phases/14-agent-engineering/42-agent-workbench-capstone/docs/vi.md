@@ -224,7 +224,6 @@ Giữ gói có thể được sử dụng lại, và bạn hoàn thành [career-
 - [Nx Blog, Teach Your AI Agent How to Work in a Monorepo](https://nx.dev/blog/nx-ai-agent-skills) 跨六种工具的单一来源发电机
 - [agents.md — the open spec](https://agents.md/) Các router của gói của bạn  phải thực hiện nội dung
 - [HKUDS/OpenHarness](https://github.com/HKUDS/OpenHarness) gói tương đương của tham khảo thực hiện
-- [andrewgarst/agentic_harness](https://github.com/andrewgarst/agentic_harness) 带 eval suite của Redis hỗ trợ 参考实现
 - [Augment Code, A good AGENTS.md is a model upgrade](https://www.augmentcode.com/blog/how-to-write-good-agents-dot-md-files) gói doc 的质量门
 - [Anthropic, Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)
 - [Anthropic, Harness design for long-running application development](https://www.anthropic.com/engineering/harness-design-long-running-apps)
