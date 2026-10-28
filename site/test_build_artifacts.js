@@ -1285,12 +1285,12 @@ test('the vectors and matrices quiz has parallel choices and varied answer posit
   );
   const questions = JSON.parse(fs.readFileSync(file, 'utf8')).questions;
   const expectedAnswers = [
-    "The first matrix's columns must equal the second matrix's rows",
-    'A square matrix that leaves a compatible matrix unchanged when multiplied',
-    'Element-wise multiplication uses matching entries; matrix multiplication uses row-column dot products',
-    'It expands b across compatible batch dimensions before addition',
-    'The matrix is singular and cannot have an inverse',
-    'It exchanges the matrix rows and columns',
+    '第一个矩阵的列数必须等于第二个矩阵的行数',
+    '一个方阵，与相容矩阵相乘后保持该矩阵不变',
+    '逐元素乘法用对应位置相乘；矩阵乘法用行-列点积',
+    '在相加前把b扩展到相容的batch维上',
+    '矩阵奇异且没有逆',
+    '交换矩阵的行与列',
   ];
 
   assert.equal(questions.length, expectedAnswers.length);
@@ -1300,8 +1300,8 @@ test('the vectors and matrices quiz has parallel choices and varied answer posit
   );
   assert.ok(new Set(questions.map(question => question.correct)).size >= 4);
   assert.match(questions[3].explanation, /b\[:, None\]/);
-  assert.match(questions[3].explanation, /trailing-dimension alignment/);
-  assert.match(questions[3].explanation, /does not reliably broadcast across the batch axis/);
+  assert.match(questions[3].explanation, /尾维对齐/);
+  assert.match(questions[3].explanation, /不能可靠地沿 batch 轴广播/);
   for (const question of questions) {
     const wordCounts = question.options.map(option => option.trim().split(/\s+/).length);
     const correctWords = wordCounts[question.correct];
