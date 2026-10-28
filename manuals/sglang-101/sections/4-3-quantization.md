@@ -1,28 +1,28 @@
-# --quantization and --kv-cache-dtype
+# --quantization 与 --kv-cache-dtype
 
-> Quantization buys memory first and speed second, and SGLang keeps weights, GEMM kernels, and the KV cache as three separate choices so that you can buy only what you need.
+> 量化先买内存、再买速度，SGLang 把权重、GEMM 内核和 KV cache 做成三个独立选择，好让你只买需要的。
 
-Cloudflare served Kimi K2.6 with a BF16 KV cache and raised concurrency step by step. At 32 concurrent requests the server produced 1,558 tok/s. At 64 it ran out of memory. With an FP8 KV cache the same service reached 2,192 tok/s at 64 requests, about 41% above the best BF16 result {{field Cloudflare 2026-08}}. The FP8 cache was slower per token at every concurrency both versions could run. It won because twice as many requests fit.
+Cloudflare 用 BF16 KV cache 服务 Kimi K2.6，并一步步抬并发。在 32 并发请求时服务器产出 1,558 tok/s。在 64 时内存不足。用 FP8 KV cache 时，同一服务在 64 请求处到了 2,192 tok/s，大约比最好的 BF16 结果高 41% {{field Cloudflare 2026-08}}。在两个版本都能跑的每个并发上，FP8 cache 每 token 更慢。它赢是因为装得下两倍请求。
 
-When you finish this section, you can tell weight quantization from KV cache quantization, and load a quantized checkpoint without breaking detection. You can also size the memory gain before you measure speed, and decide where a lower precision belongs.
+读完本节后，你能分清权重量化与 KV cache 量化，并在不打断检测的情况下加载量化检查点。你也能在量速度之前先估内存收益，并决定更低精度该放哪里。
 
-## Three choices, three flags
+## 三个选择，三个旗标 {#s-quantization-three-choices-three-flags}
 
-**Weight quantization:** storing the model weights in fewer bits, such as FP8, FP4, or INT4. It shrinks the weights and the memory traffic of each GEMM. `--quantization` selects the method.
+**Weight quantization：** 用更少比特存模型权重，例如 FP8、FP4 或 INT4。它缩小权重和每次 GEMM 的内存流量。`--quantization` 选方法。
 
-**GEMM backend:** the kernel library that multiplies quantized weights. `--fp8-gemm-backend` and `--fp4-gemm-backend` select it, and both default to `auto`, which picks by GPU generation.
+**GEMM backend：** 乘量化权重的内核库。`--fp8-gemm-backend` 和 `--fp4-gemm-backend` 选它，两者默认都是 `auto`，按 GPU 代际选。
 
-**KV cache dtype:** the format of the cached keys and values. `--kv-cache-dtype` selects it, separately from the weights. Its default `auto` uses the model dtype.
+**KV cache dtype：** 缓存的 key 和 value 的格式。`--kv-cache-dtype` 选它，与权重分开。默认 `auto` 用模型 dtype。
 
-A model can run FP8 weights with a BF16 KV cache, or BF16 weights with an FP8 KV cache. Each choice moves a different budget, so treat them as three decisions.
+一个模型可以跑 FP8 权重加 BF16 KV cache，或 BF16 权重加 FP8 KV cache。每个选择动不同的预算，所以把它们当成三个决定。
 
-## Weights: offline first
+## 权重：优先离线 {#s-quantization-weights-offline-first}
 
-At v0.5.22, `--quantization` accepts 31 method names. Most of them describe a checkpoint that someone already quantized: AWQ, GPTQ, ModelOpt FP8 and FP4, compressed-tensors, GGUF, Quark, and others. A few quantize BF16 weights while the model loads: `fp8`, `mxfp8`, `nvfp4_online`, and `mlx_q4` or `mlx_q8` on Apple silicon.
+在 v0.5.22，`--quantization` 接受 31 个方法名。多数描述别人已经量化好的检查点：AWQ、GPTQ、ModelOpt FP8 和 FP4、compressed-tensors、GGUF、Quark 等。少数在模型加载时量化 BF16 权重：`fp8`、`mxfp8`、`nvfp4_online`，以及 Apple silicon 上的 `mlx_q4` 或 `mlx_q8`。
 
-**Offline quantization:** the checkpoint already stores low-bit weights and their scales. **Online quantization:** SGLang converts full-precision weights at load time.
+**Offline quantization：** 检查点已经存低比特权重和它们的 scale。**Online quantization：** SGLang 在加载时转换全精度权重。
 
-When you load a quantized checkpoint, do not pass `--quantization`. The model config check reads `quantization_config.quant_method` from the checkpoint and uses it. If you pass a method that differs, the check accepts only known compatible pairs, such as `modelopt_fp4` on a `modelopt` checkpoint. For a requantization it logs that you should validate accuracy again. Every other mismatch raises at startup.
+加载量化检查点时，不要传 `--quantization`。模型 config 检查从检查点读 `quantization_config.quant_method` 并用它。如果你传了不同的方法，检查只接受已知兼容对，例如 `modelopt` 检查点上的 `modelopt_fp4`。对重新量化它记下你应再核验准确率。其他每种不匹配都在启动时抛错。
 
 ```figure
 id: fig-4-4
@@ -32,21 +32,21 @@ claim: The checkpoint names its own quantization method, and a --quantization fl
 caption: Read each row left to right. The rose arrow ends in a startup error. The last row is the CUDA path at v0.5.22. From _verify_quantization and the GPTQ Marlin override at v0.5.22.
 ```
 
-The flag can also block an upgrade. A GPTQ checkpoint loaded with no flag is detected, converted at runtime, and served by the Marlin kernel. The upgrade code accepts that conversion only when you passed no method or `gptq_marlin`.
+旗标也可以挡住一次升级。不带旗标加载的 GPTQ 检查点被检测、在运行时转换，并由 Marlin 内核服务。升级代码只在你没传方法或传了 `gptq_marlin` 时接受那种转换。
 
-PR #32114 deleted the plain GPTQ CUDA kernel on 2026-09-10, and on a CUDA build the method registry has no `gptq` entry. The flag parser still accepts `--quantization gptq`. The model config check then skips the Marlin upgrade and raises `Unknown quantization method: gptq`. We read this path in the code and did not run it on a GPU.
+PR #32114 在 2026-09-10 删掉了普通 GPTQ CUDA 内核，在 CUDA 构建上方法注册表没有 `gptq` 条目。旗标解析器仍接受 `--quantization gptq`。模型 config 检查于是跳过 Marlin 升级，并抛出 `Unknown quantization method: gptq`。我们在代码里读了这条路径，没有在 GPU 上跑它。
 
-## The KV cache: capacity, with a scale
+## KV cache：容量，带一个 scale {#s-quantization-the-kv-cache-capacity-with-a-scale}
 
-`--kv-cache-dtype` accepts `auto`, `bf16`, `fp8_e4m3`, `fp8_e5m2`, `mxfp8` (FA4 only), `nvfp4`, and `fp4_mx_block16`. FP8 halves the bytes per token and FP4 quarters them, so the same pool holds two or four times as many tokens. [Section 3.1](#s-kv-bytes-per-token-and-the-kv-pool) shows how to compute bytes per token for your model.
+`--kv-cache-dtype` 接受 `auto`、`bf16`、`fp8_e4m3`、`fp8_e5m2`、`mxfp8`（仅 FA4）、`nvfp4` 和 `fp4_mx_block16`。FP8 把每 token 字节数减半，FP4 减到四分之一，所以同一份 pool 装得下两倍或四倍 token。[第 3.1 节](#s-kv-bytes-per-token-and-the-kv-pool) 展示如何为你的模型算每 token 字节数。
 
-FP8 needs a scale for each tensor. The help text of `--quantization-param-path` says to supply the scales file when the KV cache dtype is FP8. Without it, every scale is 1.0, and accuracy can drop {{code}}. Run an accuracy check whenever you change the KV cache dtype.
+FP8 需要每个张量一个 scale。`--quantization-param-path` 的帮助文本说，KV cache dtype 是 FP8 时要提供 scales 文件。没有它，每个 scale 都是 1.0，准确率可能下降 {{code}}。每次改 KV cache dtype 都跑一次准确率检查。
 
-The vLLM team treats a scale of 1.0 as the worst case for accuracy. They tested uncalibrated FP8 KV caches in 2026, and most models stayed close to BF16 in their tests. They named Kimi-K2.5 on the FlashMLA backend as a model that needs calibrated scales. We did not measure these results ourselves.
+vLLM 团队把 scale 1.0 当成准确率的最坏情况。他们在 2026 年测了未校准的 FP8 KV cache，多数模型在他们的测试里接近 BF16。他们点名 FlashMLA 后端上的 Kimi-K2.5 是需要校准 scale 的模型。我们自己没复现这些结果。
 
-Cloudflare published its check. On Kimi K2.6, BF16 against FP8 KV scored 94.24 and 94.09 on GSM8K, 89.11 and 89.04 on MMLU, and 80.29 and 79.29 on MMLU-Pro {{field Cloudflare 2026-08}}. Those are their numbers on their model, and your model can differ.
+Cloudflare 公布了它的检查。在 Kimi K2.6 上，BF16 对 FP8 KV 在 GSM8K 上是 94.24 和 94.09，在 MMLU 上是 89.11 和 89.04，在 MMLU-Pro 上是 80.29 和 79.29 {{field Cloudflare 2026-08}}。那是他们模型上的数字，你的模型可以不同。
 
-We ran our own check on 2026-10-23, on our L4: the first 500 GSM8K questions, 8-shot and greedy, with `Qwen/Qwen3-8B` and `Qwen/Qwen3-8B-FP8`. Neither checkpoint has KV scales, so the FP8 KV runs used a scale of 1.0.
+我们在 2026-10-23 在自己的 L4 上跑了检查：前 500 道 GSM8K 题，8-shot 且 greedy，用 `Qwen/Qwen3-8B` 和 `Qwen/Qwen3-8B-FP8`。两个检查点都没有 KV scales，所以 FP8 KV 运行用了 scale 1.0。
 
 ```listing
 title: GSM8K accuracy, 500 questions, 8-shot, Qwen3-8B on SGLang 0.5.22
@@ -62,25 +62,25 @@ SGLang   FP8 weights + FP8 KV       460/500   92.0%      89.3 to 94.1
 …
 ```
 
-All four intervals overlap, so this run did not show a difference. With 500 questions, it cannot rule out a loss of a few points. That is one model and one benchmark, so it does not remove the check on your model.
+四个区间都重叠，所以这次运行没展示差别。有 500 道题，它排不掉丢几分的可能。那是一个模型和一个基准，所以它不取消你模型上的检查。
 
-### Check that your scales load
+### 检查你的 scales 是否加载 {#s-quantization-check-that-your-scales-load}
 
-The warning `Using FP8 KV cache but no scaling factors provided` prints whenever you pass no `--quantization-param-path` {{code}}. A checkpoint can also carry its scales in its weight files. So the warning alone does not tell you which scales the server uses.
+只要你没传 `--quantization-param-path`，就会打印警告 `Using FP8 KV cache but no scaling factors provided` {{code}}。检查点也可以在权重文件里带着它的 scales。所以警告单独不能告诉你服务器用的是哪些 scales。
 
-First, look for scales in the checkpoint. Search the weight index for tensor names that end in `k_scale` or `v_scale`:
+先在检查点里找 scales。在权重索引里搜以 `k_scale` 或 `v_scale` 结尾的张量名：
 
 ```bash
 grep -oE '"[^"]*(k|v)_scale"' model.safetensors.index.json | sort -u
 ```
 
-We ran this search on the index of `Qwen/Qwen3-30B-A3B-Instruct-2507-FP8` on 2026-10-22. It lists weight scales and no KV scales, so our FP8 server below used a KV scale of 1.0.
+我们在 2026-10-22 对 `Qwen/Qwen3-30B-A3B-Instruct-2507-FP8` 的索引跑了这次搜索。它列出权重 scales，没有 KV scales，所以下面我们的 FP8 服务器用了 KV scale 1.0。
 
-Then read the load log. Before PR #35455, SGLang dropped the KV scales of compressed-tensors checkpoints, and the log reported each `k_scale` parameter as not found {{issue #35455}}. The fix is in the v0.5.22 source {{code}}. A warning about a missing `k_scale` or `v_scale` still means that the loader skipped those scales. On a checkpoint with scales close to 1.0, the PR measured GSM8K at 0.960 with dropped scales and 0.965 with loaded scales.
+然后读加载日志。PR #35455 之前，SGLang 丢掉 compressed-tensors 检查点的 KV scales，日志报告每个 `k_scale` 参数未找到 {{issue #35455}}。修法在 v0.5.22 源码里 {{code}}。关于缺失 `k_scale` 或 `v_scale` 的警告仍表示加载器跳过了那些 scales。在 scales 接近 1.0 的检查点上，该 PR 量到丢掉 scales 时 GSM8K 是 0.960，加载 scales 时是 0.965。
 
-Last, run your own prompts with and without FP8, and compare the answers before you go to production.
+最后，有 FP8 和没有 FP8 都跑你自己的 prompt，并在上线前比较答案。
 
-## Quantization is a capacity decision
+## 量化是容量决定 {#s-quantization-quantization-is-a-capacity-decision}
 
 ```figure
 id: fig-4-5
@@ -90,13 +90,13 @@ claim: The FP8 KV cache is a few percent slower at every load both caches can ru
 caption: Output tokens per second by concurrency, as Cloudflare reported them on 2026-08-03. Dashed bars are BF16 and solid bars are FP8. Rose marks the out-of-memory run. No SGLang version was published.
 ```
 
-Cloudflare also tested INT4 weights on GLM 5.2 {{field Cloudflare 2026-08}}. Decode got faster, 60 to 92 tok/s at concurrency 1 and 1,672 to 1,933 tok/s at 64. Prefill got slower, from about 10,160 tok/s with FP8 to about 8,660 with INT4.
+Cloudflare 也在 GLM 5.2 上测了 INT4 权重 {{field Cloudflare 2026-08}}。Decode 变快了，并发 1 时 60 到 92 tok/s，64 时 1,672 到 1,933 tok/s。Prefill 变慢了，从 FP8 大约 10,160 tok/s 到 INT4 大约 8,660。
 
-Decode is limited by memory traffic, so smaller weights help. Prefill is limited by compute, and dequantizing INT4 costs compute. Cloudflare split the two phases across servers and runs INT4 for decode and FP8 for prefill. [Section 6.3](#s-prefill-decode-disaggregation) explains the split.
+Decode 受内存流量限制，所以更小的权重有帮助。Prefill 受计算限制，反量化 INT4 花计算。Cloudflare 把两个阶段分到不同服务器，decode 跑 INT4，prefill 跑 FP8。[第 6.3 节](#s-prefill-decode-disaggregation) 解释这种拆分。
 
-## What we measured on a GB10
+## 我们在 GB10 上测到的 {#s-quantization-what-we-measured-on-a-gb10}
 
-We served `Qwen/Qwen3-30B-A3B-Instruct-2507` twice on one NVIDIA GB10. The first server loaded the BF16 checkpoint. The second loaded the FP8 checkpoint `Qwen/Qwen3-30B-A3B-Instruct-2507-FP8` with `--kv-cache-dtype fp8_e4m3`. Both used `--mem-fraction-static 0.7`, and we passed no `--quantization` flag.
+我们在一块 NVIDIA GB10 上两次服务 `Qwen/Qwen3-30B-A3B-Instruct-2507`。第一台服务器加载 BF16 检查点。第二台加载 FP8 检查点 `Qwen/Qwen3-30B-A3B-Instruct-2507-FP8`，并带 `--kv-cache-dtype fp8_e4m3`。两者都用 `--mem-fraction-static 0.7`，我们没传 `--quantization` 旗标。
 
 ```listing
 title: the FP8 server detects its checkpoint and sizes its pool
@@ -110,13 +110,13 @@ note: Four lines from the startup log. Timestamps are cut.
 … KV Cache is allocated. dtype: torch.float8_e4m3fn, #tokens: 1083008, K size: 24.79 GB, V size: 24.79 GB
 ```
 
-**We measured** what the two choices bought. The weights went from 57.75 GB to 29.75 GB, and the load time went from 323.61 s to 152.29 s. The pool went from 227,243 tokens to 1,083,008 tokens, 4.77 times as many.
+**我们测到** 两个选择买到了什么。权重从 57.75 GB 到 29.75 GB，加载时间从 323.61 s 到 152.29 s。pool 从 227,243 个 token 到 1,083,008 个 token，是 4.77 倍。
 
-Two effects multiply in that number. The smaller weights freed 28.00 GB, and the pool grew by 28.78 GB, from 20.80 GB to 49.58 GB in the units of the log. Each token then took half the bytes, 49,152 against 98,304 for 48 layers with 4 KV heads of size 128.
+那个数字里两个效应相乘。更小的权重腾出 28.00 GB，pool 涨了 28.78 GB，从日志单位里的 20.80 GB 到 49.58 GB。然后每个 token 只花一半字节，48 层、4 个大小 128 的 KV head 是 49,152 对 98,304。
 
-The second line of the listing is the warning from the previous subsection. We gave no scale file, so every scale is 1.0. Both servers wrote the same 12 tokens for our first request at temperature 0. That is one prompt, and it is not an accuracy check.
+列表第二行是上一小节的警告。我们没给 scale 文件，所以每个 scale 都是 1.0。两台服务器对我们温度为 0 的第一条请求写了同样的 12 个 token。那是一条 prompt，不是准确率检查。
 
-Speed changed at every load. The table comes from the sweep servers, which had pools of 234,600 and 1,084,458 tokens. The sweep ran three seeds at each concurrency:
+速度在每个负载上都变了。表来自扫描服务器，它们有 234,600 和 1,084,458 个 token 的 pool。扫描在每个并发上跑三个种子：
 
 | Concurrency | BF16 output tok/s | FP8 output tok/s | BF16 median TPOT | FP8 median TPOT |
 |---|---|---|---|---|
@@ -133,11 +133,11 @@ claim: On the GB10, FP8 weights and FP8 KV gave more tokens per second and less 
 caption: Each dot is one concurrency, from c1 to c64. The x axis is output tokens per second and the y axis is median TPOT. Plum is BF16 and green is FP8. From capture/gpu/summary/gb10.json.
 ```
 
-This result differs from the Cloudflare result above. There, the FP8 cache was a little slower per token and won on capacity. Here, the weights were FP8 too. Decode on this machine reads weights from a memory with modest bandwidth, so half the bytes gave almost twice the speed.
+这个结果不同于上面的 Cloudflare 结果。那里，FP8 cache 每 token 稍慢，靠容量赢。这里，权重也是 FP8。这台机器上的 decode 从带宽一般的内存读权重，所以一半字节几乎给了两倍速度。
 
-## The same test on a 24 GB L4
+## 同一测试在 24 GB L4 上 {#s-quantization-the-same-test-on-a-24-gb-l4}
 
-The GB10 has 121.7 GiB of memory, so its BF16 pool never ran short. We wanted to see the other case, so we ran the same pair on one NVIDIA L4 with `Qwen/Qwen3-8B` and `Qwen/Qwen3-8B-FP8`. Both servers used `--mem-fraction-static 0.85`. The sweep waited for the card to cool to 72°C before each run.
+GB10 有 121.7 GiB 内存，所以它的 BF16 pool 从不短缺。我们想看另一种情形，于是在一块 NVIDIA L4 上用 `Qwen/Qwen3-8B` 和 `Qwen/Qwen3-8B-FP8` 跑了同一对。两台服务器都用 `--mem-fraction-static 0.85`。扫描在每次运行前等卡凉到 72°C。
 
 ```listing
 title: the BF16 server on the L4
@@ -159,7 +159,7 @@ note: Two lines from the startup log. Timestamps are cut.
 … KV Cache is allocated. dtype: torch.float8_e4m3fn, #tokens: 142369, K size: 4.89 GB, V size: 4.89 GB
 ```
 
-**We measured** a pool of 24,094 tokens for BF16 and 142,369 tokens for FP8, 5.91 times as many. Each request in the sweep had 512 input tokens and 128 output tokens. The BF16 pool held about 37 such requests.
+**我们测到** BF16 有 24,094 个 token 的 pool，FP8 有 142,369 个，是 5.91 倍。扫描里每条请求有 512 个输入 token 和 128 个输出 token。BF16 pool 大约装得下 37 条这样的请求。
 
 | Concurrency | BF16 output tok/s | FP8 output tok/s | BF16 median TTFT | FP8 median TTFT |
 |---|---|---|---|---|
@@ -176,15 +176,15 @@ claim: On one L4, BF16 throughput stopped at 270 tokens per second at concurrenc
 caption: Output throughput against max concurrency, three seeds per point. Plum is BF16 and green is FP8 weights with an FP8 KV cache. From capture/gpu/summary/l4.json.
 ```
 
-The scheduler log of the sweep shows the cause at concurrency 64. The BF16 server ran at most 38 requests, with token usage at 0.99 and 26 requests in the queue. The FP8 server ran all 64 requests at token usage 0.29 with an empty queue. The BF16 throughput fell from 32 to 64 because more requests waited, and each waiting request added its wait to TTFT.
+扫描的调度器日志展示了并发 64 时的原因。BF16 服务器最多跑 38 条请求，token usage 在 0.99，队列里 26 条请求。FP8 服务器跑全部 64 条，token usage 0.29，队列空。BF16 吞吐从 32 到 64 下降，因为更多请求在等，每条等待的请求把它的等待加进 TTFT。
 
-At concurrency 1 the pool size does not matter, and FP8 was still faster: 39.66 ms per token against 60.16 ms. That is the GB10 effect again. Decode on an L4 reads every weight for every token, and FP8 weights are half the bytes.
+在并发 1 时 pool 大小无所谓，FP8 仍更快：每 token 39.66 ms 对 60.16 ms。那又是 GB10 效应。L4 上的 decode 为每个 token 读每个权重，FP8 权重是一半字节。
 
-On this card the goodput result is clear. Our target was TTFT under 1 s and TPOT under 100 ms. BF16 served 0 requests per second within target at concurrency 32 and 64. FP8 served 2.87 requests per second within target at 64.
+在这块卡上 goodput 结果很清楚。我们的目标是 TTFT 低于 1 s、TPOT 低于 100 ms。BF16 在并发 32 和 64 时每秒服务 0 条目标内请求。FP8 在 64 时每秒服务 2.87 条目标内请求。
 
-### When the pool is too small for the prefixes
+### 当 pool 对前缀太小时 {#s-quantization-when-the-pool-is-too-small-for-the-prefixes}
 
-The L4 test above gave BF16 a full pool. We then gave both builds the same smaller budget, `--mem-fraction-static 0.74`, and ran the shared-prefix sweep of [section 3.3](#s-radixcache). Each run sent 64 prompts in 4 groups of 16 at 8 users, with a shared system prompt of 0 to 4,096 tokens. Four groups at 4,096 tokens need about 16,000 tokens of prefix in the cache.
+上面的 L4 测试给了 BF16 一份满的 pool。然后我们给两个构建同一份更小的预算 `--mem-fraction-static 0.74`，并跑了 [第 3.3 节](#s-radixcache) 的共享前缀扫描。每次运行在 8 用户下按 4 组各 16 条发 64 条 prompt，共享 system prompt 从 0 到 4,096 个 token。四组在 4,096 个 token 时大约需要缓存里 16,000 个前缀 token。
 
 ```listing
 title: two pools from one memory budget
@@ -203,37 +203,37 @@ note: The BF16 pool and the FP8 pool at the same memory fraction of 0.74.
 | 2,048 | 25.9 / 155.1 | 12,576 / 380 ms |
 | 4,096 | 10.9 / 134.8 | 40,126 / 372 ms |
 
-**We measured** a cliff for BF16 and none for FP8. The BF16 pool held 6,559 tokens, so at 2,048 shared tokens the four prefixes no longer fitted. Its median first token went from 470 ms to 12.6 s. The FP8 pool held 107,299 tokens and kept every prefix, with a first token under 400 ms at every length. At 2,048 shared tokens, FP8 gave 6.0 times the output of BF16.
+**我们测到** BF16 有悬崖，FP8 没有。BF16 pool 持有 6,559 个 token，所以在 2,048 共享 token 时四段前缀不再装得下。它的中位首 token 从 470 ms 到 12.6 s。FP8 pool 持有 107,299 个 token，保留了每段前缀，每个长度的首 token 都低于 400 ms。在 2,048 共享 token 时，FP8 给出 BF16 输出的 6.0 倍。
 
-One caveat belongs with the last row. The BF16 runs at 4,096 shared tokens stayed under our 1,000 MHz clock floor after three tries, at a median of 390 MHz. Read the 2,048 row as the result. Its BF16 runs had a median clock of 1,275 MHz, above the floor, but half of their samples had the thermal flag set. The FP8 runs had a median clock of 1,200 to 1,260 MHz.
+一行附带属于最后一行。4,096 共享 token 的 BF16 运行在三次尝试后仍低于我们 1,000 MHz 的时钟地板，中位 390 MHz。把 2,048 那一行读成结果。它的 BF16 运行中位时钟 1,275 MHz，高于地板，但一半样本有热节流旗标。FP8 运行中位时钟 1,200 到 1,260 MHz。
 
-The [Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?workload=shared&shared=2048&frac=0.74) machine runs the small-pool test on an L4. This link opens BF16 at a fraction of 0.74 with 2,048 shared tokens. The four prefixes do not fit in 6,559 tokens together, so the tree evicts prefixes and requests compute them again. Switch the weights to FP8 to keep every prefix in 107,299 tokens.
+[Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?workload=shared&shared=2048&frac=0.74) 机器在 L4 上跑小 pool 测试。这个链接打开分数 0.74、2,048 共享 token 的 BF16。四段前缀合起来装不进 6,559 个 token，所以树逐出前缀，请求再算一遍。把权重切到 FP8，在 107,299 个 token 里保留每段前缀。
 
-## Our position
+## 我们的立场 {#s-quantization-our-position}
 
-Use an offline-quantized checkpoint and pass no `--quantization` flag. The SGLang docs give the same advice {{docs}}. Online quantization adds load time and gives you a checkpoint that nobody evaluated.
+用离线量化的检查点，不要传 `--quantization` 旗标。SGLang 文档给了同样的建议 {{docs}}。在线量化加加载时间，并给你一份没人评估过的检查点。
 
-Choose a KV cache dtype from memory, not from speed. If your server queues requests because the pool is full, FP8 is the cheapest capacity we measured. Our runs changed the weights and the KV cache together. For an FP8 KV cache alone, the evidence is the field report in [section 3.1](#s-kv-bytes-per-token-and-the-kv-pool), and you need a scale file. If the pool has room, keep the model dtype.
+按内存选 KV cache dtype，不要按速度。如果你的服务器因为 pool 满了而排队，FP8 是我们量到的最便宜的容量。我们的运行同时改了权重和 KV cache。对单独的 FP8 KV cache，证据是 [第 3.1 节](#s-kv-bytes-per-token-and-the-kv-pool) 的现场报告，并且你需要 scale 文件。如果 pool 有空间，保持模型 dtype。
 
-On our GB10 with Qwen3-30B-A3B, FP8 weights with an FP8 KV cache gave 1.73 to 1.88 times the throughput at every concurrency. Decode on that card waits for memory, so smaller weights are faster. Check accuracy on your own tasks before you serve it.
+在我们带 Qwen3-30B-A3B 的 GB10 上，FP8 权重加 FP8 KV cache 在每个并发上给出 1.73 到 1.88 倍吞吐。那块卡上的 decode 等内存，所以更小的权重更快。在服务它之前，在你自己的任务上检查准确率。
 
-Quantize per phase when you run prefill and decode on separate servers. Smaller weights help decode, and they can slow prefill.
+当你在分开的服务器上跑 prefill 和 decode 时，按阶段量化。更小的权重帮 decode，也可能拖慢 prefill。
 
-## Incidents
+## 事故 {#s-quantization-incidents}
 
-**The BF16 cache ran out at 64 requests.** Cloudflare {{field Cloudflare 2026-08}} reported that Kimi K2.6 with a BF16 KV cache ran out of memory at concurrency 64. The FP8 cache held about 1.37 million tokens against about 686,000 and served the same load.
+**BF16 cache 在 64 请求时耗尽。** Cloudflare {{field Cloudflare 2026-08}} 报告 Kimi K2.6 带 BF16 KV cache 在并发 64 时内存不足。FP8 cache 持有大约 137 万 token，对大约 68.6 万，并服务了同一负载。
 
-**A container could not run NVFP4.** A field report from joshua8.ai {{field joshua8 2026-01}} used an RTX PRO 6000 Blackwell. NVFP4 did not run in its SGLang container, so it compared SGLang on GPTQ-INT4 against vLLM on NVFP4. Compare engines on the same weight format, or the result measures the format.
+**一个容器跑不了 NVFP4。** joshua8.ai 的现场报告 {{field joshua8 2026-01}} 用了 RTX PRO 6000 Blackwell。NVFP4 在它的 SGLang 容器里跑不了，所以它拿 GPTQ-INT4 上的 SGLang 对 NVFP4 上的 vLLM。在同一权重格式上对比引擎，否则结果量的是格式。
 
-**FP4 needs one GPU generation.** A user summary on Pivot News {{field Pivot News 2026-05}} reported that SGLang crashed when RTX 4090 cards joined a Blackwell pipeline. Its FP4 path required compute capability 10.0 and had no software path for older cards. This report reached us through a secondary summary of a Reddit post.
+**FP4 需要一代 GPU。** Pivot News 上的用户摘要 {{field Pivot News 2026-05}} 报告，RTX 4090 卡加入 Blackwell 流水线时 SGLang 崩溃。它的 FP4 路径要求计算能力 10.0，对更老的卡没有软件路径。这份报告经 Reddit 帖的二次摘要到我们手里。
 
 ```takeaways
-- Load quantized checkpoints without --quantization and let SGLang read the method.
-- Replace --quantization gptq with no flag or gptq_marlin on CUDA builds.
-- Supply a KV scale file and run an accuracy check before serving an FP8 KV cache.
-- Search the checkpoint index for k_scale and v_scale, and read the load log for scales that were not found.
-- Choose KV cache dtype by queue length and pool usage, then measure speed.
-- Read the KV Cache is allocated line to see the pool size each choice buys.
+- 加载量化检查点时不要带 --quantization，让 SGLang 读方法。
+- 在 CUDA 构建上，用无旗标或 gptq_marlin 替换 --quantization gptq。
+- 在服务 FP8 KV cache 之前，提供 KV scale 文件并跑准确率检查。
+- 在检查点索引里搜 k_scale 和 v_scale，并读加载日志里未找到的 scales。
+- 按队列长度和 pool 占用选 KV cache dtype，然后再量速度。
+- 读 KV Cache is allocated 行，看每个选择买到的 pool 大小。
 ```
 
 Sources: capture/gpu/out-gb10/server-default.log, server-fp8.log, server-fp8.command.txt, generate.txt, fp8-generate.txt, capture/gpu/summary/gb10.json, capture/gpu/summary/l4.json, capture/gpu/out-l4/server-load-default.log, server-load-fp8.log, python/sglang/srt/arg_groups/choices.py (QUANTIZATION_CHOICES), arg_groups/fields/model.py (kv_cache_dtype, quantization_param_path), configs/model_config.py (_verify_quantization), layers/quantization/__init__.py (get_quantization_config), layers/quantization/gptq/gptq.py (override_quantization_method), layers/quantization/fp8.py, and docs/docs/advanced_features/quantization.mdx at v0.5.22; model_executor/model_runner_components/load_model_utils.py (load_kv_cache_scales) and layers/quantization/compressed_tensors/compressed_tensors.py (kv_cache_scheme) at v0.5.22; PR #32114; PR #35455 (compressed-tensors KV scales, merged 2026-08-20); the model.safetensors.index.json of Qwen/Qwen3-30B-A3B-Instruct-2507-FP8 (read 2026-10-22); the vLLM team, The State of FP8 KV-Cache and Attention Quantization in vLLM (2026-04-22); field reports by Cloudflare (2026-08-03), joshua8.ai (2026-01-10), and Pivot News (2026-05-19); capture/gpu/out-l4/server-small-pool-bf16-fp8.log, capture/gpu/summary/l4.json (prefix.small-pool, prefix.fp8-small-pool), capture/gpu/out-l4/server-load-c64-scheduler.log, capture/gpu/out-l4/gsm8k-fp8-accuracy.txt

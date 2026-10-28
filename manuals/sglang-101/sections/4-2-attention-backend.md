@@ -1,18 +1,18 @@
 # --attention-backend
 
-> SGLang has many attention kernels because none wins on every GPU and model, and its default choice records regressions that someone already paid for.
+> SGLang 有很多 attention 内核，因为没有一个在每块 GPU 和每个模型上都赢，它的默认选择记下了别人已经付过的回退。
 
-In January 2026 a user upgraded FlashInfer and served Qwen3-235B on H20 GPUs. Median inter-token latency went from 39.44 ms to 283.52 ms, seven times slower, and nothing else in the setup had changed. The FA3 kernel gave 56.73 ms on the same run. That report is issue #17411, and the code that picks your attention backend at v0.5.22 still cites it.
+2026 年 1 月，一位用户升级了 FlashInfer，并在 H20 GPU 上服务 Qwen3-235B。中位逐 token 延迟从 39.44 ms 变成 283.52 ms，慢了七倍，设置里别的什么都没变。同一次运行里 FA3 内核给了 56.73 ms。那份报告是 issue #17411，v0.5.22 里选你 attention 后端的代码仍引用它。
 
-When you finish this section, you can name the backend SGLang picks for your GPU and model, and explain why. You can also split prefill and decode across two backends and decide when to override the default.
+读完本节后，你能点名 SGLang 为你的 GPU 和模型选的后端，并解释原因。你也能把 prefill 和 decode 分到两个后端，并决定何时覆盖默认。
 
-## What an attention backend is
+## 什么是 attention 后端 {#s-attention-backend-what-an-attention-backend-is}
 
-**Attention backend:** the class that computes attention over the paged KV cache for one batch. Every backend implements the same interface. It builds per-batch metadata such as page tables and index buffers. It prepares state for CUDA graph capture and replay. It runs `forward_extend` for prefill and `forward_decode` for decode.
+**Attention backend：** 为一批请求在分页 KV cache 上算 attention 的类。每个后端实现同一接口。它建每批的元数据，例如页表和索引缓冲。它为 CUDA graph 捕获和回放准备状态。它为 prefill 跑 `forward_extend`，为 decode 跑 `forward_decode`。
 
-The model code never calls a kernel by name. Each attention layer calls whatever backend the model runner installed at startup. So one flag swaps the kernel for every layer of every model.
+模型代码从不按名字调用内核。每个 attention 层调用模型运行器在启动时装上的那个后端。所以一个旗标换掉每个模型每一层的内核。
 
-At v0.5.22 the flag accepts 25 names. Two are aliases (`nsa` for `dsa`, and `compressed` for `dsv4`), so there are 23 backends.
+在 v0.5.22，该旗标接受 25 个名字。两个是别名（`nsa` 对 `dsa`，`compressed` 对 `dsv4`），所以有 23 个后端。
 
 | Backend | What it is for |
 |---|---|
@@ -28,15 +28,15 @@ At v0.5.22 the flag accepts 25 names. Two are aliases (`nsa` for `dsa`, and `com
 | `intel_amx`, `intel_xpu`, `ascend`, `hpc_ops` | x86 CPUs with AMX, Intel GPUs, Huawei NPUs, and Tencent kernels for SM90. |
 | `llada2_cfg_flashinfer` | A diffusion language model variant. |
 
-## The obvious fix, and why it fails
+## 显而易见的修法，以及它为何失败 {#s-attention-backend-the-obvious-fix-and-why-it-fails}
 
-The obvious fix is to read a benchmark, find the fastest kernel, and pass it on every server. That fails because each backend has limits that a benchmark does not show.
+显而易见的修法是读一份基准，找最快的内核，并在每台服务器上传它。那会失败，因为每个后端都有基准展示不出的限制。
 
-`trtllm_mha` rejects speculative decoding with topk above 1 and does not run on SM120. FlashInfer cannot run models that use attention sinks. `fa4` has a native page size of 128. Some backends accept FP8 KV caches and some do not. A kernel that wins on one model and GPU can refuse to start on the next.
+`trtllm_mha` 拒绝 topk 大于 1 的 speculative decoding，也不在 SM120 上跑。FlashInfer 跑不了用 attention sinks 的模型。`fa4` 的原生页大小是 128。有些后端接受 FP8 KV cache，有些不接受。在一个模型和 GPU 上赢的内核，可能在下一个上拒绝启动。
 
-## How SGLang picks a default
+## SGLang 如何选默认 {#s-attention-backend-how-sglang-picks-a-default}
 
-When you do not pass `--attention-backend`, startup calls one function that reads your GPU, the attention type of the model, and your speculative decoding settings.
+你不传 `--attention-backend` 时，启动调用一个函数，读你的 GPU、模型的 attention 类型，以及你的 speculative decoding 设置。
 
 ```figure
 id: fig-4-3
@@ -46,34 +46,34 @@ claim: SGLang picks the attention backend from the GPU generation and the attent
 caption: Read top to bottom. MHA models follow the left path and MLA models the right. Hopper means CUDA 12.3 or later. From get_default_attn_backend at v0.5.22.
 ```
 
-For MHA models, such as Llama and Qwen, the order is this:
+对 MHA 模型，例如 Llama 和 Qwen，顺序是这样：
 
-1. On Hopper with CUDA 12.3 or later, and no speculative topk above 1, the default is `fa3`. The code comment cites issue #17411.
-2. On Blackwell SM100 or SM103, the default is `trtllm_mha`, or `fa4` when K and V widths differ.
-3. On AMD the default is `aiter`, and on Apple MPS it is `torch_native`.
-4. In every other case the default is `flashinfer` when it is installed and the model has no attention sinks, else `triton`.
+1. 在带 CUDA 12.3 或更新的 Hopper 上，且没有大于 1 的 speculative topk 时，默认是 `fa3`。代码注释引用 issue #17411。
+2. 在 Blackwell SM100 或 SM103 上，默认是 `trtllm_mha`，或在 K 和 V 宽度不同时是 `fa4`。
+3. 在 AMD 上默认是 `aiter`，在 Apple MPS 上是 `torch_native`。
+4. 其他每种情况，已安装且模型没有 attention sinks 时默认是 `flashinfer`，否则是 `triton`。
 
-For MLA models, such as DeepSeek V3, Hopper gets `fa3` and Blackwell gets `flashinfer`. AMD gets `aiter` when each rank has 16 or 128 KV heads. A model override then moves DeepSeek V3 on SM100 to `trtllm_mla`.
+对 MLA 模型，例如 DeepSeek V3，Hopper 得到 `fa3`，Blackwell 得到 `flashinfer`。每个 rank 有 16 或 128 个 KV head 时，AMD 得到 `aiter`。然后一个模型覆盖把 SM100 上的 DeepSeek V3 挪到 `trtllm_mla`。
 
-The docstring of the same function says FA3 is avoided when the page size is above 1. The code does not check the page size. When a comment and the code disagree, the code is what runs.
+同一函数的文档字符串说页大小大于 1 时避开 FA3。代码并不检查页大小。注释和代码不一致时，跑的是代码。
 
-## Two backends in one server
+## 一台服务器里的两个后端 {#s-attention-backend-two-backends-in-one-server}
 
-Prefill and decode stress different things. Prefill reads long query blocks, and decode reads one query against a long cache. `--prefill-attention-backend` and `--decode-attention-backend` set each phase separately. When they differ, SGLang wraps both in a hybrid backend that dispatches by `ForwardMode`. With speculative decoding, `--speculative-attention-mode` decides which of the two runs the verify pass. Its default is `prefill`.
+Prefill 和 decode 压的东西不同。Prefill 读长的 query 块，decode 用一个 query 对上长缓存。`--prefill-attention-backend` 和 `--decode-attention-backend` 分别设置每个阶段。它们不同时，SGLang 把两者包进一个按 `ForwardMode` 分发的混合后端。有 speculative decoding 时，`--speculative-attention-mode` 决定两者里谁跑 verify 遍。默认是 `prefill`。
 
-## Docs and code disagree
+## 文档和代码不一致 {#s-attention-backend-docs-and-code-disagree}
 
-The attention backend page in the docs at v0.5.22 still lists Cutlass MLA and Dual Chunk FlashAttention. PR #32114 deleted both on 2026-09-10, and neither name is a valid choice at the tag. The same page says Blackwell MHA uses `trtllm_mha`. The code picks `fa4` for models with asymmetric K and V widths. In both cases the code wins, and this manual follows the code.
+v0.5.22 文档里的 attention 后端页仍列出 Cutlass MLA 和 Dual Chunk FlashAttention。PR #32114 在 2026-09-10 删掉了两者，两个名字在该标签上都不是合法选择。同一页说 Blackwell MHA 用 `trtllm_mha`。代码对非对称 K 和 V 宽度的模型选 `fa4`。两种情况都是代码说了算，本手册跟代码走。
 
-## What to measure
+## 要量什么 {#s-attention-backend-what-to-measure}
 
-Read the resolved backend in the startup log before you benchmark anything. Then change one flag, rerun the same benchmark at your real concurrency, and compare inter-token latency at p50 and p99. Attention is one part of a decode step, so a faster kernel can move end-to-end numbers less than its own benchmark suggests.
+在基准任何东西之前，先在启动日志里读解析后的后端。然后改一个旗标，在你真实并发下重跑同一基准，并对比 p50 和 p99 的逐 token 延迟。Attention 只是一步 decode 的一部分，所以更快的内核对端到端数字的推动，可能小于它自己的基准所暗示的。
 
-On our Mac capture, SGLang ran through the MLX runtime. The server arguments resolve to `torch_native`, but MLX runs its own attention path, so none of these backends ran there.
+在我们的 Mac 捕获上，SGLang 经 MLX 运行时跑。服务器参数解析成 `torch_native`，但 MLX 跑自己的 attention 路径，所以这些后端在那里一个都没跑。
 
-## What we measured on an L4
+## 我们在 L4 上测到的 {#s-attention-backend-what-we-measured-on-an-l4}
 
-We ran the load sweep of [section 5.1](#s-sglang-benchmark-serving) on one L4 with `Qwen/Qwen3-8B`, three seeds per point. The default server resolved its backend to `flashinfer` and ran on 2026-10-16. The second server set `--attention-backend triton` and ran on 2026-10-18. Both had the same pool of 24,094 tokens and replayed decode graphs up to 48 running requests. Every run had a median SM clock of 1,000 MHz or more.
+我们在一块 L4 上用 `Qwen/Qwen3-8B` 跑了 [第 5.1 节](#s-sglang-benchmark-serving) 的负载扫描，每个点三个种子。默认服务器把后端解析成 `flashinfer`，跑在 2026-10-16。第二台服务器设 `--attention-backend triton`，跑在 2026-10-18。两者都有同一份 24,094 token 的 pool，并回放最多 48 条正在跑请求的 decode graphs。每次运行的中位 SM 时钟都是 1,000 MHz 或更高。
 
 ```listing
 title: the Triton server under load
@@ -92,25 +92,25 @@ note: The pool at startup, and one decode line at 33 running requests.
 | 32 | 270.11 / 270.91 | 96.18 / 96.99 ms | 2,970 / 2,833 ms |
 | 64 | 250.85 / 257.29 | 107.42 / 107.76 ms | 18,349 / 18,260 ms |
 
-**We measured** a tie on throughput and time per token. Throughput was within 4 percent and the median time per token within 1 ms at every concurrency. The median TTFT differed by up to 9 percent, in both directions, outside the seed spread at 2, 16, and 32 users. The two servers ran two days apart. Our reading: on a dense 8B model with contexts under 1,000 tokens, the attention kernel is a small part of each step. The weight reads set the pace.
+**我们测到** 吞吐和每 token 时间打平。吞吐在 4% 以内，中位每 token 时间在每个并发下都在 1 ms 以内。中位 TTFT 差到 9%，两个方向都有，在 2、16 和 32 用户处超出种子散布。两台服务器隔两天跑。我们的读法：在上下文不到 1,000 token 的稠密 8B 模型上，attention 内核是每一步的一小部分。权重读取定了节奏。
 
-## Our position
+## 我们的立场 {#s-attention-backend-our-position}
 
-Leave `--attention-backend` unset unless you have a benchmark on your own traffic. The default encodes regressions that other users found, such as #17411, and model overrides, such as DeepSeek V3 on SM100. The same issue is also the exception: a user who measures can beat a default that a library upgrade broke. Measure, then override, and write the reason next to the flag.
+除非你有自己流量上的基准，否则不要设 `--attention-backend`。默认编码了其他用户发现的回退，例如 #17411，以及模型覆盖，例如 SM100 上的 DeepSeek V3。同一 issue 也是例外：能量的用户可以打败被库升级打断的默认。先量，再覆盖，并把理由写在旗标旁边。
 
-Prefer the backend that supports every feature you need over the one that wins a microbenchmark. Speculative decoding with topk above 1 needs `flashinfer`, `fa3`, or `triton` when the page size is above 1.
+宁可要支持你需要的每个功能的后端，也不要赢微基准的那个。页大小大于 1 时，topk 大于 1 的 speculative decoding 需要 `flashinfer`、`fa3` 或 `triton`。
 
-## Incidents
+## 事故 {#s-attention-backend-incidents}
 
-**A library upgrade made Hopper seven times slower.** Issue #17411 (2026-01-20): FlashInfer 0.6.1 regressed the Hopper attention kernel. Median inter-token latency on H20 went from 39.44 ms to 283.52 ms. SGLang made `fa3` the Hopper MHA default two days later.
+**一次库升级让 Hopper 慢了七倍。** Issue #17411（2026-01-20）：FlashInfer 0.6.1 让 Hopper attention 内核回退。H20 上中位逐 token 延迟从 39.44 ms 变成 283.52 ms。两天后 SGLang 把 `fa3` 做成 Hopper MHA 默认。
 
-**The other engine lost its graphs.** A field report by Varad More {{field Varad More 2026-04}} measured Gemma 3 4B on one A10G at 149 tok/s on SGLang and 84 tok/s on vLLM. The cause was outside attention speed. vLLM ran that model with `--enforce-eager`, without CUDA graphs, because of its interleaved sliding-window attention. A backend comparison is only fair when both servers replay graphs.
+**另一个引擎丢了它的 graphs。** Varad More 的现场报告 {{field Varad More 2026-04}} 在一块 A10G 上量到 Gemma 3 4B：SGLang 149 tok/s，vLLM 84 tok/s。原因在 attention 速度之外。vLLM 因交错的 sliding-window attention，用 `--enforce-eager`、不带 CUDA graphs 跑那个模型。只有两边服务器都回放 graphs 时，后端对比才公平。
 
 ```takeaways
-- Read the resolved attention backend in the startup log before every benchmark.
-- Leave --attention-backend unset until a benchmark on your traffic shows a better choice.
-- Check feature limits, such as speculative topk and page size, before choosing a backend.
-- Pin your kernel library versions and rerun latency tests after every upgrade.
+- 每次基准之前，在启动日志里读解析后的 attention 后端。
+- 在你流量上的基准给出更好选择之前，不要设 --attention-backend。
+- 选后端之前检查功能限制，例如 speculative topk 和页大小。
+- 钉住你的内核库版本，每次升级后重跑延迟测试。
 ```
 
 Sources: python/sglang/srt/arg_groups/model_override_base.py (get_default_attn_backend), arg_groups/choices.py (ATTENTION_BACKEND_CHOICES), layers/attention/base_attn_backend.py, layers/attention/attention_registry.py, model_executor/model_runner_components/attention_backend_setup.py, arg_groups/fields/spec.py, and docs/docs/advanced_features/attention_backend.mdx at v0.5.22; PR #32114; issue #17411; field report by Varad More (2026-04-22); capture/gpu/out-l4/server-load-triton.log, capture/gpu/summary/l4.json (load.default, load.triton).
