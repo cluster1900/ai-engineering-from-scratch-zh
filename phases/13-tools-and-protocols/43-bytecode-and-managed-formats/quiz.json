@@ -4,87 +4,87 @@
   "questions": [
     {
       "stage": "pre",
-      "question": "A decompiler prints \"Unsupported opcode\" on a .pyc file whose first four bytes are 2b 0e 0d 0a. What does the header say?",
+      "question": "某反编译器对一个前四个字节为 2b 0e 0d 0a 的 .pyc 文件打印 \"Unsupported opcode\"。这个头说明了什么？",
       "options": [
-        "The file was compiled with optimisation level 2",
-        "The file is hash-based and the hash failed",
-        "The file is corrupt, because a pyc must start with the bytes of the word cpython",
-        "The magic word is 3627, which is the number CPython 3.14 writes, and the tool has no opcode table for that version"
+        "该文件以优化级别 2 编译",
+        "该文件基于哈希，且哈希校验失败",
+        "文件已损坏，因为 pyc 必须以单词 cpython 的字节开头",
+        "魔数是 3627，即 CPython 3.14 写入的值，而该工具没有该版本的操作码表"
       ],
       "correct": 3,
-      "explanation": "The first two bytes are the little-endian magic word 0x0e2b = 3627, the value in the CPython 3.14 header file. CR LF follow so a text-mode read breaks the magic. Nothing here is about corruption or the hash."
+      "explanation": "前两个字节是小端魔数 0x0e2b = 3627，即 CPython 3.14 头文件中的值。随后是 CR LF，因此以文本模式读取会破坏魔数。这里与损坏或哈希无关。"
     },
     {
       "stage": "check",
-      "question": "Why can main.py read the names, constants, and line table of a 3.11 pyc while running under 3.14, but cannot list its instructions?",
+      "question": "为什么 main.py 在 3.14 下运行时能读取 3.11 pyc 的名字、常量和行表，却无法列出其指令？",
       "options": [
-        "Because 3.14 removed the dis module",
-        "Because marshal has a stable type-code format that the lesson re-implements, while opcode numbers and cache layouts change between versions and dis knows only the running interpreter's table",
-        "Because 3.11 files are encrypted",
-        "Because the names live in a separate .pyi file"
+        "因为 3.14 移除了 dis 模块",
+        "因为 marshal 有稳定的类型码格式（本课重新实现了它），而操作码编号与缓存布局会随版本变化，dis 只认识当前解释器的那一套",
+        "因为 3.11 文件是加密的",
+        "因为名字保存在单独的 .pyi 文件里"
       ],
       "correct": 1,
-      "explanation": "The unmarshaller reads type codes and the code object field order from marshal.c. The instruction bytes are opaque without the opcode table of the version that wrote them, which is why python3.11 -m dis was captured into the fixtures."
+      "explanation": "反序列化器按 marshal.c 读取类型码与 code 对象字段顺序。没有写出这些字节的那个版本的操作码表，指令字节就是不透明的，所以要用 python3.11 -m dis。"
     },
     {
       "stage": "check",
-      "question": "In Ledger-g.class the bytes at pc 4 are aa 00 00 00 00 00 00 2c 00 00 00 06 00 00 00 0a then five 4-byte values. What are the three zero bytes after aa?",
+      "question": "在 Ledger-g.class 里，pc 4 处的字节是 aa 00 00 00 00 00 00 2c 00 00 00 06 00 00 00 0a，然后是五个 4 字节值。aa 后面那三个零字节是什么？",
       "options": [
-        "Three nop instructions",
-        "The high bytes of the default offset",
-        "Padding so that the default, low, and high words start at a pc that is a multiple of 4, as JVMS 6.5 tableswitch requires",
-        "The constant pool index of the switch"
+        "三条 nop 指令",
+        "default 偏移的高位字节",
+        "填充，好让 default、low、high 字从 pc 的 4 倍对齐处开始，这是 JVMS 6.5 tableswitch 的要求",
+        "该 switch 的常量池索引"
       ],
       "correct": 2,
-      "explanation": "The opcode sits at pc 4, so the next 4-aligned pc is 8. The default offset 0x2c = 44 is relative to the opcode address, giving target 48. Then low 6 and high 10 announce five entries."
+      "explanation": "操作码在 pc 4，下一个 4 对齐的 pc 是 8。default 偏移 0x2c = 44 相对操作码地址，目标为 48。随后 low 6 与 high 10 宣布有五个表项。"
     },
     {
       "stage": "check",
-      "question": "javac -g:none shrinks Ledger.class from 1832 bytes (javac -g) to 1404 bytes. Which bytes went away?",
+      "question": "javac -g:none 把 Ledger.class 从 1832 字节（javac -g）缩到 1404 字节。少掉的是哪些字节？",
       "options": [
-        "The method bodies, which were recompiled in a compact form",
-        "The LineNumberTable, LocalVariableTable, and SourceFile attributes and their constant pool strings, while every Code array stays byte for byte identical",
-        "The StackMapTable, which only debuggers use",
-        "The constant pool, which the JVM rebuilds at load time"
+        "方法体，它们被重编译成了更紧凑的形式",
+        "LineNumberTable、LocalVariableTable、SourceFile 属性以及它们引用的常量池字符串，而每个 Code 数组逐字节完全相同",
+        "StackMapTable，因为只有调试器才用它",
+        "常量池，JVM 会在加载时重建它"
       ],
       "correct": 1,
-      "explanation": "The lesson test compares the grade Code array across the three builds and finds the same 50 bytes. Only the debug attributes and the Utf8 entries they reference disappear. StackMapTable stays because the verifier needs it."
+      "explanation": "本课测试比较三个构建里的 grade Code 数组，发现同样是 50 字节。只有调试属性及其引用的 Utf8 表项消失。StackMapTable 会保留，因为验证器需要它。"
     },
     {
       "stage": "check",
-      "question": "ledger.wasm has no name section, yet wasm-objdump prints <grade> on the function. Where did the name come from, and what name is still missing?",
+      "question": "ledger.wasm 没有 name section，但 wasm-objdump 仍在该函数上打印 <grade>。名字从哪来，还有什么名字仍然缺失？",
       "options": [
-        "From the Code section header, which starts every body with its name",
-        "From the Type section, which stores a name per function type",
-        "From the Export section, which maps the string grade to function index 2; the local names score and bucket are missing until wat2wasm --debug-names adds a name custom section",
-        "From the Data segment at offset 1024"
+        "来自 Code section 头，每个函数体都以自己的名字开头",
+        "来自 Type section，它为每个函数类型存一个名字",
+        "来自 Export section，它把字符串 grade 映射到函数索引 2；局部变量名 score 与 bucket 仍然缺失，直到 wat2wasm --debug-names 加入 name section",
+        "来自偏移 1024 处的 Data 段"
       ],
       "correct": 2,
-      "explanation": "Exports carry strings for exported functions only. Locals have no names anywhere in the plain module. The names build grows the file from 290 to 425 bytes and adds function and local names as a custom section."
+      "explanation": "Export 只为导出函数携带字符串。普通模块里局部变量 nowhere 有名字。带 names 的构建把文件从 290 增到 425 字节，并以自定义 section 加入函数名与局部名。"
     },
     {
       "stage": "post",
-      "question": "The MethodDef row for Grade has signature blob 00 01 08 08 and the body header names local signature token 0x11000001 with blob 07 01 08. Which fact about Grade is still missing from the assembly?",
+      "question": "Grade 的 MethodDef 行签名 blob 为 00 01 08 08，函数体头给出 local signature token 0x11000001，blob 为 07 01 08。关于 Grade，程序集里还缺哪一项事实？",
       "options": [
-        "The name of the local variable, because ECMA-335 metadata stores local types in a StandAloneSig and leaves local names to the separate PDB file",
-        "The parameter name",
-        "The return type",
-        "The parameter type"
+        "局部变量的名字，因为 ECMA-335 元数据把局部类型存在 StandAloneSig 里，并把局部名留给单独的 PDB 文件",
+        "参数名",
+        "返回类型",
+        "参数类型"
       ],
       "correct": 0,
-      "explanation": "The blob says static int32(int32), the Param table row says score, and the StandAloneSig says one int32 local. No table holds a local name. The fixture was built with DebugType none, so there is no PDB."
+      "explanation": "该 blob 表示 static int32(int32)，Param 表行给出 score，StandAloneSig 给出一个 int32 局部。没有任何表保存局部名。该 fixture 以 DebugType none 构建，因此没有 PDB。"
     },
     {
       "stage": "post",
-      "question": "In which of the five containers does a decompiler have to rebuild the switch from jumps, rather than read it as one instruction or one block?",
+      "question": "在这五种容器里，哪一种反编译器必须从跳转重建 switch，而不能把它读成一条指令或一个块？",
       "options": [
-        "The .NET assembly, because switch is a prefix",
-        "The CPython pyc, where grade is four COMPARE_OP and POP_JUMP_IF_FALSE pairs, and the native object, where it is a jmpq through a relocation table",
-        "The JVM class, because tableswitch is a jump table",
-        "The WebAssembly module, because br_table has no structure"
+        ".NET 程序集，因为 switch 是前缀",
+        "CPython pyc——grade 是四对 COMPARE_OP 与 POP_JUMP_IF_FALSE；以及原生目标——它是经重定位表的 jmpq",
+        "JVM class，因为 tableswitch 是跳转表",
+        "WebAssembly 模块，因为 br_table 没有结构"
       ],
       "correct": 1,
-      "explanation": "tableswitch, br_table, and CIL switch each carry their case targets in one instruction, and Wasm nests the cases in blocks. CPython and x86-64 store only jumps, which is why their decompilers depend on control-flow analysis and break when the jump shapes change."
+      "explanation": "tableswitch、br_table 和 CIL switch 各自在一条指令里携带 case 目标，Wasm 还把 case 嵌在 block 里。CPython 与 x86-64 只存跳转，因此它们的反编译器更依赖控制流恢复。"
     }
   ]
 }
