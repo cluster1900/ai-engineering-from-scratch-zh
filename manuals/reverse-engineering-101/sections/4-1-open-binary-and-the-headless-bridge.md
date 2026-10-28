@@ -1,4 +1,4 @@
-# open_binary and the headless bridge
+# open_binary 与无头桥接
 
 > open_binary 在没有 Ghidra 导入的情况下把一个目标绑定到一个 provider，而第一次由 Ghidra 支撑的调用为一次无头导入、自动分析与一个私有套接字买单。
 

@@ -1,4 +1,4 @@
-# ResidualUnknown, record_unknown, and coverage
+# ResidualUnknown、record_unknown 与 coverage
 
 > 一个未知事项是带有自己 id 与修订链的持久记录，而任何结果里的空列表都告诉你去检查覆盖。
 
@@ -65,7 +65,7 @@ caption: Read each column top to bottom, from the captured value to the record's
 
 **残余未知：** 证据尚未解决的一个问题。它作为带 `unk_` id、修订链、状态以及会关闭它的证据的记录保留。残余未知有这些字段。
 
-| Field | Values |
+| 字段 | 取值 |
 | --- | --- |
 | `unknown_id` | `unk_` 与对 `domain`、`question`、`scope_digest` 以及存在时的 `comparison_conclusion_scope` 的 SHA-256 |
 | `revision` | 从 1 起的整数 |

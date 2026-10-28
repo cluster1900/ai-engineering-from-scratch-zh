@@ -58,11 +58,11 @@ note: Cut from the record. The subject, provider, and analysis_profile blocks an
 
 section 给出第二次核对。`__text` 的 `address` 是 `0x100000500`，`file_offset` 是 1280。函数在 section 之后 `0x18` 字节，即 24 字节，所以它的偏移是 `1280 + 24`，同样是 1304。在字节 1304 打开 fixture，你会看到 `e8 cc 8c 52`。那是 `mov w8, #0x6667` 的小端编码，也就是 [第 4.3 节](#s-procedure-assembly) 里 `_grade` 的第一条指令。
 
-| Method | Inputs | Result |
+| 方法 | 输入 | 结果 |
 |---|---|---|
-| Segment rule | `vmaddr` `0x100000000`, `fileoff` 0 | `0x100000518 - 0x100000000 + 0` = 1304 |
-| Section rule | `address` `0x100000500`, `file_offset` 1280 | `1280 + (0x518 - 0x500)` = 1304 |
-| rea with Ghidra | the address | `file_offset: 1304` |
+| 段规则 | `vmaddr` `0x100000000`, `fileoff` 0 | `0x100000518 - 0x100000000 + 0` = 1304 |
+| section 规则 | `address` `0x100000500`, `file_offset` 1280 | `1280 + (0x518 - 0x500)` = 1304 |
+| 带 Ghidra 的 rea | 该地址 | `file_offset: 1304` |
 
 ```figure
 id: fig-3-4
@@ -82,11 +82,11 @@ ELF 规则形状相同。对可加载段是 `offset = address - p_vaddr + p_offs
 
 三个地址显示三种结果。捕获只跑了第一行。另外两行来自上面的桥代码。
 
-| Address | Where it is | Outcome |
+| 地址 | 在哪里 | 结果 |
 |---|---|---|
-| `0x100000518` | `__text`, initialized, one `FileBytes` mapping | `file_offset` 1304 |
-| `0x0` | `__PAGEZERO`, `filesize` 0, no file bytes | `invalid_request`, no initialized file-backed memory |
-| `EXTERNAL:0x1` | Ghidra's external space for imported functions | `invalid_request`, no file bytes at all |
+| `0x100000518` | `__text`，已初始化，一个 `FileBytes` 映射 | `file_offset` 1304 |
+| `0x0` | `__PAGEZERO`，`filesize` 为 0，无文件字节 | `invalid_request`，无已初始化的文件后备内存 |
+| `EXTERNAL:0x1` | Ghidra 给导入函数用的 external 空间 | `invalid_request`，完全没有文件字节 |
 
 这就是为什么 limitation 说偏移不是虚拟地址算术。对 `__TEXT`、`__DATA_CONST` 以及 `__LINKEDIT` 已用的 1104 字节，你的算术与 Ghidra 的映射一致。在你的公式仍能算出数字而 Ghidra 拒绝的地方，它们不一致。那些地方是 `__PAGEZERO` 的 4 GiB、字节 33872 之后的填充，以及[第 4.2 节](#s-list-procedures-and-function-bodies) 的 `EXTERNAL` 块。
 

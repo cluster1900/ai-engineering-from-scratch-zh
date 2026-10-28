@@ -1,4 +1,4 @@
-# analyze_function and pseudocode
+# analyze_function 与伪代码
 
 > analyze_function 返回带十六个 facet 的一份 dossier，而其伪代码是反编译器的一次阅读，你要用同一份记录里的汇编与字节来核对。
 
@@ -70,7 +70,7 @@ undefined4 _grade(int param_1)
 }
 ```
 
-| Facet | For `_grade` | What it holds |
+| 侧面 | 对 `_grade` | 它持有什么 |
 |---|---|---|
 | `procedure` | 入口 `0x100000518`，函数体 60 字节 | [第 4.2 节](#s-list-procedures-and-function-bodies) 的身份与函数体 |
 | `pseudocode` | 一个字符串 | 反编译器文本 |
@@ -81,7 +81,7 @@ undefined4 _grade(int param_1)
 | `unresolved_calls` | 空 | 目标没有已知过程的调用点 |
 | `referenced_strings`, `referenced_names` | 空, 2 | `LAB_10000054c`, `DAT_1000007d0` |
 | `basic_blocks` | 3 | 起点、开区间终点、后继 |
-| `native_api` | `__cdecl`，`signature_source` default | 类型、存储、置信度、`jump_tables` |
+| `native_api` | `__cdecl`，`signature_source` 默认 | 类型、存储、置信度、`jump_tables` |
 | `native_value_flow` | 14 个操作，12 条 def-use 边 | 高 p-code，`truncated: false` |
 | `facet_availability` | 八个 facet，全部 `available: true` | 每个 facet 是否被观察到 |
 | `limitations` | 4 | 该 facet 自己的限制 |

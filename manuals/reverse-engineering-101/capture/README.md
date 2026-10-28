@@ -12,15 +12,15 @@ python3 run.py --build-fixtures  # rebuilds the fixture binaries and the WASM mo
 
 ## 录制所用
 
-| Item | Value |
+| 项 | 值 |
 |---|---|
-| Host | Apple silicon laptop, macOS 26.2 (build 25C56), arm64 |
-| rea | rea-agents 6.7.0 from the npx cache, started as `node .../node_modules/rea-agents/scripts/rea.mjs`, Node 22.22.0 |
-| Ghidra | 12.1.4 PUBLIC (build 2026-Sep-21) from Homebrew, `GHIDRA_INSTALL_DIR=/opt/homebrew/Cellar/ghidra/12.1.4/libexec` |
-| JDK | OpenJDK 21.0.12.1 from Homebrew, `JAVA_HOME=/opt/homebrew/opt/openjdk@21` |
-| clang | Apple clang 17.0.0 (clang-1700.6.3.2), target arm64-apple-darwin25.2.0 |
-| WABT | 1.0.42 (Homebrew formula `wabt` 1.0.42_1), `REA_WABT_BIN_DIRECTORY=/opt/homebrew/bin` |
-| Recorded on | 2026-10-18 |
+| 主机 | 一台 Apple silicon 笔记本，macOS 26.2（build 25C56），arm64 |
+| rea | 来自 npx 缓存的 rea-agents 6.7.0，以 `node .../node_modules/rea-agents/scripts/rea.mjs` 启动，Node 22.22.0 |
+| Ghidra | 来自 Homebrew 的 12.1.4 PUBLIC（build 2026-Sep-21），`GHIDRA_INSTALL_DIR=/opt/homebrew/Cellar/ghidra/12.1.4/libexec` |
+| JDK | 来自 Homebrew 的 OpenJDK 21.0.12.1，`JAVA_HOME=/opt/homebrew/opt/openjdk@21` |
+| clang | Apple clang 17.0.0（clang-1700.6.3.2），目标 arm64-apple-darwin25.2.0 |
+| WABT | 1.0.42（Homebrew formula `wabt` 1.0.42_1），`REA_WABT_BIN_DIRECTORY=/opt/homebrew/bin` |
+| 录制于 | 2026-10-18 |
 
 `00-versions.txt` 持有录制主机上每个工具打印的版本输出。
 
@@ -42,42 +42,42 @@ python3 run.py --build-fixtures  # rebuilds the fixture binaries and the WASM mo
 
 ## out/ 里的文件
 
-| File | Holds |
+| 文件 | 内容 |
 |---|---|
-| `00-commands.txt` | every CLI command in order, with its exit code, its time, its stderr, and the file it wrote |
-| `00-versions.txt` | the versions of rea, node, clang, llvm-objdump, macOS, Ghidra, the JDK, and WABT |
-| `00-fixtures.txt` | SHA-256 and size of every fixture file |
-| `01-doctor-ghidra.json` | `rea doctor --provider ghidra`, filtered to `healthy`, `environment_healthy`, `scope`, and `scope_checks`. The informational checks name this user's agent registrations and are left out by the filter |
-| `02-capabilities.json` | `rea capabilities`: every operation with its availability, effects, and limitations |
-| `03-inspect-artifact.json` | `inspect-artifact` on the arm64 executable |
-| `04-inspect-binary-layout.json` | the error envelope on macOS: `capability_unavailable`, the pwntools profile supports Linux x64 only |
-| `04-inspect-macho.json` | `inspect-macho` on the arm64 executable, the layout tool that works on macOS |
-| `05-analyze-arm64-O1.json`, `05-analyze-x86_64-O1.json` | `binary_overview` Evidence for the Mach-O executable and for the ELF relocatable object |
-| `06-function-*.json` | `analyze_function` dossiers for `_percent_change`, `_grade`, `_total`, and `_grade_label` in the arm64 -O1 executable, and for `grade` in the x86-64 -O1 object |
-| `07-decompile-total.json`, `07-decompile-grade-x86_64-O1.json` | `procedure_pseudo_code` for `_total` (arm64) and `grade` (x86-64) |
-| `08-address-to-file-offset.json` | `0x100000518`, the entry of `_grade`, resolved to file offset 1304 |
-| `10-mcp-NN-<tool>.json` | one MCP exchange each: `request`, `response`, `notifications` when the server sent any, and `decoded_text` (the parsed `content[0].text`) when the result is an error |
-| `10-mcp-session.txt` | the order of the exchanges with method, tool, status, file, and time |
-| `10-mcp-server.log` | the stderr of `rea mcp`: one pino JSON line per tool call |
-| `11-bundle-O1.json`, `11-bundle-O2.json` | the bundles `export_evidence_bundle` wrote, bytes as written, with the capture path masked and a newline added |
-| `11-inspect-evidence-bundle-O1.json`, `-O2.json` | `rea inspect-evidence-bundle` summary of each bundle: one row per record |
-| `11-bundles.txt` | SHA-256 and size of the two bundle files |
-| `12-evidence-export.json`, `12-evidence-export.txt` | `rea evidence-export` of bundle O1 to a canonical file, and the digests of both files |
-| `13-evidence-import.json` | `rea evidence-import` of bundle O1 |
-| `13-evidence-import-rea-6.5.0.json` | `rea evidence-import` of `fixtures/bundle-rea-6.5.0-O1.json`, the bundle O1 that rea 6.5.0 wrote: the `evidence_integrity_mismatch` refusal |
-| `14-compare-bundles.json` | `rea compare` of bundle O1 and bundle O2 |
-| `15-js-app.json` | the `analyze_javascript_application` record without `graph` and `semantic_graph`, selected with `--filter-output` |
-| `15-js-app-graph.json` | `normalized_result.graph` of the same record: 42 nodes and 59 edges |
-| `15-js-app-view-summary.json`, `15-js-app-view-modules.json` | `rea inspect-analysis-view` summary and modules page over the complete record |
-| `16-inspect-wasm-artifact.json` | `inspect-wasm-artifact` on `wasm/ledger.wasm`: the Evidence record of the provider `wabt-artifact` |
-| `16-wabt.txt` | the three WABT commands that rea runs on the module, run directly |
-| `17-harness-grid.json` | the 92 input cells of the lesson 36 harness: the `percent_change` pairs, the `grade` scores, the hazard class counts, and the ten naive cases |
-| `17-harness-execute-plausible.json`, `17-harness-execute-equal.json` | execute-and-compare runs: the original and a candidate compiled into one program and run over the grid, with every row, the mismatches, and the model disagreements. Plausible is `percent_change_wide.c` with `grade_thresholds.c`, equal is `percent_change_mul_first.c` with `grade_switch.c` |
-| `17-harness-bytes.json` | recompile-and-compare for eight candidates against `ledger-x86_64-O1.o`: function bytes, relocation records, masked ranges, the referenced table, status, and reasons |
-| `17-harness.txt` | what the harness is, where it was loaded from, and the host and compiler that ran it |
-| `18-setup-claude-jsonc.json` | `rea setup --client claude_code --skill=false --dry-run` on a Claude Code configuration with a comment and a trailing comma: `needs_human`, registration `invalid` |
-| `18-setup-claude-duplicate.json` | `rea setup --client claude_code --skill=false --yes` on a configuration with two `rea` members: `ready` |
-| `18-setup-configs.txt` | both configuration files as they were after setup |
+| `00-commands.txt` | 按顺序的每条 CLI 命令，带退出码、耗时、stderr，以及写出的文件 |
+| `00-versions.txt` | rea、node、clang、llvm-objdump、macOS、Ghidra、JDK 与 WABT 的版本 |
+| `00-fixtures.txt` | 每个 fixture 文件的 SHA-256 与大小 |
+| `01-doctor-ghidra.json` | `rea doctor --provider ghidra`，过滤到 `healthy`、`environment_healthy`、`scope` 与 `scope_checks`。信息性检查会点名本用户的 agent 注册，过滤器已去掉它们 |
+| `02-capabilities.json` | `rea capabilities`：每个操作及其可用性、效果与限制 |
+| `03-inspect-artifact.json` | 对 arm64 可执行文件的 `inspect-artifact` |
+| `04-inspect-binary-layout.json` | macOS 上的错误信封：`capability_unavailable`，pwntools 配置只支持 Linux x64 |
+| `04-inspect-macho.json` | 对 arm64 可执行文件的 `inspect-macho`，macOS 上可用的布局工具 |
+| `05-analyze-arm64-O1.json`, `05-analyze-x86_64-O1.json` | Mach-O 可执行文件与 ELF 可重定位目标的 `binary_overview` Evidence |
+| `06-function-*.json` | arm64 -O1 可执行文件里 `_percent_change`、`_grade`、`_total` 与 `_grade_label`，以及 x86-64 -O1 目标里 `grade` 的 `analyze_function` dossier |
+| `07-decompile-total.json`, `07-decompile-grade-x86_64-O1.json` | `_total`（arm64）与 `grade`（x86-64）的 `procedure_pseudo_code` |
+| `08-address-to-file-offset.json` | `0x100000518`，`_grade` 的入口，解析为文件偏移 1304 |
+| `10-mcp-NN-<tool>.json` | 每次一次 MCP 交换：`request`、`response`、服务器若发送则有的 `notifications`，以及结果为错误时的 `decoded_text`（解析后的 `content[0].text`） |
+| `10-mcp-session.txt` | 交换顺序，带 method、tool、status、file 与时间 |
+| `10-mcp-server.log` | `rea mcp` 的 stderr：每次工具调用一行 pino JSON |
+| `11-bundle-O1.json`, `11-bundle-O2.json` | `export_evidence_bundle` 写出的 bundle，按写出字节，捕获路径已掩码并加了换行 |
+| `11-inspect-evidence-bundle-O1.json`, `-O2.json` | 每个 bundle 的 `rea inspect-evidence-bundle` 摘要：每条记录一行 |
+| `11-bundles.txt` | 两个 bundle 文件的 SHA-256 与大小 |
+| `12-evidence-export.json`, `12-evidence-export.txt` | 把 bundle O1 `rea evidence-export` 到规范文件，以及两个文件的 digest |
+| `13-evidence-import.json` | 对 bundle O1 的 `rea evidence-import` |
+| `13-evidence-import-rea-6.5.0.json` | 对 `fixtures/bundle-rea-6.5.0-O1.json`（rea 6.5.0 写出的 bundle O1）的 `rea evidence-import`：`evidence_integrity_mismatch` 拒绝 |
+| `14-compare-bundles.json` | 对 bundle O1 与 bundle O2 的 `rea compare` |
+| `15-js-app.json` | 去掉 `graph` 与 `semantic_graph` 的 `analyze_javascript_application` 记录，用 `--filter-output` 选出 |
+| `15-js-app-graph.json` | 同一记录的 `normalized_result.graph`：42 个节点与 59 条边 |
+| `15-js-app-view-summary.json`, `15-js-app-view-modules.json` | 对完整记录的 `rea inspect-analysis-view` 摘要与 modules 页 |
+| `16-inspect-wasm-artifact.json` | 对 `wasm/ledger.wasm` 的 `inspect-wasm-artifact`：provider `wabt-artifact` 的 Evidence 记录 |
+| `16-wabt.txt` | rea 在该模块上跑的三条 WABT 命令，直接运行 |
+| `17-harness-grid.json` | 第 36 课 harness 的 92 个输入格：`percent_change` 对、`grade` 分数、hazard 类计数，以及十个 naive 用例 |
+| `17-harness-execute-plausible.json`, `17-harness-execute-equal.json` | execute-and-compare 运行：原件与候选编进同一程序并在网格上跑，带每一行、不匹配，以及模型分歧。Plausible 是 `percent_change_wide.c` 配 `grade_thresholds.c`，equal 是 `percent_change_mul_first.c` 配 `grade_switch.c` |
+| `17-harness-bytes.json` | 对八个候选相对 `ledger-x86_64-O1.o` 的 recompile-and-compare：函数字节、重定位记录、掩去范围、引用表、状态与原因 |
+| `17-harness.txt` | harness 是什么、从哪加载，以及跑它的主机与编译器 |
+| `18-setup-claude-jsonc.json` | 对带注释与末尾逗号的 Claude Code 配置跑 `rea setup --client claude_code --skill=false --dry-run`：`needs_human`，注册 `invalid` |
+| `18-setup-claude-duplicate.json` | 对带两个 `rea` 成员的配置跑 `rea setup --client claude_code --skill=false --yes`：`ready` |
+| `18-setup-configs.txt` | setup 之后两份配置文件的样子 |
 
 ## MCP 会话
 
@@ -127,17 +127,17 @@ Evidence 记录内部什么都不裁。`out/` 里每一个 `evidence_id` 都能�
 - `18-setup-claude-jsonc.json`：`needs_human`。Claude Code 读严格 JSON，所以 setup 在做备份或写入之前就拒绝注释与末尾逗号。
 - `14-compare-bundles.json`：`status: "unknown"`，带 10 条未解析记录。两份 bundle 来自不同构建，所以没有记录同属两者，且 bundle 不携带清单完整性标记。
 
-## Fixtures
+## 夹具
 
 所有 fixture 都是为本手册写的程序。`ledger.c` 持有四个函数：`percent_change`（带零守卫的除法）、`grade`（对 `score / 10` 的 switch，编译成查找表并对 `0x66666667` 做乘法）、`total`（对内存的循环），以及 `grade_label`（一次调用与一次数据引用）。`ledger-main.c` 是一个小型 `main`，解析其参数并打印结果。
 
-| Path | Build command, run in `fixtures/` | Reproducible |
+| 路径 | 构建命令，在 `fixtures/` 里跑 | 可复现 |
 |---|---|---|
-| `ledger-x86_64-O0.o`, `-O1.o`, `-O2.o` | `clang -target x86_64-unknown-linux-gnu -O<n> -fno-asynchronous-unwind-tables -c ledger.c -o ledger-x86_64-O<n>.o` | byte for byte |
-| `ledger-arm64-O1.o`, `ledger-arm64-O2.o` | `clang -O<n> -fno-asynchronous-unwind-tables -c ledger.c -o ledger-arm64-O<n>.o` | byte for byte |
-| `ledger-arm64-O1`, `ledger-arm64-O2` | `clang -O<n> -o ledger-arm64-O<n> ledger.c ledger-main.c` | byte for byte with the same output name. The linker's ad-hoc code signature embeds the file name, so a link to another name gives other bytes |
-| `wasm/ledger.wasm` | `wat2wasm wasm/ledger.wat -o wasm/ledger.wasm` | byte for byte |
-| `js-app/` | none, six source files | |
+| `ledger-x86_64-O0.o`, `-O1.o`, `-O2.o` | `clang -target x86_64-unknown-linux-gnu -O<n> -fno-asynchronous-unwind-tables -c ledger.c -o ledger-x86_64-O<n>.o` | 逐字节 |
+| `ledger-arm64-O1.o`, `ledger-arm64-O2.o` | `clang -O<n> -fno-asynchronous-unwind-tables -c ledger.c -o ledger-arm64-O<n>.o` | 逐字节 |
+| `ledger-arm64-O1`, `ledger-arm64-O2` | `clang -O<n> -o ledger-arm64-O<n> ledger.c ledger-main.c` | 同名输出时逐字节。链接器的临时代码签名嵌入了文件名，所以链到别的名字会得到不同字节 |
+| `wasm/ledger.wasm` | `wat2wasm wasm/ledger.wat -o wasm/ledger.wasm` | 逐字节 |
+| `js-app/` | 无，六个源文件 |  |
 
 提交的字节就是 `out/` 里每份记录所描述的那些。`--build-fixtures` 原地重建全部并打印哪些文件变了。在录制工具链上，每一次重建都复现了已提交字节。不同的 clang 会改可执行文件与目标文件，并随之改 `out/` 里每一个 SHA-256、`evidence_id` 与 bundle digest，所以这类改动之后必须再跑 `run.py`。
 

@@ -1,4 +1,4 @@
-# inspect-binary-layout and the load image
+# inspect-binary-layout 与加载映像
 
 > 在 macOS 上，inspect-binary-layout 以 capability_unavailable 拒绝，而 inspect-macho 是不依赖引擎的段、节、加载命令、导入与导出读取器。
 
@@ -144,12 +144,12 @@ note: Cut from normalized_result to the header, the entry point, and the build m
 
 四条 `LC_SEGMENT_64` 命令就是加载映像。每个 `segment_command_64` 点名一个 `vmaddr`、一个 `vmsize`、一个 `fileoff`、一个 `filesize`、两个保护字段，以及 `nsects`，它的 `section_64` 记录跟在同一条命令里面。
 
-| Segment | `vmaddr` | `vmsize` | `fileoff` | `filesize` | `initprot` | `nsects` |
+| 段 | `vmaddr` | `vmsize` | `fileoff` | `filesize` | `initprot` | `nsects` |
 |---|---|---|---|---|---|---|
 | `__PAGEZERO` | `0x0` | 4294967296 | 0 | 0 | 0 | 0 |
-| `__TEXT` | `0x100000000` | 16384 | 0 | 16384 | 5, read and execute | 5 |
-| `__DATA_CONST` | `0x100004000` | 16384 | 16384 | 16384 | 3, read and write | 2 |
-| `__LINKEDIT` | `0x100008000` | 16384 | 32768 | 1104 | 1, read | 0 |
+| `__TEXT` | `0x100000000` | 16384 | 0 | 16384 | 5，读与执行 | 5 |
+| `__DATA_CONST` | `0x100004000` | 16384 | 16384 | 16384 | 3，读与写 | 2 |
+| `__LINKEDIT` | `0x100008000` | 16384 | 32768 | 1104 | 1，读 | 0 |
 
 ```listing
 title: the __TEXT segment and its five sections
@@ -213,7 +213,7 @@ note: Cut from the segments collection. Permissions, alignment, and flags are cu
 
 `__LINKEDIT` 段没有节。其他加载命令按文件偏移指向它。
 
-| Command | Offset in the file | Size |
+| 命令 | 文件内偏移 | 大小 |
 |---|---|---|
 | `LC_DYLD_CHAINED_FIXUPS` | 32768 | 176 |
 | `LC_DYLD_EXPORTS_TRIE` | 32944 | 104 |

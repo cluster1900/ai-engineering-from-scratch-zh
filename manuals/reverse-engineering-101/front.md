@@ -24,7 +24,7 @@
 
 事实来自七类源，按权威排序。两类冲突时，更高的赢，正文也会说明。
 
-| Rank | Source | What the manual takes from it | Source key |
+| 等级 | 源 | 手册从中取用 | 源键 |
 |---|---|---|---|
 | 1 | 钉住标签上的 rea 源码，`27dc42d` | 关于 rea 如何工作的每一条主张 | 各节源文件，在手册源里 |
 | 2 | 钉住标签上的 rea 文档 | 文档行为、限制与使用规则 | `readme`、`cli`、`mcp`、`ghidra`、`native`、`install`、`readiness`、`ledgers`、`jsgraph` 或 `design` 与一个标题 |
@@ -42,14 +42,14 @@
 
 对象需要 Ghidra、JDK 和 Node，所以套件不能在仓库 CI 里跑。缺少 rea 6.7.0、Ghidra 12.1.4 或 JDK 21 时，`--check` 打印 `skipped` 和原因并以 0 退出。每一个捕获文件都记在同一台机器上：
 
-| Item | Value |
+| 项 | 值 |
 |---|---|
-| Host | 一台 Apple silicon 笔记本，macOS 26.2，build 25C56，arm64 |
+| 主机 | 一台 Apple silicon 笔记本，macOS 26.2，build 25C56，arm64 |
 | rea | 来自 npx 缓存的 `rea-agents` 6.7.0，Node 22.22.0 |
 | Ghidra | 来自 Homebrew 的 12.1.4 PUBLIC，`GHIDRA_INSTALL_DIR=/opt/homebrew/Cellar/ghidra/12.1.4/libexec` |
 | JDK | 来自 Homebrew 的 OpenJDK 21.0.12.1，`JAVA_HOME=/opt/homebrew/opt/openjdk@21` |
 | clang | Apple clang 17.0.0，target `arm64-apple-darwin25.2.0` |
-| Recorded on | 2026-10-18 |
+| 录制于 | 2026-10-18 |
 
 套件在 `00-commands.txt` 里记录每一条 one-shot 命令，各自带退出状态与时间。它在 `10-mcp-*.json` 里记录一次 25 次交换的 MCP 会话，以及两份 Evidence bundle。完整跑一遍大约 125 秒，每个需要 Ghidra 的 one-shot 命令大约 7 到 9 秒。录制主机上的两次运行给出了相同的记录（[捕获说明](manuals/reverse-engineering-101/capture/README.md)）。每一个 fixture 都是为本手册写的程序，`00-fixtures.txt` 列出它们的哈希。
 

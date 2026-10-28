@@ -1,4 +1,4 @@
-# analyze and the binary_overview record
+# analyze 与 binary_overview 记录
 
 > rea analyze 是 binary_overview 的 CLI 名字，这是一份派生记录，按一次构建统计 Ghidra 找到的东西：段、过程与已定义字符串。
 
@@ -183,10 +183,10 @@ note: Cut to the result. The .comment, .rela.rodata, .rela.text, .strtab, .symta
 | `document` | `target-01b5d08b08fb.bin` | `target-9a4a8082ba5e.o` |
 | `target_format`, `architecture` | `mach-o`, `arm64` | `elf`, `x86_64` |
 | `segment_count` | 12 | 10 |
-| code block | `__text`, 576 bytes | `.text`, 159 bytes |
+| 代码块 | `__text`，576 字节 | `.text`，159 字节 |
 | `procedure_count` | 13 | 4 |
 | `string_count` | 39 | 20 |
-| profile `digest` | `3fc72c9b` and 56 more digits | `769518a8` and 56 more digits |
+| 配置 `digest` | `3fc72c9b` 再加 56 位 | `769518a8` 再加 56 位 |
 
 ```figure
 id: fig-3-5

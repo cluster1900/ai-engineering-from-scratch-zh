@@ -1,4 +1,4 @@
-# list_procedures and function bodies
+# list_procedures 与函数体
 
 > list_procedures 返回 Ghidra 定义的每一个函数，内部与外部都算，thunk 保持区分，而 dossier 函数体告诉你每一个拥有多少字节。
 
@@ -59,15 +59,15 @@ note: Cut from normalized_result: one external function, two internal functions,
 
 桥从两个 Ghidra 迭代器为每个程序构建一次列表，内部函数与外部函数。它按入口地址去掉重复。对每个函数它记录 `external`、`thunk`，以及有则已解析的 `thunk_target`。值是带限定的符号名，这就是为什么外部条目带着它们的库路径。记录的限制陈述规则：`"External functions and local thunks are distinct; procedure metadata identifies both and preserves a thunk target when Ghidra resolves one."`。
 
-| Address | Name | Kind | Where it comes from |
+| 地址 | 名称 | 种类 | 从哪来 |
 |---|---|---|---|
 | `EXTERNAL:0x1` to `EXTERNAL:0x4` | `___stack_chk_fail`, `_atoi`, `_fwrite`, `_printf` | external | 第 3.2 节里六个 `libSystem` 导入中的四个 |
-| `0x100000500` | `_percent_change` | internal, 24 bytes | `ledger.c` |
-| `0x100000518` | `_grade` | internal, 60 bytes | `ledger.c` |
-| `0x100000554` | `_total` | internal, 52 bytes | `ledger.c` |
-| `0x100000588` | `_grade_label` | internal, 72 bytes | `ledger.c` |
-| `0x1000005d0` | `entry` | internal, 368 bytes | `ledger-main.c` 里的 `main`，由 `LC_MAIN` 命名 |
-| `0x100000740` to `0x100000764` | 同样四个名字 | thunk, 12 bytes each | `__stubs` 节，48 字节 |
+| `0x100000500` | `_percent_change` | 内部，24 字节 | `ledger.c` |
+| `0x100000518` | `_grade` | 内部，60 字节 | `ledger.c` |
+| `0x100000554` | `_total` | 内部，52 字节 | `ledger.c` |
+| `0x100000588` | `_grade_label` | 内部，72 字节 | `ledger.c` |
+| `0x1000005d0` | `entry` | 内部，368 字节 | `ledger-main.c` 里的 `main`，由 `LC_MAIN` 命名 |
+| `0x100000740` to `0x100000764` | 同样四个名字 | thunk，各 12 字节 | `__stubs` 节，48 字节 |
 
 **Thunk：** 一个小函数，唯一工作是把控制转给另一个函数。四个 thunk 坐在 `__stubs` 里，也就是[第 3.2 节](#s-inspect-binary-layout-and-the-load-image) 里 `0x100000740` 上那 48 字节的节。每一个都是 12 字节的桩，到达真正的 `libSystem` 函数。Ghidra 把那个函数表示成其 `EXTERNAL` 块里的一项，也就是[第 3.4 节](#s-analyze-overview) 里最后一个段。两个不是函数的导入，`___stack_chk_guard` 与 `___stderrp`，不出现在这里，因为它们是数据。
 

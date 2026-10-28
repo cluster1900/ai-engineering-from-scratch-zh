@@ -93,17 +93,17 @@ note: Cut to the head, the first check, and the two checks that read the install
 
 `inspectGhidraInstallation` 在不导入任何东西的情况下跑八项 Ghidra 检查。顺序是 `configuration`、`platform`、`architecture`、`installation`、`version`、`headless`、`native_decompiler` 与 `java`，doctor 给每个名字加上 `ghidra-` 前缀。`node` 检查排在最前。下表点名每一项读什么，以及失败时返回的代码。
 
-| Check | What it reads | On the capture Mac | Failure code |
+| 检查 | 它读什么 | 在捕获用的 Mac 上 | 失败码 |
 |---|---|---|---|
-| `node` | the Node version | `22.22.0` | `missing_dependency` |
-| `ghidra` | `GHIDRA_INSTALL_DIR`, set and absolute | `/opt/homebrew/Cellar/ghidra/12.1.4/libexec` | `not_configured` |
-| `ghidra-platform` | the host OS | `darwin` | `unsupported_host` |
-| `ghidra-architecture` | the host CPU | `arm64` | `unsupported_host` |
-| `ghidra-installation` | `Ghidra/application.properties` under the install | the properties file | `executable_missing` |
-| `ghidra-version` | `application.version` against 12.1.x | `12.1.4` | `unsupported_version` or `version_unresolved` |
-| `ghidra-headless` | `support/analyzeHeadless`, or `.bat` on Windows | `support/analyzeHeadless` | `executable_missing` |
-| `ghidra-native_decompiler` | `Ghidra/Features/Decompiler/os/mac_arm_64/decompile` and its executable header | `mach-o arm64`, which matches `darwin/arm64` | `executable_missing` |
-| `ghidra-java` | the JDK, its major version against `application.java.min`, 64-bit, `javac` present | `21.0.12.1`, 64-bit, JDK | one code for each failed property |
+| `node` | Node 版本 | `22.22.0` | `missing_dependency` |
+| `ghidra` | `GHIDRA_INSTALL_DIR`，已设置且为绝对路径 | `/opt/homebrew/Cellar/ghidra/12.1.4/libexec` | `not_configured` |
+| `ghidra-platform` | 主机 OS | `darwin` | `unsupported_host` |
+| `ghidra-architecture` | 主机 CPU | `arm64` | `unsupported_host` |
+| `ghidra-installation` | 安装目录下的 `Ghidra/application.properties` | properties 文件 | `executable_missing` |
+| `ghidra-version` | `application.version` 对照 12.1.x | `12.1.4` | `unsupported_version` or `version_unresolved` |
+| `ghidra-headless` | `support/analyzeHeadless`，或 Windows 上的 `.bat` | `support/analyzeHeadless` | `executable_missing` |
+| `ghidra-native_decompiler` | `Ghidra/Features/Decompiler/os/mac_arm_64/decompile` 及其可执行文件头 | `mach-o arm64`，与 `darwin/arm64` 匹配 | `executable_missing` |
+| `ghidra-java` | JDK、其主版本对照 `application.java.min`、64 位、存在 `javac` | `21.0.12.1`, 64-bit, JDK | 每个失败属性一个码 |
 
 
 原生反编译器检查读取 `decompile` 二进制的可执行头，并与主机比较。因此为另一平台构建的会报告为不兼容，即使目录名看起来对 {{install Ghidra}}。doctor 检查平台、架构与 Ghidra 12.1.x 版本。它也检查 `support/analyzeHeadless` 或 `support/analyzeHeadless.bat`、安装的 Java major 范围、64 位 JDK，以及 `javac` 或 `javac.exe` {{install Ghidra}}。[图](#fig-2-2) 按顺序画出这九项。
