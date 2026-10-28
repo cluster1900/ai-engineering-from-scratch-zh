@@ -12,7 +12,7 @@ source_hash: 37c75e06555d8bf9
 type: task-table
 from: phases/03-deep-learning-core/11-intro-to-pytorch/docs/en.md, phases/00-setup-and-tooling/03-gpu-setup-and-cloud/docs/en.md
 
-| Task | Code |
+| 任务 | 代码 |
 |---|---|
 | 选设备 | `device = torch.device("cuda" if torch.cuda.is_available() else "cpu")` |
 | 在其上建张量 | `x = torch.randn(3, 4, device=device)` |
@@ -103,7 +103,7 @@ for inputs, targets in loader:
 type: command-table
 from: phases/03-deep-learning-core/11-intro-to-pytorch/docs/en.md, phases/03-deep-learning-core/13-debugging-neural-networks/docs/en.md
 
-| Command | What it does |
+| 命令 | 作用 |
 |---|---|
 | `x.view(2, 12)` | 变形。张量必须连续 |
 | `x.reshape(6, 4)` | 变形。始终可用 |
@@ -118,7 +118,7 @@ from: phases/03-deep-learning-core/11-intro-to-pytorch/docs/en.md, phases/03-dee
 type: command-table
 from: phases/03-deep-learning-core/11-intro-to-pytorch/docs/en.md
 
-| Command | What it does |
+| 命令 | 作用 |
 |---|---|
 | `nn.Linear(in, out)` | $Wx + b$，in*out + out 个参数 |
 | `nn.Conv2d(in_ch, out_ch, k)` | 2D 卷积 |
@@ -133,7 +133,7 @@ from: phases/03-deep-learning-core/11-intro-to-pytorch/docs/en.md
 type: defaults
 from: phases/03-deep-learning-core/11-intro-to-pytorch/docs/en.md, phases/03-deep-learning-core/13-debugging-neural-networks/docs/en.md, phases/00-setup-and-tooling/03-gpu-setup-and-cloud/docs/en.md
 
-| Setting | Default | Note |
+| 设置 | 默认值 | 说明 |
 |---|---|---|
 | 张量 dtype | float32 | 默认训练精度 |
 | LLM 训练 dtype | bfloat16 | float32 范围，精度更低 |
@@ -161,7 +161,7 @@ from: phases/03-deep-learning-core/11-intro-to-pytorch/docs/en.md
 type: troubleshooting
 from: phases/03-deep-learning-core/13-debugging-neural-networks/docs/en.md, phases/03-deep-learning-core/11-intro-to-pytorch/docs/en.md
 
-| Symptom | Cause | Fix |
+| 症状 | 原因 | 修复 |
 |---|---|---|
 | `RuntimeError: expected CUDA tensor` | 模型与数据在不同设备 | 对模型与数据做 `.to(device)` |
 | `RuntimeError: modified by in-place operation` | 原地运算打断 autograd | 用 `x = x + 1` 替换 `x += 1` |
@@ -176,7 +176,7 @@ from: phases/03-deep-learning-core/13-debugging-neural-networks/docs/en.md, phas
 type: task-table
 from: phases/03-deep-learning-core/13-debugging-neural-networks/docs/en.md, phases/00-setup-and-tooling/12-debugging-and-profiling/docs/en.md
 
-| Task | Code |
+| 任务 | 代码 |
 |---|---|
 | 找到产生 NaN 的运算 | `with torch.autograd.detect_anomaly():` |
 | 检查损失是否为 NaN | `torch.isnan(loss)` |

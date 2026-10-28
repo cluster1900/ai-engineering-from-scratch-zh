@@ -12,7 +12,7 @@ P09 = phases/09-reinforcement-learning. L01 = P09/01-mdps-states-actions-rewards
 - diag "Diagnostics, mean KL, clip fraction": L08/docs/en.md:132-135; L08/code/main.py:157-158
 - edges action, transition, value, advantage, update: L08/docs/en.md:57-64
 
-## Flow: RLHF 的三个阶段
+## Flow: RLHF 的三个阶段 (flow, 7 steps)
 1. SFT on human demonstrations: L09/docs/en.md:24
 2. prompt, chosen, rejected rows: L09/docs/en.md:28, 133
 3. scalar head on SFT model, Bradley-Terry loss: L09/docs/en.md:30-36
@@ -21,7 +21,7 @@ P09 = phases/09-reinforcement-learning. L01 = P09/01-mdps-states-actions-rewards
 6. PPO on token level policy: L09/docs/en.md:46
 7. mean KL past about 5 to 10: L09/docs/en.md:117
 
-## Concepts: 价值公式
+## Concepts: 价值公式 (concepts, 8)
 - MDP tuple: L01/docs/en.md:182
 - Return: L01/docs/en.md:32
 - Bellman V: L01/docs/en.md:38
@@ -31,7 +31,7 @@ P09 = phases/09-reinforcement-learning. L01 = P09/01-mdps-states-actions-rewards
 - SARSA: L04/docs/en.md:43
 - DQN loss over replay D: L05/docs/en.md:29, 32
 
-## Concepts: 策略公式
+## Concepts: 策略公式 (concepts, 8)
 - Policy gradient: L06/docs/en.md:27 (trajectory subscript dropped)
 - TD advantage delta_t: L07/docs/en.md:34
 - GAE: L07/docs/en.md:47
@@ -67,7 +67,7 @@ P09 = phases/09-reinforcement-learning. L01 = P09/01-mdps-states-actions-rewards
 - comment "clipped means zero gradient": L08/docs/en.md:124
 - comment "new over old probability": L08/docs/en.md:30
 
-## 默认值与数字
+## 默认值与数字 (defaults, 8)
 - gamma 0.99, horizon 1/(1 - gamma), 100 steps: L01/docs/en.md:28, 121
 - tabular alpha and epsilon 0.1, 4x4 GridWorld: L04/docs/en.md:116
 - PPO clip 0.2, 0.1 timid, 0.3 unstable: L08/docs/en.md:45, 140
@@ -77,7 +77,7 @@ P09 = phases/09-reinforcement-learning. L01 = P09/01-mdps-states-actions-rewards
 - RLHF beta 0.01-0.05, keeps policy near SFT: L09/docs/en.md:45
 - GRPO G 8, 8 to 64 standard, below 4 noisy: L12/docs/en.md:118, 148
 
-## 排障
+## 排障 (troubleshooting, 8)
 - mean KL past 0.1, reduce K_EPOCHS or LR: L08/docs/en.md:134, 141
 - clip fraction near 0, raise LR or K_EPOCHS: L08/docs/en.md:135
 - clip fraction 0.5 and more, lower them: L08/docs/en.md:135
@@ -87,7 +87,7 @@ P09 = phases/09-reinforcement-learning. L01 = P09/01-mdps-states-actions-rewards
 - deadly triad, keep target net and replay: L05/docs/en.md:136
 - entropy collapse, entropy bonus: L06/docs/en.md:140; L07/docs/en.md:137
 
-## 缩写 (glossary)
+## 缩写 (glossary, 8)
 - MDP: L01/docs/en.md:1, 182
 - TD: L04/docs/en.md:1, 16
 - DQN replay, target net, reward clipping: L05/docs/en.md:1, 14-18
@@ -97,14 +97,14 @@ P09 = phases/09-reinforcement-learning. L01 = P09/01-mdps-states-actions-rewards
 - RLHF SFT, RM, PPO: L09/docs/en.md:16
 - GRPO Group Relative Policy Optimization, no critic: L12/docs/en.md:57, 210
 
-## 问题
+## 问题 (qa, 5)
 - on-policy vs off-policy: L03/docs/en.md:202-203
 - Q-learning max vs SARSA next action, cautious: L04/docs/en.md:32, 38, 46, 48
 - baseline unbiased, lower variance: L06/docs/en.md:34-36
 - KL keeps policy near RM data: L09/docs/en.md:48
 - GRPO halves memory, per prompt normalization, sparse reward: L12/docs/en.md:76
 
-## 提示
+## 提示 (tips, 6)
 - five MDP tuples first: L01/docs/en.md:145
 - check against DP V*: L02/docs/en.md:16; L04/docs/en.md:120
 - epsilon 1.0 to 0.01 over first 10%: L05/docs/en.md:137

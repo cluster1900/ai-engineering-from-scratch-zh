@@ -46,7 +46,7 @@ from: phases/11-llm-engineering/05-context-engineering/code/main.py, phases/11-l
 type: task-table
 from: phases/11-llm-engineering/01-prompt-engineering/code/prompt_engineering.py, phases/11-llm-engineering/02-few-shot-cot/code/advanced_prompting.py, phases/11-llm-engineering/05-context-engineering/code/main.py
 
-| Task | Code |
+| 任务 | 代码 |
 |---|---|
 | 从模式构建 prompt | `build_prompt("persona", <variables>)` |
 | 构建多轮消息列表 | `build_multi_turn(<pattern>, <turns>)` |
@@ -82,7 +82,7 @@ tree_of_thought_solve(question, client, model, breadth=3, depth=2)  # else
 type: command-table
 from: phases/11-llm-engineering/02-few-shot-cot/docs/en.md
 
-| Command | What it does |
+| 命令 | 作用 |
 |---|---|
 | Zero-shot | 简单任务。1 次调用，无开销 |
 | Few-shot | 格式匹配。额外 200-500 token |
@@ -110,7 +110,7 @@ from: phases/11-llm-engineering/01-prompt-engineering/docs/en.md, phases/11-llm-
 type: defaults
 from: phases/11-llm-engineering/01-prompt-engineering/docs/en.md, phases/11-llm-engineering/02-few-shot-cot/docs/en.md, phases/11-llm-engineering/02-few-shot-cot/code/advanced_prompting.py, phases/11-llm-engineering/05-context-engineering/code/main.py
 
-| Setting | Default | Note |
+| 设置 | 默认值 | 说明 |
 |---|---|---|
 | Temperature，抽取与代码 | 0.0 | Top-p 1.0。也用于 prompt 测试 |
 | Temperature，摘要 | 0.3 | Top-p 0.9 |
@@ -125,7 +125,7 @@ from: phases/11-llm-engineering/01-prompt-engineering/docs/en.md, phases/11-llm-
 type: troubleshooting
 from: phases/11-llm-engineering/01-prompt-engineering/docs/en.md, phases/11-llm-engineering/02-few-shot-cot/docs/en.md, phases/11-llm-engineering/05-context-engineering/docs/en.md
 
-| Symptom | Cause | Fix |
+| 症状 | 原因 | 修复 |
 |---|---|---|
 | 泛泛、中位质量的输出 | 任务含糊、角色笼统 | 给出具体角色、格式、长度、受众 |
 | 自信的胡说 | 训练数据里该角色太稀 | 用更不狭窄的角色 |

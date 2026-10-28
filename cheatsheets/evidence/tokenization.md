@@ -65,7 +65,7 @@ Abbreviations: N19 = phases/05-nlp-foundations-to-advanced/19-subword-tokenizati
 - stride defaults to context_length: C31/code/main.py:168-169
 - num_workers 0: C31/code/main.py:214, docs/en.md:87
 
-## 排障 (8)
+## 排障 (troubleshooting, 8)
 - tokenizer drift, hash in CI: N19/docs/en.md:119
 - whitespace ambiguity, add_special_tokens, add_prefix_space: N19/docs/en.md:120
 - chat template mismatch: T2/docs/en.md:139
@@ -92,7 +92,7 @@ Abbreviations: N19 = phases/05-nlp-foundations-to-advanced/19-subword-tokenizati
 - vocab size: T1/docs/en.md:181-183, T2/docs/en.md:417
 - seeded shuffle: C31/docs/en.md:79
 
-## 提示 (6)
+## 提示 (tips, 6)
 - round trip tests: C30/docs/en.md:92
 - compression ratio on held-out text: T1/docs/en.md:317
 - encode once at build time: C31/docs/en.md:72

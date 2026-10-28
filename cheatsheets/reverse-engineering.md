@@ -50,7 +50,7 @@ rea decompile <path> <name> --provider ghidra       # pseudocode of one procedur
 type: task-table
 from: manuals/reverse-engineering-101/sections/r-1-commands-and-tools.md
 
-| Task | Code |
+| 任务 | 代码 |
 |---|---|
 | 列出包的记录且不含载荷 | `rea inspect-evidence-bundle '{"path":"<bundle>", "detail": "summary"}'` |
 | 写出带排序键的规范副本 | `rea evidence-export <bundle> <out>` |
@@ -62,7 +62,7 @@ from: manuals/reverse-engineering-101/sections/r-1-commands-and-tools.md
 type: task-table
 from: manuals/reverse-engineering-101/sections/1-1-rea-providers-and-evidence.md
 
-| Task | Code |
+| 任务 | 代码 |
 |---|---|
 | 检查 Ghidra 与环境 | `rea doctor --provider ghidra --format json --filter-output healthy,environment_healthy,scope,scope_checks` |
 | 列出能力 | `rea capabilities --format json` |
@@ -73,7 +73,7 @@ from: manuals/reverse-engineering-101/sections/1-1-rea-providers-and-evidence.md
 type: command-table
 from: manuals/reverse-engineering-101/sections/1-1-rea-providers-and-evidence.md, manuals/reverse-engineering-101/capture/README.md
 
-| Command | What it does |
+| 命令 | 作用 |
 |---|---|
 | `rea function` | 为每个过程调用一次 `analyze_function` 取 dossier |
 | `rea decompile` | 调用 `procedure_pseudo_code` 取伪代码 |
@@ -84,7 +84,7 @@ from: manuals/reverse-engineering-101/sections/1-1-rea-providers-and-evidence.md
 type: defaults
 from: manuals/reverse-engineering-101/README.md, manuals/reverse-engineering-101/capture/README.md, manuals/reverse-engineering-101/sections/1-1-rea-providers-and-evidence.md, manuals/reverse-engineering-101/sections/3-1-inspect-artifact.md
 
-| Setting | Default | Note |
+| 设置 | 默认值 | 说明 |
 |---|---|---|
 | rea | 6.7.0 | `rea-agents` 包版本 |
 | Ghidra | 12.1.4 | PUBLIC 构建 |
@@ -96,7 +96,7 @@ from: manuals/reverse-engineering-101/README.md, manuals/reverse-engineering-101
 type: troubleshooting
 from: manuals/reverse-engineering-101/sections/r-1-commands-and-tools.md, manuals/reverse-engineering-101/sections/1-1-rea-providers-and-evidence.md
 
-| Symptom | Cause | Fix |
+| 症状 | 原因 | 修复 |
 |---|---|---|
 | `rea doctor` 某项检查失败 | 缺少 rea 6.7.0、Ghidra 12.1.4 或 JDK 21 | 安装钉住版本并再跑 `rea doctor` |
 | 第一次 Ghidra 调用要 7 到 9 s | Ghidra 把文件导入全新项目 | 保持一个 MCP 会话打开 |

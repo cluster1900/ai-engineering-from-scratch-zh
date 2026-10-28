@@ -12,7 +12,7 @@ source_hash: 61eb8b567821c32e
 type: task-table
 from: phases/19-capstone-projects/30-bpe-tokenizer-from-scratch/code/main.py, phases/10-llms-from-scratch/01-tokenizers/docs/en.md, phases/10-llms-from-scratch/02-building-a-tokenizer/docs/en.md, phases/05-nlp-foundations-to-advanced/19-subword-tokenization/docs/en.md
 
-| Task | Code |
+| 任务 | 代码 |
 |---|---|
 | 训练字节级 BPE | `train(tokenizer, <corpus>, target_vocab_size=320)` |
 | 带特殊 token 编码 | `encode(tokenizer, text, allow_special=True)` |
@@ -113,7 +113,7 @@ from: phases/10-llms-from-scratch/01-tokenizers/docs/en.md, phases/05-nlp-founda
 type: defaults
 from: phases/19-capstone-projects/30-bpe-tokenizer-from-scratch/docs/en.md, phases/05-nlp-foundations-to-advanced/19-subword-tokenization/docs/en.md, phases/10-llms-from-scratch/01-tokenizers/docs/en.md, phases/19-capstone-projects/31-tokenized-dataset-sliding-window/code/main.py
 
-| Setting | Default | Note |
+| 设置 | 默认值 | 说明 |
 |---|---|---|
 | 字节字母表 | 256 | 字节 0x00 到 0xFF 的 id |
 | GPT-2 词表 | 50,257 | 256 字节、50,000 次合并、1 个特殊 |
@@ -128,7 +128,7 @@ from: phases/19-capstone-projects/30-bpe-tokenizer-from-scratch/docs/en.md, phas
 type: troubleshooting
 from: phases/05-nlp-foundations-to-advanced/19-subword-tokenization/docs/en.md, phases/10-llms-from-scratch/02-building-a-tokenizer/docs/en.md, phases/19-capstone-projects/30-bpe-tokenizer-from-scratch/docs/en.md, phases/19-capstone-projects/30-bpe-tokenizer-from-scratch/code/main.py, phases/19-capstone-projects/31-tokenized-dataset-sliding-window/docs/en.md
 
-| Symptom | Cause | Fix |
+| 症状 | 原因 | 修复 |
 |---|---|---|
 | 部署后模型输出垃圾 | 在词表 A 上训练，用词表 B 部署 | 在 CI 里检查 tokenizer 文件哈希 |
 | "hello" 与 " hello" 得到不同 id | 空白歧义 | 显式设置 `add_special_tokens` 与 `add_prefix_space` |

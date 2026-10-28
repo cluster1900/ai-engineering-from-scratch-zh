@@ -46,7 +46,7 @@ from: phases/19-capstone-projects/69-end-to-end-rag-system/code/main.py, phases/
 type: task-table
 from: phases/19-capstone-projects/64-chunking-strategies-advanced/code/main.py, phases/19-capstone-projects/65-hybrid-retrieval-bm25-dense/code/main.py, phases/19-capstone-projects/67-query-rewriting-hyde/code/main.py, phases/19-capstone-projects/68-rag-eval-precision-recall/code/main.py, phases/19-capstone-projects/69-end-to-end-rag-system/code/main.py
 
-| Task | Code |
+| 任务 | 代码 |
 |---|---|
 | 固定窗口分块 | `fixed_window(doc_id, text, size=400, overlap=80)` |
 | 按标题分块 | `structural_markdown(doc_id, text)` |
@@ -93,7 +93,7 @@ result.latency_ms                     # rewrite, retrieve, rerank, generate
 type: command-table
 from: phases/19-capstone-projects/64-chunking-strategies-advanced/docs/en.md, phases/19-capstone-projects/64-chunking-strategies-advanced/code/main.py, phases/05-nlp-foundations-to-advanced/23-chunking-strategies-rag/docs/en.md
 
-| Command | What it does |
+| 命令 | 作用 |
 |---|---|
 | `recursive_split` | 没有结构的散文。最强的单一基线 |
 | `structural_markdown` | Markdown、RFC 与 API 文档。按标题切断 |
@@ -121,7 +121,7 @@ from: phases/11-llm-engineering/06-rag/docs/en.md, phases/11-llm-engineering/07-
 type: defaults
 from: phases/19-capstone-projects/65-hybrid-retrieval-bm25-dense/code/main.py, phases/19-capstone-projects/65-hybrid-retrieval-bm25-dense/docs/en.md, phases/11-llm-engineering/06-rag/docs/en.md, phases/11-llm-engineering/07-advanced-rag/docs/en.md, phases/19-capstone-projects/66-reranker-cross-encoder/docs/en.md, phases/19-capstone-projects/69-end-to-end-rag-system/code/main.py
 
-| Setting | Default | Note |
+| 设置 | 默认值 | 说明 |
 |---|---|---|
 | BM25 `k1` | 1.5 | 课文 11.07 代码用 1.2 |
 | BM25 `b` | 0.75 | 0 忽略长度，1 完全归一化 |
@@ -136,7 +136,7 @@ from: phases/19-capstone-projects/65-hybrid-retrieval-bm25-dense/code/main.py, p
 type: troubleshooting
 from: phases/19-capstone-projects/68-rag-eval-precision-recall/docs/en.md, phases/11-llm-engineering/07-advanced-rag/docs/en.md, phases/19-capstone-projects/66-reranker-cross-encoder/docs/en.md, phases/19-capstone-projects/67-query-rewriting-hyde/docs/en.md, phases/05-nlp-foundations-to-advanced/23-chunking-strategies-rag/docs/en.md
 
-| Symptom | Cause | Fix |
+| 症状 | 原因 | 修复 |
 |---|---|---|
 | recall@k 与 precision@k 低 | 块切掉了答案，或检索器漏了它 | 修好边界或加一种模态 |
 | recall@k 好，MRR 低 | 正确块不在位置 1 | 加交叉编码器重排 |

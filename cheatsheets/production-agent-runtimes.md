@@ -55,7 +55,7 @@ from: projects/durable-agent-jobs/solution/stage1.go, projects/durable-agent-job
 type: command-table
 from: projects/durable-agent-jobs/README.md, projects/durable-agent-jobs/API.md
 
-| Command | What it does |
+| 命令 | 作用 |
 |---|---|
 | `go build -o /tmp/durable-jobs .` | 在 `solution` 里构建参考二进制 |
 | `enqueue --store <dir> --input <file>` | 添加作业。相同重投递是安全的 |
@@ -70,7 +70,7 @@ from: projects/durable-agent-jobs/README.md, projects/durable-agent-jobs/API.md
 type: task-table
 from: phases/14-agent-engineering/29-production-runtimes/docs/en.md, projects/durable-agent-jobs/README.md, projects/cloud-agent-with-aws-strands/README.md, projects/cloud-agent-with-aws-strands/requirements-framework.txt
 
-| Task | Code |
+| 任务 | 代码 |
 |---|---|
 | 跑课文演示 | `python3 code/main.py` |
 | 给项目参考打分 | `--all --solution --strict` |
@@ -133,7 +133,7 @@ parse_model_plan(text, scope)    # the model plan goes to validate_plan
 type: defaults
 from: projects/durable-agent-jobs/API.md, projects/durable-agent-jobs/solution/main.go, projects/cloud-agent-with-aws-strands/solution/executor.py, projects/cloud-agent-with-aws-strands/solution/retry.py, projects/cloud-agent-with-aws-strands/solution/cli.py
 
-| Setting | Default | Note |
+| 设置 | 默认值 | 说明 |
 |---|---|---|
 | `--lease-ms` | 30000 | 认领租约，毫秒 |
 | `--max-attempts` | 3 | 之后作业等待人工对账 |
@@ -147,7 +147,7 @@ from: projects/durable-agent-jobs/API.md, projects/durable-agent-jobs/solution/m
 type: troubleshooting
 from: phases/14-agent-engineering/29-production-runtimes/docs/en.md, phases/15-autonomous-systems/12-durable-execution/docs/en.md, phases/16-multi-agent-and-swarms/22-production-scaling-queues-checkpoints/docs/en.md, projects/durable-agent-jobs/README.md, projects/durable-agent-jobs/API.md, projects/durable-agent-jobs/solution/stage3.go
 
-| Symptom | Cause | Fix |
+| 症状 | 原因 | 修复 |
 |---|---|---|
 | 用户挂断，重试叠加 | 5 分钟任务用 request-response | 用队列或 durable 形状 |
 | 失败作业消失 | 队列 worker 没有死信 | 加 DLQ 并暴露 DLQ 大小 |

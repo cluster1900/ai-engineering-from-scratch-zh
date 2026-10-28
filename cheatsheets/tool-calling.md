@@ -12,7 +12,7 @@ source_hash: ba9bf49229d13a30
 type: task-table
 from: phases/11-llm-engineering/09-function-calling/docs/en.md
 
-| Task | Code |
+| 任务 | 代码 |
 |---|---|
 | 声明工具，OpenAI | `{"type": "function", "function": {...}}` |
 | 声明工具，Anthropic | `{"name": ..., "input_schema": {...}}` |
@@ -27,7 +27,7 @@ from: phases/11-llm-engineering/09-function-calling/docs/en.md
 type: task-table
 from: phases/11-llm-engineering/03-structured-outputs/docs/en.md, phases/13-tools-and-protocols/04-structured-output/docs/en.md
 
-| Task | Code |
+| 任务 | 代码 |
 |---|---|
 | 有效 JSON，无模式 | `{ type: "json_object" }` |
 | 符合模式的 JSON | `{type: "json_schema", strict: true}` |
@@ -143,7 +143,7 @@ from: phases/13-tools-and-protocols/05-tool-schema-design/docs/en.md, phases/13-
 type: defaults
 from: phases/13-tools-and-protocols/02-function-calling-deep-dive/docs/en.md, phases/13-tools-and-protocols/05-tool-schema-design/docs/en.md, phases/13-tools-and-protocols/01-the-tool-interface/code/main.py, phases/13-tools-and-protocols/04-structured-output/docs/en.md, phases/19-capstone-projects/21-tool-registry-schema-validation/code/main.py
 
-| Setting | Default | Note |
+| 设置 | 默认值 | 说明 |
 |---|---|---|
 | 每次请求的 OpenAI 工具 | 128 | 硬上限 |
 | 每次请求的 Anthropic 工具 | 64 | 硬上限 |
@@ -158,7 +158,7 @@ from: phases/13-tools-and-protocols/02-function-calling-deep-dive/docs/en.md, ph
 type: troubleshooting
 from: phases/13-tools-and-protocols/03-parallel-and-streaming-tool-calls/docs/en.md, phases/13-tools-and-protocols/04-structured-output/docs/en.md, phases/13-tools-and-protocols/05-tool-schema-design/docs/en.md, phases/13-tools-and-protocols/02-function-calling-deep-dive/docs/en.md, phases/11-llm-engineering/03-structured-outputs/docs/en.md, phases/19-capstone-projects/23-function-call-dispatcher/docs/en.md
 
-| Symptom | Cause | Fix |
+| 症状 | 原因 | 修复 |
 |---|---|---|
 | 流中途 `json.loads` 抛错 | 参数是部分 JSON | 在调用结束信号之后解析 |
 | Strict 模式下请求时报 400 | Strict 模式规则被破坏 | 全部进 `required`，没有 `$ref` |

@@ -42,7 +42,7 @@ edge | detok | client | text
 type: task-table
 from: manuals/sglang-101/sections/1-1-install-sglang-and-serve-your-first-model.md, manuals/sglang-101/sections/2-5-streaming-stop-strings-and-the-openai-api.md, manuals/sglang-101/sections/5-1-sglang-benchmark-serving.md, manuals/sglang-101/sections/4-6-deterministic-inference-and-logprobs.md, manuals/sglang-101/sections/7-1-operating-sglang.md
 
-| Task | Code |
+| 任务 | 代码 |
 |---|---|
 | 发一条原生请求 | `POST /generate` |
 | 用 OpenAI chat 格式询问 | `POST /v1/chat/completions` |
@@ -57,7 +57,7 @@ from: manuals/sglang-101/sections/1-1-install-sglang-and-serve-your-first-model.
 type: command-table
 from: manuals/sglang-101/sections/5-1-sglang-benchmark-serving.md
 
-| Command | What it does |
+| 命令 | 作用 |
 |---|---|
 | `python -m sglang.benchmark.serving --backend sglang --port 30000 --dataset-name random --num-prompts 32 --max-concurrency 8 --seed 7` | 发送 32 条随机 prompt，最多 8 条在途，然后打印报告 |
 | `--random-input-len 512 --random-output-len 128` | 设置 prompt 与答案长度 |
@@ -68,7 +68,7 @@ from: manuals/sglang-101/sections/5-1-sglang-benchmark-serving.md
 type: defaults
 from: manuals/sglang-101/sections/r-1-flags-and-defaults.md, manuals/sglang-101/sections/2-2-the-scheduler-loop-and-schedule-policy.md, manuals/sglang-101/sections/2-3-admission-and-retraction.md, manuals/sglang-101/sections/3-5-eviction-policies-and-hicache.md, manuals/sglang-101/sections/6-4-sgl-model-gateway.md
 
-| Setting | Default | Note |
+| 设置 | 默认值 | 说明 |
 |---|---|---|
 | `--schedule-policy` | `fcfs` | `lpm` 是论文里的顺序，不是默认 |
 | `--schedule-conservativeness` | 1.0 | 日志出现 retraction 时调高 |
@@ -82,7 +82,7 @@ from: manuals/sglang-101/sections/r-1-flags-and-defaults.md, manuals/sglang-101/
 type: troubleshooting
 from: manuals/sglang-101/sections/3-2-mem-fraction-static-and-startup-sizing.md, manuals/sglang-101/sections/2-3-admission-and-retraction.md, manuals/sglang-101/sections/6-1-tp-size-dp-size-and-attn-dp-size.md, manuals/sglang-101/sections/4-1-forwardmode-and-cuda-graphs.md, manuals/sglang-101/sections/3-4-prefix-friendly-prompts.md
 
-| Symptom | Cause | Fix |
+| 症状 | 原因 | 修复 |
 |---|---|---|
 | 32 个请求时 `RuntimeError: [METAL] Command buffer execution failed` | 池按空闲内存的 87% 定容 | 传 `--mem-fraction-static 0.4` 并重启 |
 | 中位 TTFT 接近 28 s 且 GPU 内存空闲 | 准入把请求排进满池队列 | 提高 `--schedule-conservativeness` 或降低 `--max-running-requests` |

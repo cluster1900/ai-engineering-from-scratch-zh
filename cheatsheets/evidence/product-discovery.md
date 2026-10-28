@@ -53,7 +53,7 @@ Abbreviations: L47 = phases/14-agent-engineering/47-outcomes-before-output, L48 
 - rationale required unless delegated: L51/c:41-42
 - output keys human_checkpoint, bounded_decisions, agent_may_decide: L51/c:52-58
 
-## Prototype、pilot、production (comparison, 4 rows)
+## Prototype、pilot 与 production (comparison, 4 rows)
 - primary questions: L53/d:21-23
 - use when: L53/d:29, 41, L53/c:26-30
 - controls: L53/c:35-46, SLO: L53/c:62

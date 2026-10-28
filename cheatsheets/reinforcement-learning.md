@@ -71,7 +71,7 @@ from: phases/09-reinforcement-learning/06-policy-gradients-reinforce/docs/en.md,
 type: command-table
 from: phases/09-reinforcement-learning/02-dynamic-programming/docs/en.md, phases/09-reinforcement-learning/04-q-learning-sarsa/docs/en.md, phases/09-reinforcement-learning/05-dqn/docs/en.md, phases/09-reinforcement-learning/08-ppo/docs/en.md, phases/09-reinforcement-learning/09-reward-modeling-rlhf/docs/en.md, phases/09-reinforcement-learning/12-rl-for-games/docs/en.md
 
-| Situation | Method |
+| 情境 | 方法 |
 |---|---|
 | 小型表格 MDP，模型已知 | value iteration 或 policy iteration |
 | 小型表格 MDP，只有样本 | Q-learning |
@@ -86,7 +86,7 @@ from: phases/09-reinforcement-learning/02-dynamic-programming/docs/en.md, phases
 type: task-table
 from: phases/09-reinforcement-learning/03-monte-carlo-methods/docs/en.md, phases/09-reinforcement-learning/04-q-learning-sarsa/docs/en.md, phases/09-reinforcement-learning/05-dqn/docs/en.md, phases/09-reinforcement-learning/09-reward-modeling-rlhf/docs/en.md, phases/09-reinforcement-learning/12-rl-for-games/docs/en.md
 
-| Task | Code |
+| 任务 | 代码 |
 |---|---|
 | 回报，反向扫 | `G = r + gamma * G` |
 | 用 epsilon greedy 探索 | `if random() < epsilon: return choice(ACTIONS)` |
@@ -123,7 +123,7 @@ for rec, adv in zip(mb, adv_norm):                 # advantages normalized per m
 type: defaults
 from: phases/09-reinforcement-learning/01-mdps-states-actions-rewards/docs/en.md, phases/09-reinforcement-learning/04-q-learning-sarsa/docs/en.md, phases/09-reinforcement-learning/07-actor-critic-a2c-a3c/docs/en.md, phases/09-reinforcement-learning/08-ppo/docs/en.md, phases/09-reinforcement-learning/09-reward-modeling-rlhf/docs/en.md, phases/09-reinforcement-learning/12-rl-for-games/docs/en.md
 
-| Setting | Default | Note |
+| 设置 | 默认值 | 说明 |
 |---|---|---|
 | 折扣 $\gamma$ | 0.99 | 视界约 $1 / (1 - \gamma)$，因此约 100 步 |
 | 表格 $\alpha$ 与 $\epsilon$ | 0.1 | 4x4 GridWorld 上的 Q-learning 与 SARSA |
@@ -138,7 +138,7 @@ from: phases/09-reinforcement-learning/01-mdps-states-actions-rewards/docs/en.md
 type: troubleshooting
 from: phases/09-reinforcement-learning/04-q-learning-sarsa/docs/en.md, phases/09-reinforcement-learning/05-dqn/docs/en.md, phases/09-reinforcement-learning/06-policy-gradients-reinforce/docs/en.md, phases/09-reinforcement-learning/07-actor-critic-a2c-a3c/docs/en.md, phases/09-reinforcement-learning/08-ppo/docs/en.md, phases/09-reinforcement-learning/09-reward-modeling-rlhf/docs/en.md
 
-| Symptom | Cause | Fix |
+| 症状 | 原因 | 修复 |
 |---|---|---|
 | 平均 KL 超过 0.1 | 策略相对旧策略漂得太远 | 降低 `K_EPOCHS` 或 `LR` |
 | 裁剪比例接近 0 | 裁剪从未触发 | 提高 `LR` 或 `K_EPOCHS` |

@@ -78,7 +78,7 @@ from: phases/14-agent-engineering/49-map-assumptions-and-risk/docs/en.md, phases
 type: comparison
 from: phases/14-agent-engineering/51-write-specifications-that-preserve-judgment/docs/en.md, phases/14-agent-engineering/51-write-specifications-that-preserve-judgment/code/main.py
 
-| Factor | Locked | Bounded | Delegated |
+| 因素 | 锁定 | 受限 | 委托 |
 |---|---|---|---|
 | Agent 可以 | 不选择 | 在限度内选择 | 拥有选择，并解释它 |
 | 用于 | 安全、权限、公开兼容性 | 搜索预算、重试次数 | 名字、可逆重构 |
@@ -86,12 +86,12 @@ from: phases/14-agent-engineering/51-write-specifications-that-preserve-judgment
 | 理由 | 必需 | 必需 | 可选 |
 | 输出键 | `human_checkpoint` | `bounded_decisions` | `agent_may_decide` |
 
-## Prototype、pilot、production
+## Prototype、pilot 与 production
 type: comparison
 span: 2
 from: phases/14-agent-engineering/53-prototype-pilot-or-production/docs/en.md, phases/14-agent-engineering/53-prototype-pilot-or-production/code/main.py
 
-| Factor | Prototype | Pilot | Production |
+| 因素 | Prototype | Pilot | Production |
 |---|---|---|---|
 | 问题 | 机制究竟能否产出证据？ | 它能否在有界真实受众上安全工作？ | 我们能否以承诺的可靠性拥有它？ |
 | 何时用 | 不需要真实用户或数据 | 需要真实行为，后果未就绪 | 后果有界，运营就绪 |
@@ -123,7 +123,7 @@ type: task-table
 col: 4
 from: phases/14-agent-engineering/47-outcomes-before-output/code/main.py, phases/14-agent-engineering/48-discover-the-real-workflow/code/main.py, phases/14-agent-engineering/49-map-assumptions-and-risk/code/main.py, phases/14-agent-engineering/50-choose-the-smallest-testable-slice/code/main.py, phases/14-agent-engineering/51-write-specifications-that-preserve-judgment/code/main.py, phases/14-agent-engineering/53-prototype-pilot-or-production/docs/en.md, phases/14-agent-engineering/53-prototype-pilot-or-production/code/main.py
 
-| Task | Code |
+| 任务 | 代码 |
 |---|---|
 | 跑一个实验及其测试 | `python3 -m unittest discover code/tests -v` |
 | 框架状态 | `decision(frame)` |
@@ -138,7 +138,7 @@ from: phases/14-agent-engineering/47-outcomes-before-output/code/main.py, phases
 type: defaults
 from: phases/14-agent-engineering/48-discover-the-real-workflow/code/main.py, phases/14-agent-engineering/49-map-assumptions-and-risk/code/main.py, phases/14-agent-engineering/51-write-specifications-that-preserve-judgment/code/main.py, phases/14-agent-engineering/53-prototype-pilot-or-production/code/main.py
 
-| Setting | Default | Note |
+| 设置 | 默认值 | 说明 |
 |---|---|---|
 | 风险维度 | range(1, 6) | 影响、不确定性、不可逆性 |
 | 证据 `confidence` | 0 <= item.confidence <= 1 | 否则是问题 |
@@ -152,7 +152,7 @@ type: troubleshooting
 span: 2
 from: phases/14-agent-engineering/47-outcomes-before-output/code/main.py, phases/14-agent-engineering/50-choose-the-smallest-testable-slice/code/main.py, phases/14-agent-engineering/51-write-specifications-that-preserve-judgment/code/main.py, phases/14-agent-engineering/52-design-success-metrics/code/main.py
 
-| Symptom | Cause | Fix |
+| 症状 | 原因 | 修复 |
 |---|---|---|
 | `desired outcome names the proposed output` | 方案漏进了结果 | 改陈述可观察结果 |
 | `non-goals are empty` | 切片没有边界 | 加能拒绝工作的具体非目标 |
