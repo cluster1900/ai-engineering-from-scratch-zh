@@ -1,6 +1,6 @@
 # Dev Environment
 
-> 你的 tools 会塑造你的思考方式。一次配置，正确配置。
+> 你的工具会塑造你的思考方式。一次配置好，而且要配置对。
 
 **Type:** Build
 **Languages:** Python, Node.js, Rust
@@ -8,18 +8,21 @@
 **Time:** ~45 分钟
 
 ## 学习目标
-- 从零开始设置 Python 3.11+、Node.js 20+ 和 Rust toolchains
-- 配置 virtual environments 和 package managers，以实现可复现 builds
-- 使用 CUDA/MPS 验证 GPU access，并运行一个测试 Tensor operation
-- 理解四层 stack：system、packages、runtimes、AI libraries
+
+- 从零搭建 Python 3.11+、Node.js 20+ 和 Rust 工具链
+- 配置虚拟环境和包管理器，保证构建可复现
+- 用 CUDA/MPS 验证 GPU 访问，并跑一次测试张量运算
+- 理解四层技术栈：系统、包管理、运行时、AI 库
 
 ## 问题
-你将用 Python、TypeScript、Rust 和 Julia 学习 500+ 节 AI engineering 课程。如果你的 environment 坏了，每一节课都会变成和 tooling 作斗争，而不是学习。
 
-多数人会跳过 environment setup。然后他们花数小时 debug import errors、version conflicts 和缺失的 CUDA drivers。我们要把这件事一次性正确做好。
+你将用 Python、TypeScript、Rust 和 Julia 学完 500+ 节 AI engineering 课程。如果环境坏了，每一节课都会变成和工具链打架，而不是在学习。
+
+多数人会跳过环境搭建。然后花几个小时 debug import 错误、版本冲突和缺失的 CUDA 驱动。我们要把这件事一次性、正确地做完。
 
 ## 概念
-一个 AI engineering environment 有四层：
+
+一个 AI engineering 环境有四层：
 
 ```mermaid
 graph TD
@@ -28,17 +31,17 @@ graph TD
     C --> D["1. System Foundation\nOS, shell, git, editor, GPU drivers"]
 ```
 
-我们自底向上安装。每一层都依赖它下面的一层。
-
+我们自底向上安装。每一层都依赖它下面那一层。
 
 ```figure
 s0-env-stack
 ```
 
 ## 构建它
-### 步骤 1： System Foundation
 
-检查你的 system 并安装基础组件。
+### 步骤 1：系统基础
+
+检查你的系统并安装基础组件。
 
 ```bash
 # macOS
@@ -52,9 +55,9 @@ sudo apt update && sudo apt install -y build-essential git curl wget unzip
 wsl --install -d Ubuntu-24.04
 ```
 
-### 步骤 2： Python with uv
+### 步骤 2：用 uv 安装 Python
 
-我们使用 `uv`——它比 pip 快 10-100x，并且会自动处理 virtual environments。
+我们使用 `uv`——它比 pip 快 10–100 倍，并且会自动处理虚拟环境。
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -79,7 +82,7 @@ a = np.array([1, 2, 3])
 print(f"Vector: {a}, dot product with itself: {np.dot(a, a)}")
 ```
 
-### 步骤 3： Node.js with pnpm
+### 步骤 3：用 pnpm 安装 Node.js
 
 用于 TypeScript 课程（agents、MCP servers、web apps）。
 
@@ -103,9 +106,9 @@ echo 'eval "$(fnm env --use-on-cd)"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-### 步骤 4： Rust
+### 步骤 4：Rust
 
-用于 performance-critical 课程（inference、systems）。
+用于对性能敏感的课程（inference、systems）。
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -114,9 +117,9 @@ rustc --version
 cargo --version
 ```
 
-### 步骤 5： Julia (Optional)
+### 步骤 5：Julia（可选）
 
-用于 Julia 擅长的 math-heavy 课程。
+用于 Julia 更拿手的偏数学课程。
 
 ```bash
 curl -fsSL https://install.julialang.org | sh
@@ -151,7 +154,7 @@ if torch.cuda.is_available():
     print(f"GPU: {torch.cuda.get_device_name(0)}")
 ```
 
-没有 GPU？没问题。多数课程可在 CPU 上运行。对于 training-heavy 课程，使用 Google Colab 或 cloud GPUs。
+没有 GPU？没问题。多数课程可在 CPU 上运行。对训练很重的课程，用 Google Colab 或云 GPU。
 
 ### 步骤 7：验证你要开始的路线
 
@@ -186,7 +189,8 @@ Next: python3 phases/01-math-foundations/01-linear-algebra-intuition/code/vector
 ```
 
 ## 使用它
-你的 environment 已可以开始你检查过的路线。后续工具等课程需要时再安装，不必让整套技术栈阻塞你的第一课。下面是整个课程中会用到的内容：
+
+你的环境已可以开始你检查过的路线。后续工具等课程需要时再安装，不必让整套技术栈阻塞你的第一课。下面是整个课程中会用到的内容：
 
 | Language | Used In | Package Manager |
 |----------|---------|-----------------|
@@ -196,14 +200,16 @@ Next: python3 phases/01-math-foundations/01-linear-algebra-intuition/code/vector
 | Julia | Phase 1 (Math foundations) | Pkg |
 
 ## 交付它
-本课会产出一个任何人都能运行的验证脚本，用于检查自己的 setup。
 
-查看 `outputs/prompt-env-check.md`，其中有一个 prompt，可帮助 AI assistants 诊断 environment issues。
+本课会产出一个任何人都能运行的验证脚本，用于检查自己的环境。
+
+查看 `outputs/prompt-env-check.md`，其中有一个 prompt，可帮助 AI 助手诊断环境问题。
 
 ## 练习
+
 1. 运行验证脚本并修复任何失败项
-2. 为本课程创建一个 Python virtual environment，并安装 PyTorch
-3. 用全部四种 languages 写一个 "hello world"，并逐个运行
+2. 为本课程创建一个 Python 虚拟环境，并安装 PyTorch
+3. 用全部四种语言写一个 "hello world"，并逐个运行
 
 ### 提示
 
