@@ -1,24 +1,24 @@
 # Kolektif Operasyonları gerçekleştirmek
 
-> Toplantıdaki dört grup işletim, tüm kısımları birleştirerek tüm kısımları azaltmak, yayımlamak, toplamak ve dağıtmak için birleştirir.`multiprocessing.Queue`网格上构建一次它们,根据参考实现验证它们,轨道的其余部分就变成管道──
+> 支分布式训练的四种集体通信(集体)操作是所有减少,广播,allgather 和减少_scatter──训练框架提供的其他原语几乎都是四者的包装──先在`multiprocessing.Queue`Mesh 上实现一遍,再对照参考实现做验证, bu 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条 条     条                                                                                                                                                                                                                                                                                                                                      
 
 **Type:** Build
 **Languages:** Python
-**Prerequisites:** 第 19 阶段 Track C 课程 42-49
+**Prerequisites:** Phase 19 Track C lessons 42-49
 **Time:** ~90 分钟
 
 ## Öğrenme hedefi
 
-- İki kez gönderilen bir dönemde tüm kısıtlamalar gerçekleştirilmektedir.
-- - Evet .`multiprocessing.Queue`Üst nokta ile gönderme üzerine inşaat yayım, toplama ve dağılımı azaltma.
-- Aynı girişlere göre.`torch.distributed`Glow 参考验证每个原语──
-- Toplu şekillerde, geçici ve genişliğin üst sınırları açısından, ağaç ve ağaç seçimlerini savunmak.
+- İki kere algoritma kullanarak yüzük tümü azaltmak, önce dağılımı azaltmak, tekrar toplamak, ve her bir sırada iletişim miktarı her bir element olduğunu kanıtlamak.$2(N-1)/N$- Evet.
+- - Evet .`multiprocessing.Queue`Ünün nokta gönderin 之上 实现播放、allgather 和 reduce_scatter。
+- Aynı giriş için kullanın.`torch.distributed`Bu yüzden, bu, bir temel temel oluşturur.
+- Grup şekli 延迟下限和带宽上限 发发,论证 应选环 还是树
 
 ## 问题
 
-N'de basit tüm azaltmak 将张量 N 次发送到根并广播 N 次。 her rango'nun genişliği kısaltmak için$O(N)$, kök bir şişe oldu, ve asılı olan asılı olan asılı olan en yavaş bağlantı N.$T/N$- Evet.$2(N-1)$块, bu yüzden her sıra 字节下降到$2T(N-1)/N$, N' büyüdükçe ve yaklaştıkça$2T$Ve asla onu aşmaz, ne kadar büyük olursa olsun. Ağaçlar, küçük N ve yüksek gecikme zincirinde kazanır.$\log_2(N)$跳而不是 $2(N-1)$◊ Kötü toplu seçim için, en yavaş GPU karar adım zaman
+N 个级 上做朴素 allreduce,将把张量向根发送 N 次,再广播回来 N 次── her sıra 带宽按 $O(N)$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $2(N-1)$个大小为 $T/N$Her bir sırada bir parça var.$2T(N-1)/N$, N                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $2T$且永不超出,集群规模无关. 树全减少在小N、高延迟链路上更优,因为深度是$\log_2(N)$跳, yerine $2(N-1)$En yavaş GPU'nun, adımını belirleyeceği zaman.
 
-Bu ders içinde okuduğunuz her dağıtımlı eğitim çerçevesinin hepsi bu dört temel dile bağlıdır. PyTorch DDP, her bir parametrelerden bir tümü ile derecesi azaltır, aynı adımları yapar. ZeRO, tümüyle birlikte 广播更新的参数, 广播更新的参数, 广播更新的参数, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分, 节点_散分_散分_散分_分_分_分_分_分_分_分_分_分_分_分_分_分_分_分_分_分_分_分_分_分_分_分_分_分_分______________________________________________________________________________________________________________________________________________________________________________________________________
+Bu track 里会读的每个分布式训练框架,都依赖于这四个原语──PyTorch DDP, her parametreler kova ile, bir kez tümüyle azaltın, bir kez tümüyle azaltın, bir kez tümüyle birlikte gradiente bulunın──ZeRO, reduc_scatter 分片优化器状态,再用 allgather 广播更新后的参数──FSDP, tamı ileriye bırakın 变为全gather 加减_scatter──Pipeline paralel 需要跨阶段组播播 传动──实现不了这些四个集体,无法推推训为何住,为何梯度卡不匹配现在排名3、以及为何换拓后的管道泡会翻倍──
 
 ## 概念
 
@@ -34,26 +34,25 @@ flowchart LR
   Q30 --> R0
 ```
 
-### İki kez yapın tümü azaltın
+### İki kere tamamlanmak için Ring allreduce
 
-Çangı bölmek N 个相等块,索引为 0..N-1──每个级 拥有与其级相等块索引──第 1遍,reduce_scatter,运行 N-1 步骤──在步骤 s,rank r 发送块 (r - s) mod N 到rank (r + 1) mod N,并从rank (r - 1) mod N 接收块 (r - s - 1) mod N,接收块 积累到本地副本中──经过 N-1 步骤后,全部 r 拥有块 r总和和和──第 2 阶段,全部收集,运行 N-1 个步骤,并绕绕旋转完成块,直到每个级都保存了全部和总和──
+Çang miktarını N 个等 büyük bir parçaya ayırmak, indeks 0..N-1── her rütbe 拥有与自身的级 号相同的块 索引──第 1 遍是减少散散,跑 N-1 步──在第 1 步,排列 r 把块$(r - s) \bmod N$Rangoyu ver .$(r + 1) \bmod N$, 并从级 $(r - 1) \bmod N$接收 parça $(r - s - 1) \bmod N$2. tekrar toplanıp, tekrar N-1'e koşun, tamamlanmış parçayı her sırada dolaşıncaya kadar her sırada her parçaya tam bir ihtiyaç vardır.
 
-|原语|每 rank 字节 |步骤|何时使用 |
+| 原语 | 每 rank 字节数 | 步数 | 何时使用 |
 |-----------|---------------|-------|-------------|
-|Ring allreduce| 2T(N-1)/N | 2(N-1) |大 T、fat-pipe 同构集群 |
-|Tree allreduce | T log2(N) | 2 log2(N) |小 T 或高延迟链路 |
-|广播| T | log2(N) 树 |参数初始化，标量配置|
-|allgather| T(N-1)/N | N-1 |分片转发，ZeRO 取消分片 |
-|reduce_scatter | T(N-1)/N | N-1 | ZeRO 梯度分片 |
+| Ring allreduce | 2T(N-1)/N | 2(N-1) | 大 T、同构 fat-pipe 集群 |
+| Tree allreduce | T log2(N) | 2 log2(N) | 小 T 或高延迟链路 |
+| Broadcast | T | log2(N) tree | 参数初始化、标量配置 |
+| Allgather | T(N-1)/N | N-1 | 分片 forward、ZeRO unshard |
+| Reduce_scatter | T(N-1)/N | N-1 | ZeRO 梯度分片 |
 
-### 队列网格 olarak NCCL'nin bir takviyesi olarak
+### Kullanımlı bir dizi ağ yerine NCCL
 
-NCCL PCIe ve NVLink'de çalışıyordu, ve donanım yükünü azaltıyordu.`multiprocessing.Queue`Tek üreticiler ve tek tüketicilerle sipariş nokta karşı nokta teslimatı sağlamak için. Kullanıcı alanında gerçekleşen bu artışın azalması için Python'u ödemek gerekir.
+NCCL  PCIe ve NVLink üzerinde çalışır, geriye kadar donanım yüklenebilir.`multiprocessing.Queue`Bu nedenle Python'un satışını yaptırmak için düzenli bir şekilde bir nokta karşı bir nokta teslimat yapılması gerekir. Ancak, bir satırın ilk versiyonunda doğruyu netleştirmek, grup davranışının net şekilde takip edilmesi gerekir.
 
-### 针对 gloo 进行验证
+### Gözetim için bir test yapın
 
-Her bir orijinal dil, aynı dünya çapında aynı miktarda kullanılarak birim testleri yaparak, çıkışını aynı dünya çapında aynı miktarda kullanır.`torch.distributed`比較:  Eğer yüzüğünüz tümüyle gloo gloo                                                                                                                                                                                                                                                     
-
+Her bir orijinal dil birim testi ile birlikte: aynı dünya büyüklüğünde, aynı 张量 üzerinde, onu çıkış ve kullanımı ile 后端初始化 `torch.distributed`karşılaştırma. Eğer yüzük tümüyle azaltılırsa, gözün parlaklığı float32 epsilon'dan daha fazlasa, test başarısız olur. karşılaştırma.
 
 ```figure
 ci-ring-allreduce
@@ -63,67 +62,67 @@ ci-ring-allreduce
 
 `code/main.py`实现:
 
-- `Mesh`类,将 N 个 `multiprocessing.Queue`例 连接到环中,并按等级公开 `send(dst, tensor)`和 `recv(src)`- Evet.
-- `ring_allreduce(mesh, rank, world_size, tensor)`运行两遍算法──
-- Ağaçlara`broadcast(mesh, rank, world_size, tensor, src)`- Evet.
-- `allgather(mesh, rank, world_size, tensor)`N-1 轮换──
-- `reduce_scatter(mesh, rank, world_size, tensor)`作为allreduce的前半部分──
-- `_gloo_reference(op, world_size, tensor)`- Evet .`torch.distributed`运行相同输入,并使用 gloo 进行字节相等比较──
+- `Mesh`类:把 N 个 `multiprocessing.Queue`接成环,并按级 暴露 `send(dst, tensor)`ile`recv(src)`- Evet.
+- `ring_allreduce(mesh, rank, world_size, tensor)`- Evet.
+- `broadcast(mesh, rank, world_size, tensor, src)`Ağaçlara doğru gidiyoruz.
+- `allgather(mesh, rank, world_size, tensor)`N-1 sonraki döngüsüyle.
+- `reduce_scatter(mesh, rank, world_size, tensor)`: As allreduce 的前半段──
+- `_gloo_reference(op, world_size, tensor)`Aynı bir giriş , aynı bir yerin içine gönderme .`torch.distributed`,做字节级对比──
 
-- Yapma .
+运行:
 
 ```bash
 python3 code/main.py
 ```
 
-输出: 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输出 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输 输                                     
+输出:按原语对比排列-mesh与 gloo 输出验证表,以及证明 $2T(N-1)/N$缩放的每级 字节计数器──
 
-## 野外生产模式
+## 生产环境中的实践
 
-Üç çeşit model, temelin yeterince sağlam olmasını sağlar.
+Üç farklı modü bu orijinal dilleri kolayca bağlanabilecek bir seviyeye kadar sertleştirebilir.
 
-**在 allreduce 之前对梯度进行分桶。**1B 参数 modeli, binlerce 梯度张量── her 张量 için bir kez tümü azaltılır 会支付 N 倍的延迟下限── DDP, 梯度 depolama alanının yaklaşık 25 MB'lik bir blokuna sahip olur ve her depo kutu için bir tümü düşürür; 小张量骑大张量的后面──如果不分桶,延迟开销将占主导地位──
+**allreduce 前先对梯度分桶。**Bir 10 milyar parametre modeli, binlerce derecede 张量── her 张量 bir kez tümüyle azaltmak, N 倍延迟下限付──DDP 梯度打成25 MB'lik bir kova, her kova 发发一次全部减;小张量搭大张量后面──不分桶时,延迟开销会主导整个步骤──
 
-**通信与计算重叠。**Geriye doğru, tersine sıradan olarak, son katmanın seviyesi hazır olduğunda, tümüyle azaltmaya başlayın, aynı zamanda aşağı katman da hesaplamaya devam eder. PyTorch DDP, ağın bulunduğu zaman, birleştirme, görünen iletişim süresini yarıya düşürür.
+**让通信与计算重叠。**Son aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aşama aş
 
-**根据消息大小而不是宗教来选择环或树。**NCCL                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+**按消息大小选 ring 或 tree，不要教条。**NCCL Öz带拓检测:大约 1 MB 以上选戒,以下选树──交叉点是带宽对延迟超过1 MB 时带宽项 $2T(N-1)/N$占主导,ring 胜出;低于 1 MB 时$\log_2(N)$跳数占优――写死一种拓,会在错误的消息大小上损失吞吞――
 
 ## Kullan
 
-生产模式:
+生产中的使用法:
 
-- **PyTorch DDP。**Arka tarafta `dist.all_reduce`斗大小可调; 100Gbit için, 25 MB'nin mantıklı olduğu belirtilmiştir.
-- **DeepSpeed ZeRO。**发出减_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scatter 发出_scat_scatter 发_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_scat_
-- **FSDP.**Önceki yazı: Allgather  başlamak için katman için elimination 分片,计算, sonra reduce_scatter kullanmak  küçültmek için reduction yapmak ve elimination 分片── aynı orijinal, farklı zamanlamaları──
+- **PyTorch DDP。**Geriye doğru                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `dist.all_reduce`◊ bucket ⋅ 100Gbit 以太网下默认 25 MB 合理──
+- **DeepSpeed ZeRO。**发 reduce_scatter 分片梯度,forward 前再 allgather 重建完整参数──本课的原语正是 ZeRO 实际发射调用──
+- **FSDP。**Önceden önce hepsini toplayın, bu katmanı parçalanmadan bırakın, tekrar kullanın, azaltın 归约并丢掉未分割──同一套原语,不同调度──
 
-## Gönderi
+## - Söyle.
 
-7.78.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.7.
+Bu sıralar, ilk olarak, bir dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi dizi
 
 ## 练习
 
-1. 添加tree allreduce变体,并根据消息大小在环和树之间切换──测量交叉──
-2. 添加 `recv_timeout_ms`Bu yüzden, durgunluk sıralaması sonsuza dek kalmak yerine son tarih hatası ortaya çıkacaktır.
-3. Dört orijinal dil`multiprocessing.Queue`替换为 TCP 套接字──相同的测试,真线──
-4. 添加带宽检测挂, böylece her sırada bir metraj hesaplayıcı JSONL olarak kaydedilebilir.
-5. 1 KB,1 MB,1 6 MB'lik bir miktarda 4 seviyelik bir ağaçla asılı saat süresi ile karşılaştırılmaktadır.
+1. 增加 tree allreduce 变体,并按消息大小在 ring 与 tree 之间切换──测出交叉点──
+2. 增加 `recv_timeout_ms`, let the rank of the card sit out ırkın kesinti hatası, sonsuza dek asılı değil.
+3. Dört orijinal dili ayır.`multiprocessing.Queue`TCP soketine dönüştürülmüş.
+4. Üstüne bir tane tane tane, bir tane tane tane.
+5. 4 sıralarda, 1KB ∼ 1MB ∼ 16MB 张量比较环与树的墙钟时间──用实测为交叉点辩护──
 
 ## 关键术语
 
-|术语 |人们怎么说|它实际上意味着什么 |
+| 术语 | 人们常说 | 实际含义 |
 |------|----------------|------------------------|
-|allreduce| “跨等级总和”|调用后，每个等级都保留相同的简化张量 |
-|戒指| “快速拓扑”| N-1 个大小为 T/N 的块绕周期流动两次 |
-|树| “日志拓扑”|归约遵循二叉树；深度为 log2(N) 跳 |
-|allgather| “连接碎片”|每个等级都以其他等级的碎片结束 |
-|reduce_scatter | “平分总和”|每个排名仅以一个块的总和结束 |
-|桶| “融合小张量”|将N个小的全部合并为一个大的|
+| Allreduce | “跨 rank 求和” | 调用结束后每个 rank 持有相同的归约张量 |
+| Ring | “更快的拓扑” | N-1 个大小为 T/N 的 chunk 绕环流两圈 |
+| Tree | “对数拓扑” | 归约沿二叉树进行；深度为 log2(N) 跳 |
+| Allgather | “拼接分片” | 每个 rank 最终持有所有其他 rank 的分片 |
+| Reduce_scatter | “把求和切开” | 每个 rank 最终只持有某一个 chunk 的求和 |
+| Bucket | “融合小张量” | 把 N 次小 allreduce 合并成一次大的 |
 
-## 进一步阅读
+## 延伸阅读
 
-- [PyTorch 分布式：NCCL 集体](https://pytorch.org/docs/stable/distributed.html#collective-functions)
-- [Horovod环全减纸](https://arxiv.org/abs/1802.05799)
-- NCCL拓和算法选择](https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/index.html)
-- [Patarasuk 和 Yuan，带宽最优 allreduce 算法](https://www.cs.fsu.edu/~xyuan/paper/09jpdc.pdf)
-- 第 10 阶段 第 05 课 - 分布式训练概述
-- 第19 阶段 第77 课 - DDP 连接在这些原语之上
+- [PyTorch Distributed: NCCL collectives](https://pytorch.org/docs/stable/distributed.html#collective-functions)
+- [Horovod ring allreduce paper](https://arxiv.org/abs/1802.05799)
+- [NCCL topology and algorithm selection](https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/index.html)
+- [Patarasuk and Yuan, Bandwidth optimal allreduce algorithms](https://www.cs.fsu.edu/~xyuan/paper/09jpdc.pdf)
+- 10. aşama 05 ders - dağıtılmış eğitim genel bakış
+- Fase 19 Ders 77 - DDP bu primitiflerin üzerine kablolu

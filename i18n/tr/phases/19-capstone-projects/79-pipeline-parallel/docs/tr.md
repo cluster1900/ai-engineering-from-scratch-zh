@@ -1,24 +1,24 @@
-# 管道并行和气泡分析
+# Bomba ile paralel boru hattı  analiz
 
-> 张量并行性将矩阵乘法跨等级分割──管道并行性将模型跨等级分割,每个等级一个阶段──微批流经管道──开始和结束的空时间就是泡;最小化它是整个过程──
+> Tenzor paralelliği, Rektör çarpma biçimini bir dizi sıralara ayırmak, boru paralelliği, modelini bir dizi sıralara ayırmak, her bir sıra bir aşama, mikrobatçın boru hattını geçmesi, boşluk zamanının bir kabarcık olması, onu basmak, tüm bir işlev biçimidir.
 
 **Type:** Build
 **Languages:** Python
-**Prerequisites:** 第 19 期 Track C 课程 42-49
+**Prerequisites:** Phase 19 Track C lessons 42-49
 **Time:** ~90 分钟
 
 ## Öğrenme hedefi
 
-- Bir dizileme modeli N 个阶段 olarak ayırıp N 个等级 ön yönlü bir boru üzerinde oluşturur.
-- GPipe kullanmak için bir boru düzenlemesi yapın.
-- Megatron-LM ile PipeDream arasında kullanılan bir balonla karşılaştırma yapın.
-- 捍卫阶段分配: her aşamasının fazlarındaki fazların sayısı her aşamasının fazlarındaki fazların sayısından daha önemlidir.
+- Bir sırayla model N' aşamalara ayırıp N' sıralamasına yukarı doğru bir boru hattı oluşturmak.
+- GPipe 调度(先只做前填满,再回覆) M 个微洗管 过管,并计算泡 比如──
+- Megatron-LM、PipeDream 调度比较泡
+- 论证 stage 分配: her aşama 算力相等, her aşama 参数相等'den daha önemlidir.
 
 ## 问题
 
-fp16'daki 70B  параметр modeli sadece 140 GB  параметр gerektirir. Hiçbir tüketici GPU  bunu destekleyebilir. ZeRO-3                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $\log(N)$︎ boru ve yollar farklı yollar kullanır: model N 个阶段 olarak kesilir ve her bir aşamada bir aşamada yerleştirir.︎ 1 aşamada 0 aşamada tamamlanır.︎ 1 aşamada ︎ 2 aşamada çalışılır.︎ 2 aşamada çalışılır.︎ 2 aşamada çalışılır.︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎ ︎
+Fp16 下的 70B 参数模型,光参数 140 GB ⋅ hiçbir tüketim seviyesinde GPU 装备下──ZeRO-3 参数 parçalarını her sıralara ayırır, ama her ileri adım  hala her sıra toplanmalı  tamamı bir katman, her katman ödemesi $\log(N)$跳──管道平行 换一条路:把模型切成 N 个阶段,每个级别 放一个── 1 层的前进 在级别 0 做完,把激活张量交付给级别 1;级别 1 跑层 2 再交付给级别 2;以此类推──后向反向流回──内存近似线性下降,因为每个级别只有一阶段;计算是串行的,这就是泡泡 问题──
 
-Buğdaylar, borunun başlangıcında (M) ve son aşama kadar ilk küçük topu beklerken ve son aşama kadar (M) ve son küçük topu beklerken, buğdayların sayısı (N-1) / M+N-1'dir. M=8、N=4'de, yani %27'de, M=64、N=4'de, %4.5'te.
+Bubble is a pipeline 开头的空(等第一个微巴赫到最后阶段) 和结尾的空(等最后一个微巴赫 回抽) ⋅M个微巴赫、N个阶段 时,每个阶段的泡 例如是$(N-1)/(M+N-1)$M=8、N=4 时是27%; M=64、N=4 时是4.5%── her adımın mikropçası 越多,泡越小, bu her mikropçanın parti boyutunu ifade eder 更小
 
 ## 概念
 
@@ -32,22 +32,21 @@ flowchart LR
   R1 -.backward.-> R0
 ```
 
-### GPipe 时间表
+### GPipe 调度
 
-Önceden herhangi bir sonraki işlem başlamadan önce, tüm M'leri kullanarak önde doldurma borusu; sonra da tersine döner. Her küçük bir süreci geriye kadar tutmak gerekir, böylece内存 M'nin doğrusal büyümesiyle birlikte ileride M+N-1'den daha fazla bir M+N-1'den daha fazla bir döngü gerektirir.
+Önceden tüm M 个微巴ッチ, önce doldur, sonra geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geriye geri$(N-1)/(M+N-1)$M'yi N'den çok daha büyük bir şekilde elde edebilmek için bir balon toplayabiliriz.
 
-### 1F1B 时间表
+### 1F1B 调度
 
-交错: Bir kez küçük topuların ön tarafa doğru son aşamaya ulaştığında, geride bırakılmasına başlayın. Zaman çizelgesi her aşamada bir kez ileri ve bir kez geri dönüş yapılmalıdır. Buğmur hala N-1'dir, ancak küçük topu sayısının yerine, içe kaydedilen borunun derinliğini sınırlandırır.
+交错: Bir mikrobatçın ileriye, bir son aşamasına kadar, hemen geriye başlayın ve geriye doğru akın etmesini sağlayın. Her aşama bir kez ileriye, bir kez geriye dönsün.
 
-### Neden her aşamada eşitlik hesaplaması önemlidir ?
+### Neden her aşama 算力等 çok önemlidir
 
-Eğer aşama 0 50 ms gerektirirse, aşama 1 100 ms gerektirirse, her döngü aşamada 1  上门控。 diğer aşama her döngü boşluk 50 ms, bekleme aşama 1 释放。 aynı parametreler sayısı yanlış bir aksiyondur:Transformer'in hesaplaması öncelikle her aşama üzerinde dikkatle yapılır MLP yönlendirilir, yerleşim aşamasında ise çok fazla parametredir ama hesaplama miktarı çok azdır。 aşama dağılımı her aşama FLOP'sine eşit olmalıdır, her aşama üzerinde değil.
+Eğer aşama 0 50 ms ̊ aşama 1 ̊ 100 ms, her döngü 1 aşamada kalır ̊ diğer aşama ̊ 50 ms ̊ aşama 1 ̊ bırakır ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊ ̊                                                                       
 
-### Böğüt ve küçük toptan
+### Mikrobatç ve parti
 
-管道运行 M 个微批次,每个微批次的大小为 B。有效批次大小为 M*B。管道步骤结束时的梯度是组合 M*B示例的梯度。气泡分数取决于 M;优化器看到的是 M*B。调整 M 意思是将泡(M 值较低) 与每微批次内存(GPipe'in激活内存值较高,M 值较高) 进行交易。
-
+Pipeline 跑 M 个、每个大小为 B 的微洗──有效批量是 $M \cdot B$◊ Bir boru hattı adım  结束时的梯度,对合并后 $M \cdot B$个样本的梯度──Bubble 比例取决于M;优化器看到的是$M \cdot B$△调 M,就是在泡 (B) △ M 大则更低) 与每微包内存 (GPipe 下 M 大则激活内存更高) △ M
 
 ```figure
 cd-pipeline-bubble
@@ -57,63 +56,63 @@ cd-pipeline-bubble
 
 `code/main.py`实现:
 
-- `PipelineStage`Bir küçük .`nn.Module`, bir aşama için parametreyi kaydetmek ve açıklamak`forward(activation)`- Evet.
-- `Pipeline(stages, num_microbatches)`: her aşamada kullanılan simgelik saatleri simgelik aşamada düzenlemek GPipe 时间表。
-- `bubble_fraction(num_stages, num_microbatches)`Bu, bir diğer deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir deyişle, bir de bir deyişle, bir de bir deyişle, bir de bir deyişle, bir de, bir deyişle, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de, bir de
-- 4 aşama gösterisi, her küçük bölümün gösterilerini ve ölçümün buhur sayısını yazdırmak
+- `PipelineStage`Bir küçük.`nn.Module`, bir aşama var                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         `forward(activation)`- Evet.
+- `Pipeline(stages, num_microbatches)`Bu nedenle, bu konularda, bir dizi farklı yönlerden söz edilir.
+- `bubble_fraction(num_stages, num_microbatches)`: closed式公式 $(N-1)/(M+N-1)$- Evet.
+- Bir 4 aşamalı gösterim: mikrobatçın rotasına göre basın, ayrıca test edilen balon örneği
 
-- Yapma .
+运行:
 
 ```bash
 python3 code/main.py
 ```
 
-输出: aşama aşama küçük miktarlar ve kapalı tahminler ile karşılaştırıldığında 气泡百分比
+输出: aşama×mikrobatch'in Gantt çizelgesi ve % % %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %  %   %                                                                                                                                                                
 
-## 野外生产模式
+## 生产环境中的实践
 
-Üç farklı modü, boruların düzlüğünü taşımacılığa yeterli hale getirir.
+Üç farklı modüyle boru hattı, aynı derecede sertleşebilir.
 
-**激活检查点与管道配对。**GPipe 上运行 M 个微批次时, aktive内存 bir mikro批次 M 倍──;                                                                                                                                                                                                                                                  
+**Activation checkpointing 与 pipeline 搭配。**GPipe 上有M 个微巴奇 在飞时,激活内存是单个微巴奇的M 倍――Activation checkpointing 在后期 重算前期,算力换内存; 两者结合,长序列上的管道才可行──
 
-**阶段平衡是测量出来的，而不是假设的。**生产团队运行一个分析过程,测量目标硬件上实际每层计算(FLOP 和挂钟), sonra bu ölçüm sonuçlarına göre ayrıştırılmıştır.`--num-layers-per-stage`标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标志 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标 标
+**Stage 均衡靠测量，不靠假设。**Üretim ekibi önce bir sıra profil oluşturur, hedef硬件 üzerinde gerçekli bir hesaplama yaparak, yeniden ölçüm sonuçlarını bölgeye göre ölçer. Megatron-LM'nin `--num-layers-per-stage`List kabul edin, böylece her aşamada her aşamada farklı maliyetler kullanılırken 
 
-**发送-接收调度必须避免死锁。**Standart Repair is a Sissor:偶数级阶段先发送,然后接收,奇数级阶段先接收,然后发送―― sınıf düzenlemesi açık sıralama, böylece model görebilir.
+**Send/recv 调度必须避免死锁。**Eğer her aşama önce tekrar gönderirsen, online meeting locks. standart düzeni de yanlıştır.
 
 ## Kullan
 
-生产模式:
+生产中的使用法:
 
-- **Megatron-LM。**Büyük ölçekli boru paralellik referansı, 1F1B, destek张量+管道+数据并行组合──
-- **DeepSpeed Pipeline。**ZeRO'nun en büyük açık modelinin ortak bir parçası olan ZeRO-1 + boruları.
-- **PyTorch Pipe。**PyTorch 原生管道包装器, bazlı `torch.distributed.pipeline.sync.Pipe`Yapımcılık.
+- **Megatron-LM。**Büyük ölçekli boru hattı paralelinin referans gerçekleştirilmesi, 1F1B kullanımı,并支持 Tensor + Pipeline + Data Parallel 组合──
+- **DeepSpeed Pipeline。**ZeRO-1 + boru hattı, birçok büyük açık kaynak modeli için bir ortak noktasıdır.
+- **PyTorch Pipe。**PyTorch 原生的 পাইpeline 包装, bazlı `torch.distributed.pipeline.sync.Pipe`- Evet.
 
-## Gönderi
+## - Söyle.
 
-Bölüm 81. Bölüm 81. Bölüm 81. Bölüm 81. Bölüm 81. Bölüm 81. Bölüm 81. Bölüm 81. Bölüm 81. Bölüm 81. Bölüm 81. Bölüm 81. Bölüm 81. Bölüm 81. Bölüm 81. Bölüm 82. Bölüm 81. Bölüm 81. Bölüm 81. Bölüm 81. Bölüm 81. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 1. Bölüm 1. Bölüm 82. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2.
+Bölüm 81. Bölüm 81. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 82. Bölüm 1. Bölüm 1. Bölüm 1. Bölüm 1. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Bölüm 2. Böl
 
 ## 练习
 
-1. 实现 1F1B 并验证气泡分数与GPipe 匹配,但激活内存有限──
-2. Daha derin bir model üzerinde gerçekin her aşamasını analiz ederek, ölçümün asılılığındaki yeniden dengeleme aşamasını geçirir.
-3. Tüpler arası küçük döngülerin dereceliğini toplayın ve dereceliğin tüm döngülerin önüne doğru dereceliğine eşit olup olmadığını kontrol edin.
-4. Bu nedenle, bu işlemin yapılması için gerekli olan işlemlerin yapılması ve yapılması gerekmektedir.
-5. Bu, bir tür türden bir sistem oluşturur.
+1. 实现 1F1B,验证泡 比例与GPipe 一致,但激活内存有上界──
+2. Daha derin bir model üzerinde gerçekleri analiz ederken her aşamada zaman, ve ölçülmüş duvar saatleri yeniden dengeleme aşamasını oluşturur.
+3.  pipeline mikrobatç yapım 梯度累积,检查梯度等等等价全批前的梯度──
+4. 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配上 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配 配   配 配    配 配   配
+5. Bu nedenle, bu süreçte, her bir boru hattının sırası, bir dizi metin ve bir dizi metin ile birleştirilmiştir.
 
 ## 关键术语
 
-|术语 |人们怎么说|它实际上意味着什么 |
+| 术语 | 人们常说 | 实际含义 |
 |------|----------------|------------------------|
-|管道| “模型沿深度平行” |每个等级一个阶段，激活逐级流动|
-|泡泡| “管道空闲时间”|开始+结束时的 (N-1) 个步骤，其中某些阶段没有工作 |
-|微批次| “批次切片”|前进/后退各1个；随着 M 的增大，气泡会缩小 |
-| G管道| “填充然后排水” |所有 M 都在任何后退之前前进；高激活记忆|
-| 1F1B | “交错时间表” |每级一前一后；有界激活记忆|
+| Pipeline | “沿深度的模型并行” | 每个 rank 一个 stage，激活逐 stage 流动 |
+| Bubble | “Pipeline 空闲时间” | 首尾各 (N-1) 步，部分 stage 没有工作 |
+| Microbatch | “Batch 的切片” | 一次 forward/backward 单元；M 增大则 bubble 缩小 |
+| GPipe | “先填满再排空” | M 次 forward 全部完成后再 backward；激活内存高 |
+| 1F1B | “交错调度” | 每 stage 一次 forward 一次 backward；激活内存有界 |
 
-## 进一步阅读
+## 延伸阅读
 
-- [Huang 等人，GPipe：巨型神经网络的高效训练](https://arxiv.org/abs/1811.06965)
-- [Narayanan 等人，PipeDream：DNN 训练的广义管道并行性](https://arxiv.org/abs/1806.03377)
-- [Megatron-LM 管道并行文档](https://github.com/NVIDIA/Megatron-LM)
-- 第19 阶段 第76 课 - 调度使用的发送/接收原语
-- 第19 阶段 第78 课 - ZeRO , bir boru ile düzenli olarak iletişim kurar ve düzenli olarak bir araya gelir
+- [Huang et al, GPipe: Efficient Training of Giant Neural Networks](https://arxiv.org/abs/1811.06965)
+- [Narayanan et al, PipeDream: Generalized Pipeline Parallelism for DNN Training](https://arxiv.org/abs/1806.03377)
+- [Megatron-LM pipeline parallel docs](https://github.com/NVIDIA/Megatron-LM)
+- Eğitim 76 - programda kullanılan gönderme/içleme primitifleri
+- 19 Fase Ders 78 - ZeRO, boru hattına ortogonal ve sıklıkla birleştirilmiştir.
