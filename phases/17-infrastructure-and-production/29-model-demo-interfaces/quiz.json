@@ -6,12 +6,12 @@
       "stage": "pre",
       "question": "页面已经用 maxlength 限制了文本框。为什么服务器还要再检查一次长度？",
       "options": [
-        "除非关闭 JavaScript，浏览器才会忽略文本框上的 maxlength",
         "任何客户端都可以不经过该页面就发请求",
+        "maxlength 按字节计数，因此会允许多于预期的字符",
         "浏览器只在模型调用结束后才应用 maxlength",
-        "maxlength 按字节计数，因此会允许多于预期的字符"
+        "除非关闭 JavaScript，浏览器才会忽略文本框上的 maxlength"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "浏览器检查只帮诚实用户。脚本或 curl 可以发送任意正文，所以服务器要重复每一项检查。"
     },
     {
@@ -19,47 +19,47 @@
       "question": "本课 demo 契约的三个部分是什么？",
       "options": [
         "prompt、模型权重和 GPU 服务器",
-        "输入、模型调用和输出",
         "前端、后端和数据库层",
+        "输入、模型调用和输出",
         "登录页、支付页和结果页"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "契约包含输入、模型调用和输出。demo 给每一部分设限，错误也属于输出的一部分。"
     },
     {
       "stage": "check",
       "question": "为什么 demo 页面用 POST 并用 fetch() 读流，而不是用 EventSource？",
       "options": [
-        "EventSource 无法解析服务器返回的 text/event-stream 格式",
         "fetch() 会跳过响应头，从而缩短到首 token 的时间",
+        "EventSource 只发 GET，因此输入会进 URL",
         "Python http.server 处理器只能在回复 POST 时发送流",
-        "EventSource 只发 GET，因此输入会进 URL"
+        "EventSource 无法解析服务器返回的 text/event-stream 格式"
       ],
-      "correct": 3,
+      "correct": 1,
       "explanation": "EventSource 只发 GET。GET 把输入放进 URL，服务器和代理会把 URL 写进访问日志。"
     },
     {
       "stage": "check",
       "question": "demo 往请求日志里写什么？",
       "options": [
-        "带查询串的完整请求行以及原始客户端 IP",
         "路由、状态、延迟、输入长度，以及客户端的带密钥哈希",
+        "带查询串的完整请求行以及原始客户端 IP",
         "每个失败请求的堆栈，含文件路径与行号",
         "输入文本和模型回复，以便审阅者重放每个请求"
       ],
-      "correct": 1,
+      "correct": 0,
       "explanation": "日志不保存输入文本，也不保存客户端地址。带密钥哈希可按客户端计数，而不存储地址。"
     },
     {
       "stage": "post",
       "question": "服务器已发送状态 200 和三个 token 事件后模型失败了。demo 会怎么做？",
       "options": [
-        "把状态行改成 500 并再次发送响应头",
-        "在后台再跑一次模型，并毫无提示地发送新 token",
         "在流里发送 error 事件，页面把它显示出来",
+        "在后台再跑一次模型，并毫无提示地发送新 token",
+        "把状态行改成 500 并再次发送响应头",
         "无消息关闭连接，让浏览器稍后超时"
       ],
-      "correct": 2,
+      "correct": 0,
       "explanation": "状态行已经发出，服务器改不了。流会携带带有 code、message 和 hint 的 error 事件。"
     },
     {

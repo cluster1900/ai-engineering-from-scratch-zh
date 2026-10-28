@@ -6,12 +6,12 @@
       "stage": "pre",
       "question": "你把同一个训练脚本跑了两次，每次得到的测试分数不同。怎样改才能让每次运行的训练/测试划分都相同？",
       "options": [
-        "增大划分时的测试集比例",
-        "用 random.Random(42) 打乱索引",
         "把 random.shuffle 调用两次而不是一次",
-        "先把数据集 list 转成 tuple"
+        "先把数据集 list 转成 tuple",
+        "用 random.Random(42) 打乱索引",
+        "增大划分时的测试集比例"
       ],
-      "correct": 1,
+      "correct": 2,
       "explanation": "带固定种子的生成器每次运行都会给出相同序列，打乱后的顺序和划分也就不变。其他改法要么仍让打乱随机，要么对顺序没有影响。"
     },
     {
@@ -19,9 +19,9 @@
       "question": "调用一个 generator 函数会返回什么？",
       "options": [
         "一个 generator 对象，每次 next() 才执行函数体",
-        "一个 list，里面装着函数 yield 出的全部值",
+        "None，因为函数体没有 return 语句",
         "函数 yield 出的第一个值，然后就停止",
-        "None，因为函数体没有 return 语句"
+        "一个 list，里面装着函数 yield 出的全部值"
       ],
       "correct": 0,
       "explanation": "调用时并不执行函数体，只返回一个 generator 对象。每次 next() 会把函数体推进到下一个 yield 并在那里暂停。"
@@ -31,31 +31,31 @@
       "question": "调用 batches(range(10), 4) 且使用默认 drop_last=False。它给出的各 batch 大小是？",
       "options": [
         "2, 4, 4",
-        "4, 4, 2",
         "4, 4, 4",
-        "4, 4"
+        "4, 4",
+        "4, 4, 2"
       ],
-      "correct": 1,
+      "correct": 3,
       "explanation": "islice 每次最多取四个元素。十个元素得到两个满 batch 和一个大小为二的末 batch。若 drop_last=True，生成器会丢掉最后一个 batch。"
     },
     {
       "stage": "check",
       "question": "为什么在百万个 float 上做纯 Python 点积，会远慢于 NumPy 点积？",
       "options": [
-        "Python float 的精度低于 NumPy 的 float64",
-        "for 循环每一遍都会完整复制 list",
         "解释器要对每个元素做类型检查并创建对象",
-        "zip() 在配对前会先对两个输入 list 排序"
+        "Python float 的精度低于 NumPy 的 float64",
+        "zip() 在配对前会先对两个输入 list 排序",
+        "for 循环每一遍都会完整复制 list"
       ],
-      "correct": 2,
+      "correct": 0,
       "explanation": "两种写法对 64-bit float 做的算术相同。Python 循环每个元素大约要跑十条字节码指令，并为每个结果创建 float 对象；NumPy 则在原始 8 字节值上跑一遍编译好的循环。"
     },
     {
       "stage": "post",
       "question": "函数 def add(item, bucket=[]) 会把 item 追加到 bucket 并返回 bucket。你先调用 add(1)，再调用 add(2)。第二次调用返回什么？",
       "options": [
-        "[1]",
         "[2, 1]",
+        "[1]",
         "[2]",
         "[1, 2]"
       ],
@@ -66,12 +66,12 @@
       "stage": "post",
       "question": "你在训练模型前对特征做标准化。均值和标准差必须来自哪里？",
       "options": [
-        "仅来自训练集划分",
-        "仅来自测试集划分",
         "每个 mini-batch 各自计算",
-        "训练集与测试集合在一起"
+        "仅来自训练集划分",
+        "训练集与测试集合在一起",
+        "仅来自测试集划分"
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "用测试集统计量会把测试信息带进训练，测试分数会被抬高。应在训练集上计算，再用同一组值应用到测试集。"
     }
   ]
