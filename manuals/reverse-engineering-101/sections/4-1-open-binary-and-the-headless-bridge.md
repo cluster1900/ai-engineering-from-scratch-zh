@@ -1,12 +1,12 @@
 # open_binary and the headless bridge
 
-> open_binary binds one target to one provider without a Ghidra import, and the first Ghidra-backed call pays for a headless import, auto-analysis, and a private socket.
+> open_binary 在没有 Ghidra 导入的情况下把一个目标绑定到一个 provider，而第一次由 Ghidra 支撑的调用为一次无头导入、自动分析与一个私有套接字买单。
 
-Your agent opened `ledger-arm64-O1` over MCP in under two seconds and then waited several seconds for `list_procedures`. Nothing was wrong. The open call did not import the file into Ghidra. The first question did, and every question after it came back in milliseconds.
+你的 agent 在不到两秒内经 MCP 打开了 `ledger-arm64-O1`，然后为 `list_procedures` 等了好几秒。没有出错。那次 open 调用并没有把文件导入 Ghidra。第一个问题导入了，而它之后的每一个问题都在毫秒内回来。
 
-When you finish this section, you can read the server log of a session and name the process that the first query started. You can also predict which calls will be slow.
+读完本节后，你能读一次会话的服务器日志，并点名第一次查询启动的那个进程。你也能预测哪些调用会慢。
 
-## open_binary
+## open_binary {#s-open-binary-and-the-headless-bridge-open-binary}
 
 ```listing
 title: the open_binary exchange
@@ -34,9 +34,9 @@ note: The request and the result. The text copy of the result is cut by the capt
 }
 ```
 
-The handler calls `session.open` with the path and the provider id, then returns five fields: `path`, `format`, `kind`, `sha256`, and `architecture`. To fill them rea reads the magic bytes: `7f 45 4c 46` for ELF, `MZ` for DOS and PE, and four Mach-O values. It hashes the whole file in 64 KiB chunks. A file with no header needs an explicit `format`. With `format: "raw-binary"` you also give `architecture` and `entry_point`, and the result adds `entry_point`. rea refuses a WebAssembly module here and sends it to `inspect_wasm_artifact`. For every other target, rea selects the provider you asked for, and `binary_session` records that choice.
+处理器用路径与 provider id 调用 `session.open`，然后返回五个字段：`path`、`format`、`kind`、`sha256` 与 `architecture`。为填它们，rea 读魔术字节：ELF 是 `7f 45 4c 46`，DOS 与 PE 是 `MZ`，以及四个 Mach-O 值。它按 64 KiB 块对整个文件做哈希。没有头的文件需要显式的 `format`。带 `format: "raw-binary"` 时你还要给出 `architecture` 与 `entry_point`，结果会加上 `entry_point`。rea 在这里拒绝 WebAssembly 模块，并把它送到 `inspect_wasm_artifact`。对其余每一个目标，rea 选择你请求的 provider，而 `binary_session` 记录那个选择。
 
-The selection waits for the provider's readiness checks. On the capture Mac, the server log shows about 1.6 s for the first `open_binary` and about 0.4 s for the second. The design docs allow the wait: a readiness check can wait for the commands that it owns. Release 6.5.0 answered the same calls in 36 ms and 1 ms. Neither version imports the target at this step.
+选择会等待 provider 的就绪检查。在抓取用的 Mac 上，服务器日志显示第一次 `open_binary` 大约 1.6 s，第二次大约 0.4 s。设计文档允许这次等待：就绪检查可以等待它拥有的命令。发行版 6.5.0 以 36 ms 与 1 ms 回答同样的调用。两个版本在这一步都不导入目标。
 
 ```listing
 title: the binding that binary_session reports
@@ -74,7 +74,7 @@ note: Cut to the provider binding and the server identity. The capabilities, can
   …
 ```
 
-`selection_source: "request"` says the agent chose Ghidra. The profile digest is the one every Ghidra record of this target carries. The docs state the limit of the open call in one sentence:
+`selection_source: "request"` 表示 agent 选择了 Ghidra。配置摘要是该目标每一份 Ghidra 记录都带着的那个。文档用一句话陈述 open 调用的界限：
 
 ```rule
 label: what open_binary does not do
@@ -83,7 +83,7 @@ source: mcp §Ghidra first-query deadlines and recovery
 `open_binary` picks the target and binds the provider. It does not prove that Ghidra has finished the import of the target.
 ```
 
-## The first Ghidra-backed call
+## 第一次由 Ghidra 支撑的调用 {#s-open-binary-and-the-headless-bridge-the-first-ghidra-backed-call}
 
 ```listing
 title: six calls from the session index
@@ -112,29 +112,29 @@ note: The first five lines of the stderr of rea mcp. durationMs is measured insi
 {"level":30,"time":…,"application":"rea","mode":"mcp","layer":"server","tool":"list_strings","durationMs":…,"status":"ok","msg":"MCP tool execution completed"}
 ```
 
-The capture kit records the pattern in its README. The first Ghidra-backed call after `open_binary` takes 5 to 7 s. Every later call on the same target takes under 100 ms. The difference is the Ghidra start. `GhidraClient.callTool` awaits `start()` before it queues any request, so the first call pays for the whole sequence in `#startWithin`:
+抓取套件在其 README 里记录这个模式。`open_binary` 之后第一次由 Ghidra 支撑的调用要 5 到 7 s。同一目标上之后的每一次调用都不到 100 ms。差别是 Ghidra 的启动。`GhidraClient.callTool` 在排队任何请求之前等待 `start()`，所以第一次调用为 `#startWithin` 里的整段序列买单：
 
-1. Create a private runtime root named `rea-ghidra-` and a random suffix under the session root.
-2. Allocate the endpoint, a Unix socket on macOS and Linux.
-3. Copy the target into the root as `target-01b5d08b08fb.bin`, hashing while copying, and refuse a digest mismatch.
-4. Mint a 32-byte random token and a run id.
-5. Write `session.json` with `transport`, `endpoint_path`, `token`, `run_id`, `target_sha256`, `provider_version`, and `profile_digest`.
-6. Start Java and wait for the bridge to accept a connection.
+1. 在会话根下创建一个名为 `rea-ghidra-` 加随机后缀的私有运行时根。
+2. 分配端点，在 macOS 与 Linux 上是 Unix 套接字。
+3. 把目标复制进根，名为 `target-01b5d08b08fb.bin`，边复制边哈希，并拒绝摘要不匹配。
+4. 铸造一个 32 字节随机令牌与一个 run id。
+5. 写入带 `transport`、`endpoint_path`、`token`、`run_id`、`target_sha256`、`provider_version` 与 `profile_digest` 的 `session.json`。
+6. 启动 Java，并等待桥接受连接。
 
-**Headless import:** a Ghidra run with no window that imports one file into a project and runs the default analyzers. On macOS and Linux, rea does not run the `analyzeHeadless` shell script. It asks Ghidra's `LaunchSupport.jar` for the environment and the JVM arguments, then runs `java` itself. The heap is `-Xmx2G` unless `GHIDRA_HEADLESS_MAXMEM` or `GHIDRA_MAXMEM` is set. The command adds `-Djava.awt.headless=true` and names the class `ghidra.Ghidra` with `ghidra.app.util.headless.AnalyzeHeadless`.
+**无头导入：** 一次没有窗口的 Ghidra 运行，把一个文件导入项目并跑默认分析器。在 macOS 与 Linux 上，rea 不跑 `analyzeHeadless` shell 脚本。它向 Ghidra 的 `LaunchSupport.jar` 要环境与 JVM 参数，然后自己跑 `java`。堆是 `-Xmx2G`，除非设置了 `GHIDRA_HEADLESS_MAXMEM` 或 `GHIDRA_MAXMEM`。命令加上 `-Djava.awt.headless=true`，并把类命名为带 `ghidra.app.util.headless.AnalyzeHeadless` 的 `ghidra.Ghidra`。
 
-The docs give the reason for the direct start. On Apple platforms the shell wrappers hide their environment from ownership checks. With the wrappers in place, rea could not cancel the process group safely during startup {{install §Ghidra}}.
+文档给出直接启动的理由。在 Apple 平台上，shell 包装器把它们的环境藏在所有权检查之外。若包装器在位，rea 就不能在启动期间安全地取消进程组 {{install §Ghidra}}。
 
-The headless arguments come in one fixed order:
+无头参数按一个固定顺序到来：
 
-- the project root and the project name `rea-project`
-- `-import` with the copied target
-- `-readOnly` and `-deleteProject`
-- `-log` and `-scriptlog` into the runtime root, and `-scriptPath` at the bridge directory
+- 项目根与项目名 `rea-project`
+- 带已复制目标的 `-import`
+- `-readOnly` 与 `-deleteProject`
+- 指向运行时根的 `-log` 与 `-scriptlog`，以及指向桥目录的 `-scriptPath`
 - `-postScript ReaGhidraNoReturnFix.java`
-- `-postScript ReaGhidraBridge.java` with the path of `session.json`, last
+- 带 `session.json` 路径的 `-postScript ReaGhidraBridge.java`，放在最后
 
-Some targets and settings need more arguments. A raw binary, a DOS file, or a language override adds a loader and a processor. Seeds and disabled analyzers add pre-scripts. The fixtures of this manual need none of them.
+有些目标与设置需要更多参数。原始二进制、DOS 文件或语言覆盖会加上加载器与处理器。种子与禁用的分析器会加上预脚本。本手册的 fixture 一个都不需要。
 
 ```figure
 id: fig-4-1
@@ -144,11 +144,11 @@ claim: The open call returns after the readiness checks with no import, the firs
 caption: Time runs down. Solid arrows are calls, dashed arrows are replies. The violet lanes are rea's Ghidra client and the Java bridge inside analyzeHeadless. The times are the ranges that the kit notes record. From capture/out/10-mcp-server.log and 10-mcp-session.txt.
 ```
 
-## The bridge on the Java side
+## Java 一侧的桥 {#s-open-binary-and-the-headless-bridge-the-bridge-on-the-java-side}
 
-`ReaGhidraBridge.java` is a Ghidra script that runs after the import and the analyzers. Its `run()` reads `session.json` and deletes it, then requires an imported program. It checks that the Ghidra version equals `provider_version` and compares the program's own SHA-256 with `target_sha256` in constant time. It then ends the script transaction, initializes the decompiler, and serves. On a Unix socket it binds the path, sets the mode to `rw-------`, and accepts one client.
+`ReaGhidraBridge.java` 是一段在导入与分析器之后跑的 Ghidra 脚本。其 `run()` 读 `session.json` 并删除它，然后要求有一个已导入的程序。它检查 Ghidra 版本等于 `provider_version`，并以常量时间比较程序自己的 SHA-256 与 `target_sha256`。然后它结束脚本事务，初始化反编译器，并开始服务。在 Unix 套接字上它绑定路径，把模式设为 `rw-------`，并接受一个客户端。
 
-Each request is one JSON line, `{ id, token, method, params }`. Each reply is `{ id, ok: true, result }` or `{ id, ok: false, error: { code, message } }`, and rea parses it with a strict schema. `list_procedures` was request number 2 on that socket, after the `ping` of the handshake, and it took the Java side a few milliseconds. The seconds before it were the import and the analyzers.
+每个请求是一行 JSON，`{ id, token, method, params }`。每个回复是 `{ id, ok: true, result }` 或 `{ id, ok: false, error: { code, message } }`，而 rea 用严格模式解析它。`list_procedures` 是该套接字上第 2 个请求，在握手的 `ping` 之后，Java 一侧只花了几毫秒。它之前的那些秒是导入与分析器。
 
 ```figure
 id: fig-4-2
@@ -158,19 +158,19 @@ claim: One session owns one directory with the project, the hashed target copy, 
 caption: Read top to bottom. Each entry names the file or directory and what writes it. From src/ghidra/GhidraLauncher.ts and src/ghidra/GhidraClient.ts at rea 6.7.0, and capture/out/05-analyze-arm64-O1.json for the document name.
 ```
 
-## Deadlines and the close
+## 截止时间与关闭 {#s-open-binary-and-the-headless-bridge-deadlines-and-the-close}
 
-rea allows 330,000 ms for the start, set by `REA_GHIDRA_STARTUP_TIMEOUT_MS`. On the capture Mac the start took 5 to 7 s, and the client limit is the one to watch. The pinned client SDK 2.3.1 waits 60,000 ms by default, so it can cancel before the REA startup deadline {{mcp §Ghidra first-query deadlines and recovery}}.
+rea 允许启动用 330,000 ms，由 `REA_GHIDRA_STARTUP_TIMEOUT_MS` 设定。在抓取用的 Mac 上启动花了 5 到 7 s，而要盯的是客户端限制。钉住的客户端 SDK 2.3.1 默认等待 60,000 ms，所以它可以在 REA 启动截止之前取消 {{mcp §Ghidra first-query deadlines and recovery}}。
 
-The docs record about 64 s on a Linux fixture and about 163 s on Windows. Set the client deadline from your own first run on your own machine.
+文档记录 Linux fixture 大约 64 s，Windows 大约 163 s。根据你自己机器上自己的第一次运行来设置客户端截止时间。
 
-`close_binary` takes a fraction of a second in the log. The client sends `shutdown` to the bridge with a 10 s limit, the bridge disposes the decompiler, and `-deleteProject` removes the project. The next `open_binary` on `ledger-arm64-O2` took about 0.4 s. Its first `analyze_function` again took seconds, because every new provider session imports the target again into a new temporary project {{mcp §Ghidra first-query deadlines and recovery}}.
+`close_binary` 在日志里只占一秒的几分之一。客户端以 10 s 限制向桥发送 `shutdown`，桥释放反编译器，而 `-deleteProject` 删除项目。下一次对 `ledger-arm64-O2` 的 `open_binary` 大约花了 0.4 s。它的第一次 `analyze_function` 又花了几秒，因为每一个新的 provider 会话都会把目标再次导入一个新的临时项目 {{mcp §Ghidra first-query deadlines and recovery}}。
 
 ```takeaways
-- Expect the first Ghidra-backed call after `open_binary` to take seconds and the rest milliseconds.
-- Set the MCP client deadline from a measured cold start on your own machine.
-- Ask every question you have before `close_binary`, because the project is deleted.
-- Read `durationMs` in the server log to separate rea time from Ghidra time.
+- 预期 `open_binary` 之后第一次由 Ghidra 支撑的调用花几秒，其余花毫秒。
+- 根据你自己机器上测到的冷启动设置 MCP 客户端截止时间。
+- 在 `close_binary` 之前问完你有的每一个问题，因为项目会被删除。
+- 读服务器日志里的 `durationMs`，把 rea 时间与 Ghidra 时间分开。
 ```
 
 Sources: capture/out/10-mcp-03-open-binary-O1.json, capture/out/10-mcp-04-binary-session.json, capture/out/10-mcp-session.txt, capture/out/10-mcp-server.log, capture/out/05-analyze-arm64-O1.json, capture/README.md; rea 6.7.0 at 27dc42d: src/server/registerSessionTools.ts, src/contracts/sessionLifecycleInputs.ts, src/domain/binaryTarget.ts, src/application/BinaryTargetResolver.ts, src/ghidra/GhidraClient.ts, src/ghidra/GhidraTransport.ts, src/ghidra/GhidraTargetSnapshot.ts, src/ghidra/GhidraLauncher.ts, src/ghidra/GhidraJavaLaunch.ts, src/ghidra/GhidraClientWire.ts, src/ghidra/protocol.ts, src/config/providerStartupTimeout.ts, src/application/binary/AnalysisProviderRegistry.ts, bridge/ghidra/ReaGhidraBridge.java; rea docs/mcp-contracts.md, rea docs/installation.md, rea docs/tool-design.md; the 6.5.0 recording of capture/out/10-mcp-server.log in commit 99d70723c of this repository

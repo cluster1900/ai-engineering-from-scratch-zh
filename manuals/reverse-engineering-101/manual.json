@@ -199,9 +199,9 @@
     },
     {
       "number": 4,
-      "title": "The Ghidra Provider",
-      "thesis": "Each question rea asks Ghidra becomes one bridge call into a fresh headless project, and the answer carries the limits of that engine.",
-      "summary": "open_binary and the bridge, procedures, assembly, references and the jump table, strings, and pseudocode.",
+      "title": "Ghidra Provider",
+      "thesis": "rea 向 Ghidra 问的每一个问题都变成一次进入全新无头项目的桥接调用，而答案带着该引擎的限制。",
+      "summary": "open_binary 与桥接、过程、汇编、引用与跳转表、字符串，以及伪代码。",
       "accent": "violet",
       "sections": [
         {
@@ -233,8 +233,8 @@
     {
       "number": 5,
       "title": "Evidence",
-      "thesis": "An Evidence record names its subject, its engine, its confidence, and its limits, and its id changes when any of them changes.",
-      "summary": "The Evidence record, residual unknowns, snapshots, bundles, and comparing two builds.",
+      "thesis": "一份 Evidence 记录点名其主体、其引擎、其置信度与其限制，且当其中任一项改变时其 id 也会改变。",
+      "summary": "Evidence 记录、残余未知事项、快照、包，以及比较两个构建。",
       "accent": "teal",
       "sections": [
         {
