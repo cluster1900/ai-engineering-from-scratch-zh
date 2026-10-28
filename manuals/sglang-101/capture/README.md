@@ -46,7 +46,7 @@ python3 capture/run.py --only small-pool   # record one server configuration
 
 `oom-exploratory.log` 不是本 kit 录的。它来自 kit 出现之前的一次探索性运行，用的是默认 memory fraction，第 3.2 节说明了这一点。
 
-## GPU kit
+## GPU 套件
 
 `gpu/` 里是面向一块 NVIDIA GPU 的第二套 kit。它需要 Linux、NVIDIA 驱动、来自 PyPI 的 `sglang==0.5.22`，以及 `PATH` 上的 `sglang` 命令。我们在自己的机器上录制，不在 CI 里录。第一台服务器启动前，`run.py` 和 `sweep.py` 会下载模型以及 `sglang.benchmark.serving` 的 `random` 数据集要读的 ShareGPT 文件，并用 `--dataset-path` 传入。随后它们为每台服务器和每次基准设置 `HF_HUB_OFFLINE=1`，因此 capture 不会再联系 Hub。跑过一次之后，或者模型已在你的 Hugging Face 缓存里时，只要你自己设好 `HF_HUB_OFFLINE=1`，kit 就可以离线工作。把 `SGLANG_KIT_DATASET` 设成 `ShareGPT_V3_unfiltered_cleaned_split.json` 的本地副本可跳过那次下载。用 `SGLANG_KIT_PROFILE` 选择硬件配置：
 
@@ -80,4 +80,4 @@ python3 capture/gpu/summarize.py gb10
 
 `gb10` 配置的 EAGLE-3 服务器需要 `SGLANG_ALLOW_OVERWRITE_LONGER_CONTEXT_LEN=1`，因为 draft 声明 2,048 token 的上下文，而 target 声明 262,144。kit 会设置它，并写入 `server-eagle3.command.txt`。
 
-GPU kit 的 `--check` 比较每次基准的 token 与请求计数、生成的 token 计数、每条 structured 回答是否合法、temperature 0 单独跑时不同答案的数量、指标名、服务器命令，以及每份服务器日志里的 `max_running_requests` 行。如果没有 Linux、CUDA，以及该配置够用的 GPU 内存，它会打印 `skipped` 及原因并以 0 退出。
+GPU 套件 的 `--check` 比较每次基准的 token 与请求计数、生成的 token 计数、每条 structured 回答是否合法、temperature 0 单独跑时不同答案的数量、指标名、服务器命令，以及每份服务器日志里的 `max_running_requests` 行。如果没有 Linux、CUDA，以及该配置够用的 GPU 内存，它会打印 `skipped` 及原因并以 0 退出。
