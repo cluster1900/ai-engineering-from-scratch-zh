@@ -224,7 +224,6 @@ Mantenha o pacote de uso e o que tiveres feito.[career-agent-evidence.md](https:
 - [Nx Blog, Teach Your AI Agent How to Work in a Monorepo](https://nx.dev/blog/nx-ai-agent-skills) 跨六种工具的单一来源发电机
 - [agents.md — the open spec](https://agents.md/) Roteador do seu pacote  deve implementar o conteúdo
 - [HKUDS/OpenHarness](https://github.com/HKUDS/OpenHarness) de pacotes equivalentes
-- [andrewgarst/agentic_harness](https://github.com/andrewgarst/agentic_harness) 带 eval suite de Redis apoiado 参考实现
 - [Augment Code, A good AGENTS.md is a model upgrade](https://www.augmentcode.com/blog/how-to-write-good-agents-dot-md-files) embalagem doc 
 - [Anthropic, Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)
 - [Anthropic, Harness design for long-running application development](https://www.anthropic.com/engineering/harness-design-long-running-apps)
