@@ -1,6 +1,6 @@
 # Dev Çevre
 
-> Senin aletlerin düşünce tarzını şekillendirecek. Bir kere ayarlama, doğru ayarlama.
+> Senin aletlerin düşünce tarzını şekillendirecek. Bir kere ayarlı ve ayarlı.
 
 **Type:** Build
 **Languages:** Python, Node.js, Rust
@@ -8,18 +8,21 @@
 **Time:** ~45 分钟
 
 ## Öğrenme hedefi
-- From零开始设置 Python 3.11+、Node.js 20+ 和 Rust toolchains
-- Virtual ortamları ve paket yöneticilerini yapılandırmak, yeniden yapılandırılabilir yapılandırmalar gerçekleştirmek için
-- CUDA/MPS 验证 GPU erişim,并运行一个测试 Tensor operasyon
-- Sistem, paket, çalıştırma zamanları, yapay zeka kütüphaneleri
+
+- Python 3.11+ ≠ Node.js 20+ 和 Rust 工具链
+- 配置虚拟环境和包管理器, yapılandırma ve yapılandırma
+- CUDA/MPS 验证 GPU 访问,并跑一次测试张量运算
+- Anlamak dört katlı teknik: sistem ̇ paket yönetimi ̇运行时 ̇ AI 库
 
 ## 问题
-Python,TypeScript,Rust,Julia ile 500+ bölüm AI mühendisliği derslerini öğreneceksiniz. Eğer çevreniz kötüse, her bölüm öğrenmek yerine mücadele ve araç haline gelir.
 
-Çoğu insan çevre ayarını atlar. Sonra birkaç saat harcarlar. İçe aktarım hatalarını düzeltirler. Versiyon çatışmaları ve eksik CUDA sürücüleri.
+Python,TypeScript,Rust,Julia ile 500+ bölüm AI mühendisliği derslerini bitireceksiniz. Eğer ortam kötüse, her bölüm öğrenmek yerine bir araç zinciriyle kurulacaktır.
+
+Çoğu insan çevreyi atlar. Sonra birkaç saat harcıyor. Importı düzeltmek için bir kaç saat harcıyoruz.
 
 ## 概念
-Bir AI mühendisliği ortamı dört katlı:
+
+Bir AI mühendisliği  çevre dört katlı:
 
 ```mermaid
 graph TD
@@ -28,17 +31,17 @@ graph TD
     C --> D["1. System Foundation\nOS, shell, git, editor, GPU drivers"]
 ```
 
-Biz alt üstü yüklüyoruz. Her katın alt katından kaynaklanıyor.
-
+Biz alt üstü yüklüyoruz. Her katın altındaki katın üzerinde.
 
 ```figure
 s0-env-stack
 ```
 
 ## Yapın onu.
-### 步骤 1: Sistem Temel
 
-Sistemini kontrol et ve temel bileşenleri yükle.
+### 步骤 1: sistem bazı
+
+Sisteminizi kontrol edin ve temel bileşenleri yükleyin.
 
 ```bash
 # macOS
@@ -52,9 +55,9 @@ sudo apt update && sudo apt install -y build-essential git curl wget unzip
 wsl --install -d Ubuntu-24.04
 ```
 
-### 步骤 2: Python ve UV
+### 步骤 2: Python'u UV ile yükle
 
-Biz kullanıyoruz .`uv`Pip 快 10-100x, ve otomatik olarak sanal ortamları işleyecektir.
+Biz kullanıyoruz .`uv`Bu, pip 快 10 100 倍, ve otomatik olarak sanal ortamı işleyecektir.
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -79,7 +82,7 @@ a = np.array([1, 2, 3])
 print(f"Vector: {a}, dot product with itself: {np.dot(a, a)}")
 ```
 
-### 步骤 3: pnpm ile Node.js
+### 步骤 3: pnpm ile Node.js'i yükle
 
 TypeScript'te kullanılıyor.
 
@@ -103,9 +106,9 @@ echo 'eval "$(fnm env --use-on-cd)"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-### 4 adım: Kırıklık
+### 4 adım: Kalkın
 
-Performans-kritik 课程(inkressi システム)
+Performans hassas dersler için kullanılır.
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -114,9 +117,9 @@ rustc --version
 cargo --version
 ```
 
-### 步骤 5: Julia (Önemli)
+### 步骤 5: Julia(可选)
 
-Julia'nın iyi matematikli ağır dersleri var.
+Julia'nın kullandığı partiyal matematik dersleri için.
 
 ```bash
 curl -fsSL https://install.julialang.org | sh
@@ -151,7 +154,7 @@ if torch.cuda.is_available():
     print(f"GPU: {torch.cuda.get_device_name(0)}")
 ```
 
-没有 GPU?没有问题──大多数课程可在CPU上运行──对于训练重的课程,使用Google Colab或云 GPUs──
+没有GPU?没有问题──大多数课程可在CPU上运行──对训练很重的课程,使用Google Colab或云GPU──
 
 ### Adım 7: Yoluna başlamanızı kanıtlayın
 
@@ -186,7 +189,8 @@ Next: python3 phases/01-math-foundations/01-linear-algebra-intuition/code/vector
 ```
 
 ## Kullan
-Çevreiniz, kontrol ettiğiniz yolları başlatabilir. Sonraki araçlar ve diğer dersler yeniden yüklenmeye ihtiyaç duyar. Tüm teknikler ilk dersinizi engelleyecek değildir. Aşağıda tüm derslerdeki içerikler yer alır:
+
+Çevresiniz kontrol ettiğiniz yolları başlatabilir. Sonraki araçlar ve diğer dersler yeniden yüklenmeye zaman ayırır. Tüm teknikler ilk dersinizi engellemeye gerek yok. Aşağıda tüm derslerdeki içerikler yer alır:
 
 | Language | Used In | Package Manager |
 |----------|---------|-----------------|
@@ -196,14 +200,16 @@ Next: python3 phases/01-math-foundations/01-linear-algebra-intuition/code/vector
 | Julia | Phase 1 (Math foundations) | Pkg |
 
 ## - Söyle.
-Bu dersi, herkesin kendi kuruluşunu kontrol etmek için kullanabileceği bir test kitabı oluşturdu.
 
-- Bakın .`outputs/prompt-env-check.md`Bu, bir de hızlı ve yardımcı AI asistanlarının çevre sorunlarını teşhis etmesine yardımcı olabilir.
+Bu ders, herkesin kendi çevresini kontrol etmek için kullanabileceği bir test kitabı oluşturdu.
+
+- Bakın .`outputs/prompt-env-check.md`Bu, bir de hızlı ve yardımcı AI 助手诊断环境问题──
 
 ## 练习
+
 1. 运行验证脚本并修复 herhangi bir başarısızlık
-2. Bu derste Python sanal ortamı oluşturun ve PyTorch'u yükleyin.
-3. Tüm dört dilde "Merhaba dünya" yazın.
+2. Bu derste Python'u oluşturmak, Python Torch'i yüklemek
+3. Bütün dört dilde bir "Merhaba dünya" yazın, ve sonra da kendi başınıza çalışın.
 
 ### 提示
 
