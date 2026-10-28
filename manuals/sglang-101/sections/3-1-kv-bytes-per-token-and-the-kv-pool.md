@@ -1,24 +1,24 @@
-# The KV pool and bytes per token
+# KV pool 与每 token 字节数
 
-> SGLang stores every token of every running request in one pool of fixed-size slots, so a model's bytes per token decide how many users one GPU can serve.
+> SGLang 把每条正在跑的请求的每个 token 存在一个固定大小槽位的 pool 里，所以模型的每 token 字节数决定一块 GPU 能服务多少用户。
 
-You rent a GPU with 80 GB of memory for an 8-billion-parameter model. The weights take about 16 GB, so most people expect room for a large number of users. Then the server queues requests at a few dozen concurrent conversations, and the GPU still shows free compute. The weights did not fill the memory. The keys and values of every token did.
+你租了一块 80 GB 内存的 GPU，跑一个 80 亿参数的模型。权重大约占 16 GB，所以多数人预期还能装很多用户。然后服务器在几十条并发对话处就开始排队，GPU 却还显示算力空闲。填满内存的不是权重，而是每个 token 的 key 和 value。
 
-When you finish this section, you can compute the KV cost of a model from its config. You can find the same number in the startup log and explain why SGLang counts capacity in tokens.
+读完本节后，你能从模型 config 算出 KV 代价。你能在启动日志里找到同一个数字，并解释为什么 SGLang 用 token 计容量。
 
-## Why the cache exists
+## 缓存为什么存在 {#s-kv-bytes-per-token-and-the-kv-pool-why-the-cache-exists}
 
-**KV cache:** the stored keys and values of every earlier token, for every layer, kept so that decode does not compute them again. A decode step makes one new token. That token attends to the keys and values of all the tokens before it. Without the cache, each new token would repeat the whole prefill of the conversation.
+**KV cache：** 为每一层保存的、更早每个 token 的 key 和 value，好让 decode 不用再算一遍。一步 decode 产出一个新 token。那个 token 要 attend 到它前面所有 token 的 key 和 value。没有缓存，每个新 token 都会把整段对话的 prefill 再做一遍。
 
-So the cache grows with two things: the length of each conversation and the number of conversations that run at the same time. After the weights, it is the largest user of memory in a serving engine. Every scheduling decision in [Part 2](#p-2) is a decision about this memory.
+所以缓存随两样东西增长：每段对话的长度，以及同时跑的对话数。在权重之后，它是服务引擎里最大的内存用户。[第 2 部分](#p-2) 里每一个调度决定，都是关于这块内存的决定。
 
-## The formula, and our first measured number
+## 公式，以及我们测到的第一个数 {#s-kv-bytes-per-token-and-the-kv-pool-the-formula-and-our-first-measured-number}
 
-For a model with ordinary multi-head or grouped-query attention, one token costs this many bytes:
+对普通 multi-head 或 grouped-query attention 的模型，一个 token 要花这么多字节：
 
 `2 × layers × KV heads × head dim × bytes per value`
 
-The 2 counts the key and the value. **Grouped-query attention:** several query heads share one key and value head, which is why modern models have far fewer KV heads than attention heads. SGLang computes this number when it starts {{code}}. On our Mac, the MLX backend printed it in the first lines of the log.
+那个 2 计的是 key 和 value。**Grouped-query attention：** 几个 query head 共享一个 key 和 value head，所以现代模型的 KV head 远少于 attention head。SGLang 启动时就算这个数 {{code}}。在我们的 Mac 上，MLX 后端把它打在日志的前几行。
 
 ```listing
 title: the KV pool, sized at startup
@@ -31,9 +31,9 @@ note: Two lines from the startup log of the default kit configuration.
 [2026-10-16 13:58:08] MlxAttentionKVPool: 181575 slots x 28 layers x 8 heads x 128 dim, dtype=mlx.core.bfloat16, ~19859.8 MB
 ```
 
-We measured `bytes_per_slot=114688` for Qwen3-0.6B. The second line gives every term: 28 layers, 8 KV heads, a head dimension of 128, and bfloat16, which is 2 bytes. So the cost is 2 × 28 × 8 × 128 × 2, which is 114,688 bytes, or 112 KiB per token. The formula and the log agree to the byte.
+我们为 Qwen3-0.6B 测到 `bytes_per_slot=114688`。第二行给出每一项：28 层、8 个 KV head、head 维度 128，以及 bfloat16（2 字节）。所以代价是 2 × 28 × 8 × 128 × 2，也就是 114,688 字节，或每 token 112 KiB。公式和日志逐字节一致。
 
-The same arithmetic on public model configs gives these costs:
+对公开模型 config 做同样的算术，得到这些代价：
 
 | Model | Attention | Bytes per token, bf16 | Per GPU |
 |---|---|---|---|
@@ -42,9 +42,9 @@ The same arithmetic on public model configs gives these costs:
 | Llama-3.1-70B | GQA, 80 layers, 8 KV heads | 320 KiB | 40 KiB with 8-way tensor parallelism |
 | DeepSeek-V3 | MLA, 61 layers, latent 512 plus 64 | 68.6 KiB | 68.6 KiB on every GPU |
 
-Two results surprise most people. A 0.6B model costs almost as much per token as an 8B model. The layer count and the KV heads decide the cost, and the parameter count does not. A 100,000-token conversation on Llama-3.1-8B holds 12.2 GiB of KV, which is close to the size of the weights.
+有两个结果让多数人吃惊。0.6B 模型每个 token 的代价几乎和 8B 模型一样。决定代价的是层数和 KV head，不是参数量。在 Llama-3.1-8B 上，一段 100,000 token 的对话会占 12.2 GiB 的 KV，接近权重的大小。
 
-**Multi-head latent attention (MLA):** DeepSeek's attention, which stores one compressed latent per token instead of separate keys and values per head. MLA is small per token, but every tensor-parallel rank stores the full latent {{code}}. Add GPUs with tensor parallelism and you do not add tokens. [Section 6.1](#s-tp-size-dp-size-and-attn-dp-size) shows how data-parallel attention answers that problem.
+**Multi-head latent attention (MLA)：** DeepSeek 的 attention，每个 token 存一份压缩 latent，而不是每个 head 分开存 key 和 value。MLA 每个 token 很小，但每个 tensor-parallel rank 都存完整的 latent {{code}}。用 tensor parallelism 加 GPU，并不会加 token。[第 6.1 节](#s-tp-size-dp-size-and-attn-dp-size) 展示 data-parallel attention 如何回答那个问题。
 
 ```figure
 id: fig-3-1
@@ -54,15 +54,15 @@ claim: One token of Qwen3-0.6B costs 114,688 bytes, the product of five numbers 
 caption: Read left to right. Each box is one factor of the bytes_per_slot value in the startup log. From capture/out/server-default.log.
 ```
 
-## Two tables, one pool
+## 两张表，一个 pool {#s-kv-bytes-per-token-and-the-kv-pool-two-tables-one-pool}
 
-SGLang keeps the KV cache in a pool of fixed-size slots, one slot per token. Two tables sit in front of it, and they answer different questions {{code}}.
+SGLang 把 KV cache 放在固定大小槽位的 pool 里，每个 token 一个槽。前面有两张表，回答不同的问题 {{code}}。
 
-**ReqToTokenPool:** a table with one row per running request and one column per token position. Each cell holds the index of a slot in the KV pool. Row 0 is padding, so that padded batch entries write to a harmless place.
+**ReqToTokenPool：** 一张表，每条正在跑的请求一行，每个 token 位置一列。每个格子里是 KV pool 里一个槽的下标。第 0 行是 padding，好让 padded batch 条目写到无害的地方。
 
-**TokenToKVPoolAllocator:** the free list of KV slots. It gives out slot indices when a request needs room and takes them back when the request ends. Slot 0 is reserved for the same padding reason. That is why our log shows a buffer of 181,575 slots for a pool of 181,574.
+**TokenToKVPoolAllocator：** KV 槽的空闲列表。请求需要空间时它给出槽下标，请求结束时收回。槽 0 因同样的 padding 原因被保留。所以我们的日志对 181,574 的 pool 显示 181,575 个槽的缓冲区。
 
-The physical pool holds the tensors. Attention kernels read the keys and values through the request's row in `ReqToTokenPool`. This design has one large effect. Two requests that share a prefix can point their rows at the same slots, so the shared tokens exist once in memory. [Section 3.3](#s-radixcache) shows the radix tree that finds those shared slots.
+物理 pool 装着张量。Attention kernel 通过请求在 `ReqToTokenPool` 里的那一行读 key 和 value。这个设计有一个大影响。两条共享前缀的请求可以把各自的行指到同一批槽，所以共享 token 在内存里只存在一份。[第 3.3 节](#s-radixcache) 展示找到那些共享槽的 radix tree。
 
 ```figure
 id: fig-3-1b
@@ -72,38 +72,38 @@ claim: Two requests that share a system prompt point their first rows at the sam
 caption: Read top to bottom. Each row is a ReqToTokenPool entry, and the strip below is the KV pool. Mechanism from the v0.5.22 code, sizes illustrative.
 ```
 
-## The cache is the pool
+## 缓存就是 pool {#s-kv-bytes-per-token-and-the-kv-pool-the-cache-is-the-pool}
 
-SGLang has no separate setting for cache size. The SGLang paper makes this a design choice: cached tokens and running requests use one memory pool {{paper}}. A cached prefix is KV that no running request locks right now. When a new request needs room, SGLang evicts prefixes that no request locks, from the same pool.
+SGLang 没有单独的缓存大小设置。SGLang 论文把这当成设计选择：缓存的 token 和正在跑的请求用同一个内存 pool {{paper}}。一段缓存的前缀，是此刻没有正在跑的请求锁住的 KV。新请求需要空间时，SGLang 从同一个 pool 里逐出没有请求锁住的前缀。
 
-This is why the startup log reports one number, `max_total_num_tokens`, and not two. On our Mac with `--mem-fraction-static 0.4`, that number was 181,574 tokens. The model allows a context of 40,960 tokens. So the pool holds four full-length conversations, or about 180 conversations of 1,000 tokens each. Running requests and cached prefixes compete for those same slots.
+这就是为什么启动日志只报告一个数字 `max_total_num_tokens`，而不是两个。在我们的 Mac 上用 `--mem-fraction-static 0.4`，那个数字是 181,574 个 token。模型允许的上下文是 40,960 个 token。所以 pool 能装四段满长对话，或大约 180 段各 1,000 token 的对话。正在跑的请求和缓存的前缀争用同一批槽。
 
-## Our position: count tokens, not gigabytes
+## 我们的立场：用 token 计数，不要用 GB {#s-kv-bytes-per-token-and-the-kv-pool-our-position-count-tokens-not-gigabytes}
 
-Size a deployment from `max_total_num_tokens`, not from free memory. Multiply your typical context length by the concurrency you need, and compare the product with that number. If the product is larger, the scheduler retracts or queues requests, and [section 2.3](#s-admission-and-retraction) shows what that costs.
+用 `max_total_num_tokens` 给部署定规模，不要用空闲内存。把你典型的上下文长度乘以你需要的并发，再和那个数字比。如果乘积更大，调度器会收回或排队请求，[第 2.3 节](#s-admission-and-retraction) 展示那要付的代价。
 
-The two levers that change the number are the memory fraction in [section 3.2](#s-mem-fraction-static-and-startup-sizing) and the KV data type. `--kv-cache-dtype` defaults to `auto`, which keeps the model data type unless the checkpoint asks for FP8 {{code}}. FP8 halves the bytes per token.
+改变这个数字的两个杠杆是 [第 3.2 节](#s-mem-fraction-static-and-startup-sizing) 里的内存比例，以及 KV 数据类型。`--kv-cache-dtype` 默认是 `auto`，会保持模型数据类型，除非 checkpoint 要求 FP8 {{code}}。FP8 把每 token 字节数减半。
 
-A field report shows the size of that lever. Cloudflare reported that FP8 KV raised the context held in memory for Kimi K2.6 from about 686,000 to about 1.37 million tokens {{field Cloudflare 2026-08}}. The same report measured a few percent less throughput per request at low concurrency. At concurrency 64, the BF16 configuration ran out of memory, and the FP8 configuration reached 2,192 tokens per second. In that report, FP8 KV traded a little speed per token for twice the users.
+一份现场报告展示了那个杠杆有多大。Cloudflare 报告说，FP8 KV 把 Kimi K2.6 能装进内存的上下文从大约 686,000 抬到大约 137 万个 token {{field Cloudflare 2026-08}}。同一份报告在低并发下测到每请求吞吐少了几个百分点。在并发 64 时，BF16 配置内存不足，FP8 配置达到每秒 2,192 个 token。在那份报告里，FP8 KV 用每个 token 稍慢一点，换来两倍的用户。
 
-Our own FP8 runs changed the weights and the KV cache together, and they were faster per user. On the L4 they gave 24.5 against 13.4 tokens per second at 1 user, as [section 4.3](#s-quantization) shows. Read the [Cloudflare post](https://blog.cloudflare.com/smaller-faster-safer-models/) for their accuracy checks before you copy the change.
+我们自己的 FP8 运行同时改了权重和 KV cache，并且每个用户更快。在 L4 上，1 个用户时是每秒 24.5 对 13.4 个 token，如 [第 4.3 节](#s-quantization) 所示。复制这个改动之前，先读 [Cloudflare 的帖子](https://blog.cloudflare.com/smaller-faster-safer-models/) 里的准确率检查。
 
-The [Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?users=64) machine draws the KV pool as cells on the six GDDR6 packages of an L4. This link opens the BF16 run at 64 users: the 24,094-token pool holds 37 requests of 640 tokens, and the other 27 wait. Switch the weights and the KV cache to FP8 to see the pool grow to 142,369 tokens.
+[Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?users=64) 这台机器把 KV pool 画成 L4 六个 GDDR6 封装上的格子。这个链接打开 64 用户的 BF16 运行：24,094 token 的 pool 装着 37 条各 640 token 的请求，另外 27 条在等。把权重和 KV cache 都切到 FP8，会看到 pool 长到 142,369 个 token。
 
-## What to measure
+## 要测什么 {#s-kv-bytes-per-token-and-the-kv-pool-what-to-measure}
 
-- Read `bytes_per_slot` or compute it, and check that the two agree.
-- Read `max_total_num_tokens` in the startup log, and divide it by your typical context length.
-- Watch `token usage` in the scheduler log. It is the fraction of the pool that running requests and cached prefixes hold.
+- 读 `bytes_per_slot` 或自己算，并检查两者一致。
+- 读启动日志里的 `max_total_num_tokens`，并除以你典型的上下文长度。
+- 盯着调度器日志里的 `token usage`。它是正在跑的请求和缓存前缀占着的 pool 比例。
 
-The lesson on [inference optimization](phases/10-llms-from-scratch/12-inference-optimization) builds a KV cache from scratch, if you want the mechanism below SGLang.
+[推理优化](phases/10-llms-from-scratch/12-inference-optimization) 那一课会从零建一个 KV cache，如果你想看 SGLang 下面的机制。
 
 ```takeaways
-- Compute bytes per token from layers, KV heads, head dimension, and data type.
-- Check the computed number against bytes_per_slot in the startup log.
-- Plan capacity in tokens with max_total_num_tokens, not in gigabytes.
-- Expect MLA KV on every tensor-parallel rank, so more ranks add no tokens.
-- Try FP8 KV before you buy more GPUs, and check accuracy on your data.
+- 从层数、KV head、head 维度和数据类型算出每 token 字节数。
+- 用启动日志里的 bytes_per_slot 核对算出的数字。
+- 用 max_total_num_tokens 按 token 规划容量，不要按 GB。
+- 预期 MLA KV 在每个 tensor-parallel rank 上都有，所以更多 rank 不加 token。
+- 买更多 GPU 之前先试 FP8 KV，并在你自己的数据上检查准确率。
 ```
 
 Sources: python/sglang/srt/model_executor/pool_configurator.py (_compute_cell_size, calculate_pool_sizes), python/sglang/srt/mem_cache/memory_pool.py (ReqToTokenPool), python/sglang/srt/mem_cache/allocator/token.py (TokenToKVPoolAllocator), python/sglang/srt/hardware_backend/mlx/model_runner.py (_compute_pool_size), python/sglang/srt/arg_groups/fields/model.py (kv_cache_dtype) at v0.5.22, capture/out/server-default.log, the SGLang paper (arXiv 2312.07104), the Cloudflare report of 2026-08-03, capture/gpu/out-l4/server-load-default.log and capture/gpu/out-l4/server-load-fp8.log for the L4 pools.

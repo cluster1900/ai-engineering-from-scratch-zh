@@ -1,14 +1,14 @@
-# ForwardMode and CUDA graphs
+# ForwardMode 与 CUDA graphs
 
-> A decode step is too small to keep a GPU busy, so SGLang records its kernel launches once as a CUDA graph and replays the record on every step.
+> 一步 decode 太小，喂不饱一块 GPU，所以 SGLang 把内核启动记成一份 CUDA graph，并在每一步回放那份记录。
 
-You serve a small model to one user on an H100 and watch tokens arrive. The GPU is fast, yet a profiler shows gaps between kernels. A field report from Hazy Research {{field Hazy Research 2025-09}} measured that SGLang and vLLM used about half of the H100 memory bandwidth for Llama-1B at batch 1. The GPU waits for the CPU to tell it what to do next.
+你在一块 H100 上给一个用户服务小模型，看着 token 到来。GPU 很快，可剖析器却显示内核之间有空隙。Hazy Research 的现场报告 {{field Hazy Research 2025-09}} 量到，在批大小 1 的 Llama-1B 上，SGLang 和 vLLM 大约只用了 H100 内存带宽的一半。GPU 在等 CPU 告诉它下一步做什么。
 
-When you finish this section, you can name the mode of any forward pass and explain what a CUDA graph saves. You can also read the batch sizes SGLang captures and keep busy decode inside a graph.
+读完本节后，你能点名任何一次前向的模式，并解释 CUDA graph 省了什么。你也能读出 SGLang 捕获的批大小，并把忙碌的 decode 留在 graph 里。
 
-## Every forward pass has a mode
+## 每次前向都有一个模式 {#s-forwardmode-and-cuda-graphs-every-forward-pass-has-a-mode}
 
-**ForwardMode:** the label on a batch that tells the model runner what kind of pass to run. The scheduler sets it, and the model runner, the attention backend, and the graph runners all read it.
+**ForwardMode：** 一批上的标签，告诉模型运行器跑哪种前向。调度器设置它，模型运行器、attention 后端和 graph 运行器都读它。
 
 | Mode | What the pass does |
 |---|---|
@@ -21,15 +21,15 @@ When you finish this section, you can name the mode of any forward pass and expl
 | `PREBUILT` | A decode worker in prefill-decode disaggregation. The KV cache arrived from another server. |
 | `SPLIT_PREFILL` | A prefill that runs a few layers at a time, for prefill-decode multiplexing. |
 
-SGLang calls any pass that writes many KV entries per request "extend". That is why `TARGET_VERIFY` counts as extend in the code. The target model runs over several draft positions per request, like a small prefill with a tree mask.
+SGLang 把任何为每条请求写很多 KV 条目的前向叫 "extend"。这就是为什么代码里 `TARGET_VERIFY` 算作 extend。目标模型对每条请求的好几个 draft 位置跑一遍，像带树掩码的小 prefill。
 
-## The cost: one decode step is a long list of small launches
+## 代价：一步 decode 是一长串小启动 {#s-forwardmode-and-cuda-graphs-the-cost-one-decode-step-is-a-long-list-of-small-launches}
 
-A transformer layer is a sequence of kernels: a norm, the QKV projection, attention, the output projection, a second norm, and the MLP. A 28-layer model launches hundreds of kernels to produce one token. During prefill each kernel works on thousands of tokens, so launch time is small next to compute time. During decode each kernel works on one token per request.
+一个 transformer 层是一串内核：norm、QKV 投影、attention、输出投影、第二个 norm，以及 MLP。一个 28 层模型为产出一个 token 启动几百个内核。Prefill 时每个内核在几千个 token 上干活，所以启动时间相对计算时间很小。Decode 时每个内核只在每条请求的一个 token 上干活。
 
-At batch 1 the GPU often finishes a kernel before the Python process has sent the next one. The obvious fix is a faster launch path, such as fewer Python calls. That helps a little, but each kernel still needs its own CPU launch, and the count does not change.
+在批大小 1 时，GPU 常常在 Python 进程发出下一个之前就跑完一个内核。显而易见的修法是更快的启动路径，例如更少的 Python 调用。那有一点帮助，但每个内核仍需要自己的 CPU 启动，数量不变。
 
-**CUDA graph:** a record of kernel launches with fixed tensor shapes and addresses, which the GPU can replay with one CPU call.
+**CUDA graph：** 一份固定张量形状和地址的内核启动记录，GPU 可以用一次 CPU 调用回放。
 
 ```figure
 id: fig-4-1
@@ -39,13 +39,13 @@ claim: In eager mode the CPU launches each kernel of every layer, and in graph m
 caption: Read each column top to bottom. Kernel names are the ops of one Llama-style layer. The right column runs only when the batch fits a captured size. From the v0.5.22 decode CUDA graph runner.
 ```
 
-The record has a price. Every captured shape uses GPU memory, and a batch must match a captured shape exactly. SGLang pays that price for decode and pads each batch up to the next captured size.
+这份记录有代价。每个捕获的形状都用 GPU 内存，一批必须精确匹配一个捕获的形状。SGLang 为 decode 付这个代价，并把每批垫到下一个捕获大小。
 
-## What SGLang captures, and when it gives up
+## SGLang 捕获什么，以及它何时放弃 {#s-forwardmode-and-cuda-graphs-what-sglang-captures-and-when-it-gives-up}
 
-**Capture bucket:** one batch size that SGLang records a decode graph for at startup. Without speculative decoding, v0.5.22 captures sizes 1, 2, 4, 8, and 12, then every eighth size from 16 to 256. Above 256 it captures every sixteenth size to 511, then every thirty-second size up to the largest. A batch of 13 requests replays the graph for 16 and wastes three slots.
+**Capture bucket：** SGLang 在启动时为它记录一份 decode graph 的一个批大小。没有 speculative decoding 时，v0.5.22 捕获 1、2、4、8 和 12，然后从 16 到 256 每隔八个大小。256 以上它捕获每隔十六个大小到 511，然后每隔三十二个大小直到最大。一批 13 条请求回放大小 16 的 graph，浪费三个槽。
 
-The largest bucket, `max_bs`, depends on GPU memory and tensor parallel size. The startup code picks it when you do not set `--cuda-graph-max-bs-decode`.
+最大桶 `max_bs` 取决于 GPU 内存和张量并行大小。你不设 `--cuda-graph-max-bs-decode` 时，启动代码选它。
 
 | GPU memory | Example GPUs | Decode `max_bs` at TP below 4 | At TP 4 or more | `chunked_prefill_size` |
 |---|---|---|---|---|
@@ -56,7 +56,7 @@ The largest bucket, `max_bs`, depends on GPU memory and tensor parallel size. Th
 | 90 to 160 GB | H200 | 256 | 512 | 8192 |
 | 160 GB and more | B200, MI300X | 512 | 512 | 16384 |
 
-When a decode batch is larger than `max_bs`, the graph runner cannot replay. The step runs eager, with one launch per kernel. Nothing fails and no warning appears. The scheduler log line for that batch says `cuda graph: False`, and latency per token rises.
+当一批 decode 大于 `max_bs` 时，graph 运行器无法回放。那一步用 eager 跑，每个内核一次启动。什么都不失败，也没有警告。那批的调度器日志行说 `cuda graph: False`，每 token 延迟上升。
 
 ```figure
 id: fig-4-2
@@ -66,7 +66,7 @@ claim: A decode batch replays the next captured graph when it fits under max_bs,
 caption: Read left to right. The bucket list is the v0.5.22 default without speculative decoding on an 80 GB GPU at TP 1. A batch of 300 runs eager.
 ```
 
-The code does not change your shapes for prefill the same way. Since PR #29458 (2026-07-01), CUDA builds use a breakable graph for prefill. **Breakable graph:** a capture that ends a segment at each op marked to run eager, runs that op eagerly, and starts the next segment. A model with one op that a graph cannot hold still gets graphs for every other op. On other platforms prefill graphs are off, and our Mac capture logs both facts.
+代码不会用同样的方式改你的 prefill 形状。自 PR #29458（2026-07-01）起，CUDA 构建对 prefill 用可打断的 graph。**Breakable graph：** 一份在每个标成 eager 跑的算子处结束一段、eager 跑那个算子、再开始下一段的捕获。一个带有 graph 装不下的算子的模型，仍为其他每个算子得到 graphs。在其他平台上 prefill graphs 是关的，我们的 Mac 捕获记下了这两点。
 
 ```listing
 title: graph status in the startup log and the first batches
@@ -78,21 +78,21 @@ note: Two lines from the default server log. Timestamps and the end of the batch
 … Prefill batch, #new-seq: 1, #new-token: 6, #cached-token: 0, token usage: 0.00, #running-req: 0, #queue-req: 0, #pending-token: 0, cuda graph: False, …
 ```
 
-Every scheduler batch line ends with `cuda graph:`. On a CUDA server, watch that field on your decode batches.
+每条调度器批行都以 `cuda graph:` 结尾。在 CUDA 服务器上，留意你 decode 批上的那个字段。
 
-The older torch.compile path for prefill graphs is being removed in PRs #42285 to #42287. A blog post that says "piecewise CUDA graphs use torch.compile" describes that older path.
+更老的、给 prefill graphs 用的 torch.compile 路径正在 PR #42285 到 #42287 里被删掉。说 "piecewise CUDA graphs 用 torch.compile" 的博客帖描述的是那条更老的路径。
 
-## The cliff in field reports
+## 现场报告里的悬崖 {#s-forwardmode-and-cuda-graphs-the-cliff-in-field-reports}
 
-A field report from Jarvislabs {{field Jarvislabs 2026-05}} ran Qwen2.5-7B on one H100 with default SGLang flags. At concurrency 300, mean inter-token latency was 17.72 ms against 12.28 ms for vLLM. With no concurrency cap it was 100.92 ms against 28.84 ms. The post does not record the SGLang version or the server logs.
+Jarvislabs 的现场报告 {{field Jarvislabs 2026-05}} 用默认 SGLang 旗标在一块 H100 上跑 Qwen2.5-7B。在并发 300 时，平均逐 token 延迟是 17.72 ms，对 vLLM 的 12.28 ms。没有并发上限时是 100.92 ms 对 28.84 ms。帖子没有记下 SGLang 版本或服务器日志。
 
-Our reading is a hypothesis, labeled as one. The default decode `max_bs` on that GPU is 256, and the latency break sits just above it. The maintainers saw the same shape on smaller cards. The code comment on the 20 to 35 GB tier explains why. The old cap made every decode batch of 32 or more run eager, and throughput at high concurrency fell far behind vLLM {{code}}. PR #37898 raised that cap from 24 to 48 on 2026-09-04.
+我们的读法是一个假设，并标成假设。那块 GPU 上默认 decode `max_bs` 是 256，延迟断裂正好在它上面。维护者在更小的卡上看到了同样的形状。20 到 35 GB 档的代码注释解释了原因。旧上限让每批 32 或更多的 decode 都跑 eager，高并发下吞吐远远落后 vLLM {{code}}。PR #37898 在 2026-09-04 把那个上限从 24 抬到 48。
 
-## What we measured on a GB10
+## 我们在 GB10 上测到的 {#s-forwardmode-and-cuda-graphs-what-we-measured-on-a-gb10}
 
-The cost above assumes a fast GPU and a small model. We tested a different case: `Qwen/Qwen3-30B-A3B-Instruct-2507`, a mixture-of-experts model, on one NVIDIA GB10. The GB10 has one memory for the CPU and the GPU, with less bandwidth than the HBM of a data-center GPU.
+上面的代价假设一块快 GPU 和一个小模型。我们测了不同的情形：`Qwen/Qwen3-30B-A3B-Instruct-2507`，一个混合专家模型，在一块 NVIDIA GB10 上。GB10 的 CPU 和 GPU 共用一块内存，带宽低于数据中心 GPU 的 HBM。
 
-**We measured** two servers with three seeds at each concurrency from 1 to 64. The default server replayed a decode graph on every decode batch, and its log says `cuda graph: True`. The server with both graph backends set to `disabled` logged `cuda graph: False`. The results were almost the same:
+**我们测到** 两台服务器在从 1 到 64 的每个并发上各三个种子。默认服务器在每批 decode 上回放 decode graph，日志说 `cuda graph: True`。两个 graph 后端都设成 `disabled` 的服务器记下 `cuda graph: False`。结果几乎一样：
 
 | Concurrency | Median TPOT with graphs | Median TPOT without | Output tok/s with graphs | Output tok/s without |
 |---|---|---|---|---|
@@ -100,15 +100,15 @@ The cost above assumes a fast GPU and a small model. We tested a different case:
 | 8 | 102.21 ms | 104.77 ms | 74.11 | 73.46 |
 | 64 | 254.06 ms | 253.77 ms | 235.38 | 235.79 |
 
-The two lines lie on top of each other in [figure 5.1c](#fig-5-1c). The graphs still cost startup time and memory. The decode capture took 4.61 s and 1.73 GB, and the prefill capture took 35.06 s and 2.14 GB.
+两条线在 [图 5.1c](#fig-5-1c) 里叠在一起。graphs 仍花启动时间和内存。Decode 捕获花了 4.61 s 和 1.73 GB，prefill 捕获花了 35.06 s 和 2.14 GB。
 
-Our reading of this result: one decode step of this model takes about 32 ms at batch 1. The launch time that a graph removes is small next to that step. Each step reads the weights of the experts that its tokens chose, and memory bandwidth sets the time.
+我们对这个结果的读法：这个模型一步 decode 在批大小 1 时大约要 32 ms。graph 去掉的启动时间相对那一步很小。每一步读它的 token 选中的那些专家的权重，内存带宽定了时间。
 
-## What we measured on an L4
+## 我们在 L4 上测到的 {#s-forwardmode-and-cuda-graphs-what-we-measured-on-an-l4}
 
-Our first sweep on an L4, with the dense `Qwen/Qwen3-8B`, was wrong. The card ran at 87 C with a thermal slowdown, at an SM clock of 360 MHz out of 2,040. A throttled GPU is slow on every step, so the launch saving disappears in the noise. We removed those numbers. Record GPU clocks and temperature with every benchmark, as [section 5.1](#s-sglang-benchmark-serving) shows.
+我们在 L4 上对稠密 `Qwen/Qwen3-8B` 的第一次扫描是错的。卡跑在 87 C，有热节流，SM 时钟是 2,040 里的 360 MHz。被节流的 GPU 每一步都慢，所以启动节省消失在噪声里。我们删掉了那些数字。每次基准都记 GPU 时钟和温度，像 [第 5.1 节](#s-sglang-benchmark-serving) 展示的那样。
 
-We then ran the same pair on a cooled L4. Every run of the same-day pair started at 72 C or below. A run with a median SM clock under 1,000 MHz was repeated, up to three times. The first pair ran on two days, 2026-10-16 and 2026-10-18. We ran both servers again on 2026-10-21, one after the other, with the same pool of 24,094 tokens. The table shows the same-day pair.
+然后我们在冷却的 L4 上跑了同一对。同一天那一对的每次运行都从 72 C 或以下开始。中位 SM 时钟低于 1,000 MHz 的运行最多重跑三次。第一对跑在两天，2026-10-16 和 2026-10-18。我们在 2026-10-21 又把两台服务器一前一后跑了一遍，同一份 24,094 token 的 pool。表展示同一天那一对。
 
 ```listing
 title: the same batch, with and without a graph
@@ -128,27 +128,27 @@ note: One decode line from each server of the first pair, on two days, at 33 run
 | 32 | 95.65 / 94.12 ms | 270.61 / 270.81 | 103 / 87 ms |
 | 64, see the note below | 103.39 / 103.12 ms | 264.10 / 265.30 | 109 / 90 ms |
 
-The L4 servers captured decode graphs only up to 48 running requests. At 64 users, batches above 48 ran eager on both servers, so the last row does not measure graphs.
+L4 服务器只捕获最多 48 条正在跑请求的 decode graphs。在 64 用户时，大于 48 的批在两台服务器上都跑 eager，所以最后一行不量 graphs。
 
-**We measured** a small difference on the L4 as well. Up to 16 users, the graphs saved 0.5 to 0.7 ms of a 60 to 70 ms step, about 1 percent. Throughput was within 1.2 percent from 2 users up, and 5 percent apart at 1 user.
+**我们测到** 在 L4 上也是小差别。到 16 用户，graphs 从 60 到 70 ms 的一步里省了 0.5 到 0.7 ms，大约 1%。从 2 用户起吞吐在 1.2% 以内，1 用户时差 5%。
 
-At 16 and 32 users, the server without graphs had the lower P99 ITL, with no seed overlap. It was 73 against 80 ms, and 87 against 103 ms. Both servers replayed graphs at those batch sizes. We do not have a mechanism for the gap yet, so we report it and do not explain it.
+在 16 和 32 用户时，没有 graphs 的服务器有更低的 P99 ITL，没有种子重叠。是 73 对 80 ms，以及 87 对 103 ms。两台服务器在那些批大小上都回放了 graphs。我们还没有这个差距的机制，所以报告它，不解释它。
 
-The GB10 gave no such gap on the same day. Its P99 ITL with and without graphs stayed within 7 percent at every concurrency, and the median TPOT within 2 percent.
+GB10 在同一天没有这种差距。有 graphs 和没有 graphs 的 P99 ITL 在每个并发下都在 7% 以内，中位 TPOT 在 2% 以内。
 
-Our reading: a step of an 8B model at batch 1 reads about 16 GB of weights from memory. The launch time that a graph removes is small next to that read.
+我们的读法：一个 8B 模型在批大小 1 时一步大约从内存读 16 GB 权重。graph 去掉的启动时间相对那次读取很小。
 
-The [Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?graphs=off&users=1) machine shows one decode step on the L4 as a weight read and the work after it. This link opens the run without graphs at one user. Launch commands cross PCIe for every kernel, and in our first pair the step grew by 0.47 ms to 60.63 ms.
+[Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?graphs=off&users=1) 机器展示 L4 上一步 decode 作为一次权重读取和它之后的活。这个链接打开没有 graphs、一个用户的运行。启动命令为每个内核穿过 PCIe，在我们的第一对里那一步涨了 0.47 ms 到 60.63 ms。
 
-## Our position
+## 我们的立场 {#s-forwardmode-and-cuda-graphs-our-position}
 
-Keep CUDA graphs on, and size them to your traffic. The default `max_bs` suits moderate concurrency. If your benchmark or your production peak runs more requests than that, set `--cuda-graph-max-bs-decode` and `--max-running-requests` to your target before you measure. SemiAnalysis InferenceX recipes {{field InferenceX 2026-05}} derive both values from the concurrency they test.
+保持 CUDA graphs 开着，并按你的流量给它们定大小。默认 `max_bs` 适合中等并发。如果你的基准或生产峰值跑的请求比那多，在量之前把 `--cuda-graph-max-bs-decode` 和 `--max-running-requests` 设到你的目标。SemiAnalysis InferenceX 配方 {{field InferenceX 2026-05}} 从它们测试的并发推出这两个值。
 
-Do not expect graphs to make a slow decode fast on every machine. On the GB10, one decode step of a mixture-of-experts model takes tens of milliseconds, and graphs changed it by 3 percent or less. On the L4, with a dense 8B model, they saved about 1 percent. The worst token gap was shorter without them at 16 and 32 users. Measure the median and the tail, with and without graphs, before you blame the launch path.
+不要指望 graphs 在每台机器上都把慢 decode 变快。在 GB10 上，混合专家模型一步 decode 要几十毫秒，graphs 把它改了 3% 或更少。在 L4 上，稠密 8B 模型大约省 1%。最差的 token 差距在 16 和 32 用户时没有它们更短。在怪启动路径之前，有 graphs 和没有 graphs 都量中位和尾部。
 
-Do not turn graphs off to fix memory. If capture runs out of memory, lower `--cuda-graph-max-bs-decode` or `--mem-fraction-static`. A server without decode graphs pays launch time on every token for every user.
+不要为修内存而关掉 graphs。如果捕获内存不足，降低 `--cuda-graph-max-bs-decode` 或 `--mem-fraction-static`。没有 decode graphs 的服务器为每个用户的每个 token 付启动时间。
 
-Two flag names changed in v0.5.22, and old recipes break on them. `--disable-cuda-graph` still works, and the help text marks it as deprecated.
+两个旗标名在 v0.5.22 变了，旧配方会在它们上面坏掉。`--disable-cuda-graph` 仍可用，帮助文本标它为已弃用。
 
 ```listing
 title: the deprecated graph flag in sglang serve --help
@@ -159,22 +159,22 @@ note: Two lines from the deprecated flags at the end of the help text.
   --disable-cuda-graph  Deprecated. Use --cuda-graph-
                         backend-{decode,prefill}=disabled instead.
 ```
- The flag `--cuda-graph-max-bs` no longer exists. We passed it to the v0.5.22 argument parser and it exited with `ambiguous option: --cuda-graph-max-bs could match --cuda-graph-max-bs-decode, --cuda-graph-max-bs-prefill`.
+ 旗标 `--cuda-graph-max-bs` 不再存在。我们把它传给 v0.5.22 参数解析器，它以 `ambiguous option: --cuda-graph-max-bs could match --cuda-graph-max-bs-decode, --cuda-graph-max-bs-prefill` 退出。
 
-## Incidents
+## 事故 {#s-forwardmode-and-cuda-graphs-incidents}
 
-**Capture runs out of memory with data-parallel attention.** Issue #23769 (2026-04-26): DeepSeek-V4-Pro-FP8 on two nodes of eight H200 exited during graph capture. With data-parallel attention, the graph batch size counts per rank, so the captured graphs were larger than the traffic needed. The fix was a smaller graph batch size or a lower `--mem-fraction-static`.
+**带数据并行 attention 时捕获内存不足。** Issue #23769（2026-04-26）：DeepSeek-V4-Pro-FP8 在两台各八块 H200 的节点上在 graph 捕获期间退出。有数据并行 attention 时，graph 批大小按 rank 计，所以捕获的 graphs 比流量需要的更大。修法是更小的 graph 批大小或更低的 `--mem-fraction-static`。
 
-**A renamed field broke the Python API.** Issue #36478 (2026-08-26): `sgl.Engine(..., disable_piecewise_cuda_graph=True)` raised `TypeError`, while the command-line flag still worked. PR #23906 folded the field into the per-phase graph config and kept only the command-line alias. The fix is `cuda_graph_backend_prefill="disabled"`.
+**重命名的字段打断了 Python API。** Issue #36478（2026-08-26）：`sgl.Engine(..., disable_piecewise_cuda_graph=True)` 抛出 `TypeError`，而命令行旗标仍可用。PR #23906 把该字段折进按阶段的 graph 配置，只保留命令行别名。修法是 `cuda_graph_backend_prefill="disabled"`。
 
-**A new GPU needed eager mode.** A field report from joshua8.ai {{field joshua8 2026-01}} ran SGLang on an RTX PRO 6000 Blackwell (SM120). It needed `--disable-cuda-graph` to run at all. On new architectures, check that capture works before you compare engines.
+**一块新 GPU 需要 eager 模式。** joshua8.ai 的现场报告 {{field joshua8 2026-01}} 在一块 RTX PRO 6000 Blackwell（SM120）上跑 SGLang。它需要 `--disable-cuda-graph` 才能跑起来。在新架构上，在对比引擎之前先检查捕获能工作。
 
 ```takeaways
-- Read the scheduler log field cuda graph for every decode batch you care about.
-- Set --cuda-graph-max-bs-decode and --max-running-requests to your peak concurrency before benchmarking.
-- Fix capture memory with a smaller graph batch size, and keep graphs on.
-- Measure decode with and without graphs on your GPU and model before you tune them.
-- Replace --cuda-graph-max-bs and --disable-cuda-graph in old recipes with the v0.5.22 per-phase flags.
+- 对你在乎的每批 decode，读调度器日志字段 cuda graph。
+- 在基准之前，把 --cuda-graph-max-bs-decode 和 --max-running-requests 设到你的峰值并发。
+- 用更小的 graph 批大小修捕获内存，并保持 graphs 开着。
+- 在调它们之前，在你的 GPU 和模型上有 graphs 和没有 graphs 都量 decode。
+- 用 v0.5.22 的按阶段旗标替换旧配方里的 --cuda-graph-max-bs 和 --disable-cuda-graph。
 ```
 
 Sources: capture/out/server-default.log, capture/out/serve-help.txt, capture/gpu/out-gb10/server-default.log, capture/gpu/out-gb10/server-no-cuda-graph.log, capture/gpu/summary/gb10.json, capture/gpu/incidents/l4-thermal-throttle.txt, capture/gpu/out-l4/server-load-graphs-on-off.log, capture/gpu/summary/l4.json (load.default, load.no-cuda-graph, load.graphs-on-b, load.graphs-off-b), python/sglang/srt/model_executor/forward_batch_info.py (ForwardMode), model_executor/model_runner.py (_forward_raw), model_executor/cuda_graph_config.py (default_prefill_backend), model_executor/runner/decode_cuda_graph_runner.py (can_run_graph), arg_groups/memory_hook.py (_handle_gpu_memory_settings), arg_groups/cuda_graph_hook.py (generate_decode_cuda_graph_batch_sizes), and server_args.py (deprecated flags) at v0.5.22; the argument parser of the installed v0.5.22 package; PRs #23906, #29458, #37898, #42285; issues #23769 and #36478; field reports by Hazy Research (2025-09-28), Jarvislabs (2026-05-18), joshua8.ai (2026-01-10), and SemiAnalysis InferenceX (2026-05-26), capture/gpu/out-l4/graphs-sameday-starts.log, capture/gpu/out-gb10/cuda-graph-max-bs-ambiguous.txt
