@@ -1,24 +1,24 @@
 # De la réalisation à zéro des opérations collectives
 
-> Les quatre opérations collectives combinées pour une formation distribuée sont allreduce, broadcast, allgather, 和reduce_scatter.`multiprocessing.Queue`Le reste de l'orbite est transformé en tuyau.
+> Les quatre formes de formation distribuées sont les fournisseurs de communication collective.`multiprocessing.Queue`La mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en œuvre de la mise en ligne de la mise en ligne de la mise en ligne.
 
 **Type:** Build
 **Languages:** Python
-**Prerequisites:** 第 19 阶段 Track C 课程 42-49
+**Prerequisites:** Phase 19 Track C lessons 42-49
 **Time:** ~90 分钟
 
 ## Objectif de l'apprentissage
 
-- Dans les deux séries de transmission, il est possible de réaliser un cycle de réduction de tout (precedure_reduction_scatter, puis assembler) et de démontrer le volume de communication par élève 2 (N-1) /N 字节。
-- Dans le`multiprocessing.Queue`Le point de départ est le point de départ.
-- Selon la même entrée.`torch.distributed`Le monde entier est un monde de l'information.
-- Dans le domaine de la formation collective, la différence entre la limite et la limite de largeur, la défense des choix des arbres et des anneaux.
+- Utiliser deux algorithmes pour réaliser le ring allreduce, réduire tout, rassembler tout, et prouver que chaque rang de la communication est un élément.$2(N-1)/N$Je suis un homme.
+- Dans le`multiprocessing.Queue`Envoyer et réaliser la diffusion, tout rassembler et réduire la diffusion.
+- Pour les mêmes entrées, utilisez`torch.distributed`Comme référence, l'épreuve de chaque langue originale.
+- De la forme de groupe 延迟下限和带宽上限出发,论证该选环 还是树
 
 ##  problématique
 
-N 级上的简单 allreduce 将张量 N 次发送到根并广播 N 次。$O(N)$, la racine devient un bouteille, et le niveau de la chaîne est le plus lent de la chaîne multiplié par N.$T/N$de la$2(N-1)$块, donc chaque rang字节 descend à$2T(N-1)/N$, avec la croissance et la tendance$2T$且永远不会超过它,无论集群大小如何―― Tree allreduce 在小N 和高延迟链路上胜胜,因为深度是$\log_2(N)$跳 plutôt que $2(N-1)$◊ Pour le cluster de sélection de la surface, le GPU le plus lent décide le temps de la phase de sélection.
+Dans N 个级 上做朴素 allreduce, va mettre la张量向根 发送 N 次,再广播回来 N 次──$O(N)$La racine est transformée en bouteille, le temps est le plus lent.$2(N-1)$- Je suis un petit garçon .$T/N$Le nombre de caractères de chaque rang est réduit.$2T(N-1)/N$, à mesure que la tendance grandit$2T$且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且永不超出, 且深度是 且深度是 且深度是 且深度是 且深度是 且深度是 且深度是 且$\log_2(N)$跳, plutôt que $2(N-1)$Le plus lent de la GPU décide de l'étape du temps.
 
-Le système de formation de la TDP est basé sur les quatre premiers mots. Le système de formation de la TDP est basé sur la TDP. Le système de formation de TDP est basé sur la TDP. Le système de formation de TDP est basé sur la TDP.
+Vous allez lire dans ce cadre de formation distribué, tout dépend de ces quatre langues originales. PyTorch DDP utilise chaque paramètre bucket une fois allreduce pour venir avec le gradient. ZeRO utilise reduce_scatter, fragment optimiser l'état, reutilise allgather 广播更新后的参数. FSDP Place le complet en avant en tout ensemble 加减少_scatter. Pipe-line parallèle nécessite une diffusion en groupe de phase 传活.
 
 ## 概念
 
@@ -34,26 +34,25 @@ flowchart LR
   Q30 --> R0
 ```
 
-### Répondre à toutes les réductions
+### Retour à la fin du cycle
 
-Pour chaque rangement, le nombre de blocs est divisé en N 个相等块, indexé en 0..N-1──, chaque rangement possède un nombre de blocs similaires.
+Pour les classements, chaque rang possède la même classe que son rang.$(r - s) \bmod N$- Je vous en prie .$(r + 1) \bmod N$, et de rang $(r - 1) \bmod N$- Je suis un peu dégoûté .$(r - s - 1) \bmod N$, passe par N-1 étape, r r r r possède la totalité de la pièce r et, après, r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r
 
-|原语|每 rank 字节 |步骤|何时使用 |
+| 原语 | 每 rank 字节数 | 步数 | 何时使用 |
 |-----------|---------------|-------|-------------|
-|Ring allreduce| 2T(N-1)/N | 2(N-1) |大 T、fat-pipe 同构集群 |
-|Tree allreduce | T log2(N) | 2 log2(N) |小 T 或高延迟链路 |
-|广播| T | log2(N) 树 |参数初始化，标量配置|
-|allgather| T(N-1)/N | N-1 |分片转发，ZeRO 取消分片 |
-|reduce_scatter | T(N-1)/N | N-1 | ZeRO 梯度分片 |
+| Ring allreduce | 2T(N-1)/N | 2(N-1) | 大 T、同构 fat-pipe 集群 |
+| Tree allreduce | T log2(N) | 2 log2(N) | 小 T 或高延迟链路 |
+| Broadcast | T | log2(N) tree | 参数初始化、标量配置 |
+| Allgather | T(N-1)/N | N-1 | 分片 forward、ZeRO unshard |
+| Reduce_scatter | T(N-1)/N | N-1 | ZeRO 梯度分片 |
 
-### 队列网格 en tant que remplacement de la NCCL
+### Utilisez la file d'attente en remplacement de la LCCL
 
-NCCL fonctionne sur PCIe et NVLink, et réduit le déchargement de matériel.`multiprocessing.Queue`Pour vous fournir des commandes avec un seul producteur et un seul consommateur, les points de livraison sont réduits dans l'espace utilisateur, vous devez donc payer Python, mais le mode de connexion avec le NCCL est réduit de manière similaire.
+NCCL 跑在PCIe 和 NVLink 上,归约可硬件卸载──在CPU上没有这些──环上每条边一个`multiprocessing.Queue`Il est possible d'obtenir un ordre de point par point de livraison, et seulement un seul producteur et un seul consommateur. Les conséquences se produisent en mode utilisateur, donc il faut payer Python, mais le mode de ligne et le ring NCCL réduisent tout de même.
 
-### 针对 gloo 进行验证
+### Pour faire des tests
 
-Chaque langue originale effectue un test de l'unité, en produisant des résultats similaires à ceux utilisés dans le même monde.`torch.distributed`Si votre ring réduit tous les déviations de l'angle par rapport à l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle de l'angle deant.
-
+Chaque langue originale est composée de plusieurs unités: dans le même monde, la même quantité de langue, la même production et la même utilisation.`torch.distributed`Pour le test, il est impossible de faire une erreur. Sans elle, le langage original aurait toujours été correct avant la course à la 1 000e étape.
 
 ```figure
 ci-ring-allreduce
@@ -63,67 +62,67 @@ ci-ring-allreduce
 
 `code/main.py`实现:
 
-- `Mesh`类,将 N 个 `multiprocessing.Queue`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `send(dst, tensor)`et `recv(src)`Il y a une autre.
-- `ring_allreduce(mesh, rank, world_size, tensor)`Il y a deux ou trois algorithmes.
-- Pour les arbres`broadcast(mesh, rank, world_size, tensor, src)`Il y a une autre.
-- `allgather(mesh, rank, world_size, tensor)`Utilisation de N-1 轮换
-- `reduce_scatter(mesh, rank, world_size, tensor)`作为allreduce的前半部分──
-- `_gloo_reference(op, world_size, tensor)`- Je suis là.`torch.distributed`运行相同输入,并使用 gloo 进行字节相等比较──
+- `Mesh`类:把 N 个 `multiprocessing.Queue`接成环,并按级 暴露 `send(dst, tensor)`Avec `recv(src)`Il y a une autre.
+- `ring_allreduce(mesh, rank, world_size, tensor)`Il y a deux fois.
+- `broadcast(mesh, rank, world_size, tensor, src)`Je vais à la forêt.
+- `allgather(mesh, rank, world_size, tensor)`Avec N-1 suivante
+- `reduce_scatter(mesh, rank, world_size, tensor)`Comme tout réduire de la première moitié.
+- `_gloo_reference(op, world_size, tensor)`: mettre la même entrée dans le monde`torch.distributed`, faire des épisodes
 
-Je vais le faire.
+运行:
 
 ```bash
 python3 code/main.py
 ```
 
-输出: comparer la liste des éléments de la liste et le tableau de l'échantillon 输出, suivi d'une preuve 2T(N-1) /N 缩放的每列节计计器──
+输出: selon le langage original, par rapport à la file d'attente et au tableau de bord 输出验证表, ainsi qu'à la preuve $2T(N-1)/N$缩放的每级 字节计数器──
 
-## 野外生产模式
+## Pratique dans le milieu de production
 
-Trois modes de rendre le fond assez solide, peut être livré.
+Trois modes permettent de rendre ces langues originales plus dures que possible.
 
-**在 allreduce 之前对梯度进行分桶。**Le modèle 1B a plusieurs milliers de niveaux de volume. Chaque niveaux de volume sont effectués une fois pour toutes. La durée du paiement est réduite de 25 MB. Le DDP émet un bloc de stockage de niveaux pour chaque bac de stockage.
+**allreduce 前先对梯度分桶。**Un modèle de 10 milliards de paramètres a des milliers de degrés de volume. Chaque degré de volume une fois réduit, doit payer N 倍延迟下限.
 
-**通信与计算重叠。**Rétrograde en fonction de l'ordre de la plateforme de calcul à niveau. Lorsque la dernière plateforme est prête, commencez à la réduire, tandis que la dernière continue à la calculer. PyTorch DDP la connecte au baril.
+**让通信与计算重叠。**Retour en arrière 按层反向逐层算梯度──最后一层梯度一就绪,就启动它的全部减小,同时下一层继续算──PyTorch DDP avec un crochet prêt à la bouteille 接上这个事──网络有余量时,重叠能把可见通信时间砍半──
 
-**根据消息大小而不是宗教来选择环或树。**Le NCCL fournit un détecteur de données, pouvant être supérieur à ~ 1 MB, supérieur à 1 MB, supérieur à 1 MB. Le transfert est de plus en plus large et plus long.
+**按消息大小选 ring 或 tree，不要教条。**NCCL Autoportrait de l'essai: environ 1 MB plus de bague de sélection, en bas de l'arbre de sélection.$2T(N-1)/N$占主导,ring 胜出; inférieur à 1 MB 时$\log_2(N)$J'ai écrit un livre qui a été écrit en gros.
 
 ## Utilisez-le
 
-Mode de production:
+Utilisation dans le produit:
 
-- **PyTorch DDP。**Dans le cadre de la réforme des normes de sécurité`dist.all_reduce`Pour 100 Gbits et sur le Net, 25 MB est raisonnable.
-- **DeepSpeed ZeRO。**发出减_scatter pour effectuer des fractions de la gradience, et effectuer avant le transfert tout le rassemblement pour reconstruire les paramètres complets.
-- **FSDP.**Avant de commencer à rassembler des morceaux de couches, calculer, puis utiliser un réducteur, réduire et abandonner les morceaux de couches.
+- **PyTorch DDP。**Retour en arrière  après pour la répartition des températures`dist.all_reduce`◊ bucket ⋅ 100Gbit 以太网下默认 25 MB 合理⋅
+- **DeepSpeed ZeRO。**发 réduire_scatter 分片梯度,avant 前再全部重建完整参数──本课的原语正是 ZeRO 实际发射调用──
+- **FSDP。**Avant tout rassembler, mettre cette couche en morceaux, calculer, reutiliser, réduire, disperser, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire, réduire.
 
-## 发货
+## Je le livre.
 
-Utilisation de la ligne de ligne de 77-81 课中队列网格原语──第 77 课把所有减少 接入 DDP──第 78 课把减少_scatter 接入 ZeRO──第 79 课用点对点发送和回复(而不是集体) 传递管道激活──第 81 课把这四者组合成端到端演示──
+Dans les cours de 7781  cours utilisent ces filets de filet de ligne  原语。第 77 课把 allreduce 接到DDP。第 78 课把 reduce_scatter 接到ZERO。第 79 课用点对点发送/recv(而不是集体) 传递管道 激活。第 81 课把四者组成端到端演示。
 
 ## 练习
 
-1. 添加tree allreduce变体,并根据消息大小在环和树之间切换──测量交叉──
-2. 添加 `recv_timeout_ms`, afin que le classement en panne apparaisse à l'erreur de date de clôture, plutôt que de rester suspendu à jamais.
-3. Je vais vous dire quatre choses.`multiprocessing.Queue`替换为 TCP 套接字──相同的测试,真线──
-4. 添加带宽检测挂, afin de pouvoir enregistrer chaque élément du compteur jusqu'à JSONL。
-5. Comparé à 1KB,1MB,16, le temps de la pendule de l'arbre avec 4 rangées de la taille de la taille de l'arbre.
+1. 增加 tree allreduce 变体,并按消息大小在 ring 与 tree 之间切换──测出交叉点──
+2. 增加 `recv_timeout_ms`Laissez le rang de l'homme se défaire de l'erreur, plutôt que de rester en suspens.
+3. Je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux dire, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux, je veux,`multiprocessing.Queue`Il est aussi un système de connexion TCP.
+4. Pour les autres, il faut mettre le nombre de points de l'échantillon en JSONL.
+5. Dans 4 rangs, le temps de comparaison entre le ring et le mur de l'arbre est de 1 KB, 1 MB, 16 MB.
 
 ## 关键术语
 
-|术语 |人们怎么说|它实际上意味着什么 |
+| 术语 | 人们常说 | 实际含义 |
 |------|----------------|------------------------|
-|allreduce| “跨等级总和”|调用后，每个等级都保留相同的简化张量 |
-|戒指| “快速拓扑”| N-1 个大小为 T/N 的块绕周期流动两次 |
-|树| “日志拓扑”|归约遵循二叉树；深度为 log2(N) 跳 |
-|allgather| “连接碎片”|每个等级都以其他等级的碎片结束 |
-|reduce_scatter | “平分总和”|每个排名仅以一个块的总和结束 |
-|桶| “融合小张量”|将N个小的全部合并为一个大的|
+| Allreduce | “跨 rank 求和” | 调用结束后每个 rank 持有相同的归约张量 |
+| Ring | “更快的拓扑” | N-1 个大小为 T/N 的 chunk 绕环流两圈 |
+| Tree | “对数拓扑” | 归约沿二叉树进行；深度为 log2(N) 跳 |
+| Allgather | “拼接分片” | 每个 rank 最终持有所有其他 rank 的分片 |
+| Reduce_scatter | “把求和切开” | 每个 rank 最终只持有某一个 chunk 的求和 |
+| Bucket | “融合小张量” | 把 N 次小 allreduce 合并成一次大的 |
 
-##  ultérieur
+## 延伸阅读
 
-- [PyTorch 分布式：NCCL 集体](https://pytorch.org/docs/stable/distributed.html#collective-functions)
-- [Horovod环全减纸](https://arxiv.org/abs/1802.05799)
-- NCCL拓和算法选择]https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/index.html)
-- [Patarasuk 和 Yuan，带宽最优 allreduce 算法](https://www.cs.fsu.edu/~xyuan/paper/09jpdc.pdf)
-- 第 10 阶段 第 05 课 - Répartition de la formation
-- 第19 阶段 第77 课 - DDP 连接在这些原语之上
+- [PyTorch Distributed: NCCL collectives](https://pytorch.org/docs/stable/distributed.html#collective-functions)
+- [Horovod ring allreduce paper](https://arxiv.org/abs/1802.05799)
+- [NCCL topology and algorithm selection](https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/index.html)
+- [Patarasuk and Yuan, Bandwidth optimal allreduce algorithms](https://www.cs.fsu.edu/~xyuan/paper/09jpdc.pdf)
+- Phase 10 Leçon 05 - aperçu de la formation distribuée
+- L'étape 19 - Leçon 77 - DDP câblé sur ces primitifs
