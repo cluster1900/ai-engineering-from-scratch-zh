@@ -179,9 +179,9 @@
     },
     {
       "number": 3,
-      "title": "The KV Cache",
-      "thesis": "Memory, not compute, decides how many users one GPU can serve, and the radix tree decides how much of that memory you pay for twice.",
-      "summary": "Bytes per token, startup sizing, RadixCache, prefix-friendly prompts, eviction and HiCache, and hybrid models.",
+      "title": "KV 缓存",
+      "thesis": "决定一块 GPU 能服务多少用户的是内存，不是算力，而 radix 树决定那份内存你付了多少遍。",
+      "summary": "每 token 字节数、启动时的容量划分、RadixCache、前缀友好的 prompt、逐出与 HiCache，以及混合模型。",
       "accent": "green",
       "sections": [
         {
@@ -212,9 +212,9 @@
     },
     {
       "number": 4,
-      "title": "Each Forward Pass",
-      "thesis": "Most decode time is launch overhead and memory traffic, so SGLang picks graphs, kernels, and draft tokens for your GPU before you ask.",
-      "summary": "ForwardMode and CUDA graphs, attention backends, quantization, speculative decoding, structured outputs, and deterministic inference.",
+      "title": "每一次前向",
+      "thesis": "多数 decode 时间是启动开销和内存流量，所以 SGLang 在你开口之前就为你的 GPU 选好 graphs、内核和 draft token。",
+      "summary": "ForwardMode 与 CUDA graphs、attention 后端、量化、speculative decoding、结构化输出，以及确定性推理。",
       "accent": "violet",
       "sections": [
         {

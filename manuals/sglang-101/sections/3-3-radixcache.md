@@ -1,14 +1,14 @@
 # RadixCache
 
-> RadixCache indexes every cached token run in a tree, so a new request reuses the longest matching prefix and prefills only the tokens after it.
+> RadixCache 把每一段缓存的 token 行程索引成一棵树，所以新请求复用最长匹配前缀，只 prefill 它后面的 token。
 
-A chat product sends the same 2,000-token system prompt with every question. A server without prefix reuse computes those 2,000 tokens for every request, and every user waits for the same work again. On our Mac, that repeated work made a shared-prefix benchmark take 129.7 seconds. With the radix cache on, the same benchmark took 48.8 seconds.
+一个聊天产品每次提问都带同一段 2,000 token 的 system prompt。没有前缀复用的服务器会对每条请求都算那 2,000 个 token，每个用户都为同一份活再等一遍。在我们的 Mac 上，那份重复的活让共享前缀基准跑了 129.7 秒。打开 radix cache 后，同一基准只要 48.8 秒。
 
-When you finish this section, you can explain how the tree finds a prefix and why a running request keeps its prefix. You can also say how eviction removes cached tokens. You can also read the scheduler log lines that prove a hit.
+读完本节后，你能解释树如何找到前缀，以及为什么正在跑的请求会保住自己的前缀。你也能说出逐出如何删掉缓存的 token。你还能读证明命中的调度器日志行。
 
-## The same workload with and without the tree
+## 有树和没有树的同一工作负载 {#s-radixcache-the-same-workload-with-and-without-the-tree}
 
-The capture kit runs SGLang's own shared-prefix benchmark twice. Four groups of 16 prompts share a 2,048-token system prompt per group, and each prompt adds a 128-token question. The second server starts with `--disable-radix-cache`.
+Capture kit 把 SGLang 自己的共享前缀基准跑两遍。四组各 16 条 prompt，每组共享一段 2,048 token 的 system prompt，每条再加 128 token 的问题。第二台服务器用 `--disable-radix-cache` 启动。
 
 | Result | Radix cache on | --disable-radix-cache |
 |---|---|---|
@@ -17,7 +17,7 @@ The capture kit runs SGLang's own shared-prefix benchmark twice. Four groups of 
 | P99 time to first token | 3,277 ms | 13,548 ms |
 | Output tokens per second | 83.91 | 31.59 |
 
-We measured a 2.7 times shorter run and a 5.3 times shorter median wait for the first token. The scheduler log shows where the time went.
+我们测到运行短了 2.7 倍，等首 token 的中位时间短了 5.3 倍。调度器日志说明时间花在哪里。
 
 ```listing
 title: one prefill batch with the radix cache
@@ -39,7 +39,7 @@ note: Three consecutive lines from the same benchmark with --disable-radix-cache
 [2026-10-16 14:02:38] Prefill batch, #new-seq: 2, #new-token: 3787, #cached-token: 0, token usage: 0.10, #running-req: 6, #queue-req: 0, #pending-token: 0, cuda graph: False, input throughput (token/s): 1626.02
 ```
 
-With the tree, seven new requests needed 955 new tokens, and 15,102 tokens came from the cache. Without the tree, the scheduler filled three batches of up to 4,096 tokens for eight requests, all computed from zero. The 4,096 is the chunked prefill size from [section 2.2](#s-the-scheduler-loop-and-schedule-policy).
+有树时，七条新请求需要 955 个新 token，15,102 个 token 来自缓存。没有树时，调度器为八条请求填了三批最多 4,096 个 token，全部从零算起。那个 4,096 就是 [第 2.2 节](#s-the-scheduler-loop-and-schedule-policy) 的分块 prefill 大小。
 
 ```figure
 id: fig-3-3
@@ -49,9 +49,9 @@ claim: The radix cache cut the shared-prefix benchmark from 129.7 to 48.8 second
 caption: Read each pair of bars left to right. Both runs used the same 64 prompts on the same Mac. From capture/out/bench-shared-prefix.txt and capture/out/no-radix-cache-bench-shared-prefix.txt.
 ```
 
-## The same test on a 24 GB L4
+## 在 24 GB L4 上的同一测试 {#s-radixcache-the-same-test-on-a-24-gb-l4}
 
-A Mac makes every prefill slow, so we repeated the test on an NVIDIA L4 with `Qwen/Qwen3-8B`. This time we changed the length of the shared system prompt from 0 to 4,096 tokens. Each run had four groups of 16 prompts, a 128-token question, 64 output tokens, and a cap of eight concurrent requests. We ran three seeds per length.
+Mac 会让每次 prefill 都慢，所以我们在一块 NVIDIA L4 上用 `Qwen/Qwen3-8B` 重跑了测试。这次我们把共享 system prompt 的长度从 0 变到 4,096 个 token。每次运行有四组各 16 条 prompt、128 token 的问题、64 个输出 token，以及最多八条并发请求。每个长度跑三个种子。
 
 ```listing
 title: prefill on the L4 with the radix cache
@@ -73,7 +73,7 @@ note: Two lines from the run with a 4,096-token shared prompt. Timestamps are cu
 … Prefill batch, #new-seq: 2, #new-token: 4096, #cached-token: 0, token usage: 0.74, #running-req: 2, #queue-req: 0, #pending-token: 1431, cuda graph: True, input throughput (token/s): 1634.70
 ```
 
-In this run the L4 prefilled about 1,600 tokens per second, on a card that was throttling. Each 4,096-token batch cost about 2.5 seconds, and without the tree every request paid for its full prompt.
+有树时，L4 大约每秒 prefill 1,600 个 token，卡还在节流。每批 4,096 token 大约要 2.5 秒，没有树时每条请求都要为整段 prompt 付钱。
 
 ```figure
 id: fig-3-3c
@@ -89,28 +89,28 @@ caption: Median TTFT against the shared prompt length, three seeds per point, on
 | 1,024 | 462 ms | 2,202 ms | 105.76 | 70.15 |
 | 4,096 | 479 ms | 14,706 ms | 88.87 | 20.80 |
 
-The median SM clock was 1,440 MHz with the cache and 930 MHz without it at 4,096 shared tokens. Every seed of the run without the cache stayed under our floor of 1,000 MHz.
+有缓存时中位 SM 时钟是 1,440 MHz，没有缓存、共享 4,096 token 时是 930 MHz。没有缓存的运行每个种子都停在我们 1,000 MHz 的地板之下。
 
-**We measured** a 30.7 times shorter median wait and 4.3 times the throughput at 4,096 shared tokens. Treat both factors as upper bounds. The run without the cache had a thermal throttle flag in 62 percent of its samples and a 35 percent lower clock. A cool card would shrink the factor, but a 35 percent clock gap cannot explain a factor of 30. With no shared prompt, the median TTFT differed by 8 percent, inside the seed spread, and the throughput was the same.
+**我们测到** 在 4,096 共享 token 时，中位等待短了 30.7 倍，吞吐是 4.3 倍。把两个倍数都当成上界。没有缓存的运行有 62% 的样本带热节流旗标，时钟低 35%。凉快的卡会缩小倍数，但 35% 的时钟差距解释不了 30 倍。没有共享 prompt 时，中位 TTFT 差 8%，在种子散布内，吞吐相同。
 
-The same sweep on the GB10 with `Qwen/Qwen3-30B-A3B-Instruct-2507` gave a smaller factor. At 4,096 shared tokens, the median TTFT was 589 ms with the tree and 5,208 ms without it, 8.8 times. The output rate was 120.66 against 49.73 tok/s. The server without the tree ran a day after the other one. It ran at a median clock of 2,376 MHz, with a throttle flag in 37 percent of its samples. The server with the tree ran at 2,496 MHz.
+在 GB10 上用 `Qwen/Qwen3-30B-A3B-Instruct-2507` 做同样的扫描，倍数更小。在 4,096 共享 token 时，有树的中位 TTFT 是 589 ms，没有是 5,208 ms，8.8 倍。输出速率是 120.66 对 49.73 tok/s。没有树的服务器比另一台晚一天跑。它的中位时钟是 2,376 MHz，37% 的样本有节流旗标。有树的服务器跑在 2,496 MHz。
 
-Our hypothesis for these two cards is that prefill was cheaper on the GB10. That model activates about 3 billion parameters per token, so each repeated prompt cost less to compute again. Two confounds remain: the throttled L4 run without the cache inflates the L4 factor, and the GB10 pair ran on two days at different clocks.
+我们对这两块卡的假设是：GB10 上 prefill 更便宜。那个模型每个 token 大约激活 30 亿参数，所以每条重复的 prompt 再算一遍代价更小。还有两个混淆：没有缓存时被节流的 L4 运行抬高了 L4 的倍数，GB10 那一对在两天、不同时钟上跑。
 
-## The tree
+## 树 {#s-radixcache-the-tree}
 
-**RadixCache:** a radix tree over token sequences, whose nodes hold the KV slot indices of the tokens on their edges. The design comes from the SGLang paper, which calls the mechanism RadixAttention {{paper}}. A radix tree stores runs of tokens on its edges, so one node can hold a whole system prompt.
+**RadixCache：** 建在 token 序列上的 radix tree，节点持有边上那些 token 的 KV 槽下标。设计来自 SGLang 论文，它把机制叫 RadixAttention {{paper}}。Radix tree 把 token 行程存在边上，所以一个节点可以装下整段 system prompt。
 
-**TreeNode:** one node of the tree. It holds its children, keyed by their first token, and the token run on its edge {{code}}. It also holds the KV slot indices for those tokens, a lock count, a last-access time, and a hit count.
+**TreeNode：** 树上的一个节点。它持有子节点（按第一个 token 作键）、以及边上的 token 行程 {{code}}。它还持有那些 token 的 KV 槽下标、锁计数、上次访问时间和命中计数。
 
-Four operations do all the work.
+四项操作做完所有活。
 
-1. **match_prefix** walks from the root and follows the child whose first token matches. If the match ends inside an edge, it splits that node so the boundary is exact. Every node on the path gets a new access time.
-2. **insert** walks the same way and adds a leaf for the tokens that did not match. If another request already inserted the same tokens, SGLang frees the duplicate slots and points the request at the tree's copy.
-3. **inc_lock_ref** and **dec_lock_ref** count the running requests that use a node. A count above zero protects the whole path to the root.
-4. **evict** frees leaves that no request locks, oldest first, and moves up the branch as leaves disappear.
+1. **match_prefix** 从根走起，跟着第一个 token 匹配的子节点。如果匹配停在一条边内部，就切开那个节点，好让边界精确。路径上每个节点都得到新的访问时间。
+2. **insert** 同样走一遍，并为未匹配的 token 加一片叶子。如果另一条请求已经插入了同样的 token，SGLang 释放重复的槽，并把请求指到树上的那份。
+3. **inc_lock_ref** 和 **dec_lock_ref** 计使用某个节点的正在跑的请求。计数大于零时保护到根的整条路径。
+4. **evict** 释放没有请求锁住的叶子，最老的先，叶子消失后再往上走。
 
-One rule surprises people. A match can cover at most the prompt length minus one {{code}}. The last prompt token always goes through prefill, because the model needs its logits to sample the first output token. Our cache experiment shows that rule: a 2,999-token prompt reported 2,998 cached tokens and 1 new token.
+有一条规则让人吃惊。一次匹配最多覆盖 prompt 长度减一 {{code}}。最后一个 prompt token 永远走 prefill，因为模型需要它的 logits 来采样第一个输出 token。我们的缓存实验展示了这条规则：2,999 token 的 prompt 报告 2,998 个缓存 token 和 1 个新 token。
 
 ```figure
 id: fig-3-3b
@@ -120,9 +120,9 @@ claim: Two running requests share one system-prompt node, and the tree splits ex
 caption: Read from the root down. Numbers on nodes are lock counts while two requests of group 1 run. Mechanism from RadixCache at v0.5.22, token counts from the settings of our shared-prefix benchmark.
 ```
 
-## Which tree you get at v0.5.22
+## 在 v0.5.22 你拿到哪棵树 {#s-radixcache-which-tree-you-get-at-v0-5-22}
 
-The class name in old blog posts and issues is `RadixCache`. At v0.5.22 the default is `UnifiedRadixCache`, one tree that also handles sliding-window and Mamba state {{code}}. The tree walks run in a Rust core by default since v0.5.21. The log on our Mac shows the exception.
+旧博客和 issue 里的类名是 `RadixCache`。在 v0.5.22 默认是 `UnifiedRadixCache`，一棵也处理 sliding-window 和 Mamba 状态的树 {{code}}。从 v0.5.21 起，树的行走默认在 Rust 核心里跑。我们 Mac 上的日志展示了例外。
 
 ```listing
 title: the tree on the capture Mac
@@ -135,29 +135,29 @@ note: Three lines from the startup log of the default configuration.
 [2026-10-16 13:58:06] Tree cache initialized: source=default impl=UnifiedRadixCache hybrid_swa=False hybrid_ssm=False hicache_attached=False
 ```
 
-The no-cache server printed the same three lines. `--disable-radix-cache` still builds `UnifiedRadixCache`, in a disabled mode that matches nothing and inserts nothing. The separate `ChunkCache` class that older posts describe was deleted on 2026-10-08 {{issue #43201}}.
+没有缓存的服务器打出同样三行。`--disable-radix-cache` 仍然建 `UnifiedRadixCache`，只是处于什么都不匹配、什么都不插入的禁用模式。更老的帖子描述的单独 `ChunkCache` 类在 2026-10-08 被删掉了 {{issue #43201}}。
 
-## How the scheduler uses the tree
+## 调度器如何用树 {#s-radixcache-how-the-scheduler-uses-the-tree}
 
-The default `--schedule-policy` is `fcfs`, first come, first served {{code}}. The paper's longest-prefix-match order, `lpm`, is a choice you make. The code sorts by prefix length only while 128 or fewer requests wait, because matching every waiting request costs time {{code}}. Above that, `lpm` uses the FCFS order.
+默认的 `--schedule-policy` 是 `fcfs`，先到先服务 {{code}}。论文里的 longest-prefix-match 顺序 `lpm` 是你自己的选择。代码只在等待请求不超过 128 时按前缀长度排序，因为匹配每条等待请求都要花时间 {{code}}。超过那个数，`lpm` 就用 FCFS 顺序。
 
-The scheduler also avoids a waste inside one round. When several waiting requests share a prefix that is not cached yet, it lets one of them prefill the shared part first. The others reuse it in the next round. [Section 2.2](#s-the-scheduler-loop-and-schedule-policy) covers the policies in full.
+调度器还避免一圈里的浪费。当好几条等待请求共享一段尚未缓存的前缀时，它让其中一条先 prefill 共享部分。其他的在下一圈复用。[第 2.2 节](#s-the-scheduler-loop-and-schedule-policy) 完整覆盖这些策略。
 
-## Our position: leave the radix cache on
+## 我们的立场：保持 radix cache 开着 {#s-radixcache-our-position-leave-the-radix-cache-on}
 
-In our runs without a shared prompt, on the L4 and on the GB10, the cache cost nothing measurable. We did not test its cost under heavy eviction. Cached tokens live in the same pool as running requests, and eviction frees them on demand. We know of one reason to turn it off: to test whether a wrong answer comes from reused KV. Even then, try `--kv-canary log` first, which checks KV slots for corruption while the cache stays on {{code}}.
+在我们没有共享 prompt 的运行里，在 L4 和 GB10 上，缓存测不到代价。我们没有在重度逐出下测它的代价。缓存的 token 和正在跑的请求住在同一个 pool 里，逐出按需释放它们。我们知道一个关掉它的理由：测试错误答案是不是来自复用的 KV。即便那时，也先试 `--kv-canary log`，它在缓存开着时检查 KV 槽是否损坏 {{code}}。
 
-Then measure the hit rate together with every other feature you add. Issue #32459 is the warning {{issue #32459}}. A team that replayed multi-turn agent traffic saw a deep-prompt hit rate of 97 percent without speculative decoding, and 40 to 53 percent with EAGLE. Input throughput fell from 43,981 to 12,881 tokens per second, with no error in the logs. The candidate cause was the extra KV that speculative decoding reserves, which forced the tree to evict cached prompts.
+然后每加一个功能都一起测命中率。Issue #32459 就是警告 {{issue #32459}}。一个团队回放多轮智能体流量时，没有 speculative decoding 的深 prompt 命中率是 97%，开了 EAGLE 是 40% 到 53%。输入吞吐从每秒 43,981 降到 12,881 个 token，日志里没有错误。候选原因是 speculative decoding 预留的额外 KV，迫使树逐出已缓存的 prompt。
 
-Field reports put the folklore in proportion. vLLM also reuses prefixes, so engine comparisons measure two caches against each other. One independent test of 16 models on an A10G found SGLang ahead on repeated prefixes {{field Varad More 2026-04}}. The gain was 20 to 40 ms of first-token time at 7B to 9B. A RunPod test of a 70B model with a cached 7,000-token context measured 35.0 against 32.8 tokens per second per stream {{field RunPod 2025-06}}. The SGLang paper reports up to 6.4 times higher throughput {{paper}}, which is the authors' best case against the systems of 2024.
+现场报告把传说放进比例。vLLM 也复用前缀，所以引擎对比测的是两套缓存互相比较。一次在 A10G 上对 16 个模型的独立测试发现，SGLang 在重复前缀上领先 {{field Varad More 2026-04}}。收益是 7B 到 9B 上首 token 时间少 20 到 40 ms。RunPod 对带缓存的 7,000 token 上下文的 70B 模型测到每流每秒 35.0 对 32.8 个 token {{field RunPod 2025-06}}。SGLang 论文报告吞吐最高高 6.4 倍 {{paper}}，那是作者相对 2024 年那些系统的最佳情况。
 
 ```takeaways
-- Leave the radix cache on, and turn it off only to isolate a KV bug.
-- Expect the gain to grow with the length of the shared prompt.
-- Read #cached-token and #new-token in prefill lines to prove a hit.
-- Expect the last prompt token to prefill, even on a full hit.
-- Choose lpm only for offline batches with shared prefixes and short queues.
-- Measure the hit rate again after you add speculative decoding.
+- 保持 radix cache 开着，只有为了隔离 KV bug 时才关掉。
+- 预期收益随共享 prompt 的长度增长。
+- 读 prefill 行里的 #cached-token 和 #new-token 来证明命中。
+- 预期最后一个 prompt token 会 prefill，即便是完整命中。
+- 只在有共享前缀、队列短的离线批上选 lpm。
+- 加了 speculative decoding 之后再测一次命中率。
 ```
 
 Sources: python/sglang/srt/mem_cache/radix_cache.py (TreeNode, match_prefix, insert, evict, inc_lock_ref), python/sglang/srt/mem_cache/unified_radix_cache.py, python/sglang/srt/mem_cache/unified_cache/tree_core_registry.py, python/sglang/srt/mem_cache/registry.py, python/sglang/srt/managers/schedule_batch.py (_compute_max_prefix_len), python/sglang/srt/managers/schedule_policy.py, python/sglang/srt/arg_groups/fields/schedule.py at v0.5.22, capture/out/bench-shared-prefix.txt, capture/out/no-radix-cache-bench-shared-prefix.txt, capture/out/server-default.log, capture/out/server-no-radix-cache.log, capture/out/cache-experiment.txt, the SGLang paper (arXiv 2312.07104), issues #32459 and #43201, the RunPod report of 2025-06-15, the Varad More benchmark of 2026-04-22. capture/gpu/out-l4/server-prefix-default.log, capture/gpu/out-l4/server-prefix-no-radix-cache.log, capture/gpu/summary/l4.json. capture/gpu/summary/gb10.json.
