@@ -74,4 +74,4 @@ Every term is defined once, in the section the last column names. The meanings c
 | Weight quantization | Storing the model weights in fewer bits, such as FP8, FP4, or INT4 | [4.3](#s-quantization) |
 | Weight-update session | `begin_weight_update`, one or more `update_weights_from_*` calls, then `end_weight_update` | [7.2](#s-sglang-as-an-rl-rollout-engine) |
 
-Sources: the term definitions in every file under sections/, front.md.
+Sources: the term definitions in every file under sections/; front.md.

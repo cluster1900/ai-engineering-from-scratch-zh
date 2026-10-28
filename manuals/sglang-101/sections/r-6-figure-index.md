@@ -18,4 +18,4 @@ Each row links to its figure, and the claim is the `claim:` field of each figure
 ```figure-index
 ```
 
-Sources: the figure blocks of front.md and of every file under sections/, manual.json (palette)
+Sources: the figure blocks of front.md and of every file under sections/; manual.json (palette)

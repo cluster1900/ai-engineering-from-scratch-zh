@@ -126,4 +126,4 @@ The issues are in [the incident index](#s-ref-incident-index). These pull reques
 | RadixArk | [Miles v0.1](https://www.lmsys.org/blog/2026-08-18-miles-v0-1/) | 2026-08 | [7.2](#s-sglang-as-an-rl-rollout-engine) |
 | The Miles team | `docs/advanced/p2p-weight-transfer.md` at Miles v0.1.2 | 2026-10 | [7.2](#s-sglang-as-an-rl-rollout-engine) |
 
-Sources: front.md, the Sources line and the citations of every file under sections/.
+Sources: front.md; the Sources line and the citations of every file under sections/.

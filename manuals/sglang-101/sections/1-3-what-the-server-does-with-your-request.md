@@ -110,4 +110,4 @@ caption: Read top to bottom. Numbers are from our L4 request in section 1.1. Fro
 - 当你的 prompt 共享前缀时选 SGLang，不共享时先测再选。
 ```
 
-Sources: capture/out/bench-random-c1.txt, capture/out/generate.txt, capture/out/server-default.log, capture/gpu/out-l4/server-default.log, python/sglang/benchmark/serving.py and python/sglang/srt/entrypoints/http_server.py at v0.5.22, AIMultiple, "LLM Inference Engines" (https://aimultiple.com/inference-engines, 2026-01-25), capture/gpu/summary/l4.json (load.default)
+Sources: capture/out/bench-random-c1.txt, capture/out/generate.txt, capture/out/server-default.log, capture/gpu/out-l4/server-default.log; python/sglang/benchmark/serving.py and python/sglang/srt/entrypoints/http_server.py at v0.5.22; AIMultiple, "LLM Inference Engines" (https://aimultiple.com/inference-engines, 2026-01-25), capture/gpu/summary/l4.json (load.default)

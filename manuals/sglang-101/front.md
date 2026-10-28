@@ -62,4 +62,4 @@ claim: Each arrow style marks one kind of exchange, and every label is a real na
 caption: Read each numbered row from the tail of the arrow to its head, and the note under each label names the style. From capture/out/cache-experiment.txt, server-default.log, and the out-of-memory run in section 3.2.
 ```
 
-Sources: manual.json, capture/gpu/out-l4/server-default.command.txt, capture/gpu/out-l4/generate.txt, capture/out/serve-help.txt, cache-experiment.txt, server-default.log, docs/docs/get-started/install.mdx at v0.5.22.
+Sources: manual.json; capture/gpu/out-l4/server-default.command.txt, capture/gpu/out-l4/generate.txt; capture/out/serve-help.txt, cache-experiment.txt, server-default.log; docs/docs/get-started/install.mdx at v0.5.22.

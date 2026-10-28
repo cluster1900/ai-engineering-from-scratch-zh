@@ -46,4 +46,4 @@ After the shared-prefix benchmark, [the default server](manuals/sglang-101/captu
 
 The counters cover the whole life of each server, and the two servers ran different sets of benchmarks before the scrape. The default server counted 286,134 prompt tokens, 286,102 streamed plus 32. Of those, 182,079 came from the cache, a lifetime ratio of 0.64. Each counter appears once per label set, so sum the rows before you divide.
 
-Sources: python/sglang/srt/observability/ at v0.5.22, capture/out/metrics.txt, no-radix-cache-metrics.txt, small-pool-metrics.txt.
+Sources: python/sglang/srt/observability/ at v0.5.22; capture/out/metrics.txt, no-radix-cache-metrics.txt, small-pool-metrics.txt.

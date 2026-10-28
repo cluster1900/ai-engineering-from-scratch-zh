@@ -59,4 +59,4 @@ Many defaults are `None` in the code. A startup hook replaces them with a value 
 | `--enable-metrics` | `False` | `True`, set by the kit | always in production | [5.2](#s-the-metrics-endpoint) |
 | `--watchdog-timeout` | 300 s | 300 s | a single forward pass can take longer than five minutes | [7.1](#s-operating-sglang) |
 
-Sources: python/sglang/srt/arg_groups/fields/schedule.py, memory.py, exec_.py, model.py, parallel.py, spec.py, serving.py, observability.py, device.py at v0.5.22, capture/out/serve-help.txt, server-default.log, server-small-pool.log.
+Sources: python/sglang/srt/arg_groups/fields/schedule.py, memory.py, exec_.py, model.py, parallel.py, spec.py, serving.py, observability.py, device.py at v0.5.22; capture/out/serve-help.txt, server-default.log, server-small-pool.log.

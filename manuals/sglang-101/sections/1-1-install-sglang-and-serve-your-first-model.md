@@ -252,4 +252,4 @@ SGLANG_USE_MLX=1 sglang serve --model-path mlx-community/Qwen3-0.6B-4bit \
 - 改任何设置之前，先把你的第一批答案与录制的答案对比。
 ```
 
-Sources: capture/gpu/out-gb10/sglang-version.txt, capture/gpu/out-l4/server-default.command.txt, capture/gpu/out-l4/server-default.log, capture/gpu/out-l4/generate.txt, capture/gpu/out-l4/environment.json, capture/one_request.py, capture/gpu/incidents/l4-toolchain-failures.txt, capture/out/generate.txt, docs/docs/get-started/install.mdx and docs/docs/get-started/quickstart.mdx at v0.5.22, docs/docs/hardware-platforms/apple_metal.mdx and python/pyproject_other.toml at v0.5.22.
+Sources: capture/gpu/out-gb10/sglang-version.txt, capture/gpu/out-l4/server-default.command.txt, capture/gpu/out-l4/server-default.log, capture/gpu/out-l4/generate.txt, capture/gpu/out-l4/environment.json, capture/one_request.py, capture/gpu/incidents/l4-toolchain-failures.txt, capture/out/generate.txt; docs/docs/get-started/install.mdx and docs/docs/get-started/quickstart.mdx at v0.5.22; docs/docs/hardware-platforms/apple_metal.mdx and python/pyproject_other.toml at v0.5.22.

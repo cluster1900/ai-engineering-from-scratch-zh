@@ -86,4 +86,4 @@ Citations name a place. `{{issue #35129}}` names an issue in the SGLang reposito
 
 Figures animate on the web, where a Replay button runs the steps again. Print and reduced motion show the final frame.
 
-Sources: manual.json, capture/README.md, capture/run.py, capture/gpu/run.py, capture/gpu/sweep.py, capture/gpu/summarize.py, capture/gpu/summarize_miles.py, capture/gpu/out-gb10/environment.json, capture/gpu/out-l4/environment.json, capture/out/environment.json, server-no-overlap.log.
+Sources: manual.json; capture/README.md; capture/run.py; capture/gpu/run.py, capture/gpu/sweep.py, capture/gpu/summarize.py, capture/gpu/summarize_miles.py, capture/gpu/out-gb10/environment.json, capture/gpu/out-l4/environment.json; capture/out/environment.json, server-no-overlap.log.

@@ -127,4 +127,4 @@ Read every new metric in its HELP text and in the code before you build on it. N
 - Compare queue time and TTFT of the same requests to see how much latency is waiting.
 ```
 
-Sources: python/sglang/srt/arg_groups/fields/observability.py (enable_metrics), python/sglang/srt/managers/scheduler_components/metrics_reporter.py (cache hit rate and utilization), python/sglang/srt/observability/metrics_collector.py, all at v0.5.22 (baa9befa), capture/out/metrics.txt, capture/out/no-radix-cache-metrics.txt, capture/out/server-default.command.txt, issues #35884 and #22511.
+Sources: python/sglang/srt/arg_groups/fields/observability.py (enable_metrics), python/sglang/srt/managers/scheduler_components/metrics_reporter.py (cache hit rate and utilization), python/sglang/srt/observability/metrics_collector.py, all at v0.5.22 (baa9befa); capture/out/metrics.txt, capture/out/no-radix-cache-metrics.txt, capture/out/server-default.command.txt; issues #35884 and #22511.
