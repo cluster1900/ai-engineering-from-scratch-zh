@@ -4,7 +4,7 @@
 
 你手写了 `capture/fixtures/wasm/ledger.wat`，带与 `ledger.c` 同样的四个函数，并用 `wat2wasm` 把它汇编成 `ledger.wasm`。你请 rea 6.7.0 检查该模块，在 CLI 上与经 MCP，两个入口返回同一份 Evidence 记录。读完本节后，你能设置 WABT provider 并读该记录。你也能说出该记录不证明什么。
 
-## Setup {#s-inspect-wasm-artifact-setup}
+## 准备 {#s-inspect-wasm-artifact-setup}
 
 WebAssembly 不是原生目标。对模块的 `open_binary` 返回带约束 `wasm_requires_static_inspection` 的 `target_unavailable`，且错误点名要做的 `inspect_wasm_artifact` 调用。该工具需要你自己安装的三个 WABT 程序。把 `REA_WABT_BIN_DIRECTORY` 设为持有 `wasm-validate`、`wasm-objdump` 与 `wasm2wat` 的绝对目录。只有当该变量是绝对路径时工具才可用，且 `binary_session` 报告该可用性。
 
@@ -26,7 +26,7 @@ $ /opt/homebrew/bin/wasm2wat --version
 [exit 0]
 ```
 
-## The command and the record {#s-inspect-wasm-artifact-the-command-and-the-record}
+## 命令与记录 {#s-inspect-wasm-artifact-the-command-and-the-record}
 
 CLI 命令是 `rea inspect-wasm-artifact PATH`。在捕获里它在大约两秒后以 0 退出，并打印一份 Evidence 记录。
 
@@ -74,7 +74,7 @@ note: The ids and digests are cut to eight characters. The normalized_result fol
 
 主体格式是 `file`，体系结构是 `null`，因为没有原生格式适用。provider 版本点名 WABT 发行版。该记录是 `observed`，权威为 `shipped-artifact`，因为磁盘上的字节是源。两个空数组是可选输入。`glue_paths` 点名其 `.wasm` 字符串字面量 rea 会链到候选模块的那些 JavaScript 文件，而 `candidate_paths` 点名那些模块。
 
-## What rea ran {#s-inspect-wasm-artifact-what-rea-ran}
+## rea 跑了什么 {#s-inspect-wasm-artifact-what-rea-ran}
 
 rea 把模块复制进私有工作区，作为只读的 `module.wasm`。然后它从 `REA_WABT_BIN_DIRECTORY` 点名的目录跑三个程序。每一个程序必须正好打印 `1.0.42` 作为其版本。如果有一个不打印，rea 就不跑它。`tool_profile` 记录跑了什么。
 
@@ -110,7 +110,7 @@ note: The source commit, the digests, and the wasm-objdump and wasm2wat entries 
 
 rea 在每个程序之前与之后检查副本的摘要。它也在命令之后再次检查每个程序的摘要。摘要标识程序的字节。它不证明谁发布了该程序。
 
-## Sections {#s-inspect-wasm-artifact-sections}
+## 各 section {#s-inspect-wasm-artifact-sections}
 
 `sections` 数组持有七个 section，带着它们的字节范围以及每一个里的条目计数。
 
@@ -154,7 +154,7 @@ note: The Function, Memory, Export, and Code entries are cut. They start at 41, 
 
 该文件是 290 字节。魔数与版本的八个字节在最前。每一个 section 以一字节 id 与一个长度开始，载荷跟着。因此 Type 载荷从偏移 `0x0a` 开始，也就是 10。数据段在地址 1024 持有五个等级标签，相隔两个字节。
 
-## The typed interface {#s-inspect-wasm-artifact-the-typed-interface}
+## 带类型的接口 {#s-inspect-wasm-artifact-the-typed-interface}
 
 该记录把导入与导出持有两次。`imports` 与 `exports` 数组保留精确的 WAT 形式。`interface` 条目为每一个加上方向、索引，以及一份已解析签名。
 
@@ -208,7 +208,7 @@ note: The memory export and three function exports are cut.
 
 `percent_change` 接受两个 `i32` 值并返回一个，与 C 函数同样的形状。导入 `env.log` 是函数 0，所以模块的四个函数是 1 到 4。第二个工具 `compare_wasm_interfaces` 读两份这样的记录，并把每一个导入与导出报告为 added、removed、changed 或 unchanged。它不读文件，也不跑任何 WABT 程序。
 
-## The WAT {#s-inspect-wasm-artifact-the-wat}
+## WAT 文本 {#s-inspect-wasm-artifact-the-wat}
 
 `wat` 字段持有 `wasm2wat` 打印的文本、其 SHA-256 `37eab56a…`，以及表示 `decoded-wat`。`percent_change` 的体是栈形式上的 C 函数。它测试第一个参数是否为零。然后它压入 0，或者计算减法、乘以 100，以及有符号除法。
 
@@ -236,7 +236,7 @@ note: Cut from normalized_result.wat.text. The other three function bodies are c
 
 文本形式里有两样东西呼应第 4 部分。`grade` 体是带十二个目标的 `br_table`，也就是 clang 为 `ledger-x86_64-O1.o` 里同一个 `switch` 构建的跳转表的 WebAssembly 形式。`grade_label` 体调用函数 2，然后调用函数 0，也就是导入的 `env.log`。然后它把等级的两倍加到 1024，也就是数据段的地址，每个标签两个字节。你可以在没有反编译器的情况下从 WAT 读出那一点，因为该模块没有剥离的符号，也没有重定位。
 
-## Limitations {#s-inspect-wasm-artifact-limitations}
+## 局限 {#s-inspect-wasm-artifact-limitations}
 
 该记录有[第 5 部分](#s-the-evidence-record) 描述的一切：一个 `evidence_id`、一个 `confidence`、一个 `authority`，以及五条 `limitations`。该记录不反编译这些函数。它给出 WAT 文本，而读那份文本是你的工作。
 
@@ -257,7 +257,7 @@ note: Nothing is cut.
 
 第一条限制说 WAT 是一种解码表示。WAT 不展示原始源码，也不证明运行时行为。该记录只对字节与工具输出是 `observed`。字段 `runtime_execution` 与 `network_fetch` 都读作 `not-performed`，因为 rea 从不跑该模块。
 
-## Over MCP {#s-inspect-wasm-artifact-over-mcp}
+## 经 MCP {#s-inspect-wasm-artifact-over-mcp}
 
 经 MCP，工具是带同样 `path` 的 `inspect_wasm_artifact`。会话的步骤 24 在 404 ms 后返回 `ok`。回复是一次工具结果。其 `structuredContent` 是同一份 Evidence 记录，带着同一个 id `ev_3a09e4b0…`。其 `_meta` 带着[第 8.1 节](#s-the-rea-mcp-server) 的不可信内容标记。
 
@@ -281,7 +281,7 @@ note: The text copy and the rest of the record are cut.
 
 会话保留该记录，所以 `export_evidence_bundle` 把它与其他记录一起写进一个包。对大模块，第一次调用时传 `detail: "summary"`。然后 rea 保留完整记录。它返回计数、验证结果，以及 WAT 身份，没有 WAT 文本。你用 `inspect_analysis_view` 读完整记录的各页。
 
-## A cross-check with wabt {#s-inspect-wasm-artifact-a-cross-check-with-wabt}
+## 用 wabt 交叉核对 {#s-inspect-wasm-artifact-a-cross-check-with-wabt}
 
 捕获还在没有 rea 的情况下对模块跑了 `wasm-objdump -h -x`，在 `16-wabt.txt` 里。那里的 section 表有与记录里 `headers` 文本同样的七行。Type 从 `0x0000000a` 开始，Data 在 `0x00000122` 结束，也就是 290。这些偏移与 `sections` 一致。[图](#fig-6-2) 画出从两个入口到那一份记录的路径。
 

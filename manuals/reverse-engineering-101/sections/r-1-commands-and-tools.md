@@ -6,7 +6,7 @@ rea 6.7.0 有 153 个 CLI 命令与 207 个 MCP 工具。`binary_session` 在其
 
 输出旗标 `--format`、`--filter-output`、`--token-limit` 与 `--token-offset` 接受 `--flag=value` 形式，例如 `--format=json` {{cli Output and exit status}}。setup 运行对 `--skill=false` 用了同样形式。
 
-## CLI commands {#s-ref-commands-and-tools-cli-commands}
+## CLI 命令 {#s-ref-commands-and-tools-cli-commands}
 
 | Command | Answers | Recorded output | Section |
 |---|---|---|---|
@@ -31,7 +31,7 @@ rea 6.7.0 有 153 个 CLI 命令与 207 个 MCP 工具。`binary_session` 在其
 
 CLI 文档说明其退出状态 {{cli Output and exit status}}。当操作完成时是 `0`，允许部分证据或打开的问题。当它无法完成时是 `1`，当信号 `N` 结束进程时是 `128 + N`。捕获里三个命令以 `1` 退出。它们是 Mach-O 文件上的 `inspect-binary-layout`、rea 6.5.0 包上的 `evidence-import`，以及一次 setup 干跑。显式的 `--provider` 胜过 `REA_ANALYSIS_PROVIDER`，两者都未设时 rea 使用支持该目标的那个唯一可用 provider {{cli Choose a provider}}。
 
-## MCP methods and tools {#s-ref-commands-and-tools-mcp-methods-and-tools}
+## MCP 方法与工具 {#s-ref-commands-and-tools-mcp-methods-and-tools}
 
 | Name | Answers | Hints | CLI command | Recorded output | Section |
 |---|---|---|---|---|---|
@@ -53,7 +53,7 @@ CLI 文档说明其退出状态 {{cli Output and exit status}}。当操作完成
 
 Hints 列读 `tools/list` 里每个工具的四个注解：`readOnlyHint`、`destructiveHint`、`idempotentHint` 与 `openWorldHint`。空单元格表示 read-only false、destructive false、idempotent true，以及 open world false，也就是大多数分析工具的形状。CLI 列里的 "None" 表示该工具是没有 CLI 命令的 65 个之一。
 
-## Environment variables the capture set {#s-ref-commands-and-tools-environment-variables-the-capture-set}
+## 捕获设置的环境变量 {#s-ref-commands-and-tools-environment-variables-the-capture-set}
 
 | Variable | Effect at 6.7.0 | Documented in |
 |---|---|---|

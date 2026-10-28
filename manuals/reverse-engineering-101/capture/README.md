@@ -127,7 +127,7 @@ Evidence 记录内部什么都不裁。`out/` 里每一个 `evidence_id` 都能�
 - `18-setup-claude-jsonc.json`：`needs_human`。Claude Code 读严格 JSON，所以 setup 在做备份或写入之前就拒绝注释与末尾逗号。
 - `14-compare-bundles.json`：`status: "unknown"`，带 10 条未解析记录。两份 bundle 来自不同构建，所以没有记录同属两者，且 bundle 不携带清单完整性标记。
 
-## Fixtures
+## 夹具
 
 所有 fixture 都是为本手册写的程序。`ledger.c` 持有四个函数：`percent_change`（带零守卫的除法）、`grade`（对 `score / 10` 的 switch，编译成查找表并对 `0x66666667` 做乘法）、`total`（对内存的循环），以及 `grade_label`（一次调用与一次数据引用）。`ledger-main.c` 是一个小型 `main`，解析其参数并打印结果。
 

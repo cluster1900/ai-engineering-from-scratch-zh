@@ -4,7 +4,7 @@
 
 你磁盘上有 `ledger.c` 的两个构建，`-O1` 与 `-O2` 可执行文件，以及来自[第 5.5 节](#s-compare-and-compare-functions) 的两份 `compare_functions` 记录。你想让 rea 告诉你 `total` 在两者里是否是同一个函数。那个问题的工具是 `verify_reconstruction`，捕获调用了它一次，带四条主张，得到两次通过与两次失败。读完本节后，你能写一份结构主张的规范，并读 rea 为每一条主张返回的状态。你也能说出一次通过证明什么、不证明什么。
 
-## The specification {#s-verify-reconstruction-the-specification}
+## 规范 {#s-verify-reconstruction-the-specification}
 
 **规范：** `verify_reconstruction` 的输入：一个 `name` 与至少一条主张的列表。每一条主张有一个 `claim_id`、一个 `title`、一个 `kind`、一个 `dimension`，以及一个 `comparison_evidence_id`（[捕获](manuals/reverse-engineering-101/capture/out/10-mcp-02-tools-list.json)）。最后一个是会话里已有的一份比较记录的 `ev_` id。种类点名该记录的生产者。一条 `behavioral` 主张指向一份 `compare_process_captures` 记录，一条 `structural-function` 主张指向一份 `compare_functions` 记录，一条 `structural-artifact` 主张指向一份 `compare_artifacts` 记录。一条 `structural-function` 主张点名九个维度之一：`overall`、`identity`、`pseudocode`、`assembly`、`comments`、`calls`、`references`、`strings_names` 或 `cfg`。
 
@@ -55,7 +55,7 @@ note: The second and third claims are cut. The response follows the request in t
 
 那条规则解释了捕获的顺序。步骤 15 的 `close_binary` 清空了 `-O1` 目标的保留记录。两份 `-O1` dossier 在步骤 20 与 21 回到账本。`compare_functions` 在记录比较之前先记录其两个内联输入。然后步骤 23 的 `import_evidence_bundle` 调用报告 `imported: 6` 与 `total: 15`（[捕获](manuals/reverse-engineering-101/capture/out/10-mcp-23-import-evidence-bundle-O1.json)）。包 `O1` 持有八份记录，而两次比较已经恢复了其中两份。
 
-## What rea returned {#s-verify-reconstruction-what-rea-returned}
+## rea 返回了什么 {#s-verify-reconstruction-what-rea-returned}
 
 响应是一份像其他每一个结果一样的 Evidence 记录，带着 `subject: null`、provider `rea-reconstruction-verifier` 版本 `1`、谓词 `rea.reconstruction-verification`、`confidence: "derived"`，以及 `authority: "analyst-inference"`。`parameters` 持有规范的 SHA-256 与主张 id，所以当一条主张改变时记录的 id 也会改变。
 
@@ -97,7 +97,7 @@ note: The analysis_profile, the per-claim items, the probes, and the evidence li
 
 整体 `status` 遵循一条规则：任一主张失败时是 `fail`，否则任一主张未解决时是 `unknown`，否则是 `pass`。`summary` 按状态与按种类计数主张。记录自己的 `limitations` 加上 "Artifact identity is unavailable for this observation."，也就是 `createEvidence` 追加给没有主体的任何记录的那条。
 
-## The status of one claim {#s-verify-reconstruction-the-status-of-one-claim}
+## 一条主张的状态 {#s-verify-reconstruction-the-status-of-one-claim}
 
 **主张状态：** `pass`、`fail` 或 `unknown`，按固定顺序从三个输入计算。首先，任何限制让主张变成 `unknown`。限制来自源的权威。
 
@@ -149,7 +149,7 @@ claim: Each claim takes its status from one dimension of one comparison record, 
 caption: Read top down. The verification record cites four claims, each claim cites one comparison record, and each comparison record cites a left and a right dossier. Amber claims passed and dashed rose claims failed. Ids are cut to their first eight hex digits. From capture/out/10-mcp-22-verify-reconstruction.json.
 ```
 
-## What a pass does not prove {#s-verify-reconstruction-what-a-pass-does-not-prove}
+## 一次通过不证明什么 {#s-verify-reconstruction-what-a-pass-does-not-prove}
 
 每一份验证记录的固定限制这样说：`"Pass means every declared claim passed; it does not establish global implementation equivalence."`。一条 `structural-function` 维度能通过的主张是「同样的 provider 文本」，因为 `compare_functions` 对 Ghidra 打印的伪代码与汇编做行 diff。伪代码与汇编维度在每一份比较记录里带着一条附注：`"Exact provider text is compared without address or generated-name normalization; layout-only differences do not establish a behavior change."`。汇编维度加上：`"Assembly is opaque provider text; relocation normalization is unavailable."`（[捕获](manuals/reverse-engineering-101/capture/out/10-mcp-20-compare-functions-percent-change.json)）。rea 6.7.0 里没有任何东西运行一个函数或编译一个函数。一条通过的主张表示两份反编译器输出逐行匹配，一条失败的主张表示它们不匹配。
 

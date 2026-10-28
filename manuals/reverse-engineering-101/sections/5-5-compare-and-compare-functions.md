@@ -4,7 +4,7 @@
 
 你以 `-O2` 重建了 `ledger.c`，并想在信任关于 `-O1` 构建的主张之前知道编译器改了哪些函数。抓取为 `_percent_change` 与 `_total` 问了 rea 那个问题，两个构建轮流打开。读完本节后，你能读一份比较记录，并说出其八个维度各自比较什么。你也能点名把字节级证明留在 rea 之外的那条限制。
 
-## Two dossiers in, one derived record out {#s-compare-and-compare-functions-two-dossiers-in-one-derived-record-out}
+## 两份 dossier 进，一份派生记录出 {#s-compare-and-compare-functions-two-dossiers-in-one-derived-record-out}
 
 `compare_functions` 把两份完整的 Evidence 记录作为 `left` 与 `right` 接受。每一份用 `parseEvidence` 解析，所以带被篡改 id 的记录被拒绝。每一份必须是谓词类型为 `rea.analysis` 的 `analyze_function` 记录，否则工具回答 "Expected analyze_function Evidence"。抓取传入了它几轮调用之前收到的 dossier。
 
@@ -54,7 +54,7 @@ note: The dimensions, the changes, and the limitations are cut.
 
 **函数匹配：** rea 如何决定两份 dossier 描述同一个函数。按 `symbol` 的 `matched` 表示两个过程名相等。`mismatched` 或 `ambiguous` 匹配以方法 `explicit` 报告，而一次模糊匹配让整个比较变成 `unknown`。
 
-## The eight dimensions {#s-compare-and-compare-functions-the-eight-dimensions}
+## 八个维度 {#s-compare-and-compare-functions-the-eight-dimensions}
 
 `compareDimensions` 以固定顺序跑八次比较：`identity`、`pseudocode`、`assembly`、`comments`、`calls`、`references`、`strings_names` 与 `cfg`。每一个维度有一个状态 `unchanged`、`changed` 或 `unknown`，以及一个左摘要与右摘要。它还有一个左计数与右计数、两个文本维度的 `text_delta`，以及一个 `conclusion_kind`。整体状态在任一维度为 unknown 时是 `unknown`，否则在任一维度 changed 时是 `changed`，否则是 `unchanged`。
 
@@ -71,7 +71,7 @@ note: The dimensions, the changes, and the limitations are cut.
 | `strings_names` | referenced strings and names | unchanged, 1 and 1 | changed, 2 to 11 |
 | `cfg` | the basic blocks and edges, address-normalized | unchanged, 3 and 3 | changed, 5 to 16 |
 
-## One unknown dimension {#s-compare-and-compare-functions-one-unknown-dimension}
+## 一个未知维度 {#s-compare-and-compare-functions-one-unknown-dimension}
 
 `_percent_change` 比较有七个 `unchanged` 维度与一个 `unknown`，所以整份记录是 `unknown`。未知维度是 `references`。两侧有三个引用与同样的具名端点。每一份 dossier 的一个入站引用是没有源过程的 `DATA` 引用，所以那个端点没有名字。
 
@@ -106,7 +106,7 @@ note: Nothing inside the dimension is cut.
 
 两次比较的 `calls` 维度都带着两条限制，每一侧一条。每一条说只返回已解析的 Ghidra 调用引用。它们限定 `unchanged` 状态，并不改变它。
 
-## The text dimensions {#s-compare-and-compare-functions-the-text-dimensions}
+## 文本维度 {#s-compare-and-compare-functions-the-text-dimensions}
 
 两个文本维度是带预算的行 diff：100 ms 与 10,000 次编辑。跑出预算的 diff 让维度变成 `unknown`，限制为 `"Bounded line diff exceeded its time or edit-distance limit."`。计数是文本的码点数。`text_delta` 报告加入的行、删除的行与 hunk。两个文本维度都带着限制 `"Exact provider text is compared without address or generated-name normalization; layout-only differences do not establish a behavior change."`。
 
@@ -120,7 +120,7 @@ claim: The compiler left _percent_change the same on seven dimensions with refer
 caption: Read each table top to bottom. Amber rows are changed dimensions, and the dashed row is unknown. From capture/out/10-mcp-20-compare-functions-percent-change.json and 10-mcp-21-compare-functions-total.json.
 ```
 
-## The assembly limit {#s-compare-and-compare-functions-the-assembly-limit}
+## 汇编的限制 {#s-compare-and-compare-functions-the-assembly-limit}
 
 每一个汇编维度都带着两条限制，不论其状态是 `unchanged` 还是 `changed`。
 
@@ -158,7 +158,7 @@ rea 在任何 diff 跑之前附上这些字符串。dossier 的汇编是 Ghidra 
 
 因此一个 `unchanged` 汇编维度表示来自一个引擎的相等文本，而一个 `changed` 表示不同文本。两者都不是关于字节的陈述。字节级证明把重定位字段清零，并比较被引用的表。[第 36 课](phases/13-tools-and-protocols/36-rebuild-and-prove-equal) 构建那个证明，而第 7 部分对同一夹具跑它。引用维度有自己的限制，因为它比较端点而不是种类：`"Reference endpoints differ independently of provider reference-kind metadata."`。
 
-## rea compare on two bundles {#s-compare-and-compare-functions-rea-compare-on-two-bundles}
+## 对两个包做 rea compare {#s-compare-and-compare-functions-rea-compare-on-two-bundles}
 
 `rea compare LEFT RIGHT`，也写作 `rea compare-bundles`，在没有会话的情况下比较两个包文件。它按 `evidence_id` 工作：两个包里都有的记录被比较，只在一个包里的记录是未解决分支。整体状态在一次变更未解决时立刻是 `unknown`。
 

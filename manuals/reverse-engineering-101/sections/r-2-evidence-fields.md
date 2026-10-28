@@ -6,7 +6,7 @@ Evidence 模式是带 16 个字段的一个严格 Zod 对象。模式拒绝带�
 
 dossier 列取其自 `ledger-arm64-O1` 里 `_percent_change` 的 `analyze_function` 记录 `ev_b492c85e`（[捕获](manuals/reverse-engineering-101/capture/out/10-mcp-09-analyze-function-percent-change-O1.json)）的值。derived 列取自 `verify_reconstruction` 记录 `ev_ccbaea4b`（[捕获](manuals/reverse-engineering-101/capture/out/10-mcp-22-verify-reconstruction.json)）。[第 5.1 节](#s-the-evidence-record) 用散文读该记录。
 
-## The 16 fields {#s-ref-evidence-fields-the-16-fields}
+## 16 个字段 {#s-ref-evidence-fields-the-16-fields}
 
 | Field | Type | In the dossier of _percent_change | In the verification record |
 |---|---|---|---|
@@ -29,7 +29,7 @@ dossier 列取其自 `ledger-arm64-O1` 里 `_percent_change` 的 `analyze_functi
 
 一份 dossier 的 `normalized_result` 有键 `procedure`、`pseudocode`、`assembly`、`comments`、`callers`、`callees`、`incoming_references`、`outgoing_references`、`unresolved_calls`、`referenced_strings`、`referenced_names`、`basic_blocks`、`native_api`、`native_value_flow`、`facet_availability` 与 `limitations`。`facet_availability` 说出 provider 提供了八个 facet 中的哪些。那些内部限制描述 facet，而记录自己的 `limitations` 描述 provider 会话。
 
-## The enumerations {#s-ref-evidence-fields-the-enumerations}
+## 枚举 {#s-ref-evidence-fields-the-enumerations}
 
 | Field | Allowed values |
 | --- | --- |
@@ -42,7 +42,7 @@ dossier 列取其自 `ledger-arm64-O1` 里 `_percent_change` 的 `analyze_functi
 
 格式拥有体系结构主张。rea 知道十个家族。`6502` 与 `m68k` 只用于 raw，因为头检测从不报告它们。一个 `raw-binary` 主体可以有十个中的任一个，其他每一种格式排除那两个。`hexagon` 来自 ELF 头。
 
-## The id {#s-ref-evidence-fields-the-id}
+## id 字段 {#s-ref-evidence-fields-the-id}
 
 id 对记录的语义投影做哈希。该投影保留主体的 `digest`、`format` 与 `architecture`，以及除 `evidence_id` 之外的每一个其他字段，并丢掉主体的 `name` 与 `local_path`。因此同样字节上的同一次观察在任何机器上的任何目录里得到同一个 id。捕获检查不掩地比较 id（[捕获](manuals/reverse-engineering-101/capture/README.md)）。`parseEvidence` 重新计算它读的每一份记录的哈希，并拒绝不匹配。没有主体的记录在创建时追加限制 "Artifact identity is unavailable for this observation."。
 

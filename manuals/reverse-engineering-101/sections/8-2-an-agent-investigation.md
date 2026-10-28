@@ -4,7 +4,7 @@
 
 你向 Claude、Cursor、Codex、OpenClaw、Hermes，或任何读 `SKILL.md` 的 agent 问一个关于 `ledger-arm64-O1` 的问题。程序对分数 95 打印什么，字母从哪里来？该 agent 有[第 8.1 节](#s-the-rea-mcp-server) 的 rea MCP 服务器，别无其他。捕获会话按顺序做了这样一个 agent 会做的那些调用，并用其 Evidence id 录下每一次回复。读完本节后，你能跟着那次调查穿过已录制的文件，并逐行写其账本。你也能标出哪些行由一份 Evidence 记录支撑，哪些只是 agent 推断的。
 
-## The question and the first calls {#s-an-agent-investigation-the-question-and-the-first-calls}
+## 问题与最初几次调用 {#s-an-agent-investigation-the-question-and-the-first-calls}
 
 agent 用 `open_binary` 打开文件，并在任何 Ghidra 导入之前得到其格式、种类、SHA-256 与体系结构（[捕获](manuals/reverse-engineering-101/capture/out/10-mcp-03-open-binary-O1.json)）。`list_procedures` 是启动引擎的第一次调用，它返回 13 个条目。它们是 `ledger.c` 的四个函数、`entry`、四个 thunk，以及它们在 `libSystem.B.dylib` 里到达的四个外部函数。
 
@@ -56,7 +56,7 @@ note: Two entries of the array. The three letters between F and A, the usage tex
 
 两次回复都是带 `confidence: "observed"` 与 `authority: "shipped-artifact"` 的 Evidence 记录，id 为 `ev_3c6350b2` 与 `ev_ad37f574`。agent 从它们取出的每一个事实，都是对磁盘上该文件的一次观察。agent 仍不知道分数 95 会选哪个字母。
 
-## Reading _grade and _grade_label {#s-an-agent-investigation-reading-grade-and-grade-label}
+## 读 _grade 与 _grade_label {#s-an-agent-investigation-reading-grade-and-grade-label}
 
 对 `_grade` 的 `analyze_function` 返回 dossier `ev_41e8ca1c`。其汇编是要先读的地方（[第 4.3 节](#s-procedure-assembly)）：
 
@@ -158,7 +158,7 @@ claim: Four tool calls produced four Evidence records, and the ledger built from
 caption: Read top down. Plum is the agent's question, indigo boxes are the MCP calls, and teal boxes are the Evidence records with their ids cut to eight digits. The amber box is the ledger with its rows by kind. From capture/out/10-mcp-05 to 10-mcp-12.
 ```
 
-## The ledger {#s-an-agent-investigation-the-ledger}
+## 账本 {#s-an-agent-investigation-the-ledger}
 
 **Evidence 账本：** agent 在一次调查期间保持的表，每个主张一行。一行持有主张的种类、支撑它的 Evidence id，以及限定它的边界。标签上打包的 skill 正好要求这个：把每一个结论链到其 Evidence id 的一份短账本。每一行也给出置信度与证据类型、搜索边界，以及仍在的未知事项。
 
@@ -187,7 +187,7 @@ claim: Five claims rest on recorded Evidence ids, and four stay unknown until re
 caption: Left, each observed claim with the record and the field that holds it. Right, dashed rose boxes are the open rows of the ledger, each with the call that would close it. From capture/out/10-mcp-05 to 10-mcp-12.
 ```
 
-## Target text is data {#s-an-agent-investigation-target-text-is-data}
+## 目标文本是数据 {#s-an-agent-investigation-target-text-is-data}
 
 **目标文本：** 工具结果从被分析文件里复制出的每一个字符串、符号名、注释与伪代码行。`0x10000077a` 处的用法文本 `usage: ledger <before> <after> [score...]\n` 是目标文本，`_labels` 以及 Ghidra 发明的每一个 `DAT_` 名也是（[捕获](manuals/reverse-engineering-101/capture/out/10-mcp-08-list-strings.json)）。规则是 agent 带着地址引用目标文本，且绝不当作指令执行。读起来像命令的字符串是要记录的值，且账本没有「从文件收到的指令」这种行种类。
 

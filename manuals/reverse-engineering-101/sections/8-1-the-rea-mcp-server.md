@@ -6,7 +6,7 @@
 
 捕获套件用自己的一个小客户端驱动了 `rea mcp`，并录了 25 次交换。本节读前几次以及旁边的日志。读完本节后，你能读 `initialize` 回复与 `tools/list` 答案，并用一个确切版本注册服务器。你也能在 `rea setup` 写入之前检查其计划，并设置第一次 Ghidra 调用所需的客户端截止期限。
 
-## Starting the server {#s-the-rea-mcp-server-starting-the-server}
+## 启动服务器 {#s-the-rea-mcp-server-starting-the-server}
 
 注册服务器的已发布方式是一个 `mcpServers` 条目，经 `npx` 用 `mcp` 命令跑该包：
 
@@ -28,7 +28,7 @@ note: Nothing is cut. The shape follows the install docs {{install MCP Registry}
 
 文档要求在持久注册里放一个确切版本 {{install MCP Registry}}。支持注册表发现的客户端在 `io.github.morluto/rea` 下找到同一个 stdio 服务器。`rea setup` 为 Claude Code、Codex、Cursor 以及它列出的其他客户端写这种形状。`rea doctor --client <id>` 报告一次注册是对齐、过时、缺失还是无效（[第 2.2 节](#s-rea-doctor-and-the-ghidra-provider)）。
 
-### Registering with rea setup {#s-the-rea-mcp-server-registering-with-rea-setup}
+### 用 rea setup 注册 {#s-the-rea-mcp-server-registering-with-rea-setup}
 
 `rea setup` 为你写该条目。对 Claude Code，它编辑你主目录里的 `.claude.json`，或者当设置了 `CLAUDE_CONFIG_DIR` 时编辑那个变量指向的地方。捕获套件对着两份小文件的副本跑了两次 setup。每一次它把 `HOME` 与 `CLAUDE_CONFIG_DIR` 设到一个私有工作目录。因此 setup 从未读或写主机用户的配置（[捕获](manuals/reverse-engineering-101/capture/README.md)）。当你想在无风险的情况下试 setup 时也这样做。
 
@@ -175,7 +175,7 @@ note: Six lines of the server_identity object. The digests that follow identify 
 
 摘要 `tools_sha256` 在这次捕获里是 `af39310c…`。它覆盖每一个工具的名字、描述与模式，以及服务器运行的输出模式配置。因此一次模式编辑在未增删工具时也会改变摘要。当你检查客户端看到的是你测试过的目录时，比较摘要，而不是计数。
 
-### Self-contained input schemas {#s-the-rea-mcp-server-self-contained-input-schemas}
+### 自包含的输入模式 {#s-the-rea-mcp-server-self-contained-input-schemas}
 
 捕获里每一个输入模式都是自包含的。每一个属性在原地陈述其类型、其模式或枚举，以及其描述，没有要跟随的 `$defs` 或 `$ref`。那种形式下 `list_procedures` 输入模式是 270 字节。输出模式仍经 `$ref` 共享定义。`open_binary` 的 `architecture` 属性完整显示一个枚举：
 
@@ -203,7 +203,7 @@ note: One property of the open_binary input schema. The other five properties ar
 
 207 个工具里有 65 个没有 CLI 命令，其中包括 `open_binary`、`list_procedures`、`compare_functions` 与 `verify_reconstruction`。六个提示是 `investigate_feature`、`compare_application_versions`、`verify_reconstruction`、`trace_crash`、`audit_residual_unknowns` 与 `prepare_bounded_process_capture`，每一个都要求 agent 把观察、推断与未知事项分开。拒绝大型工具模式的客户端可以用 `REA_MCP_INPUT_SCHEMA_PROFILE=compact` 启动服务器 {{mcp Compact input schema profile}}。那种配置把每一个输入模式渲染在 13,312 字节以内，并保持验证不变。
 
-## The startup deadline against the client default {#s-the-rea-mcp-server-the-startup-deadline-against-the-client-default}
+## 相对客户端默认的启动截止时间 {#s-the-rea-mcp-server-the-startup-deadline-against-the-client-default}
 
 **启动截止期限：** rea 允许 Ghidra 导入目标、跑默认自动分析、连接桥并报告健康的时间。默认是 330,000 ms，用 `REA_GHIDRA_STARTUP_TIMEOUT_MS` 设置。`open_binary` 不启动那个时钟。它验证文件、检查提供者安装、绑定提供者，并在任何导入之前返回。第一次由 Ghidra 支撑的调用启动引擎并等待，且客户端自己的按调用截止期限同时跑 {{mcp Ghidra first-query deadlines and recovery}}。
 

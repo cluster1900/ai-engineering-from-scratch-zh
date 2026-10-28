@@ -4,7 +4,7 @@
 
 捕获套件录了三次失败的调用，并完整保留每一次回复。三次都来自 rea 自己的错误投影，两次来自 CLI，一次来自 MCP 服务器。其他文件持有不是错误的代码。它们展示未安装的 provider、需要人的一次 setup 计划，以及没有结论的一次比较。本节列出它们全部，然后是它们遵循的模式。
 
-## The three error envelopes {#s-ref-errors-the-three-error-envelopes}
+## 三种错误信封 {#s-ref-errors-the-three-error-envelopes}
 
 当 `inspect-binary-layout` 在 macOS 上遇到 Mach-O 文件时，CLI 把它的信封打印到 stdout 并以 1 退出：
 
@@ -98,7 +98,7 @@ note: Cut to the head of the envelope. The remediation repeats the message, and 
 
 拼错的 CLI 命令得到带建议最近命令的 `cta` 对象的解析器信封 `COMMAND_NOT_FOUND`。`analysisErrorProjectionSchema` 不定义它们。读 rea 错误的脚本在读 `category` 之前需要一个拼错或缺失命令的分支。6.7.0 捕获也没有这样的调用。
 
-## Codes that are not errors {#s-ref-errors-codes-that-are-not-errors}
+## 不是错误的代码 {#s-ref-errors-codes-that-are-not-errors}
 
 `rea capabilities` 用一个 `availability` 对象列出每一个 provider。捕获主机上三个 provider 缺席，它们的代码点名原因而不让命令失败：
 
@@ -123,7 +123,7 @@ note: The availability objects of hopper and ida. The diagnostics that follow ea
 
 捕获里有两个结果拒绝了结论并以 0 退出。对两个包的 `rea compare` 返回带十份未解决记录的 `status: "unknown"`（[捕获](manuals/reverse-engineering-101/capture/out/14-compare-bundles.json)，[第 5.5 节](#s-compare-and-compare-functions)）。没有记录是两个包的成员，且包不带完整性标记。`verify_reconstruction` 返回带两条失败主张的 `status: "fail"`（[捕获](manuals/reverse-engineering-101/capture/out/10-mcp-22-verify-reconstruction.json)，[第 7.1 节](#s-verify-reconstruction)）。两者都不是错误信封，两者都是说问题仍打开或主张为假的结果。把非零退出当作唯一失败信号的脚本会漏掉两者。
 
-## The shape every rea error has {#s-ref-errors-the-shape-every-rea-error-has}
+## 每个 rea 错误共有的形状 {#s-ref-errors-the-shape-every-rea-error-has}
 
 | Field | Meaning |
 | --- | --- |

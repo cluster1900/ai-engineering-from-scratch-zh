@@ -6,7 +6,7 @@
 
 捕获套件在 `ledger-x86_64-O1.o` 上跑了那个 harness，并在 `17-` 下录了四个文件。读完本节后，你能在自己的重建上跑 harness 的两条腿，并读不匹配行与字节报告。然后你能说出每一次失败点名的是哪一类危害或哪一次重定位。
 
-## What compare_functions can see {#s-a-proof-harness-outside-rea-what-compare-functions-can-see}
+## compare_functions 能看见什么 {#s-a-proof-harness-outside-rea-what-compare-functions-can-see}
 
 `compare_functions` 在八个维度比较两份 `analyze_function` 记录：`identity`、`pseudocode`、`assembly`、`comments`、`calls`、`references`、`strings_names` 与 `cfg`（[捕获](manuals/reverse-engineering-101/capture/out/10-mcp-20-compare-functions-percent-change.json)）。伪代码与汇编维度是两段字符串的有界行 diff。当 diff 超过 100 ms 或超过 10,000 次编辑时，状态是 `unknown`。汇编维度带着两个固定限制：
 
@@ -34,7 +34,7 @@ note: One of the eight dimension objects. The counts are characters of provider 
 
 rea 6.7.0 没有编译器回放，也没有感知重定位的字节比较。下面两条腿是 rea 留给你的部分。
 
-## Leg one: execute and compare {#s-a-proof-harness-outside-rea-leg-one-execute-and-compare}
+## 第一腿：执行并比较 {#s-a-proof-harness-outside-rea-leg-one-execute-and-compare}
 
 **输入网格：** harness 喂给原件与重建的输入单元列表。每一类单元代表 listing 显示的一种危害。本课的 `input_grid()` 取十个 `before` 值与七个 `after` 值的每一对给 `percent_change`，以及 22 个分数给 `grade`，一共 92 个单元。每一个单元有一个类，该类说明它为何存在。
 
@@ -144,7 +144,7 @@ note: One of the 92 rows.
 
 差值是 536870912，32 位乘积包装到 -2147483648，除数是 -1。在 x86-64 上 `IDIV` 引发除错误异常，因为商装不进 32 位 {{spec Intel SDM Vol. 2, IDIV}}。在 AArch64 上 `SDIV` 没有陷阱，并返回 -2147483648 {{spec Arm DDI 0487, SDIV}}。报告用该行记录 `"arch": "aarch64"`，而在 Linux x86-64 主机上跑同一网格会记录字符串 `trap`。oracle 依赖体系结构，所以一次证明点名跑它的主机。
 
-## Leg two: recompile and compare bytes {#s-a-proof-harness-outside-rea-leg-two-recompile-and-compare-bytes}
+## 第二腿：重编译并比较字节 {#s-a-proof-harness-outside-rea-leg-two-recompile-and-compare-bytes}
 
 **重定位掩码：** 在比较两个函数之前，把每一个重定位字段的字节置零。随后的两步按偏移、类型与目标节比较重定位记录，然后读每一个重定位指向的字节。本课的 `ElfObject` 用 `struct.unpack_from` 读 ELF64 对象，而 `mask_relocations()`、`prove_bytes()` 与 `read_table()` 做这三步。没有第一步，普通字节比较会拒绝表坐在另一个偏移处的正确重建。没有第三步，它会接受错误的那个。
 
@@ -236,7 +236,7 @@ claim: Three candidates stop at the size check, one passes every byte check and 
 caption: Read top down. Each grey box is one check of leg two. The dashed rose boxes to its right are the candidates that fail there, with the reason the report prints. The teal boxes at the bottom passed every check. From capture/out/17-harness-bytes.json.
 ```
 
-## What the 2026 measurements add {#s-a-proof-harness-outside-rea-what-the-2026-measurements-add}
+## 2026 年测量补充了什么 {#s-a-proof-harness-outside-rea-what-the-2026-measurements-add}
 
 网格里的危害并不专属于这个 fixture。Liu、Raff 与 Micinski 在 2026 年以九种配置测量了八个反编译系统（[arXiv 2609.05370](https://arxiv.org/abs/2609.05370)）。通过基准每一个测试的候选仍在模糊输入上分歧。总体有 4.9% 发生了这种情况，在一个系统里高达 13%。测试集是 300 个库函数与 287 个带已披露漏洞的函数。那里最强的精炼模型把 Ghidra 的构建率从 75% 提到 90%，而行为匹配率从 74% 落到 62%。
 

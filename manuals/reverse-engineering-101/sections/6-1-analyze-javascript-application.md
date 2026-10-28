@@ -4,7 +4,7 @@
 
 你有一个小型 Electron 风格应用，六个文件在 `capture/fixtures/js-app/`。你想在读代码之前拿到地图：哪个 renderer 与哪个主进程 handler 对话，以及什么离开机器。该分析在没有 Ghidra、也不运行应用任何一行的情况下回答那一点。读完本节后，你能跑分析、读记录及其图，并用 `inspect-analysis-view` 翻阅一份大结果。
 
-## The command and the record {#s-analyze-javascript-application-the-command-and-the-record}
+## 命令与记录 {#s-analyze-javascript-application-the-command-and-the-record}
 
 CLI 命令是 `rea analyze-javascript-application PATH`。普通的 `rea analyze PATH` 到达同一段代码。当你既不给 `--provider` 也不给 `--snapshot` 时，它对目录或 `.asar` 文件选这个工作流 {{cli Run a command}}。
 
@@ -103,7 +103,7 @@ note: Events 1, 3, 4, 5, and 19 of the first analyze-javascript-application call
 [stderr] {"rea_progress":{"phase":"analyze_javascript_application","completed":1,"total":1,"message":"Application graph and Electron boundaries reconstructed","terminal":true,"sequence":19}}
 ```
 
-## The graph {#s-analyze-javascript-application-the-graph}
+## 图 {#s-analyze-javascript-application-the-graph}
 
 **应用图：** 一个应用作为节点与有向边的、与 provider 无关的模型，每条边上有一块 evidence。文档固定两条规则。图仅从语法构建。它不读文件、不做 CDP 调用，不运行 JavaScript，且没有针对一个应用的节点种类 {{jsgraph JavaScript Application Graph}}。
 
@@ -185,7 +185,7 @@ claim: The graph links the package entry point to three IPC handlers and one net
 caption: Read from the top left. Olive boxes are the application's own code, the grey box is the network endpoint outside it, and the teal box is browser storage. Relation names sit on the arrows. The nine `javascript-expression` step nodes of the three bridge call paths are not drawn. From capture/out/15-js-app-graph.json.
 ```
 
-## Views over a large record {#s-analyze-javascript-application-views-over-a-large-record}
+## 大记录上的视图 {#s-analyze-javascript-application-views-over-a-large-record}
 
 六个文件给出一份约 200 KB 的记录。文档警告，对真实应用，完整 Evidence 可达数百兆字节 {{cli Run a command}}。
 

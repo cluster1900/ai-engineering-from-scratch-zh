@@ -89,7 +89,7 @@ note: The subject and provider of each row, the second row, and the last five ro
 
 契约点名摘要接受的过滤器。可选的 `filters` 匹配精确的 `evidence_id`、`operation`、`target_sha256`、`analysis_profile_digest` 或 `procedure_address` {{mcp Tool results}}。
 
-## evidence-export and evidence-import on the CLI {#s-evidence-bundles-export-and-import-evidence-export-and-evidence-import-on-the-cli}
+## CLI 上的 evidence-export 与 evidence-import {#s-evidence-bundles-export-and-import-evidence-export-and-evidence-import-on-the-cli}
 
 `rea evidence-export SOURCE OUTPUT` 读一个包、验证它，并以规范形式再写一遍。答案是路径、字节数与记录计数。抓取把 `11-bundle-O1.json` 导出到一个工作文件并比较了摘要。
 
@@ -109,7 +109,7 @@ same JSON content as the MCP export: yes
 
 `rea evidence-import PATH` 验证一个包并报告其计数。在 CLI 上没有会话，所以 `imported` 与 `total` 都是文件里的记录数：`13-evidence-import.json` 里是 `{"imported": 8, "unknowns_added": 0, "total": 8}`。CLI 文档划出界限：分开的 CLI 调用读完整的已保存记录 {{cli Import, export and compare Evidence}}。
 
-## import_evidence_bundle into a live session {#s-evidence-bundles-export-and-import-import-evidence-bundle-into-a-live-session}
+## 把 import_evidence_bundle 导入活动会话 {#s-evidence-bundles-export-and-import-import-evidence-bundle-into-a-live-session}
 
 在 MCP 里，同一个动词合并进连接的账本。处理器读并验证文件，调用 `importEvidenceBundle`，并以加入的记录、加入的未知事项修订，以及新的总数作答。账本加入它未持有的每一份记录，并保留它已持有的记录。它拒绝其 id 已持有但内容不同的记录："Conflicting evidence record"。
 
@@ -148,7 +148,7 @@ claim: One canonical file leaves the session, and the CLI summary, the CLI expor
 caption: Read left to right. Solid teal is a durable write, solid ink a call. From capture/out/10-mcp-14-export-evidence-bundle-O1.json, 11-bundles.txt, 11-inspect-evidence-bundle-O1.json, 12-evidence-export.txt, 13-evidence-import.json, and 10-mcp-23-import-evidence-bundle-O1.json.
 ```
 
-## A bundle from an earlier release {#s-evidence-bundles-export-and-import-a-bundle-from-an-earlier-release}
+## 来自更早版本的包 {#s-evidence-bundles-export-and-import-a-bundle-from-an-earlier-release}
 
 读包的发行版用自己的哈希规则检查每一个 id。套件保留了 rea 6.5.0 为本手册写的 O1 包，并在 6.7.0 把它交给 `rea evidence-import`。导入以退出码 1 停下。
 
