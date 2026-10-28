@@ -2,45 +2,75 @@
   "questions": [
     {
       "stage": "pre",
-      "question": "For matrix multiplication (m x n) @ (n x p), what must be true about the dimensions?",
-      "options": ["The first matrix's rows must equal the second matrix's columns", "The outer dimensions m and p must match", "The first matrix's columns must equal the second matrix's rows", "Every dimension m, n, and p must be equal"],
-      "correct": 2,
-      "explanation": "Matrix multiplication requires the number of columns in the first matrix (n) to equal the number of rows in the second matrix (n). The result has shape (m x p)."
-    },
-    {
-      "stage": "check",
-      "question": "How is the identity matrix defined?",
-      "options": ["A square matrix that leaves a compatible matrix unchanged when multiplied", "A square matrix whose entries are all equal to one", "A transposed matrix whose rows and columns are exchanged", "A square matrix whose diagonal entries are all distinct"],
-      "correct": 0,
-      "explanation": "The identity matrix I has ones on the diagonal and zeros everywhere else. Multiplying any matrix by I returns the original matrix unchanged, like multiplying a number by 1."
-    },
-    {
-      "stage": "check",
-      "question": "What is the key difference between element-wise multiplication and matrix multiplication?",
-      "options": ["Element-wise multiplication applies only to vectors; matrix multiplication applies only to matrices", "Element-wise multiplication uses matching entries; matrix multiplication uses row-column dot products", "Element-wise multiplication requires inner dimensions; matrix multiplication requires identical shapes", "Element-wise multiplication changes shapes; matrix multiplication always preserves them"],
+      "question": "做矩阵乘法 (m x n) @ (n x p) 时，维度要满足什么？",
+      "options": [
+        "外维 m 与 p 必须相等",
+        "第一个矩阵的列数必须等于第二个矩阵的行数",
+        "m、n、p 每一个维度都必须相等",
+        "第一个矩阵的行数必须等于第二个矩阵的列数"
+      ],
       "correct": 1,
-      "explanation": "Element-wise (Hadamard) product multiplies corresponding elements and requires identical shapes. Matrix multiplication computes dot products between rows and columns with the rule (m,n)@(n,p)=(m,p)."
+      "explanation": "矩阵乘法要求第一个矩阵的列数 (n) 等于第二个矩阵的行数 (n)。结果形状为 (m x p)。"
     },
     {
       "stage": "check",
-      "question": "In the expression 'output = relu(W @ x + b)', what role does broadcasting play?",
-      "options": ["It distributes the calculation across available compute devices", "It converts W and x to use the same numeric data type", "It applies ReLU separately to every position in the output", "It expands b across compatible batch dimensions before addition"],
+      "question": "单位矩阵是如何定义的？",
+      "options": [
+        "一个方阵，与相容矩阵相乘后保持该矩阵不变",
+        "一个对角元素两两不同的方阵",
+        "一个所有元素都等于一的方阵",
+        "一个行与列互换后的转置矩阵"
+      ],
+      "correct": 0,
+      "explanation": "单位矩阵 I 对角为 1、其余为 0。任何矩阵乘以 I 都得到原矩阵，就像数字乘以 1。"
+    },
+    {
+      "stage": "check",
+      "question": "逐元素乘法与矩阵乘法的关键区别是什么？",
+      "options": [
+        "逐元素乘法只适用于向量；矩阵乘法只适用于矩阵",
+        "逐元素乘法会改变形状；矩阵乘法总是保持形状",
+        "逐元素乘法要求内维匹配；矩阵乘法要求形状完全相同",
+        "逐元素乘法用对应位置相乘；矩阵乘法用行-列点积"
+      ],
       "correct": 3,
-      "explanation": "For one input, W @ x and b must have the same output shape. For a column-oriented batch shaped (features, batch), use b[:, None] so the bias has shape (outputs, 1) and broadcasts across columns. A one-dimensional b follows trailing-dimension alignment and does not reliably broadcast across the batch axis."
+      "explanation": "逐元素（Hadamard）积乘对应元素，并要求形状相同。矩阵乘法计算行与列的点积，规则为 (m,n)@(n,p)=(m,p)。"
     },
     {
-      "stage": "post",
-      "question": "Which property follows from a zero determinant?",
-      "options": ["The matrix is singular and cannot have an inverse", "The matrix preserves lengths while rotating the input", "The matrix is an identity transformation with no scaling", "The matrix contains zero in every row and column"],
+      "stage": "check",
+      "question": "在表达式 'output = relu(W @ x + b)' 中，broadcasting 起什么作用？",
+      "options": [
+        "在相加前把 b 扩展到相容的 batch 维上",
+        "把计算分发到可用的计算设备上",
+        "把 W 和 x 转成同一数值数据类型",
+        "对输出的每个位置分别应用 ReLU"
+      ],
       "correct": 0,
-      "explanation": "A zero determinant means the transformation collapses space by at least one dimension (e.g., mapping 2D to a line). The matrix has no inverse, and linear systems using it have either no solution or infinitely many."
+      "explanation": "对单个输入，W @ x 与 b 必须有相同的输出形状。对形状为 (features, batch) 的按列 batch，用 b[:, None] 让偏置成为 (outputs, 1) 并沿列广播。一维的 b 按尾维对齐，不能可靠地沿 batch 轴广播。"
     },
     {
       "stage": "post",
-      "question": "How does the transpose operation change a matrix?",
-      "options": ["It replaces every off-diagonal entry with zero", "It exchanges the matrix rows and columns", "It guarantees that the matrix has an inverse", "It preserves both angle and length for every vector"],
-      "correct": 1,
-      "explanation": "Transposition exchanges rows and columns, so an entry at row i and column j moves to row j and column i."
+      "question": "行列式为零会推出哪条性质？",
+      "options": [
+        "矩阵每一行每一列都含零",
+        "矩阵是无缩放的恒等变换",
+        "矩阵在旋转输入时保持长度",
+        "矩阵奇异且没有逆"
+      ],
+      "correct": 3,
+      "explanation": "行列式为零意味着变换至少塌缩一个维度（例如把 2D 映到一条线）。矩阵没有逆，用它的线性方程组要么无解要么无穷多解。"
+    },
+    {
+      "stage": "post",
+      "question": "转置会怎样改变矩阵？",
+      "options": [
+        "对每个向量都保持角度与长度",
+        "把每个非对角元素都换成零",
+        "交换矩阵的行与列",
+        "保证矩阵一定有逆"
+      ],
+      "correct": 2,
+      "explanation": "转置交换行与列，因此位于第 i 行第 j 列的元素会移到第 j 行第 i 列。"
     }
   ]
 }

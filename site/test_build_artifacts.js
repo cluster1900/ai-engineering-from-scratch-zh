@@ -1285,12 +1285,12 @@ test('the vectors and matrices quiz has parallel choices and varied answer posit
   );
   const questions = JSON.parse(fs.readFileSync(file, 'utf8')).questions;
   const expectedAnswers = [
-    "The first matrix's columns must equal the second matrix's rows",
-    'A square matrix that leaves a compatible matrix unchanged when multiplied',
-    'Element-wise multiplication uses matching entries; matrix multiplication uses row-column dot products',
-    'It expands b across compatible batch dimensions before addition',
-    'The matrix is singular and cannot have an inverse',
-    'It exchanges the matrix rows and columns',
+    '第一个矩阵的列数必须等于第二个矩阵的行数',
+    '一个方阵，与相容矩阵相乘后保持该矩阵不变',
+    '逐元素乘法用对应位置相乘；矩阵乘法用行-列点积',
+    '在相加前把 b 扩展到相容的 batch 维上',
+    '矩阵奇异且没有逆',
+    '交换矩阵的行与列',
   ];
 
   assert.equal(questions.length, expectedAnswers.length);
@@ -1300,19 +1300,53 @@ test('the vectors and matrices quiz has parallel choices and varied answer posit
   );
   assert.ok(new Set(questions.map(question => question.correct)).size >= 4);
   assert.match(questions[3].explanation, /b\[:, None\]/);
-  assert.match(questions[3].explanation, /trailing-dimension alignment/);
-  assert.match(questions[3].explanation, /does not reliably broadcast across the batch axis/);
+  assert.match(questions[3].explanation, /尾维对齐/);
+  assert.match(questions[3].explanation, /不能可靠地沿 batch 轴广播/);
+  // Character length (not whitespace word count) so CJK options are measured
+  // fairly: space-stripped Chinese otherwise collapses every option to 1 "word".
   for (const question of questions) {
-    const wordCounts = question.options.map(option => option.trim().split(/\s+/).length);
-    const correctWords = wordCounts[question.correct];
-    const distractorWords = wordCounts.filter((_, index) => index !== question.correct).sort((a, b) => a - b);
-    const medianDistractor = distractorWords[1];
+    const charCounts = question.options.map(option => option.trim().length);
+    const correctChars = charCounts[question.correct];
+    const distractorChars = charCounts.filter((_, index) => index !== question.correct).sort((a, b) => a - b);
+    const medianDistractor = distractorChars[1];
     assert.ok(
-      correctWords <= medianDistractor * 1.6,
+      correctChars <= medianDistractor * 1.6,
       `correct option is an obvious length outlier: ${question.question}`
     );
   }
 });
+
+test('every lesson quiz spreads correct answers across at least two positions', () => {
+  const root = path.resolve(__dirname, '..');
+  const phasesDir = path.join(root, 'phases');
+  const quizFiles = [];
+  for (const phase of fs.readdirSync(phasesDir, { withFileTypes: true })) {
+    if (!phase.isDirectory()) continue;
+    const phasePath = path.join(phasesDir, phase.name);
+    for (const lesson of fs.readdirSync(phasePath, { withFileTypes: true })) {
+      if (!lesson.isDirectory()) continue;
+      const quizPath = path.join(phasePath, lesson.name, 'quiz.json');
+      if (fs.existsSync(quizPath)) quizFiles.push(quizPath);
+    }
+  }
+  assert.ok(quizFiles.length > 100, `expected many quiz.json files, found ${quizFiles.length}`);
+
+  for (const quizPath of quizFiles) {
+    const quiz = JSON.parse(fs.readFileSync(quizPath, 'utf8'));
+    const questions = Array.isArray(quiz) ? quiz : quiz.questions;
+    if (!Array.isArray(questions) || questions.length < 4) continue;
+    const positions = questions
+      .map(question => question.correct)
+      .filter(correct => Number.isInteger(correct));
+    if (positions.length < 4) continue;
+    const unique = new Set(positions);
+    assert.ok(
+      unique.size >= 2,
+      `${path.relative(root, quizPath)} collapsed to a single correct slot: [${positions.join(', ')}]`
+    );
+  }
+});
+
 
 test('new Phase 14 quizzes use one pre, three check, and two post questions', () => {
   const root = path.resolve(__dirname, '..');

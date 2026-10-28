@@ -4,99 +4,99 @@
   "questions": [
     {
       "stage": "pre",
-      "question": "A listing shows addl 0x4(%rax), %ecx where %rax holds the first parameter. What does this instruction prove about the parameter's type?",
+      "question": "某段反汇编显示 addl 0x4(%rax), %ecx，且 %rax 保存第一个参数。这条指令能证明参数类型的什么？",
       "options": [
-        "That it points at an object with a 4-byte field at offset 4, with no name, no struct size, and no information about the other bytes",
-        "That the parameter is an int",
-        "That it points at a struct whose field at offset 4 is a 4-byte integer named balance",
-        "That the object is 8 bytes long"
+        "该对象长度为 8 字节",
+        "该参数是一个 int",
+        "它指向一个在偏移 4 处有 4 字节字段的对象，没有名字、没有结构体大小，也不知道其他字节是什么",
+        "它指向一个结构体，偏移 4 处的字段是名为 balance 的 4 字节整数"
       ],
-      "correct": 0,
-      "explanation": "The displacement gives the offset and the l suffix gives the width. Names, the struct size, and the other members are not in these bytes."
+      "correct": 2,
+      "explanation": "位移给出偏移，l 后缀给出宽度。名字、结构体大小和其他成员都不在这些字节里。"
     },
     {
       "stage": "check",
-      "question": "Apply the System V rules to struct account { char kind; int balance; short code; double rate; const char *label; }. What are the member offsets and the size?",
+      "question": "对 struct account { char kind; int balance; short code; double rate; const char *label; } 应用 System V 规则。成员偏移和大小分别是？",
       "options": [
-        "0, 8, 16, 24, 32 and size 40, because every member is aligned to 8",
-        "0, 1, 5, 7, 15 and size 23, because members are packed",
-        "0, 4, 8, 12, 16 and size 24, because every member is aligned to 4",
-        "0, 4, 8, 16, 24 and size 32, because each member goes to the lowest offset that is a multiple of its alignment and the size is a multiple of the strictest alignment, 8"
+        "0, 8, 16, 24, 32，大小 40，因为每个成员都按 8 对齐",
+        "0, 4, 8, 12, 16，大小 24，因为每个成员都按 4 对齐",
+        "0, 4, 8, 16, 24，大小 32，因为每个成员放到满足其对齐的最低偏移，且大小是最严格对齐 8 的倍数",
+        "0, 1, 5, 7, 15，大小 23，因为成员是紧凑排列的"
+      ],
+      "correct": 2,
+      "explanation": "int 需要对齐 4 所以到 4，double 需要对齐 8 所以到 16，指针跟在 24，32 已是 8 的倍数。其中有九个字节是填充。"
+    },
+    {
+      "stage": "check",
+      "question": "在 -O2 下，某循环从指针读取偏移 4、36、68、100、132、164、196、228 处的 4 字节值，并在每轮把指针推进 256。pass 应报告什么？",
+      "options": [
+        "步长 256，以及偏移 4 处的一个字段",
+        "步长 4，即这些偏移的最大公约数",
+        "八个 4 字节字段，以及至少 232 字节的结构体",
+        "偏移 4 处一个 4 字节字段，元素步长 32，因为 256 是 32 的 8 倍且恰好有 8 个偏移，说明循环被展开了 8 次"
       ],
       "correct": 3,
-      "explanation": "int needs 4 so it goes to 4, double needs 8 so it goes to 16, the pointer follows at 24, and 32 is already a multiple of 8. Nine bytes are padding."
+      "explanation": "同宽度访问间隔 d 字节、循环步长为 k·d 且有 k 个不同偏移时，是同一元素访问的 k 份拷贝。折叠后得到一个字段和步长 32。"
     },
     {
       "stage": "check",
-      "question": "At -O2 a loop reads 4-byte values at offsets 4, 36, 68, 100, 132, 164, 196, and 228 from a pointer and advances the pointer by 256 each pass. What should the pass report?",
+      "question": "在可重定位的 -g 目标文件里，.debug_str_offsets 的每个表项在文件中都是零。读者如何为带 DW_FORM_strx1 的 DW_AT_name 找到字符串？",
       "options": [
-        "Eight 4-byte fields and a struct of at least 232 bytes",
-        "A stride of 4, the greatest common divisor of the offsets",
-        "One 4-byte field at offset 4 with an element stride of 32, because 256 is 8 times 32 and there are exactly 8 offsets, so the loop was unrolled 8 times",
-        "A stride of 256 and one field at offset 4"
+        "从 .debug_line_str 读取字符串",
+        "把索引当作直接进入 .debug_str 的偏移来读",
+        "先应用 .rela.debug_str_offsets 的 R_X86_64_32 重定位，再读取 str_offsets_base 加上 4 倍索引处的 4 字节表项，那就是进入 .debug_str 的偏移",
+        "在 .debug_str 里搜索成员名"
       ],
       "correct": 2,
-      "explanation": "Same-width accesses d bytes apart with a loop step of k times d and k distinct offsets are k copies of one element access. Folding them gives one field and stride 32."
+      "explanation": "在可重定位目标里，字符串偏移表放的是占位符。重定位的加数携带真实偏移，而值为 8 的 str_offsets_base 会跳过表头。"
     },
     {
       "stage": "check",
-      "question": "In the relocatable -g object, every entry of .debug_str_offsets is zero in the file. How does a reader find the string for DW_AT_name with form DW_FORM_strx1?",
+      "question": "describe 含有 movq (%rdi), %rax，随后是 callq *0x10(%rax)。在 Rect 上这次调用会到达哪个虚函数？",
       "options": [
-        "It reads the string from .debug_line_str",
-        "It applies the R_X86_64_32 relocations of .rela.debug_str_offsets, then reads the 4-byte entry at str_offsets_base plus 4 times the index, which is the offset into .debug_str",
-        "It reads the index as a direct offset into .debug_str",
-        "It searches .debug_str for the member name"
-      ],
-      "correct": 1,
-      "explanation": "In a relocatable object the string offsets table holds placeholders. The relocation addends carry the real offsets, and str_offsets_base, which is 8, skips the table header."
-    },
-    {
-      "stage": "check",
-      "question": "describe contains movq (%rdi), %rax followed by callq *0x10(%rax). Which virtual function does this call reach on a Rect?",
-      "options": [
-        "The destructor, because slot 0 is the first entry",
-        "It cannot be known without running the program",
-        "Rect::area(), because the vptr points at the address point and 0x10 divided by 8 is slot 2, which the vtable relocations and DW_AT_vtable_elem_location both assign to area",
-        "Rect::name(), because 0x10 is the second entry after the typeinfo pointer"
-      ],
-      "correct": 2,
-      "explanation": "The vptr holds the address point, 16 bytes past the symbol, after offset-to-top and the typeinfo pointer. Slot 0 and 1 are the two destructors, slot 2 is area, slot 3 is name."
-    },
-    {
-      "stage": "post",
-      "question": "What does the Itanium mangled name _ZNK4Rect4areaEv encode?",
-      "options": [
-        "Rect::area() const: _Z prefix, N opens a nested name, K marks a const member function, 4Rect and 4area are length-prefixed names, E closes, v is an empty parameter list",
-        "A vtable for Rect",
-        "Rect::area(void*)",
-        "area(Rect) with one parameter"
+        "Rect::area()，因为 vptr 指向地址点，0x10 除以 8 是槽位 2，vtable 重定位与 DW_AT_vtable_elem_location 都把 area 分到该槽",
+        "不运行程序就无法知道",
+        "析构函数，因为槽位 0 是第一项",
+        "Rect::name()，因为 0x10 是 typeinfo 指针之后的第二项"
       ],
       "correct": 0,
-      "explanation": "Section 5.1 of the Itanium C++ ABI: the special names _ZTV, _ZTI, and _ZTS are vtable, typeinfo, and typeinfo name; a plain function encodes its nested name and then its parameter types."
+      "explanation": "vptr 保存的是地址点，在符号之后 16 字节，紧跟 offset-to-top 与 typeinfo 指针。槽位 0 和 1 是两个析构函数，槽位 2 是 area，槽位 3 是 name。"
     },
     {
       "stage": "post",
-      "question": "Ghidra without DWARF printed *(int *)(param_1 + 4) for bump. Which single change makes it print a->balance?",
+      "question": "Itanium 修饰名 _ZNK4Rect4areaEv 编码了什么？",
       "options": [
-        "Re-running auto analysis",
-        "A struct type in the Data Type Manager with a 4-byte int member at offset 4, applied to the parameter, which the decompiler then propagates; DWARF supplies that struct automatically and the recovered layout lets you type it by hand",
-        "Switching the decompiler to a different calling convention",
-        "Renaming param_1 to a"
+        "Rect 的 vtable",
+        "Rect::area(void*)",
+        "带一个参数的 area(Rect)",
+        "Rect::area() const：_Z 前缀，N 打开嵌套名，K 标记 const 成员函数，4Rect 与 4area 是带长度前缀的名字，E 关闭，v 表示空参数列表"
+      ],
+      "correct": 3,
+      "explanation": "Itanium C++ ABI 第 5.1 节：特殊名 _ZTV、_ZTI、_ZTS 分别是 vtable、typeinfo、typeinfo name；普通函数先编码嵌套名，再编码参数类型。"
+    },
+    {
+      "stage": "post",
+      "question": "没有 DWARF 时，Ghidra 把 bump 打印成 *(int *)(param_1 + 4)。哪一个单独改动能让它打印 a->balance？",
+      "options": [
+        "在 Data Type Manager 里放一个偏移 4 处有 4 字节 int 成员的结构体类型，并应用到该参数，反编译器随之传播；DWARF 会自动提供该结构体，恢复出的布局也让你能手工标注类型",
+        "把反编译器切换到另一种调用约定",
+        "重新跑自动分析",
+        "把 param_1 重命名为 a"
+      ],
+      "correct": 0,
+      "explanation": "两种目标里的指令完全相同。只要参数有可用数据类型——无论来自 DWARF 还是分析人员——反编译输出就会改变。"
+    },
+    {
+      "stage": "post",
+      "question": "该 pass 从三个构建里为 struct account 恢复出五个字段和大小 32。下列哪项它仍然无法仅从指令恢复？",
+      "options": [
+        "数组的元素步长",
+        "成员名、const 限定符，以及偏移 24 处指针的确切所指类型",
+        "哪个字段保存浮点值",
+        "每个字段的宽度"
       ],
       "correct": 1,
-      "explanation": "The instructions are identical in both objects. The decompiler output changes when a data type is available for the parameter, whether it came from DWARF or from the analyst."
-    },
-    {
-      "stage": "post",
-      "question": "The pass recovers five fields and size 32 for struct account from three builds. Which of these does it still fail to recover from the instructions?",
-      "options": [
-        "The width of each field",
-        "The element stride of the array",
-        "The member names, the const qualifier, and the exact pointee type of the pointer at offset 24",
-        "Which field holds a floating-point value"
-      ],
-      "correct": 2,
-      "explanation": "Widths come from the mnemonics, the stride from the loops, and the float from the SSE scalar instructions. Names and qualifiers exist only in the source and in DWARF, and the pointee is known only to be elements 1 byte apart."
+      "explanation": "宽度来自助记符，步长来自循环，浮点来自 SSE 标量指令。名字和限定符只存在于源码与 DWARF，而所指对象只能知道元素相隔 1 字节。"
     }
   ]
 }

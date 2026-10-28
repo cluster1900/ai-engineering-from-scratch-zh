@@ -4,75 +4,75 @@
   "questions": [
     {
       "stage": "pre",
-      "question": "The page already limits the text area with maxlength. Why does the server check the length again?",
+      "question": "页面已经用 maxlength 限制了文本框。为什么服务器还要再检查一次长度？",
       "options": [
-        "Browsers ignore maxlength on a text area unless JavaScript is turned off",
-        "Any client can send a request without the page",
-        "The browser applies maxlength only after the model call ends",
-        "The maxlength attribute counts bytes, so it allows too many characters"
+        "任何客户端都可以不经过该页面就发请求",
+        "maxlength 按字节计数，因此会允许多于预期的字符",
+        "浏览器只在模型调用结束后才应用 maxlength",
+        "除非关闭 JavaScript，浏览器才会忽略文本框上的 maxlength"
       ],
-      "correct": 1,
-      "explanation": "A browser check helps honest users only. A script or curl can send any body, so the server repeats every check."
+      "correct": 0,
+      "explanation": "浏览器检查只帮诚实用户。脚本或 curl 可以发送任意正文，所以服务器要重复每一项检查。"
     },
     {
       "stage": "check",
-      "question": "What are the three parts of the demo contract in this lesson?",
+      "question": "本课 demo 契约的三个部分是什么？",
       "options": [
-        "The prompt, the model weights, and the GPU server",
-        "The input, the model call, and the output",
-        "The frontend, the backend, and the database layer",
-        "The sign-in page, the payment page, and the result page"
-      ],
-      "correct": 1,
-      "explanation": "The contract has an input, a model call, and an output. The demo puts a limit on each part, and errors are part of the output."
-    },
-    {
-      "stage": "check",
-      "question": "Why does the demo page send a POST request and read the stream with fetch() instead of using EventSource?",
-      "options": [
-        "EventSource cannot parse the text/event-stream format that the server returns",
-        "fetch() lowers the time to first token because it skips the response headers",
-        "A Python http.server handler can send a stream only in reply to a POST request",
-        "EventSource sends only GET requests, so the input goes into the URL"
-      ],
-      "correct": 3,
-      "explanation": "EventSource only sends GET. A GET request carries the input in the URL, and servers and proxies write URLs to their access logs."
-    },
-    {
-      "stage": "check",
-      "question": "What does the demo write to its request log?",
-      "options": [
-        "The full request line with its query string and the raw client IP address",
-        "The route, status, latency, input length, and a keyed hash of the client",
-        "The stack trace of each failed request, with the file paths and the line numbers",
-        "The input text and the model reply, so that a reviewer can replay each request"
-      ],
-      "correct": 1,
-      "explanation": "The log keeps no input text and no client address. The keyed hash counts requests per client without storing the address."
-    },
-    {
-      "stage": "post",
-      "question": "The model fails after the server sent status 200 and three token events. What does the demo do?",
-      "options": [
-        "It changes the status line to 500 and sends the response headers again",
-        "It runs the model again in the background and sends new tokens with no notice",
-        "It sends an error event in the stream, and the page shows it",
-        "It closes the connection with no message and lets the browser time out later"
+        "prompt、模型权重和 GPU 服务器",
+        "前端、后端和数据库层",
+        "输入、模型调用和输出",
+        "登录页、支付页和结果页"
       ],
       "correct": 2,
-      "explanation": "The status line is already sent, so the server cannot change it. The stream carries an error event with a code, a message, and a hint."
+      "explanation": "契约包含输入、模型调用和输出。demo 给每一部分设限，错误也属于输出的一部分。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 demo 页面用 POST 并用 fetch() 读流，而不是用 EventSource？",
+      "options": [
+        "fetch() 会跳过响应头，从而缩短到首 token 的时间",
+        "EventSource 只发 GET，因此输入会进 URL",
+        "Python http.server 处理器只能在回复 POST 时发送流",
+        "EventSource 无法解析服务器返回的 text/event-stream 格式"
+      ],
+      "correct": 1,
+      "explanation": "EventSource 只发 GET。GET 把输入放进 URL，服务器和代理会把 URL 写进访问日志。"
+    },
+    {
+      "stage": "check",
+      "question": "demo 往请求日志里写什么？",
+      "options": [
+        "路由、状态、延迟、输入长度，以及客户端的带密钥哈希",
+        "带查询串的完整请求行以及原始客户端 IP",
+        "每个失败请求的堆栈，含文件路径与行号",
+        "输入文本和模型回复，以便审阅者重放每个请求"
+      ],
+      "correct": 0,
+      "explanation": "日志不保存输入文本，也不保存客户端地址。带密钥哈希可按客户端计数，而不存储地址。"
     },
     {
       "stage": "post",
-      "question": "A hundred clients each stay under the per-client rate limit. Which control stops them from using the full model budget?",
+      "question": "服务器已发送状态 200 和三个 token 事件后模型失败了。demo 会怎么做？",
       "options": [
-        "A smaller maxlength value on the text area of the HTML form on the page",
-        "A token bucket with a larger capacity and a faster refill for each client",
-        "A Content-Security-Policy header that allows only one hashed inline script",
-        "A daily usage cap that counts calls from all clients"
+        "在流里发送 error 事件，页面把它显示出来",
+        "在后台再跑一次模型，并毫无提示地发送新 token",
+        "把状态行改成 500 并再次发送响应头",
+        "无消息关闭连接，让浏览器稍后超时"
+      ],
+      "correct": 0,
+      "explanation": "状态行已经发出，服务器改不了。流会携带带有 code、message 和 hint 的 error 事件。"
+    },
+    {
+      "stage": "post",
+      "question": "一百个客户端各自都未超过每客户端限速。哪项控制能阻止它们用尽全部模型预算？",
+      "options": [
+        "页面 HTML 表单文本框上更小的 maxlength",
+        "每个客户端容量更大、补给更快的令牌桶",
+        "只允许一个哈希内联脚本的 Content-Security-Policy 头",
+        "统计所有客户端调用的每日用量上限"
       ],
       "correct": 3,
-      "explanation": "A rate limit controls each client but not the total. The usage cap counts every model call in a day and refuses calls after a fixed number."
+      "explanation": "限速约束每个客户端，但不约束总量。用量上限统计一天内每一次模型调用，超过固定次数后拒绝。"
     }
   ]
 }

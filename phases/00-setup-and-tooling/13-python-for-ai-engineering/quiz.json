@@ -4,75 +4,75 @@
   "questions": [
     {
       "stage": "pre",
-      "question": "You run one training script two times and get a different test score each time. Which change makes the train and test split the same in every run?",
+      "question": "你把同一个训练脚本跑了两次，每次得到的测试分数不同。怎样改才能让每次运行的训练/测试划分都相同？",
       "options": [
-        "Use a larger test fraction for the split",
-        "Shuffle the indexes with random.Random(42)",
-        "Call random.shuffle two times instead of once",
-        "Convert the dataset list to a tuple first"
-      ],
-      "correct": 1,
-      "explanation": "A generator with a fixed seed gives the same sequence in every run. The shuffled order and the split then stay the same. The other changes leave the shuffle random or have no effect on the order."
-    },
-    {
-      "stage": "check",
-      "question": "What does a call to a generator function return?",
-      "options": [
-        "A generator object that runs the body on each next() call",
-        "A list that holds every value that the function yields",
-        "The first value that the function yields, and then it stops",
-        "None, because the function body has no return statement"
-      ],
-      "correct": 0,
-      "explanation": "The call runs none of the body. It returns a generator object. Each next() call runs the body to the next yield and pauses there."
-    },
-    {
-      "stage": "check",
-      "question": "The call batches(range(10), 4) uses the default drop_last=False. Which batch sizes does it give?",
-      "options": [
-        "2, 4, 4",
-        "4, 4, 2",
-        "4, 4, 4",
-        "4, 4"
-      ],
-      "correct": 1,
-      "explanation": "islice takes up to four items at a time. Ten items give two full batches and a last batch of two items. With drop_last=True, the generator removes the last batch."
-    },
-    {
-      "stage": "check",
-      "question": "Why is a pure-Python dot product over a million floats much slower than the NumPy dot product?",
-      "options": [
-        "Python floats have less precision than the NumPy float64 values",
-        "The for loop makes a full copy of the list on every single pass",
-        "The interpreter does type checks and makes objects per element",
-        "The zip() function sorts both input lists before it pairs the items"
+        "把 random.shuffle 调用两次而不是一次",
+        "先把数据集 list 转成 tuple",
+        "用 random.Random(42) 打乱索引",
+        "增大划分时的测试集比例"
       ],
       "correct": 2,
-      "explanation": "Both versions do the same arithmetic on 64-bit floats. The Python loop runs about ten bytecode instructions for each element and makes a float object for each result. NumPy runs one compiled loop over raw 8-byte values."
+      "explanation": "带固定种子的生成器每次运行都会给出相同序列，打乱后的顺序和划分也就不变。其他改法要么仍让打乱随机，要么对顺序没有影响。"
+    },
+    {
+      "stage": "check",
+      "question": "调用一个 generator 函数会返回什么？",
+      "options": [
+        "一个 generator 对象，每次 next() 才执行函数体",
+        "None，因为函数体没有 return 语句",
+        "函数 yield 出的第一个值，然后就停止",
+        "一个 list，里面装着函数 yield 出的全部值"
+      ],
+      "correct": 0,
+      "explanation": "调用时并不执行函数体，只返回一个 generator 对象。每次 next() 会把函数体推进到下一个 yield 并在那里暂停。"
+    },
+    {
+      "stage": "check",
+      "question": "调用 batches(range(10), 4) 且使用默认 drop_last=False。它给出的各 batch 大小是？",
+      "options": [
+        "2, 4, 4",
+        "4, 4, 4",
+        "4, 4",
+        "4, 4, 2"
+      ],
+      "correct": 3,
+      "explanation": "islice 每次最多取四个元素。十个元素得到两个满 batch 和一个大小为二的末 batch。若 drop_last=True，生成器会丢掉最后一个 batch。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么在百万个 float 上做纯 Python 点积，会远慢于 NumPy 点积？",
+      "options": [
+        "解释器要对每个元素做类型检查并创建对象",
+        "Python float 的精度低于 NumPy 的 float64",
+        "zip() 在配对前会先对两个输入 list 排序",
+        "for 循环每一遍都会完整复制 list"
+      ],
+      "correct": 0,
+      "explanation": "两种写法对 64-bit float 做的算术相同。Python 循环每个元素大约要跑十条字节码指令，并为每个结果创建 float 对象；NumPy 则在原始 8 字节值上跑一遍编译好的循环。"
     },
     {
       "stage": "post",
-      "question": "The function def add(item, bucket=[]) appends item to bucket and returns bucket. You call add(1) and then add(2). What does the second call return?",
+      "question": "函数 def add(item, bucket=[]) 会把 item 追加到 bucket 并返回 bucket。你先调用 add(1)，再调用 add(2)。第二次调用返回什么？",
       "options": [
-        "[1]",
         "[2, 1]",
+        "[1]",
         "[2]",
         "[1, 2]"
       ],
       "correct": 3,
-      "explanation": "Python evaluates the default list once, when it runs the def statement. Both calls append to that one list. Use None as the default and create the list inside the function."
+      "explanation": "Python 在执行 def 时只求值一次默认 list。两次调用都往同一个 list 里追加。默认值应写成 None，并在函数内部创建 list。"
     },
     {
       "stage": "post",
-      "question": "You standardize the features before you train a model. Where must the means and standard deviations come from?",
+      "question": "你在训练模型前对特征做标准化。均值和标准差必须来自哪里？",
       "options": [
-        "The training split only",
-        "The test split only",
-        "Each mini-batch on its own",
-        "The training and test splits together"
+        "每个 mini-batch 各自计算",
+        "仅来自训练集划分",
+        "训练集与测试集合在一起",
+        "仅来自测试集划分"
       ],
-      "correct": 0,
-      "explanation": "Statistics from the test split put test information into training, and the test score is then too high. Compute them on the training split, and apply the same values to the test split."
+      "correct": 1,
+      "explanation": "用测试集统计量会把测试信息带进训练，测试分数会被抬高。应在训练集上计算，再用同一组值应用到测试集。"
     }
   ]
 }

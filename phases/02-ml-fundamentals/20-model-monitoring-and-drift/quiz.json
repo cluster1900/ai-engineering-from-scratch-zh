@@ -4,75 +4,75 @@
   "questions": [
     {
       "stage": "pre",
-      "question": "A model service answers every request with HTTP 200 and normal latency. What can it still hide?",
+      "question": "模型服务对每个请求都返回 HTTP 200 且延迟正常。它仍可能掩盖什么？",
       "options": [
-        "Nothing, because a healthy service always returns correct predictions",
-        "Memory leaks, because HTTP 200 responses never allocate new memory",
-        "Wrong predictions, because the data moved away from the training data",
-        "Slow queries, because an HTTP 200 status means the request took over one second"
-      ],
-      "correct": 2,
-      "explanation": "System health checks show that the service answers. They say nothing about whether the answers are still right for today's data."
-    },
-    {
-      "stage": "check",
-      "question": "Fraudsters change tactics, so the same payment features now carry a different fraud risk. Which kind of drift is this?",
-      "options": [
-        "Covariate drift, because P(x) changed",
-        "Prior drift, because P(y) changed alone",
-        "No drift, because the inputs look the same",
-        "Concept drift, because P(y | x) changed"
+        "什么也不会，因为健康服务总是返回正确预测",
+        "内存泄漏，因为 HTTP 200 响应从不分配新内存",
+        "慢查询，因为 HTTP 200 表示请求花了超过一秒",
+        "错误预测，因为数据已偏离训练数据"
       ],
       "correct": 3,
-      "explanation": "The input distribution can stay the same while the correct answer for each input changes. That is concept drift, and only labeled outcomes reveal it."
+      "explanation": "系统健康检查只说明服务有响应，并不说明对今天的数据答案是否仍然正确。"
     },
     {
       "stage": "check",
-      "question": "One of 10 reference-decile bins holds 10 percent of the reference and 30 percent of the current window. What does this bin add to PSI?",
+      "question": "欺诈者改变手法，同一组支付特征现在对应不同的欺诈风险。这是哪种漂移？",
       "options": [
-        "About 1.10, the natural log of the ratio 0.30 / 0.10",
-        "About 0.66, three times the difference in shares",
-        "About 0.22, which is (0.30 - 0.10) times ln(3)",
-        "About 0.20, the difference between the two shares"
-      ],
-      "correct": 2,
-      "explanation": "Each bin adds (current share minus reference share) times the log of their ratio. Here that is 0.20 times 1.099, about 0.22."
-    },
-    {
-      "stage": "check",
-      "question": "A drift monitor checks 50 features every hour at alpha 0.05, and nothing has changed. About how many false alarms does it raise per day?",
-      "options": [
-        "About 2.5",
-        "About 60",
-        "About 1200",
-        "None, because alpha protects every test"
+        "没有漂移，因为输入看起来一样",
+        "概念漂移（concept drift），因为 P(y | x) 变了",
+        "协变量漂移（covariate drift），因为 P(x) 变了",
+        "先验漂移（prior drift），因为只有 P(y) 变了"
       ],
       "correct": 1,
-      "explanation": "The monitor runs 50 times 24, or 1200 tests per day. Each one has a 5 percent false-alarm rate, so about 60 fire on unchanged data."
+      "explanation": "输入分布可以不变，而每个输入的正确答案变了。这就是概念漂移，只有带标签的结果才能揭示它。"
+    },
+    {
+      "stage": "check",
+      "question": "参考十分位的某个 bin 里，参考窗口占 10%，当前窗口占 30%。这个 bin 给 PSI 加多少？",
+      "options": [
+        "约 0.66，即份额差的三倍",
+        "约 0.22，即 (0.30 - 0.10) 乘以 ln(3)",
+        "约 0.20，即两个份额之差",
+        "约 1.10，即比值 0.30 / 0.10 的自然对数"
+      ],
+      "correct": 1,
+      "explanation": "每个 bin 加上（当前份额减参考份额）乘以其比值的对数。这里是 0.20 乘以 1.099，约 0.22。"
+    },
+    {
+      "stage": "check",
+      "question": "漂移监控每小时以 alpha 0.05 检查 50 个特征，且数据其实没变。大约每天会报多少次误报？",
+      "options": [
+        "没有，因为 alpha 保护每一次检验",
+        "约 2.5",
+        "约 60",
+        "约 1200"
+      ],
+      "correct": 2,
+      "explanation": "监控每天跑 50×24=1200 次检验。每次有 5% 误报率，因此在未变数据上大约会触发 60 次。"
     },
     {
       "stage": "post",
-      "question": "With one million events in each window, the KS test reports p = 2e-7 for a feature, and D is 0.004. What should the alert policy do?",
+      "question": "每个窗口有一百万事件时，某特征的 KS 检验报告 p = 2e-7，而 D 为 0.004。告警策略应怎样做？",
       "options": [
-        "Log it at most as a warning, because the effect size D is tiny",
-        "Page the on-call engineer, because the p-value is far below alpha",
-        "Retrain at once, because any significant result means concept drift",
-        "Ignore KS and switch to PSI, because KS is invalid for large windows"
+        "忽略 KS 改用 PSI，因为大窗口下 KS 无效",
+        "呼叫值班工程师，因为 p 值远低于 alpha",
+        "最多记为警告，因为效应量 D 极小",
+        "立刻重训，因为任何显著结果都意味着概念漂移"
       ],
-      "correct": 0,
-      "explanation": "Large samples make tiny gaps significant. The policy needs an effect-size threshold on D as well as a p-value threshold before it alerts a person."
+      "correct": 2,
+      "explanation": "大样本会让微小差距也显著。策略需要在对人告警之前，同时设 D 的效应量阈值和 p 值阈值。"
     },
     {
       "stage": "post",
-      "question": "Input monitors stay quiet, but accuracy on newly labeled events falls from 0.95 to 0.78. What is the right next step?",
+      "question": "输入监控保持安静，但新标注事件上的准确率从 0.95 降到 0.78。下一步该怎么做？",
       "options": [
-        "Ignore it, because input drift tests found nothing wrong at all",
-        "Lower the PSI thresholds until the input monitors fire too",
-        "Retrain on the original training data with more epochs",
-        "Treat it as concept drift and collect recent labels to retrain"
+        "用更多 epoch 在原始训练数据上重训",
+        "当作概念漂移，收集近期标签再重训",
+        "降低 PSI 阈值，直到输入监控也报警",
+        "忽略它，因为输入漂移检验完全没发现问题"
       ],
-      "correct": 3,
-      "explanation": "Stable inputs with falling accuracy point to a change in P(y | x). Retraining on old labels teaches the old concept again, so recent labels come first."
+      "correct": 1,
+      "explanation": "输入稳定但准确率下降，指向 P(y | x) 的变化。用旧标签重训只会再学旧概念，所以要先拿到近期标签。"
     }
   ]
 }
