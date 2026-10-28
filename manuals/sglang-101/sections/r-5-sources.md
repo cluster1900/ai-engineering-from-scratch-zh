@@ -22,8 +22,8 @@
 |---|---|
 | SGLang 0.5.22, tag `v0.5.22`, commit `baa9befa381511cd4d56f83980951e5a45fffc6d`, [github.com/sgl-project/sglang](https://github.com/sgl-project/sglang) | 每一节 |
 | Miles 0.1.2, tag `v0.1.2`, commit `a22fd824`, [github.com/radixark/miles](https://github.com/radixark/miles) | [7.2](#s-sglang-as-an-rl-rollout-engine) |
-| 捕获套件及其 [Mac 运行](manuals/sglang-101/capture/out)，记于 2026-10-16 | 每一节 with a listing |
-| GPU 套件及其[运行](manuals/sglang-101/capture/gpu)，于 2026-10-16 至 2026-10-21 记在一台 NVIDIA L4 节点和一台 DGX Spark (GB10) 上 | 每一节 with a GPU measurement |
+| 捕获套件及其 [Mac 运行](manuals/sglang-101/capture/out)，记于 2026-10-16 | 带 listing 的每一节 |
+| GPU 套件及其[运行](manuals/sglang-101/capture/gpu)，于 2026-10-16 至 2026-10-21 记在一台 NVIDIA L4 节点和一台 DGX Spark (GB10) 上 | 带 GPU 测量的每一节 |
 | Miles 镜像 `radixark/miles:latest`，Miles 提交 `08752a12`，带 SGLang 0.5.22.dev46+g7b6993a | [7.2](#s-sglang-as-an-rl-rollout-engine) |
 
 ## 第 3 档：pull request {#s-ref-sources-rank-3-pull-requests}
