@@ -4,87 +4,87 @@
   "questions": [
     {
       "stage": "pre",
-      "question": "You set breakpoints on bump, classify, and sum_balances in a build of your own program, run it to completion, and every breakpoint reports hit count = 0. What does that run prove?",
+      "question": "你在自己程序的某个构建上给 bump、classify、sum_balances 下断点，跑完全程，每个断点的 hit count 都是 0。这次运行证明了什么？",
       "options": [
-        "That the program has no functions",
-        "That no out-of-line copy of the three functions ran for this input in this build, and nothing about other inputs or other builds",
-        "That the breakpoints were set at the wrong addresses",
-        "The three functions are dead code and can be removed"
+        "该程序没有函数",
+        "对这次输入、这个构建，这三个函数的任何非内联副本都没有运行；关于其他输入或其他构建一无所知",
+        "断点设在了错误地址",
+        "这三个函数是死代码，可以删掉"
       ],
       "correct": 1,
-      "explanation": "A hit count is an observation about one execution of one build. At -O2 the compiler inlined the three functions and folded the results into constants, so the exported copies never ran. The functions are still in the symbol table."
+      "explanation": "命中次数是对一次执行、一个构建的观察。在 -O2 下编译器内联了这三个函数并把结果折成常量，因此导出的副本从未运行。符号表里它们仍然存在。"
     },
     {
       "stage": "check",
-      "question": "At the bump breakpoint lldb prints x0 = 0x16fdfe008, x1 = 0x5, and memory read -s4 -fx -c8 $x0 prints 0x00000073 0x000000fa 0x00000009 0x00000000 0x00000000 0x3ff40000 0x00000719 0x00000001. Which static claim does the second word confirm?",
+      "question": "在 bump 断点处 lldb 打印 x0 = 0x16fdfe008，x1 = 0x5，且 memory read -s4 -fx -c8 $x0 打印 0x00000073 0x000000fa 0x00000009 0x00000000 0x00000000 0x3ff40000 0x00000719 0x00000001。第二个字确认了哪条静态主张？",
       "options": [
-        "That balance is at offset 4 and holds 250, the value DWARF puts at DW_AT_data_member_location 0x04",
-        "That rate is a float",
-        "That x1 holds the struct pointer",
-        "That the struct is 16 bytes long"
+        "balance 在偏移 4 且值为 250，也就是 DWARF 在 DW_AT_data_member_location 0x04 给出的值",
+        "rate 是 float",
+        "x1 保存结构体指针",
+        "结构体长度为 16 字节"
       ],
       "correct": 0,
-      "explanation": "The words are the struct bytes starting at a. Word 1 sits at offset 4, holds 0xfa = 250, and matches frame variable a->balance. Words 4 and 5 are the IEEE-754 double 1.25 at offset 16, and words 6 and 7 are the label pointer at offset 24."
+      "explanation": "这些字是从 a 开始的结构体字节。字 1 在偏移 4，值为 0xfa = 250，与 frame variable a->balance 一致。字 4 和 5 是偏移 16 处的 IEEE-754 双精度 1.25，字 6 和 7 是偏移 24 处的 label 指针。"
     },
     {
       "stage": "check",
-      "question": "In classify at -O0 the first conditional branch is tbz w8, #0x1f, 0x100000504 with the fall-through at 0x1000004f4. The run stops at 0x1000004f4 for an account with balance -40. Is the lesson 33 edge claim confirmed or refuted?",
+      "question": "在 -O0 的 classify 里，第一条条件分支是 tbz w8, #0x1f, 0x100000504，直通落在 0x1000004f4。对 balance 为 -40 的账户，运行停在 0x1000004f4。第 33 课的边主张是被确认还是被反驳？",
       "options": [
-        "Refuted, because the branch to 0x100000504 was not taken",
-        "Confirmed, because tbz branches when bit 31 is zero, so a negative balance falls through to the return -1 block exactly as the lifted condition predicts",
-        "Not observed, because tbz is not a conditional branch",
-        "Refuted, because -40 is less than 200"
+        "被反驳，因为没有走去 0x100000504 的分支",
+        "被确认，因为 tbz 在第 31 位为零时才跳，所以负 balance 会直通到返回 -1 的块，正与提升出的条件一致",
+        "未观察到，因为 tbz 不是条件分支",
+        "被反驳，因为 -40 小于 200"
       ],
       "correct": 1,
-      "explanation": "tbz is test bit and branch if zero. Bit 31 of -40 is set, so the branch is not taken and execution falls through. The static claim says the taken edge is for balance >= 0 and the fall-through edge is for balance < 0, which is what the stop shows."
+      "explanation": "tbz 是测试位并在为零时分支。-40 的第 31 位已置位，因此不跳转并直通。静态主张说 taken 边对应 balance >= 0，直通边对应 balance < 0，停点正是如此。"
     },
     {
       "stage": "check",
-      "question": "watchpoint set variable a->balance reports size = 4, type = m, and watchpoint list prints Number of supported hardware watchpoints: 4. Why does lldb report a count at all?",
+      "question": "watchpoint set variable a->balance 报告 size = 4、type = m，而 watchpoint list 打印 Number of supported hardware watchpoints: 4。为什么 lldb 会报告一个数量？",
       "options": [
-        "Because macOS allows only four debuggers at once",
-        "Because data watchpoints use per-core debug registers, DR0 to DR3 on x86-64 and DBGWVR/DBGWCR pairs on arm64, so a fixed number of them exist and a wide region can use more than one",
-        "Because watchpoints are implemented in software and lldb limits them to keep the process fast",
-        "Because the count is the number of bytes watched"
+        "因为 macOS 一次只允许四个调试器",
+        "因为数据观察点使用每核调试寄存器——x86-64 上是 DR0 到 DR3，arm64 上是 DBGWVR/DBGWCR 对——所以数量固定，宽区域还可能占用不止一个",
+        "因为观察点用软件实现，lldb 限制数量以保持进程快速",
+        "因为该数量就是被监视的字节数"
       ],
       "correct": 1,
-      "explanation": "Hardware watchpoints compare every memory access against a small set of address registers. x86-64 has four, arm64 implementations have between 2 and 64, and this machine reports 4. When the slots run out lldb refuses the next watchpoint."
+      "explanation": "硬件观察点把每次内存访问与一小组地址寄存器比较。x86-64 有四个，arm64 实现介于 2 到 64，这台机器报告 4。槽位用尽时 lldb 会拒绝下一个观察点。"
     },
     {
       "stage": "post",
-      "question": "You saved a core with process save-core --style stack at the bump breakpoint. Loading it with lldb -c shows balance = 250 but label = \"\" with the pointer 0x100000719 intact. What happened?",
+      "question": "你在 bump 断点用 process save-core --style stack 存了 core。用 lldb -c 加载后 balance = 250，但 label = \"\" 且指针 0x100000719 完好。发生了什么？",
       "options": [
-        "lldb cannot print strings from core files",
-        "The core is corrupt",
-        "The program never set label",
-        "The string lives in the __TEXT segment of the executable, which a stack-style core does not include, so the pointer is present and the bytes behind it are not"
+        "lldb 无法从 core 文件打印字符串",
+        "该 core 已损坏",
+        "程序从未设置 label",
+        "字符串在可执行文件的 __TEXT 段里，stack 风格 core 不包含它，所以指针在而背后的字节不在"
       ],
       "correct": 3,
-      "explanation": "A stack-style core saves the stack and modified memory, 49152 bytes here. The literal \"savings\" is read-only data in the binary. lldb warns that such a core may not show binaries, and --style full includes all process memory."
+      "explanation": "stack 风格 core 保存栈和已修改内存，这里是 49152 字节。字面量 \"savings\" 是二进制里的只读数据。lldb 会警告这类 core 可能看不到二进制，而 --style full 会包含全部进程内存。"
     },
     {
       "stage": "post",
-      "question": "On Apple silicon, why does clang -g -o account account.c produce a binary that lldb can debug without any extra signing step?",
+      "question": "在 Apple silicon 上，为什么 clang -g -o account account.c 生成的二进制无需额外签名步骤就能被 lldb 调试？",
       "options": [
-        "Because the Command Line Tools disable System Integrity Protection",
-        "Because the linker ad-hoc signs arm64 output by default (flags adhoc,linker-signed), the binary is not hardened, and it has no entitlements, so Apple's rule that the target must opt out of debugging does not apply",
-        "Because lldb ignores code signatures",
-        "Because the binary carries the com.apple.security.cs.debugger entitlement"
+        "因为 Command Line Tools 关闭了 System Integrity Protection",
+        "因为链接器默认对 arm64 输出做 ad-hoc 签名（flags adhoc,linker-signed），二进制未加固且无 entitlements，所以 Apple 关于目标必须退出调试的规则不适用",
+        "因为 lldb 忽略代码签名",
+        "因为二进制带有 com.apple.security.cs.debugger entitlement"
       ],
       "correct": 1,
-      "explanation": "codesign -dvvv shows Signature=adhoc and flags=0x20002(adhoc,linker-signed) with no entitlements. The debugger side is covered by debugserver, which Apple signed with its own private entitlements. Only a hardened binary without get-task-allow refuses the task port."
+      "explanation": "codesign -dvvv 显示 Signature=adhoc 且 flags=0x20002(adhoc,linker-signed)，没有 entitlements。调试器一侧由带有 Apple 私有 entitlements 签名的 debugserver 覆盖。只有未带 get-task-allow 的加固二进制才会拒绝 task port。"
     },
     {
       "stage": "post",
-      "question": "Which statement about record-and-replay with rr is correct for a learner on an Apple silicon Mac?",
+      "question": "关于在 Apple silicon Mac 上学习使用 rr 做 record-and-replay，哪句正确？",
       "options": [
-        "rr works inside Docker on macOS because Docker runs Linux",
-        "rr replaces lldb on macOS since 5.9.0",
-        "rr runs on macOS and records with dtrace",
-        "rr is Linux only, needs hardware performance counters, and no virtualization on macOS exposes them, so the only path is a Linux machine or a VM elsewhere with counter virtualization enabled"
+        "rr 能在 macOS 的 Docker 里工作，因为 Docker 跑的是 Linux",
+        "自 5.9.0 起 rr 在 macOS 上取代了 lldb",
+        "rr 在 macOS 上运行，并用 dtrace 记录",
+        "rr 仅限 Linux，需要硬件性能计数器，而 macOS 上没有任何虚拟化会暴露它们，所以只能用 Linux 机器，或在别处启用计数器虚拟化的虚拟机"
       ],
       "correct": 3,
-      "explanation": "rr records on Linux with perf counters on Intel, AMD Zen, or certain AArch64 cores including Apple M-series under Linux. Its own wiki says no virtualization on macOS supports performance counter virtualization, which rules out Docker and Colima VMs on this machine."
+      "explanation": "rr 在 Linux 上用 Intel、AMD Zen 或某些含 Apple M 系列的 AArch64 核上的 perf 计数器记录。它自己的 wiki 写明 macOS 上没有虚拟化支持性能计数器虚拟化，从而排除了本机上的 Docker 与 Colima 虚拟机。"
     }
   ]
 }
