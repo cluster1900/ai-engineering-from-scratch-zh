@@ -261,9 +261,9 @@
     },
     {
       "number": 6,
-      "title": "Scripted and Managed Code",
-      "thesis": "For JavaScript, rea reads the files without running them and returns a graph of modules and their relationships.",
-      "summary": "analyze-javascript-application and the application graph, and inspect-wasm-artifact with the WABT provider.",
+      "title": "脚本与托管代码",
+      "thesis": "对 JavaScript，rea 在不运行文件的情况下读取它们，并返回模块及其关系的图。",
+      "summary": "analyze-javascript-application 与应用图，以及带 WABT 提供者的 inspect-wasm-artifact。",
       "accent": "olive",
       "sections": [
         {
@@ -278,9 +278,9 @@
     },
     {
       "number": 7,
-      "title": "Rebuild and Prove",
-      "thesis": "rea records whether declared claims passed, so the proof that a rebuilt function is equal must come from your own tests.",
-      "summary": "verify_reconstruction and its limits, and a harness that proves a rebuild equal by execution and by bytes.",
+      "title": "重建并证明",
+      "thesis": "rea 记录已声明主张是否通过，所以重建函数相等的证明必须来自你自己的测试。",
+      "summary": "verify_reconstruction 及其限制，以及一个靠执行与字节证明重建相等的 harness。",
       "accent": "rose",
       "sections": [
         {
@@ -295,9 +295,9 @@
     },
     {
       "number": 8,
-      "title": "Agents over MCP",
-      "thesis": "An agent reaches rea through one MCP server with 207 tools, and its findings are only as good as the evidence it keeps.",
-      "summary": "The MCP server, its tools and deadlines, and one agent investigation from question to evidence.",
+      "title": "经 MCP 的 Agent",
+      "thesis": "一个 agent 经带 207 个工具的一台 MCP 服务器到达 rea，且其发现的好坏只取决于它保持的证据。",
+      "summary": "MCP 服务器、其工具与截止期限，以及一次从问题到证据的 agent 调查。",
       "accent": "indigo",
       "sections": [
         {
@@ -312,10 +312,10 @@
     }
   ],
   "reference": {
-    "title": "Reference",
+    "title": "参考",
     "accent": "grey",
-    "thesis": "Lookup tables for every rea name in the manual.",
-    "summary": "Commands and MCP tools, Evidence fields, errors seen in the captures, a glossary, the sources, and the figure index.",
+    "thesis": "本手册里每一个 rea 名字的查阅表。",
+    "summary": "命令与 MCP 工具、Evidence 字段、捕获中见到的错误、术语表、来源，以及图索引。",
     "sections": [
       {
         "id": "R.1",

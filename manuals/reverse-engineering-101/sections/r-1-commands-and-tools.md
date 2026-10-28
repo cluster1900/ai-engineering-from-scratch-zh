@@ -1,73 +1,73 @@
 # Commands and tools used in this manual
 
-> Every rea command and MCP tool the captures ran, with what it answers, the capture file that holds its output, and the section that explains it.
+> 捕获跑过的每一个 rea 命令与 MCP 工具，带着它回答什么、持有其输出的捕获文件，以及解释它的那一节。
 
-rea 6.7.0 has 153 CLI commands and 207 MCP tools. `binary_session` reports these counts in its catalog ([the capture](manuals/reverse-engineering-101/capture/out/10-mcp-04-binary-session.json)). The capture kit ran 17 one-shot commands and 13 tools, plus `rea mcp` and the two MCP methods that every session starts with. CLI names join words with `-` and MCP names with `_`. Three native commands map to tools with other names: `function` calls `analyze_function`, `decompile` calls `procedure_pseudo_code`, and `analyze` calls `binary_overview`. The capture passed `--format json` to every command and `--filter-output` with a key list where a record was too large to keep whole ([the capture](manuals/reverse-engineering-101/capture/out/00-commands.txt)).
+rea 6.7.0 有 153 个 CLI 命令与 207 个 MCP 工具。`binary_session` 在其目录里报告这些计数（[捕获](manuals/reverse-engineering-101/capture/out/10-mcp-04-binary-session.json)）。捕获套件跑了 17 个一次性命令与 13 个工具，外加 `rea mcp` 以及每一次会话都以之开始的两个 MCP 方法。CLI 名用 `-` 连接词，MCP 名用 `_`。三个原生命令映射到名字不同的工具：`function` 调用 `analyze_function`，`decompile` 调用 `procedure_pseudo_code`，`analyze` 调用 `binary_overview`。捕获对每一个命令传了 `--format json`，并在记录太大无法整份保留时用键列表传了 `--filter-output`（[捕获](manuals/reverse-engineering-101/capture/out/00-commands.txt)）。
 
-The output flags `--format`, `--filter-output`, `--token-limit`, and `--token-offset` accept the form `--flag=value`, as in `--format=json` {{cli Output and exit status}}. The setup runs used the same form for `--skill=false`.
+输出旗标 `--format`、`--filter-output`、`--token-limit` 与 `--token-offset` 接受 `--flag=value` 形式，例如 `--format=json` {{cli Output and exit status}}。setup 运行对 `--skill=false` 用了同样形式。
 
-## CLI commands
+## CLI commands {#s-ref-commands-and-tools-cli-commands}
 
 | Command | Answers | Recorded output | Section |
 |---|---|---|---|
-| `rea doctor --provider ghidra` | whether the provider and its environment are healthy, one check per row | [output](manuals/reverse-engineering-101/capture/out/01-doctor-ghidra.json) | [2.2](#s-rea-doctor-and-the-ghidra-provider) |
-| `rea capabilities` | the operations of each provider in groups, with the availability, the effects, and the limitations of each group, and the availability of each provider | [output](manuals/reverse-engineering-101/capture/out/02-capabilities.json) | [2.3](#s-rea-capabilities) |
-| `rea inspect-artifact <path>` | the content-addressed artifact graph of a file or package | [output](manuals/reverse-engineering-101/capture/out/03-inspect-artifact.json) | [3.1](#s-inspect-artifact) |
-| `rea inspect-binary-layout <path>` | ELF sections, symbols, and relocations through the pwntools profile, Linux x64 only, so it fails on macOS with `capability_unavailable` | [output](manuals/reverse-engineering-101/capture/out/04-inspect-binary-layout.json) | [3.2](#s-inspect-binary-layout-and-the-load-image) |
-| `rea inspect-macho <path>` | Mach-O load commands, segments, sections, imports, exports, and build metadata | [output](manuals/reverse-engineering-101/capture/out/04-inspect-macho.json) | [3.2](#s-inspect-binary-layout-and-the-load-image) |
-| `rea analyze <path> --provider ghidra` | `binary_overview`: the document, its segments, and the procedure and string counts | [output](manuals/reverse-engineering-101/capture/out/05-analyze-arm64-O1.json), [output](manuals/reverse-engineering-101/capture/out/05-analyze-x86_64-O1.json) | [3.4](#s-analyze-overview) |
-| `rea function <path> <name> --provider ghidra` | the `analyze_function` dossier of one procedure | [outputs](manuals/reverse-engineering-101/capture/out) | [4.6](#s-analyze-function-and-pseudocode) |
-| `rea decompile <path> <name> --provider ghidra` | the `procedure_pseudo_code` of one procedure | [outputs](manuals/reverse-engineering-101/capture/out) | [4.6](#s-analyze-function-and-pseudocode) |
-| `rea address-to-file-offset <path> <address> --provider ghidra` | the file offset of one virtual address | [output](manuals/reverse-engineering-101/capture/out/08-address-to-file-offset.json) | [3.3](#s-address-to-file-offset) |
-| `rea inspect-evidence-bundle '{"path":..., "detail": "summary"}'` | one row per record of a bundle, without the payloads | [outputs](manuals/reverse-engineering-101/capture/out) | [5.4](#s-evidence-bundles-export-and-import) |
-| `rea evidence-export <bundle> <out>` | a canonical copy of a bundle, keys sorted | [output](manuals/reverse-engineering-101/capture/out/12-evidence-export.json), [output](manuals/reverse-engineering-101/capture/out/12-evidence-export.txt) | [5.4](#s-evidence-bundles-export-and-import) |
-| `rea evidence-import <bundle>` | validation of every record id and manifest in a bundle, and the refusal of a bundle whose ids do not verify | [output](manuals/reverse-engineering-101/capture/out/13-evidence-import.json), [output](manuals/reverse-engineering-101/capture/out/13-evidence-import-rea-6.5.0.json) | [5.4](#s-evidence-bundles-export-and-import) |
-| `rea compare <left> <right>` | the two bundles by record membership and unknown revisions | [output](manuals/reverse-engineering-101/capture/out/14-compare-bundles.json) | [5.5](#s-compare-and-compare-functions) |
-| `rea analyze-javascript-application <dir>` | the application graph of a JavaScript or Electron application, without running it | [output](manuals/reverse-engineering-101/capture/out/15-js-app.json), [output](manuals/reverse-engineering-101/capture/out/15-js-app-graph.json) | [6.1](#s-analyze-javascript-application) |
-| `rea inspect-analysis-view <request.json>` | a summary or one page of a saved record | [output](manuals/reverse-engineering-101/capture/out/15-js-app-view-summary.json), [output](manuals/reverse-engineering-101/capture/out/15-js-app-view-modules.json) | [6.1](#s-analyze-javascript-application) |
-| `rea inspect-wasm-artifact <path>` | the validation result, the sections, and the import and export interface of one WebAssembly module, from WABT 1.0.42 | [output](manuals/reverse-engineering-101/capture/out/16-inspect-wasm-artifact.json) | [6.2](#s-inspect-wasm-artifact) |
-| `rea setup --client claude_code --skill=false` | the plan or the result of writing the rea entry into the Claude Code configuration | [output](manuals/reverse-engineering-101/capture/out/18-setup-claude-jsonc.json), [output](manuals/reverse-engineering-101/capture/out/18-setup-claude-duplicate.json), [output](manuals/reverse-engineering-101/capture/out/18-setup-configs.txt) | [8.1](#s-the-rea-mcp-server) |
-| `rea mcp` | the MCP server over stdio | [outputs](manuals/reverse-engineering-101/capture/out), [output](manuals/reverse-engineering-101/capture/out/10-mcp-server.log) | [8.1](#s-the-rea-mcp-server) |
+| `rea doctor --provider ghidra` | provider 及其环境是否健康，每行一次检查 | [output](manuals/reverse-engineering-101/capture/out/01-doctor-ghidra.json) | [2.2](#s-rea-doctor-and-the-ghidra-provider) |
+| `rea capabilities` | 每个 provider 按组的操作，带着每组的可用性、效果与限制，以及每个 provider 的可用性 | [output](manuals/reverse-engineering-101/capture/out/02-capabilities.json) | [2.3](#s-rea-capabilities) |
+| `rea inspect-artifact <path>` | 一个文件或包的按内容寻址的工件图 | [output](manuals/reverse-engineering-101/capture/out/03-inspect-artifact.json) | [3.1](#s-inspect-artifact) |
+| `rea inspect-binary-layout <path>` | 经 pwntools 配置的 ELF section、符号与重定位，仅 Linux x64，因此在 macOS 上以 `capability_unavailable` 失败 | [output](manuals/reverse-engineering-101/capture/out/04-inspect-binary-layout.json) | [3.2](#s-inspect-binary-layout-and-the-load-image) |
+| `rea inspect-macho <path>` | Mach-O 加载命令、段、section、导入、导出与构建元数据 | [output](manuals/reverse-engineering-101/capture/out/04-inspect-macho.json) | [3.2](#s-inspect-binary-layout-and-the-load-image) |
+| `rea analyze <path> --provider ghidra` | `binary_overview`：文档、其段，以及过程与字符串计数 | [output](manuals/reverse-engineering-101/capture/out/05-analyze-arm64-O1.json)，[output](manuals/reverse-engineering-101/capture/out/05-analyze-x86_64-O1.json) | [3.4](#s-analyze-overview) |
+| `rea function <path> <name> --provider ghidra` | 一个过程的 `analyze_function` dossier | [outputs](manuals/reverse-engineering-101/capture/out) | [4.6](#s-analyze-function-and-pseudocode) |
+| `rea decompile <path> <name> --provider ghidra` | 一个过程的 `procedure_pseudo_code` | [outputs](manuals/reverse-engineering-101/capture/out) | [4.6](#s-analyze-function-and-pseudocode) |
+| `rea address-to-file-offset <path> <address> --provider ghidra` | 一个虚拟地址的文件偏移 | [output](manuals/reverse-engineering-101/capture/out/08-address-to-file-offset.json) | [3.3](#s-address-to-file-offset) |
+| `rea inspect-evidence-bundle '{"path":..., "detail": "summary"}'` | 一个包里每份记录一行，没有载荷 | [outputs](manuals/reverse-engineering-101/capture/out) | [5.4](#s-evidence-bundles-export-and-import) |
+| `rea evidence-export <bundle> <out>` | 一个包的规范副本，键已排序 | [output](manuals/reverse-engineering-101/capture/out/12-evidence-export.json)，[output](manuals/reverse-engineering-101/capture/out/12-evidence-export.txt) | [5.4](#s-evidence-bundles-export-and-import) |
+| `rea evidence-import <bundle>` | 验证包里每一个记录 id 与清单，以及拒绝 id 不验证的包 | [output](manuals/reverse-engineering-101/capture/out/13-evidence-import.json)，[output](manuals/reverse-engineering-101/capture/out/13-evidence-import-rea-6.5.0.json) | [5.4](#s-evidence-bundles-export-and-import) |
+| `rea compare <left> <right>` | 按记录成员与未知事项修订比较两个包 | [output](manuals/reverse-engineering-101/capture/out/14-compare-bundles.json) | [5.5](#s-compare-and-compare-functions) |
+| `rea analyze-javascript-application <dir>` | 一个 JavaScript 或 Electron 应用的应用图，不运行它 | [output](manuals/reverse-engineering-101/capture/out/15-js-app.json)，[output](manuals/reverse-engineering-101/capture/out/15-js-app-graph.json) | [6.1](#s-analyze-javascript-application) |
+| `rea inspect-analysis-view <request.json>` | 一份已保存记录的摘要或一页 | [output](manuals/reverse-engineering-101/capture/out/15-js-app-view-summary.json)，[output](manuals/reverse-engineering-101/capture/out/15-js-app-view-modules.json) | [6.1](#s-analyze-javascript-application) |
+| `rea inspect-wasm-artifact <path>` | 一个 WebAssembly 模块的验证结果、section，以及导入与导出接口，来自 WABT 1.0.42 | [output](manuals/reverse-engineering-101/capture/out/16-inspect-wasm-artifact.json) | [6.2](#s-inspect-wasm-artifact) |
+| `rea setup --client claude_code --skill=false` | 把 rea 条目写入 Claude Code 配置的计划或结果 | [output](manuals/reverse-engineering-101/capture/out/18-setup-claude-jsonc.json)，[output](manuals/reverse-engineering-101/capture/out/18-setup-claude-duplicate.json)，[output](manuals/reverse-engineering-101/capture/out/18-setup-configs.txt) | [8.1](#s-the-rea-mcp-server) |
+| `rea mcp` | 经 stdio 的 MCP 服务器 | [outputs](manuals/reverse-engineering-101/capture/out)，[output](manuals/reverse-engineering-101/capture/out/10-mcp-server.log) | [8.1](#s-the-rea-mcp-server) |
 
-The CLI documents its exit status {{cli Output and exit status}}. It is `0` when the operation completed, with partial evidence or open questions allowed. It is `1` when it could not complete, and `128 + N` when signal `N` ended the process. Three commands exited `1` in the capture. They are `inspect-binary-layout` on a Mach-O file, `evidence-import` on a bundle from rea 6.5.0, and one setup dry run. An explicit `--provider` wins over `REA_ANALYSIS_PROVIDER`, and with neither set rea uses the single available provider that supports the target {{cli Choose a provider}}.
+CLI 文档说明其退出状态 {{cli Output and exit status}}。当操作完成时是 `0`，允许部分证据或打开的问题。当它无法完成时是 `1`，当信号 `N` 结束进程时是 `128 + N`。捕获里三个命令以 `1` 退出。它们是 Mach-O 文件上的 `inspect-binary-layout`、rea 6.5.0 包上的 `evidence-import`，以及一次 setup 干跑。显式的 `--provider` 胜过 `REA_ANALYSIS_PROVIDER`，两者都未设时 rea 使用支持该目标的那个唯一可用 provider {{cli Choose a provider}}。
 
-## MCP methods and tools
+## MCP methods and tools {#s-ref-commands-and-tools-mcp-methods-and-tools}
 
 | Name | Answers | Hints | CLI command | Recorded output | Section |
 |---|---|---|---|---|---|
-| `initialize` | the negotiated protocol version, the server capabilities, `serverInfo`, and the instruction string | method | | [output](manuals/reverse-engineering-101/capture/out/10-mcp-01-initialize.json) | [8.1](#s-the-rea-mcp-server) |
-| `tools/list` | all 207 tools with schemas and annotations | method | | [output](manuals/reverse-engineering-101/capture/out/10-mcp-02-tools-list.json) | [8.1](#s-the-rea-mcp-server) |
-| `open_binary` | the opened target: path, format, kind, SHA-256, architecture, with the provider bound and not started | open world | none | [output](manuals/reverse-engineering-101/capture/out/10-mcp-03-open-binary-O1.json), [output](manuals/reverse-engineering-101/capture/out/10-mcp-16-open-binary-O2.json) | [4.1](#s-open-binary-and-the-headless-bridge) |
-| `binary_session` | the current target, binding, run id, tool availability, client features, and server identity | open world | none | [output](manuals/reverse-engineering-101/capture/out/10-mcp-04-binary-session.json) | [8.1](#s-the-rea-mcp-server) |
-| `list_procedures` | every analyzed procedure as address and name, with thunk and external flags | | none | [output](manuals/reverse-engineering-101/capture/out/10-mcp-05-list-procedures.json) | [4.2](#s-list-procedures-and-function-bodies) |
-| `procedure_assembly` | the assembly of one procedure as one string | | none | [output](manuals/reverse-engineering-101/capture/out/10-mcp-06-procedure-assembly-grade.json) | [4.3](#s-procedure-assembly) |
-| `xrefs` | the addresses that reference one address | | `rea xrefs` | [output](manuals/reverse-engineering-101/capture/out/10-mcp-07-xrefs-grade.json) | [4.4](#s-xrefs-and-the-jump-table) |
-| `list_strings` | every defined string with encoding, termination, and byte length | | none | [output](manuals/reverse-engineering-101/capture/out/10-mcp-08-list-strings.json) | [4.5](#s-list-strings) |
-| `analyze_function` | the dossier of one procedure | | `rea function` | [output](manuals/reverse-engineering-101/capture/out/10-mcp-09-analyze-function-percent-change-O1.json), [output](manuals/reverse-engineering-101/capture/out/10-mcp-10-analyze-function-grade-O1.json), [output](manuals/reverse-engineering-101/capture/out/10-mcp-11-analyze-function-total-O1.json), [output](manuals/reverse-engineering-101/capture/out/10-mcp-12-analyze-function-grade-label-O1.json), [output](manuals/reverse-engineering-101/capture/out/10-mcp-13-analyze-function-missing.json), [output](manuals/reverse-engineering-101/capture/out/10-mcp-17-analyze-function-percent-change-O2.json), [output](manuals/reverse-engineering-101/capture/out/10-mcp-18-analyze-function-total-O2.json) | [4.6](#s-analyze-function-and-pseudocode) |
-| `export_evidence_bundle` | the path, byte count, record count, and unknown count of the bundle it wrote | destructive | none | [output](manuals/reverse-engineering-101/capture/out/10-mcp-14-export-evidence-bundle-O1.json), [output](manuals/reverse-engineering-101/capture/out/10-mcp-19-export-evidence-bundle-O2.json) | [5.4](#s-evidence-bundles-export-and-import) |
-| `import_evidence_bundle` | the records imported and the new total | | none | [output](manuals/reverse-engineering-101/capture/out/10-mcp-23-import-evidence-bundle-O1.json) | [5.4](#s-evidence-bundles-export-and-import) |
-| `compare_functions` | two dossiers in eight dimensions | | none | [output](manuals/reverse-engineering-101/capture/out/10-mcp-20-compare-functions-percent-change.json), [output](manuals/reverse-engineering-101/capture/out/10-mcp-21-compare-functions-total.json) | [5.5](#s-compare-and-compare-functions) |
-| `verify_reconstruction` | pass, fail, or unknown for each declared claim | | none | [output](manuals/reverse-engineering-101/capture/out/10-mcp-22-verify-reconstruction.json) | [7.1](#s-verify-reconstruction) |
-| `close_binary` | `null`, after the provider and the ephemeral project are gone | destructive, not idempotent | none | [output](manuals/reverse-engineering-101/capture/out/10-mcp-15-close-binary-O1.json), [output](manuals/reverse-engineering-101/capture/out/10-mcp-25-close-binary-O2.json) | [4.1](#s-open-binary-and-the-headless-bridge) |
-| `inspect_wasm_artifact` | the WABT validation, sections, and interface of one WebAssembly module, as Evidence | open world | `rea inspect-wasm-artifact` | [output](manuals/reverse-engineering-101/capture/out/10-mcp-24-inspect-wasm-artifact.json) | [6.2](#s-inspect-wasm-artifact) |
+| `initialize` | 协商的协议版本、服务器能力、`serverInfo`，以及指令字符串 | method | | [output](manuals/reverse-engineering-101/capture/out/10-mcp-01-initialize.json) | [8.1](#s-the-rea-mcp-server) |
+| `tools/list` | 全部 207 个工具及其模式与注解 | method | | [output](manuals/reverse-engineering-101/capture/out/10-mcp-02-tools-list.json) | [8.1](#s-the-rea-mcp-server) |
+| `open_binary` | 已打开的目标：路径、格式、种类、SHA-256、体系结构，provider 已绑定且未启动 | open world | none | [output](manuals/reverse-engineering-101/capture/out/10-mcp-03-open-binary-O1.json)，[output](manuals/reverse-engineering-101/capture/out/10-mcp-16-open-binary-O2.json) | [4.1](#s-open-binary-and-the-headless-bridge) |
+| `binary_session` | 当前目标、绑定、运行 id、工具可用性、客户端特性，以及服务器身份 | open world | none | [output](manuals/reverse-engineering-101/capture/out/10-mcp-04-binary-session.json) | [8.1](#s-the-rea-mcp-server) |
+| `list_procedures` | 每一个已分析过程作为地址与名字，带 thunk 与外部标志 | | none | [output](manuals/reverse-engineering-101/capture/out/10-mcp-05-list-procedures.json) | [4.2](#s-list-procedures-and-function-bodies) |
+| `procedure_assembly` | 一个过程的汇编作为一条字符串 | | none | [output](manuals/reverse-engineering-101/capture/out/10-mcp-06-procedure-assembly-grade.json) | [4.3](#s-procedure-assembly) |
+| `xrefs` | 引用一个地址的那些地址 | | `rea xrefs` | [output](manuals/reverse-engineering-101/capture/out/10-mcp-07-xrefs-grade.json) | [4.4](#s-xrefs-and-the-jump-table) |
+| `list_strings` | 每一个已定义字符串，带编码、终止与字节长度 | | none | [output](manuals/reverse-engineering-101/capture/out/10-mcp-08-list-strings.json) | [4.5](#s-list-strings) |
+| `analyze_function` | 一个过程的 dossier | | `rea function` | [output](manuals/reverse-engineering-101/capture/out/10-mcp-09-analyze-function-percent-change-O1.json)，[output](manuals/reverse-engineering-101/capture/out/10-mcp-10-analyze-function-grade-O1.json)，[output](manuals/reverse-engineering-101/capture/out/10-mcp-11-analyze-function-total-O1.json)，[output](manuals/reverse-engineering-101/capture/out/10-mcp-12-analyze-function-grade-label-O1.json)，[output](manuals/reverse-engineering-101/capture/out/10-mcp-13-analyze-function-missing.json)，[output](manuals/reverse-engineering-101/capture/out/10-mcp-17-analyze-function-percent-change-O2.json)，[output](manuals/reverse-engineering-101/capture/out/10-mcp-18-analyze-function-total-O2.json) | [4.6](#s-analyze-function-and-pseudocode) |
+| `export_evidence_bundle` | 它写入的包的路径、字节数、记录数与未知事项数 | destructive | none | [output](manuals/reverse-engineering-101/capture/out/10-mcp-14-export-evidence-bundle-O1.json)，[output](manuals/reverse-engineering-101/capture/out/10-mcp-19-export-evidence-bundle-O2.json) | [5.4](#s-evidence-bundles-export-and-import) |
+| `import_evidence_bundle` | 导入的记录与新的总数 | | none | [output](manuals/reverse-engineering-101/capture/out/10-mcp-23-import-evidence-bundle-O1.json) | [5.4](#s-evidence-bundles-export-and-import) |
+| `compare_functions` | 八个维度上的两份 dossier | | none | [output](manuals/reverse-engineering-101/capture/out/10-mcp-20-compare-functions-percent-change.json)，[output](manuals/reverse-engineering-101/capture/out/10-mcp-21-compare-functions-total.json) | [5.5](#s-compare-and-compare-functions) |
+| `verify_reconstruction` | 每条已声明主张的 pass、fail 或 unknown | | none | [output](manuals/reverse-engineering-101/capture/out/10-mcp-22-verify-reconstruction.json) | [7.1](#s-verify-reconstruction) |
+| `close_binary` | `null`，在 provider 与临时项目消失之后 | destructive, not idempotent | none | [output](manuals/reverse-engineering-101/capture/out/10-mcp-15-close-binary-O1.json)，[output](manuals/reverse-engineering-101/capture/out/10-mcp-25-close-binary-O2.json) | [4.1](#s-open-binary-and-the-headless-bridge) |
+| `inspect_wasm_artifact` | 一个 WebAssembly 模块的 WABT 验证、section 与接口，作为 Evidence | open world | `rea inspect-wasm-artifact` | [output](manuals/reverse-engineering-101/capture/out/10-mcp-24-inspect-wasm-artifact.json) | [6.2](#s-inspect-wasm-artifact) |
 
-The hints column reads the four annotations of each tool in `tools/list`: `readOnlyHint`, `destructiveHint`, `idempotentHint`, and `openWorldHint`. An empty cell means read-only false, destructive false, idempotent true, and open world false, which is the shape of most analysis tools. "None" in the CLI column means the tool is one of the 65 that have no CLI command.
+Hints 列读 `tools/list` 里每个工具的四个注解：`readOnlyHint`、`destructiveHint`、`idempotentHint` 与 `openWorldHint`。空单元格表示 read-only false、destructive false、idempotent true，以及 open world false，也就是大多数分析工具的形状。CLI 列里的 "None" 表示该工具是没有 CLI 命令的 65 个之一。
 
-## Environment variables the capture set
+## Environment variables the capture set {#s-ref-commands-and-tools-environment-variables-the-capture-set}
 
 | Variable | Effect at 6.7.0 | Documented in |
 |---|---|---|
-| `GHIDRA_INSTALL_DIR` | the Ghidra installation, an absolute path | {{install Ghidra}} |
-| `JAVA_HOME` | the JDK, an absolute path | {{install Ghidra}} |
-| `REA_GHIDRA_STARTUP_TIMEOUT_MS` | the startup deadline, 330,000 ms by default | {{mcp Ghidra first-query deadlines and recovery}} |
-| `REA_ANALYSIS_PROVIDER` | the standing provider choice that `--provider` and `provider_id` override | {{cli Choose a provider}} |
-| `REA_MCP_INPUT_SCHEMA_PROFILE` | `compact` renders every advertised input schema within 13,312 bytes | {{mcp Compact input schema profile}} |
-| `REA_MCP_MAX_RESPONSE_BYTES` | the response budget, at least 10,485,760, read at startup | {{mcp Tool results}} |
-| `REA_WABT_BIN_DIRECTORY` | the absolute directory that holds `wasm-validate`, `wasm-objdump`, and `wasm2wat` from WABT 1.0.42 | rea docs/wasm-artifacts.md, Offline WebAssembly artifacts |
-| `HOME` and `CLAUDE_CONFIG_DIR` | for the setup runs only, a private work directory, so setup found and wrote only the copied test file | {{install Limit REA to one project or agent profile}} |
+| `GHIDRA_INSTALL_DIR` | Ghidra 安装，绝对路径 | {{install Ghidra}} |
+| `JAVA_HOME` | JDK，绝对路径 | {{install Ghidra}} |
+| `REA_GHIDRA_STARTUP_TIMEOUT_MS` | 启动截止期，默认 330,000 ms | {{mcp Ghidra first-query deadlines and recovery}} |
+| `REA_ANALYSIS_PROVIDER` | `--provider` 与 `provider_id` 覆盖的常设 provider 选择 | {{cli Choose a provider}} |
+| `REA_MCP_INPUT_SCHEMA_PROFILE` | `compact` 在 13,312 字节内渲染每一个广告的输入模式 | {{mcp Compact input schema profile}} |
+| `REA_MCP_MAX_RESPONSE_BYTES` | 响应预算，至少 10,485,760，在启动时读取 | {{mcp Tool results}} |
+| `REA_WABT_BIN_DIRECTORY` | 持有来自 WABT 1.0.42 的 `wasm-validate`、`wasm-objdump` 与 `wasm2wat` 的绝对目录 | rea docs/wasm-artifacts.md, Offline WebAssembly artifacts |
+| `HOME` 与 `CLAUDE_CONFIG_DIR` | 仅用于 setup 运行，一个私有工作目录，因此 setup 只找到并写入复制的测试文件 | {{install Limit REA to one project or agent profile}} |
 
-The capture kit also removed `PWD` and `JAVA_TOOL_OPTIONS` from the environment of every rea process ([the capture](manuals/reverse-engineering-101/capture/README.md)). The paths in the records and the Java launch then stayed the same from run to run.
+捕获套件还从每一个 rea 进程的环境里移除了 `PWD` 与 `JAVA_TOOL_OPTIONS`（[捕获](manuals/reverse-engineering-101/capture/README.md)）。然后记录里的路径与 Java 启动在各次运行之间保持相同。
 
-The kit did not set `REA_KUNA_COMMAND`, the absolute path of a `kuna` executable that you supply. Without it the Kuna provider reports `not_configured` ([Section 2.3](#s-rea-capabilities)).
+套件没有设 `REA_KUNA_COMMAND`，也就是你提供的 `kuna` 可执行文件的绝对路径。没有它时 Kuna provider 报告 `not_configured`（[第 2.3 节](#s-rea-capabilities)）。
 
 Sources: capture/out/00-commands.txt, 02-capabilities.json, 13-evidence-import-rea-6.5.0.json, 18-setup-claude-jsonc.json, 18-setup-claude-duplicate.json, 10-mcp-session.txt, 10-mcp-02-tools-list.json, 10-mcp-04-binary-session.json, 04-inspect-binary-layout.json, 16-inspect-wasm-artifact.json, 10-mcp-24-inspect-wasm-artifact.json, 00-versions.txt; capture/README.md; rea docs/cli.md (Native analysis, Choose a provider, Import, export and compare Evidence, Output and exit status), docs/installation.md (Limit REA to one project or agent profile), docs/kuna-provider.md, docs/mcp-contracts.md (Compact input schema profile, Tool results), docs/wasm-artifacts.md (Offline WebAssembly artifacts); rea at 27dc42d: src/cliCommandNames.ts, src/config/environment.ts, src/config/providerStartupTimeout.ts, src/contracts/toolEffects.ts, src/contracts/wasm/wasmToolContracts.ts

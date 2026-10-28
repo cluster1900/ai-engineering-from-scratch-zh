@@ -1,14 +1,14 @@
 # verify_reconstruction
 
-> verify_reconstruction grades each declared claim against one comparison record, and its pass says the provider text matched, never that two functions are equal.
+> verify_reconstruction 对照一份比较记录为每一条已声明主张打分，而其 pass 表示 provider 文本匹配，绝不是两个函数相等。
 
-You have two builds of `ledger.c` on disk, the `-O1` and the `-O2` executables, and two `compare_functions` records from [Section 5.5](#s-compare-and-compare-functions). You want rea to tell you whether `total` is the same function in both. The tool for that question is `verify_reconstruction`, and the capture called it once, with four claims, and got two passes and two failures. When you finish this section, you can write a specification of structural claims and read the status rea returns for each claim. You can also say what a pass does and does not prove.
+你磁盘上有 `ledger.c` 的两个构建，`-O1` 与 `-O2` 可执行文件，以及来自[第 5.5 节](#s-compare-and-compare-functions) 的两份 `compare_functions` 记录。你想让 rea 告诉你 `total` 在两者里是否是同一个函数。那个问题的工具是 `verify_reconstruction`，捕获调用了它一次，带四条主张，得到两次通过与两次失败。读完本节后，你能写一份结构主张的规范，并读 rea 为每一条主张返回的状态。你也能说出一次通过证明什么、不证明什么。
 
-## The specification
+## The specification {#s-verify-reconstruction-the-specification}
 
-**Specification:** the input of `verify_reconstruction`: a `name` and a list of at least one claim. Each claim has a `claim_id`, a `title`, a `kind`, a `dimension`, and a `comparison_evidence_id` ([the capture](manuals/reverse-engineering-101/capture/out/10-mcp-02-tools-list.json)). The last one is the `ev_` id of one comparison record already in the session. The kind names the producer of that record. A `behavioral` claim points at a `compare_process_captures` record, a `structural-function` claim at a `compare_functions` record, and a `structural-artifact` claim at a `compare_artifacts` record. A `structural-function` claim names one of nine dimensions: `overall`, `identity`, `pseudocode`, `assembly`, `comments`, `calls`, `references`, `strings_names`, or `cfg`.
+**规范：** `verify_reconstruction` 的输入：一个 `name` 与至少一条主张的列表。每一条主张有一个 `claim_id`、一个 `title`、一个 `kind`、一个 `dimension`，以及一个 `comparison_evidence_id`（[捕获](manuals/reverse-engineering-101/capture/out/10-mcp-02-tools-list.json)）。最后一个是会话里已有的一份比较记录的 `ev_` id。种类点名该记录的生产者。一条 `behavioral` 主张指向一份 `compare_process_captures` 记录，一条 `structural-function` 主张指向一份 `compare_functions` 记录，一条 `structural-artifact` 主张指向一份 `compare_artifacts` 记录。一条 `structural-function` 主张点名九个维度之一：`overall`、`identity`、`pseudocode`、`assembly`、`comments`、`calls`、`references`、`strings_names` 或 `cfg`。
 
-The capture kit built four claims over the two comparison records of [Section 5.5](#s-compare-and-compare-functions): pseudocode and assembly for `percent_change`, and pseudocode and assembly for `total`.
+捕获套件在[第 5.5 节](#s-compare-and-compare-functions) 的两份比较记录上构建了四条主张：`percent_change` 的伪代码与汇编，以及 `total` 的伪代码与汇编。
 
 ```listing
 title: the specification the capture sent
@@ -51,13 +51,13 @@ note: The second and third claims are cut. The response follows the request in t
 }
 ```
 
-The tool has no CLI command. It is one of the 65 MCP tools without a CLI command, so a one-shot `rea` call cannot run it. Over MCP the handler takes the bundle of the current connection with `session.exportEvidenceBundle()` and verifies the specification against it. A claim whose comparison id is not in that bundle fails the whole call with `Missing comparison Evidence`. A comparison whose two sources are not `analyze_function` records fails the source check.
+该工具没有 CLI 命令。它是没有 CLI 命令的 65 个 MCP 工具之一，所以一次性的 `rea` 调用不能跑它。经 MCP，处理器用 `session.exportEvidenceBundle()` 取当前连接的包，并对照它验证规范。其比较 id 不在该包里的主张会以 `Missing comparison Evidence` 让整次调用失败。其两个源不是 `analyze_function` 记录的比较通不过源检查。
 
-That rule explains the order of the capture. `close_binary` at step 15 cleared the retained records of the `-O1` target. The two `-O1` dossiers came back into the ledger at steps 20 and 21. `compare_functions` records its two inline inputs before it records the comparison. The `import_evidence_bundle` call at step 23 then reported `imported: 6` and `total: 15` ([the capture](manuals/reverse-engineering-101/capture/out/10-mcp-23-import-evidence-bundle-O1.json)). Bundle `O1` holds eight records, and the two comparisons had already restored two of them.
+那条规则解释了捕获的顺序。步骤 15 的 `close_binary` 清空了 `-O1` 目标的保留记录。两份 `-O1` dossier 在步骤 20 与 21 回到账本。`compare_functions` 在记录比较之前先记录其两个内联输入。然后步骤 23 的 `import_evidence_bundle` 调用报告 `imported: 6` 与 `total: 15`（[捕获](manuals/reverse-engineering-101/capture/out/10-mcp-23-import-evidence-bundle-O1.json)）。包 `O1` 持有八份记录，而两次比较已经恢复了其中两份。
 
-## What rea returned
+## What rea returned {#s-verify-reconstruction-what-rea-returned}
 
-The response is an Evidence record like every other result, with `subject: null`, provider `rea-reconstruction-verifier` version `1`, predicate `rea.reconstruction-verification`, `confidence: "derived"`, and `authority: "analyst-inference"`. The `parameters` hold the SHA-256 of the specification and the claim ids, so the id of the record changes when a claim changes.
+响应是一份像其他每一个结果一样的 Evidence 记录，带着 `subject: null`、provider `rea-reconstruction-verifier` 版本 `1`、谓词 `rea.reconstruction-verification`、`confidence: "derived"`，以及 `authority: "analyst-inference"`。`parameters` 持有规范的 SHA-256 与主张 id，所以当一条主张改变时记录的 id 也会改变。
 
 ```listing
 title: the verification record, head and summary
@@ -95,15 +95,15 @@ note: The analysis_profile, the per-claim items, the probes, and the evidence li
         …
 ```
 
-The overall `status` follows one rule: `fail` when any claim failed, otherwise `unknown` when any claim is unresolved, otherwise `pass`. The `summary` counts the claims by status and by kind. The record's own `limitations` add "Artifact identity is unavailable for this observation.", which `createEvidence` appends to any record without a subject.
+整体 `status` 遵循一条规则：任一主张失败时是 `fail`，否则任一主张未解决时是 `unknown`，否则是 `pass`。`summary` 按状态与按种类计数主张。记录自己的 `limitations` 加上 "Artifact identity is unavailable for this observation."，也就是 `createEvidence` 追加给没有主体的任何记录的那条。
 
-## The status of one claim
+## The status of one claim {#s-verify-reconstruction-the-status-of-one-claim}
 
-**Claim status:** `pass`, `fail`, or `unknown`, computed from three inputs in a fixed order. First, any limitation makes the claim `unknown`. A limitation comes from the authority of the sources.
+**主张状态：** `pass`、`fail` 或 `unknown`，按固定顺序从三个输入计算。首先，任何限制让主张变成 `unknown`。限制来自源的权威。
 
-Incomplete call coverage in a source dossier is also a limitation. It applies to a `calls` claim, and to an `overall` claim with no other changed dimension. Second, an observed status of `changed`, `added`, `removed`, or `contradiction` makes the claim `fail`. Third, an observed status of `unknown` or `truncated`, or an open residual unknown on the comparison, makes the claim `unknown`. In all other cases the claim is `pass`.
+源 dossier 里不完整的调用覆盖也是一条限制。它适用于一条 `calls` 主张，以及没有其他已变更维度的一条 `overall` 主张。其次，观察到的状态为 `changed`、`added`、`removed` 或 `contradiction` 让主张变成 `fail`。第三，观察到的状态为 `unknown` 或 `truncated`，或比较上打开的残余未知事项，让主张变成 `unknown`。其余所有情况下主张是 `pass`。
 
-For a `structural-function` claim the observed status is the `status` of the named dimension in the comparison record.
+对一条 `structural-function` 主张，观察到的状态是比较记录里具名维度的 `status`。
 
 ```listing
 title: the total-assembly claim
@@ -135,11 +135,11 @@ note: The evidence_links array and 28 of the 30 limitation strings are cut. The 
                 ]
 ```
 
-The two `percent_change` claims pass, although the comparison record `ev_2161e17a` is `unknown` overall. Each claim reads only its own dimension, and `ev_2161e17a` reports both pseudocode and assembly `unchanged`. Its one unknown dimension is `references`. The residual unknown it opened names only `overall` and `references`, so neither claim lists it in `unknown_ids`. A claim on `references` or on `overall` would have read `unknown`.
+两条 `percent_change` 主张通过，尽管比较记录 `ev_2161e17a` 整体是 `unknown`。每一条主张只读自己的维度，而 `ev_2161e17a` 把伪代码与汇编都报告为 `unchanged`。其一个未知维度是 `references`。它打开的残余未知事项只点名 `overall` 与 `references`，所以两条主张都不在 `unknown_ids` 里列出它。对 `references` 或对 `overall` 的主张会读到 `unknown`。
 
-The two `total` claims fail because `ev_40ba96d8` reports `changed` for pseudocode and assembly, and five of its eight dimensions changed in all. The `unknown_ids` entry is not something the verifier invented. `compare_functions` records a residual unknown whenever its status is not `unchanged`, with the question `Function comparison is changed (comparison ev_...)` and severity `medium` for a change. The verifier found that unknown in the bundle, listed its id on both `total` claims, and copied its question into the limitations. The claim still reads `fail`, because a changed observation outranks an open unknown in the order above.
+两条 `total` 主张失败，因为 `ev_40ba96d8` 把伪代码与汇编报告为 `changed`，且其八个维度里有五个都变了。`unknown_ids` 条目不是验证器发明的。每当其状态不是 `unchanged` 时，`compare_functions` 就记录一个残余未知事项，问题为 `Function comparison is changed (comparison ev_...)`，对变更的严重性为 `medium`。验证器在包里找到那个未知事项，在两条 `total` 主张上列出其 id，并将其问题抄进限制。主张仍然读作 `fail`，因为在上面的顺序里，一次已变更的观察排在打开的未知事项之上。
 
-Had a claim come out `unknown`, the call would have recorded one more unknown of its own. When the overall status is `unknown`, the handler records the question "Does the reconstruction satisfy every declared claim?" with the probes the verifier recommends. A `pass` and a `fail` record nothing new, and `recommended_probes` was empty here.
+如果一条主张出来是 `unknown`，该调用会再记录一个它自己的未知事项。当整体状态是 `unknown` 时，处理器用验证器推荐的探针记录问题 "Does the reconstruction satisfy every declared claim?"。一次 `pass` 与一次 `fail` 不记录新东西，且这里的 `recommended_probes` 为空。
 
 ```figure
 id: fig-7-1
@@ -149,15 +149,15 @@ claim: Each claim takes its status from one dimension of one comparison record, 
 caption: Read top down. The verification record cites four claims, each claim cites one comparison record, and each comparison record cites a left and a right dossier. Amber claims passed and dashed rose claims failed. Ids are cut to their first eight hex digits. From capture/out/10-mcp-22-verify-reconstruction.json.
 ```
 
-## What a pass does not prove
+## What a pass does not prove {#s-verify-reconstruction-what-a-pass-does-not-prove}
 
-The fixed limitation of every verification record says it: "Pass means every declared claim passed; it does not establish global implementation equivalence.". The claim a `structural-function` dimension can pass is "same provider text", because `compare_functions` line-diffs the pseudocode and the assembly that Ghidra printed. The pseudocode and assembly dimensions carry a caveat in every comparison record: "Exact provider text is compared without address or generated-name normalization; layout-only differences do not establish a behavior change." The assembly dimension adds: "Assembly is opaque provider text; relocation normalization is unavailable." ([the capture](manuals/reverse-engineering-101/capture/out/10-mcp-20-compare-functions-percent-change.json)). Nothing in rea 6.7.0 runs a function or compiles one. A passed claim says that two decompiler outputs matched line for line, and a failed claim says they did not.
+每一份验证记录的固定限制这样说：`"Pass means every declared claim passed; it does not establish global implementation equivalence."`。一条 `structural-function` 维度能通过的主张是「同样的 provider 文本」，因为 `compare_functions` 对 Ghidra 打印的伪代码与汇编做行 diff。伪代码与汇编维度在每一份比较记录里带着一条附注：`"Exact provider text is compared without address or generated-name normalization; layout-only differences do not establish a behavior change."`。汇编维度加上：`"Assembly is opaque provider text; relocation normalization is unavailable."`（[捕获](manuals/reverse-engineering-101/capture/out/10-mcp-20-compare-functions-percent-change.json)）。rea 6.7.0 里没有任何东西运行一个函数或编译一个函数。一条通过的主张表示两份反编译器输出逐行匹配，一条失败的主张表示它们不匹配。
 
-Two consequences follow for the `ledger` fixture. The `total` claims failed although both builds came from the same source line. `-O2` unrolled the loop into 62 instructions where `-O1` had 13 ([the captures](manuals/reverse-engineering-101/capture/out)). Different text does not mean different behaviour.
+对 `ledger` 夹具有两个后果。尽管两个构建来自同一源行，`total` 主张仍然失败。`-O2` 把循环展开成 62 条指令，而 `-O1` 有 13 条（[捕获](manuals/reverse-engineering-101/capture/out)）。不同的文本并不意味着不同的行为。
 
-The reverse holds too. A rebuild with a wrong constant in a lookup table has the same assembly text as the original. The text never shows the one data byte that differs, so a text claim can pass on a wrong function. [Section 7.2](#s-a-proof-harness-outside-rea) builds the two checks that settle both cases.
+反过来也成立。在查找表里带错误常量的重建与原件有同样的汇编文本。文本永远不显示那一个不同的数据字节，所以一条文本主张可以在错误的函数上通过。[第 7.2 节](#s-a-proof-harness-outside-rea) 构建解决这两种情况的两项检查。
 
-The rea repository has a wider verifier for its own use. The readiness page of the rea docs describes `npm run verify:readiness`, a nine-stage conformance run with a stage named `verify-reconstruction-closure`, and says what it is:
+rea 仓库有一个供自己使用的更宽验证器。rea 文档的 readiness 页描述 `npm run verify:readiness`，一次带名为 `verify-reconstruction-closure` 阶段的九阶段符合性运行，并说明它是什么：
 
 ```rule
 label: the readiness verifier is not a tool
@@ -166,7 +166,7 @@ source: readiness Reconstruction readiness conformance
 The report evaluator belongs to the verifier of the repository. It is not a public REA tool.
 ```
 
-Its aggregation rule is the one to copy into your own harness:
+其聚合规则是要抄进你自己 harness 的那条：
 
 ```rule
 label: nothing weaker than pass adds up to pass
@@ -176,10 +176,10 @@ A stage result of fail, unknown, unsupported, truncated, or skipped never adds u
 ```
 
 ```takeaways
-- Put both dossiers and the comparison record into one connection before you call verify_reconstruction.
-- Read observed_status and unknown_ids of each claim before you read the overall status.
-- Treat a passed structural claim as "same Ghidra text", and prove behaviour and bytes yourself.
-- Export the bundle before close_binary, because the close clears the retained records.
+- 在调用 verify_reconstruction 之前，把两份 dossier 与比较记录放进同一个连接。
+- 在读整体状态之前，先读每一条主张的 observed_status 与 unknown_ids。
+- 把一条通过的结构主张当作「同样的 Ghidra 文本」，并自己证明行为与字节。
+- 在 close_binary 之前导出包，因为关闭会清空保留的记录。
 ```
 
 Sources: capture/out/10-mcp-22-verify-reconstruction.json, 10-mcp-20-compare-functions-percent-change.json, 10-mcp-21-compare-functions-total.json, 10-mcp-11-analyze-function-total-O1.json, 10-mcp-18-analyze-function-total-O2.json, 10-mcp-23-import-evidence-bundle-O1.json, 10-mcp-02-tools-list.json, 10-mcp-session.txt; rea at rea-agents-6.7.0 (27dc42d): src/domain/reconstructionVerification.ts, src/domain/reconstructionUnknowns.ts, src/domain/functionCallCoverage.ts, src/server/registerInvestigationTools.ts, src/server/registerFunctionComparisonTool.ts, src/domain/functionComparisonDimensions.ts, src/domain/evidence.ts, src/cliCommandNames.ts; rea docs/reconstruction-readiness.md

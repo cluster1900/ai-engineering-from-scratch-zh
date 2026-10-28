@@ -1,12 +1,12 @@
 # Errors seen in the captures
 
-> Three error envelopes, two unavailability codes, one setup refusal, and two refused conclusions appear in the captures, and every rea error has the same five fields.
+> 捕获里出现三种错误信封、两个不可用代码、一次 setup 拒绝，以及两个被拒绝的结论，且每一个 rea 错误都有同样五个字段。
 
-The capture kit recorded three calls that failed and kept each reply whole. All three came from rea's own error projection, two from the CLI and one from the MCP server. Other files hold codes that are not errors. They show providers that are not installed, a setup plan that needs a person, and a comparison without a conclusion. This section lists all of them, then the schema they follow.
+捕获套件录了三次失败的调用，并完整保留每一次回复。三次都来自 rea 自己的错误投影，两次来自 CLI，一次来自 MCP 服务器。其他文件持有不是错误的代码。它们展示未安装的 provider、需要人的一次 setup 计划，以及没有结论的一次比较。本节列出它们全部，然后是它们遵循的模式。
 
-## The three error envelopes
+## The three error envelopes {#s-ref-errors-the-three-error-envelopes}
 
-The CLI printed its envelope to stdout and exited 1 when `inspect-binary-layout` met a Mach-O file on macOS:
+当 `inspect-binary-layout` 在 macOS 上遇到 Mach-O 文件时，CLI 把它的信封打印到 stdout 并以 1 退出：
 
 ```listing
 title: capability_unavailable from the CLI
@@ -30,7 +30,7 @@ note: Nothing is cut. The exit status 1 is in [the command record](manuals/rever
 }
 ```
 
-Over MCP the same projection travels as text. A failed `tools/call` returns `isError: true` and the `{ "error":... }` object as JSON in `content[0].text`, with no `structuredContent`, because the advertised output schema describes success only {{mcp Tool results}}. The capture kit decoded that text into `decoded_text` beside the raw reply:
+经 MCP，同一投影作为文本旅行。一次失败的 `tools/call` 返回 `isError: true`，并把 `{ "error":... }` 对象作为 JSON 放在 `content[0].text` 里，没有 `structuredContent`，因为广告的输出模式只描述成功 {{mcp Tool results}}。捕获套件把那段文本解码到 `decoded_text`，放在原始回复旁边：
 
 ```listing
 title: invalid_request for a procedure that does not exist
@@ -71,11 +71,11 @@ note: The request and the raw response are cut, and so are most fields of detail
           …
 ```
 
-The bridge raised `not_found` with the message in `issues[0].message`, and rea mapped a remote `not_found` to `AnalysisInputError`, whose code is `invalid_request`. The server log recorded the failure twice, once for the bridge layer and once for the server layer, both at level 40 ([the capture](manuals/reverse-engineering-101/capture/out/10-mcp-server.log)).
+桥接以 `issues[0].message` 里的消息抛出 `not_found`，而 rea 把远程的 `not_found` 映射到 `AnalysisInputError`，其代码是 `invalid_request`。服务器日志把失败记了两次，一次给桥接层，一次给服务器层，两者都在级别 40（[捕获](manuals/reverse-engineering-101/capture/out/10-mcp-server.log)）。
 
-The diagnostics tell you whether the Ghidra side can explain a failure. `configured_jvm_max_heap` is the heap that rea gave the JVM, `2G` when neither `GHIDRA_HEADLESS_MAXMEM` nor `GHIDRA_MAXMEM` is set. `failure_output` holds the stdout and stderr that Ghidra wrote during the failed request, empty here, and `complete: true` says that nothing was lost. `output_incomplete: false` says the same for the whole process output. With empty output and a remote code, the failure is in your input and not in the engine.
+诊断告诉你 Ghidra 一侧能否解释一次失败。`configured_jvm_max_heap` 是 rea 给 JVM 的堆，当既未设 `GHIDRA_HEADLESS_MAXMEM` 也未设 `GHIDRA_MAXMEM` 时是 `2G`。`failure_output` 持有失败请求期间 Ghidra 写的 stdout 与 stderr，这里为空，而 `complete: true` 表示什么都没丢。`output_incomplete: false` 对整个进程输出说同样的话。带着空输出与一个远程代码，失败在你的输入里，不在引擎里。
 
-The CLI refused a bundle that rea 6.5.0 wrote, before it read any record into a session:
+CLI 拒绝了 rea 6.5.0 写的一个包，在把任何记录读进会话之前：
 
 ```listing
 title: evidence_integrity_mismatch for an older bundle
@@ -92,15 +92,15 @@ note: Cut to the head of the envelope. The remediation repeats the message, and 
 …
 ```
 
-The bundle was not modified. The id rule changed: the hash now covers `relationship_coverage` also when it is `null`. Records 0 to 2 are `analyze_function` dossiers with a coverage object. Record 3 is a `list_procedures` record with `null` coverage, so its id is the first that fails ([R.2](#s-ref-evidence-fields)). The CLI exited 1. Saved Evidence is not migrated, so regenerate it with the release you run.
+包没有被修改。id 规则变了：哈希现在在 `relationship_coverage` 为 `null` 时也覆盖它。记录 0 到 2 是带覆盖对象的 `analyze_function` dossier。记录 3 是带 `null` 覆盖的 `list_procedures` 记录，所以其 id 是第一个失败的（[R.2](#s-ref-evidence-fields)）。CLI 以 1 退出。已保存的 Evidence 不迁移，所以用你跑的发行版重新生成它。
 
-A call to a tool that the server does not have never reaches rea's projection. The MCP SDK answers with a JSON-RPC error `-32602` and the message `Tool <name> not found`, with no tool result. The 6.7.0 capture has no such call.
+对服务器没有的工具的一次调用永远到不了 rea 的投影。MCP SDK 以 JSON-RPC 错误 `-32602` 与消息 `Tool <name> not found` 作答，没有工具结果。6.7.0 捕获没有这样的调用。
 
-A misspelt CLI command gets the parser envelope `COMMAND_NOT_FOUND` with a `cta` object that suggests the nearest command. `analysisErrorProjectionSchema` does not define them. A script that reads rea errors needs a branch for a misspelt or missing command before it reads `category`. The 6.7.0 capture has no such call either.
+拼错的 CLI 命令得到带建议最近命令的 `cta` 对象的解析器信封 `COMMAND_NOT_FOUND`。`analysisErrorProjectionSchema` 不定义它们。读 rea 错误的脚本在读 `category` 之前需要一个拼错或缺失命令的分支。6.7.0 捕获也没有这样的调用。
 
-## Codes that are not errors
+## Codes that are not errors {#s-ref-errors-codes-that-are-not-errors}
 
-`rea capabilities` lists every provider with an `availability` object. Three providers were absent on the capture host, and their codes name the cause without failing the command:
+`rea capabilities` 用一个 `availability` 对象列出每一个 provider。捕获主机上三个 provider 缺席，它们的代码点名原因而不让命令失败：
 
 ```listing
 title: two unavailable providers
@@ -119,23 +119,23 @@ note: The availability objects of hopper and ida. The diagnostics that follow ea
         "reason": "Set REA_IDA_MCP_CONFIG to an upstream IDA MCP JSON registration; see docs/ida-provider.md.",
 ```
 
-`rea setup` on a Claude Code file with a comment returned `status: "needs_human"` and exit 1 ([the capture](manuals/reverse-engineering-101/capture/out/18-setup-claude-jsonc.json), [Section 8.1](#s-the-rea-mcp-server)). It planned no action and reported the registration state `invalid`. It is a setup result and not an error envelope, so a script reads `status` and `remediation`, not `code`.
+对带注释的 Claude Code 文件跑的 `rea setup` 返回 `status: "needs_human"` 并以 1 退出（[捕获](manuals/reverse-engineering-101/capture/out/18-setup-claude-jsonc.json)，[第 8.1 节](#s-the-rea-mcp-server)）。它没有计划任何动作，并报告注册状态 `invalid`。它是一次 setup 结果而不是错误信封，所以脚本读 `status` 与 `remediation`，不读 `code`。
 
-Two results in the captures refused a conclusion and exited 0. `rea compare` over the two bundles returned `status: "unknown"` with ten unresolved records ([the capture](manuals/reverse-engineering-101/capture/out/14-compare-bundles.json), [Section 5.5](#s-compare-and-compare-functions)). No record is a member of both bundles, and a bundle carries no completeness marker. `verify_reconstruction` returned `status: "fail"` with two failed claims ([the capture](manuals/reverse-engineering-101/capture/out/10-mcp-22-verify-reconstruction.json), [Section 7.1](#s-verify-reconstruction)). Neither is an error envelope, and both are results that say the question stays open or the claim is false. A script that treats a non-zero exit as the only failure signal misses both.
+捕获里有两个结果拒绝了结论并以 0 退出。对两个包的 `rea compare` 返回带十份未解决记录的 `status: "unknown"`（[捕获](manuals/reverse-engineering-101/capture/out/14-compare-bundles.json)，[第 5.5 节](#s-compare-and-compare-functions)）。没有记录是两个包的成员，且包不带完整性标记。`verify_reconstruction` 返回带两条失败主张的 `status: "fail"`（[捕获](manuals/reverse-engineering-101/capture/out/10-mcp-22-verify-reconstruction.json)，[第 7.1 节](#s-verify-reconstruction)）。两者都不是错误信封，两者都是说问题仍打开或主张为假的结果。把非零退出当作唯一失败信号的脚本会漏掉两者。
 
-## The shape every rea error has
+## The shape every rea error has {#s-ref-errors-the-shape-every-rea-error-has}
 
 | Field | Meaning |
 | --- | --- |
-| `code` | the discriminator, one of 20 codes listed below |
-| `category` | one of ten: `invalid_input`, `unsupported_provider`, `unsupported_target`, `integrity_mismatch`, `truncated`, `cancelled`, `timeout`, `resource_constraint`, `unavailable`, `execution_failure` |
-| `message` | one plain sentence for a person, with provider names and internal reasons removed |
-| `retryable` | true for `artifact_changed`, `invalid_request`, `provider_timeout`, `cancelled`, `revision_conflict`, and `provider_unavailable`, for a `capability_unavailable` error that the provider marks retryable, and for a `resource_constraint` error that is marked retryable, or that is about capacity when it has no mark |
-| `remediation.action` | one sentence that says what to do |
-| `details` | optional, free JSON for generic codes, and a fixed object with `logical_path`, `declared_sha256`, `calculated_sha256`, and `unpacked` for `artifact_integrity_mismatch` |
+| `code` | 判别器，下面列出的 20 个代码之一 |
+| `category` | 十个之一：`invalid_input`、`unsupported_provider`、`unsupported_target`、`integrity_mismatch`、`truncated`、`cancelled`、`timeout`、`resource_constraint`、`unavailable`、`execution_failure` |
+| `message` | 给人看的一句普通句子，去掉了 provider 名与内部原因 |
+| `retryable` | 对 `artifact_changed`、`invalid_request`、`provider_timeout`、`cancelled`、`revision_conflict` 与 `provider_unavailable` 为真，对 provider 标为可重试的 `capability_unavailable` 错误为真，以及对标为可重试、或在没有标记时关于容量的 `resource_constraint` 错误为真 |
+| `remediation.action` | 说出该做什么的一句话 |
+| `details` | 可选，对通用代码是自由 JSON，对 `artifact_integrity_mismatch` 是带 `logical_path`、`declared_sha256`、`calculated_sha256` 与 `unpacked` 的固定对象 |
 
-The 20 codes are `invalid_request`, `access_denied`, `artifact_changed`, `unreadable_output`, `capability_unavailable`, `unsupported_target`, `provider_unavailable`, `provider_timeout`, `resource_constraint`, `cancelled`, `artifact_integrity_mismatch`, `artifact_operation_failed`, `evidence_integrity_mismatch`, `truncated`, `process_capture_failed`, `cleanup_incomplete`, `revision_conflict`, `configuration_invalid`, `target_unavailable`, and `execution_failure`. Each internal error class maps to one code. `AnalysisInputError` maps to `invalid_request`, `AnalysisCapabilityUnavailableError` to `capability_unavailable`, `AnalysisTimeoutError` to `provider_timeout`, and `ConfigurationError` to `configuration_invalid`. `NoBinaryOpenError` maps to `target_unavailable`, and `ProviderAdapterError` to `execution_failure`. A failure whose cleanup left owned resources behind takes the code `cleanup_incomplete` whatever the underlying code was, and lists them in `details`. The rea docs publish the same union as a JSON Schema, `error-contract.schema.json`.
+这 20 个代码是 `invalid_request`、`access_denied`、`artifact_changed`、`unreadable_output`、`capability_unavailable`、`unsupported_target`、`provider_unavailable`、`provider_timeout`、`resource_constraint`、`cancelled`、`artifact_integrity_mismatch`、`artifact_operation_failed`、`evidence_integrity_mismatch`、`truncated`、`process_capture_failed`、`cleanup_incomplete`、`revision_conflict`、`configuration_invalid`、`target_unavailable` 与 `execution_failure`。每一个内部错误类映射到一个代码。`AnalysisInputError` 映射到 `invalid_request`，`AnalysisCapabilityUnavailableError` 到 `capability_unavailable`，`AnalysisTimeoutError` 到 `provider_timeout`，`ConfigurationError` 到 `configuration_invalid`。`NoBinaryOpenError` 映射到 `target_unavailable`，`ProviderAdapterError` 到 `execution_failure`。清理留下已拥有资源的失败不论底层代码是什么都取代码 `cleanup_incomplete`，并在 `details` 里列出它们。rea 文档把同一联合发布为 JSON Schema，`error-contract.schema.json`。
 
-Two codes deserve a note for the Ghidra provider. `provider_timeout` is what the first Ghidra-backed call returns when the startup deadline of [Section 8.1](#s-the-rea-mcp-server) passes. `target_unavailable` is what every provider tool returns before `open_binary`, with the message "No app is open. Ask the user which app to investigate, then call open_binary with its local path.". Neither appeared in the captures, because the kit set a long client deadline and opened a target first.
+对 Ghidra provider，两个代码值得一提。`provider_timeout` 是当[第 8.1 节](#s-the-rea-mcp-server) 的启动截止期过后，第一次由 Ghidra 支撑的调用返回的。`target_unavailable` 是每一个 provider 工具在 `open_binary` 之前返回的，消息为 "No app is open. Ask the user which app to investigate, then call open_binary with its local path."。两者都没有出现在捕获里，因为套件设了很长的客户端截止期并先打开了目标。
 
 Sources: capture/out/04-inspect-binary-layout.json, 10-mcp-13-analyze-function-missing.json, 13-evidence-import-rea-6.5.0.json, 18-setup-claude-jsonc.json, 02-capabilities.json, 14-compare-bundles.json, 10-mcp-22-verify-reconstruction.json, 10-mcp-server.log, 00-commands.txt; rea docs/mcp-contracts.md (Tool results); rea at 27dc42d: src/contracts/errorSchemas.ts, src/domain/analysisErrorProjection.ts, src/domain/analysisErrorPresentation.ts, src/domain/configurationErrors.ts, src/ghidra/GhidraProviderClient.ts, src/ghidra/GhidraDiagnostics.ts, src/ghidra/GhidraClient.ts, src/ghidra/GhidraJavaLaunch.ts, src/domain/evidence.ts, bridge/ghidra/ReaGhidraBridge.java, docs/user-visible-errors.csv, docs/error-contract.schema.json

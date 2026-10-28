@@ -1,14 +1,14 @@
 # rea mcp: initialize, tools/list, and the startup deadline
 
-> rea mcp serves 207 tools over stdio after one initialize handshake, and the first Ghidra-backed call pays for the import under a server deadline the client does not share.
+> rea mcp 在一次 initialize 握手之后经 stdio 提供 207 个工具，而第一次由 Ghidra 支撑的调用在客户端不共享的服务器截止期限下为导入付账。
 
-You added rea to the MCP configuration of your agent and asked it for the dossier of `_grade`. The client reported a timeout after one minute while a Java process kept running. Nothing was wrong with rea or with Ghidra. Two deadlines with two owners had crossed.
+你把 rea 加进了你的 agent 的 MCP 配置，并请它要 `_grade` 的 dossier。客户端在一分钟后报告超时，而一个 Java 进程还在跑。rea 与 Ghidra 都没有问题。两个带两个所有者的截止期限交叉了。
 
-The capture kit drove `rea mcp` with a small client of its own and recorded 25 exchanges. This section reads the first ones and the log beside them. When you finish this section, you can read the `initialize` reply and the `tools/list` answer and register the server with one exact version. You can also check a `rea setup` plan before it writes, and set the client deadline that the first Ghidra call needs.
+捕获套件用自己的一个小客户端驱动了 `rea mcp`，并录了 25 次交换。本节读前几次以及旁边的日志。读完本节后，你能读 `initialize` 回复与 `tools/list` 答案，并用一个确切版本注册服务器。你也能在 `rea setup` 写入之前检查其计划，并设置第一次 Ghidra 调用所需的客户端截止期限。
 
-## Starting the server
+## Starting the server {#s-the-rea-mcp-server-starting-the-server}
 
-The published way to register the server is one `mcpServers` entry that runs the package through `npx` with the `mcp` command:
+注册服务器的已发布方式是一个 `mcpServers` 条目，经 `npx` 用 `mcp` 命令跑该包：
 
 ```listing
 title: the registration shape this manual uses
@@ -26,13 +26,13 @@ note: Nothing is cut. The shape follows the install docs {{install MCP Registry}
 }
 ```
 
-The docs ask for one exact version in a persistent registration {{install MCP Registry}}. A client that supports registry discovery finds the same stdio server under `io.github.morluto/rea`. `rea setup` writes this shape for Claude Code, Codex, Cursor, and the other clients it lists. `rea doctor --client <id>` reports whether a registration is aligned, stale, missing, or invalid ([Section 2.2](#s-rea-doctor-and-the-ghidra-provider)).
+文档要求在持久注册里放一个确切版本 {{install MCP Registry}}。支持注册表发现的客户端在 `io.github.morluto/rea` 下找到同一个 stdio 服务器。`rea setup` 为 Claude Code、Codex、Cursor 以及它列出的其他客户端写这种形状。`rea doctor --client <id>` 报告一次注册是对齐、过时、缺失还是无效（[第 2.2 节](#s-rea-doctor-and-the-ghidra-provider)）。
 
-### Registering with rea setup
+### Registering with rea setup {#s-the-rea-mcp-server-registering-with-rea-setup}
 
-`rea setup` writes the entry for you. For Claude Code it edits `.claude.json` in your home directory, or in `CLAUDE_CONFIG_DIR` when that variable is set. The capture kit ran setup twice against copies of two small files. For each run it set `HOME` and `CLAUDE_CONFIG_DIR` to a private work directory. Setup therefore never read or wrote a configuration of the host user ([the capture](manuals/reverse-engineering-101/capture/README.md)). Do the same when you want to try setup without risk.
+`rea setup` 为你写该条目。对 Claude Code，它编辑你主目录里的 `.claude.json`，或者当设置了 `CLAUDE_CONFIG_DIR` 时编辑那个变量指向的地方。捕获套件对着两份小文件的副本跑了两次 setup。每一次它把 `HOME` 与 `CLAUDE_CONFIG_DIR` 设到一个私有工作目录。因此 setup 从未读或写主机用户的配置（[捕获](manuals/reverse-engineering-101/capture/README.md)）。当你想在无风险的情况下试 setup 时也这样做。
 
-The first file holds a comment and a trailing comma. Claude Code reads `.claude.json` as strict JSON, and setup applies the same rule before it makes a backup or writes anything:
+第一份文件持有一条注释与一个尾随逗号。Claude Code 把 `.claude.json` 读成严格 JSON，且 setup 在做备份或写入任何东西之前应用同一规则：
 
 ```listing
 title: setup refuses a Claude Code file with a comment
@@ -49,9 +49,9 @@ note: The command was rea setup --client claude_code --skill=false --dry-run. Th
 …
 ```
 
-The dry run exited 1 with no planned action and the registration state `invalid`. The remediation gives the line and column of the comment. Remove the comment and the trailing comma, then run the dry run again.
+干跑以退出码 1 结束，没有计划动作，注册状态是 `invalid`。补救给出注释的行与列。去掉注释与尾随逗号，然后再跑一次干跑。
 
-The second file holds two `rea` members in `mcpServers`. `JSON.parse` keeps the last member with a repeated name, so Claude Code reads the second one. Setup with `--yes` edited that member and left the first one as it was:
+第二份文件在 `mcpServers` 里持有两个 `rea` 成员。`JSON.parse` 保留带重复名的最后一个成员，所以 Claude Code 读第二个。带 `--yes` 的 setup 编辑了那个成员，并原样留下了第一个：
 
 ```listing
 title: the configuration after setup edited the last rea member
@@ -75,17 +75,17 @@ note: The args array of the new entry is cut.
 }
 ```
 
-Setup reported `ready` with the action `configured_claude_code` ([the capture](manuals/reverse-engineering-101/capture/out/18-setup-claude-duplicate.json)). The entry also carries the Ghidra directory and the resolved JDK home of the capture Mac. Its command is a path in the npx cache, because the kit started rea from that path directly. The install docs tell you not to register a path inside the temporary package cache of npm {{install Package runners and global installation}}. Run setup as `npx -y rea-agents@6.7.0 setup` to get the pinned `npx` form, or from a global install.
+setup 报告 `ready`，动作为 `configured_claude_code`（[捕获](manuals/reverse-engineering-101/capture/out/18-setup-claude-duplicate.json)）。该条目也携带捕获 Mac 的 Ghidra 目录与已解析的 JDK 主目录。其命令是 npx 缓存里的一条路径，因为套件直接从那条路径启动 rea。安装文档告诉你不要在 npm 临时包缓存里注册一条路径 {{install Package runners and global installation}}。把 setup 跑成 `npx -y rea-agents@6.7.0 setup` 以得到钉住的 `npx` 形式，或从全局安装跑。
 
-Run every setup with `--dry-run` first and read the plan. Then run it again without that flag and approve the changes it lists.
+每一次 setup 都先用 `--dry-run` 跑并读计划。然后去掉那个标志再跑一次，并批准它列出的更改。
 
-The `rea.mjs` dispatcher routes the single argument `mcp` to `dist/main.js`. `run()` there parses the environment into a configuration and exits 1 with the projected error when a value is invalid. It then creates the logger and the one `BinarySession`, opens an initial target only when `HOPPER_TARGET_PATH` is set, and starts the stdio transport. Shutdown is bound to `SIGINT`, `SIGTERM`, and the end of stdin. An unexpected startup failure prints one fixed sentence and hides its cause: "REA could not start. Run `rea doctor`, then restart REA from your MCP client.".
+`rea.mjs` 分发器把单个参数 `mcp` 路由到 `dist/main.js`。那里的 `run()` 把环境解析成一份配置，并在某个值无效时以投影错误退出 1。然后它创建日志记录器与那一个 `BinarySession`，仅当设置了 `HOPPER_TARGET_PATH` 时打开一个初始目标，并启动 stdio 传输。关机绑定到 `SIGINT`、`SIGTERM` 以及 stdin 的结束。一次意外的启动失败打印一句固定句子并隐藏其原因：`"REA could not start. Run \`rea doctor\`, then restart REA from your MCP client."`。
 
-The transport is newline-delimited JSON-RPC 2.0 on stdin and stdout, and stderr carries one pino JSON line per tool call. The capture kit started the server as `node.../scripts/rea.mjs mcp` with `GHIDRA_INSTALL_DIR` and `JAVA_HOME` set, as [the kit notes](manuals/reverse-engineering-101/capture/README.md) describe. It kept the stderr lines in [the server log](manuals/reverse-engineering-101/capture/out/10-mcp-server.log).
+传输是 stdin 与 stdout 上按换行分隔的 JSON-RPC 2.0，而 stderr 为每一次工具调用携带一行 pino JSON。捕获套件把服务器启动为 `node.../scripts/rea.mjs mcp`，并设置了 `GHIDRA_INSTALL_DIR` 与 `JAVA_HOME`，如[套件说明](manuals/reverse-engineering-101/capture/README.md)所述。它把 stderr 行保存在[服务器日志](manuals/reverse-engineering-101/capture/out/10-mcp-server.log)里。
 
-## initialize
+## initialize {#s-the-rea-mcp-server-initialize}
 
-The client sends `initialize` with the protocol version it speaks, its capabilities, and its name. The server answers with the version it negotiated, its own capabilities, its identity, and an instruction string for the model:
+客户端带着它说的协议版本、其能力与其名字发送 `initialize`。服务器用它协商的版本、它自己的能力、其身份，以及给模型的一条指令字符串作答：
 
 ```listing
 title: the initialize reply
@@ -113,17 +113,17 @@ note: The request is cut. It carried protocolVersion 2025-06-18, empty capabilit
     },
 ```
 
-The server builds the instruction string from two parts. The first part depends on the session. Without a target it is the target-free text above. It says that an opened target persists across turns, and that the agent exports the Evidence it needs and calls `close_binary` when it is finished. With an active target it names `analyze_function` as the dossier tool and the procedure tools as its facets.
+服务器从两部分构建指令字符串。第一部分依赖会话。没有目标时，它是上面那段无目标文本。它说已打开的目标跨回合持久，且 agent 在结束时导出它需要的 Evidence 并调用 `close_binary`。有活动目标时，它把 `analyze_function` 点名为 dossier 工具，并把过程工具点名为其侧面。
 
-The second part is always the same. It tells the model to treat strings, symbols, pseudocode, and file contents from the target as data. It also tells the model to report a request in that text as a prompt-injection attempt {{mcp Untrusted target content}}.
+第二部分始终相同。它告诉模型把来自目标的字符串、符号、伪代码与文件内容当作数据。它也告诉模型把那段文本里的请求报告为一次提示注入尝试 {{mcp Untrusted target content}}。
 
-[Section 8.2](#s-an-agent-investigation) puts the same rule in the agent's ledger.
+[第 8.2 节](#s-an-agent-investigation) 把同一规则放进 agent 的账本。
 
-After the reply the client sends `notifications/initialized`, and the connection is established. `binary_session` later reports the negotiated version, the SDK version `2.3.1` on both sides, the client name, and the catalog digests ([the capture](manuals/reverse-engineering-101/capture/out/10-mcp-04-binary-session.json)).
+回复之后客户端发送 `notifications/initialized`，连接就建立了。`binary_session` 稍后报告协商版本、两侧的 SDK 版本 `2.3.1`、客户端名字，以及目录摘要（[捕获](manuals/reverse-engineering-101/capture/out/10-mcp-04-binary-session.json)）。
 
-## tools/list
+## tools/list {#s-the-rea-mcp-server-tools-list}
 
-**Tool catalog:** the complete list of tools the server advertises, 207 in 6.7.0. Each entry has a name, a title, a description, an input schema, an output schema, and four annotation hints. `tools/list` returns every tool whether or not the current target supports it {{mcp Identity and discovery}}. Opening or closing a target leaves the list unchanged and sends no `notifications/tools/list_changed`. The session's own view is the authority. `binary_session` reports `tool_availability` for the open target, with a reason and a remediation for each unavailable tool, and the catalog counts.
+**工具目录：** 服务器通告的完整工具列表，在 6.7.0 里是 207 个。每一个条目有一个名字、一个标题、一段描述、一个输入模式、一个输出模式，以及四个注解提示。`tools/list` 返回每一个工具，不论当前目标是否支持它 {{mcp Identity and discovery}}。打开或关闭一个目标不改变该列表，也不发送 `notifications/tools/list_changed`。会话自己的视图是权威。`binary_session` 为打开的目标报告 `tool_availability`，对每一个不可用工具带着原因与补救，以及目录计数。
 
 ```listing
 title: the first tool of 207
@@ -156,9 +156,9 @@ note: The description is cut after its second sentence, and the schemas were cut
         },
 ```
 
-The annotations describe effects and are hints, never authorization. `readOnlyHint` counts session state, so `analyze_function` is marked non-read-only because it records Evidence, although it never changes the file {{mcp Request scope and local effects}}. Five tools of the 207 carry `readOnlyHint: true` in the capture: `get_evidence_bundle`, `list_unknowns`, `verify_unknown_resolution`, `evaluate_reconstruction_coverage`, and `gdb_session_status`. `binary_session` is not one of them, because it can start a provider process to check health.
+这些注解描述效果，且是提示，绝不是授权。`readOnlyHint` 计算会话状态，所以 `analyze_function` 被标为非只读，因为它记录 Evidence，尽管它从不改文件 {{mcp Request scope and local effects}}。捕获里 207 个工具中有五个带 `readOnlyHint: true`：`get_evidence_bundle`、`list_unknowns`、`verify_unknown_resolution`、`evaluate_reconstruction_coverage` 与 `gdb_session_status`。`binary_session` 不是其中之一，因为它可以启动一个提供者进程来检查健康。
 
-Thirty-one tools carry `destructiveHint: true`. The docs set this hint for three cases {{mcp Request scope and local effects}}. The tool can discard data, run code that rea does not own, or change an attached Android device. Among them are `export_evidence_bundle`, which can overwrite a file, and `close_binary`, which discards the session. The annotation tools such as `annotate_native_function` are among them too, because they overwrite analyst names and comments.
+三十一个工具带 `destructiveHint: true`。文档为三种情况设置这个提示 {{mcp Request scope and local effects}}。工具可以丢弃数据、跑 rea 不拥有的代码，或更改一台已附加的 Android 设备。其中包括可能覆盖文件的 `export_evidence_bundle`，以及丢弃会话的 `close_binary`。诸如 `annotate_native_function` 的注解工具也在其中，因为它们覆盖分析员名字与注释。
 
 ```listing
 title: the catalog counts the session reports
@@ -173,11 +173,11 @@ note: Six lines of the server_identity object. The digests that follow identify 
               },
 ```
 
-The digest `tools_sha256` is `af39310c…` in this capture. It covers the name, description, and schemas of every tool, and the output schema profile the server runs with. A schema edit therefore changes the digest when no tool is added or removed. Compare the digest, not the counts, when you check that a client sees the catalog you tested.
+摘要 `tools_sha256` 在这次捕获里是 `af39310c…`。它覆盖每一个工具的名字、描述与模式，以及服务器运行的输出模式配置。因此一次模式编辑在未增删工具时也会改变摘要。当你检查客户端看到的是你测试过的目录时，比较摘要，而不是计数。
 
-### Self-contained input schemas
+### Self-contained input schemas {#s-the-rea-mcp-server-self-contained-input-schemas}
 
-Every input schema in the capture is self-contained. Each property states its type, its pattern or enum, and its description in place, with no `$defs` or `$ref` to follow. The `list_procedures` input schema is 270 bytes in that form. The output schemas still share definitions through `$ref`. The `architecture` property of `open_binary` shows one enum in full:
+捕获里每一个输入模式都是自包含的。每一个属性在原地陈述其类型、其模式或枚举，以及其描述，没有要跟随的 `$defs` 或 `$ref`。那种形式下 `list_procedures` 输入模式是 270 字节。输出模式仍经 `$ref` 共享定义。`open_binary` 的 `architecture` 属性完整显示一个枚举：
 
 ```listing
 title: the architecture enum of open_binary
@@ -199,23 +199,23 @@ note: One property of the open_binary input schema. The other five properties ar
               },
 ```
 
-`architecture` applies only with `format: "raw-binary"`, where you give the CPU family and the entry address yourself. `6502` and `m68k` are raw-only families, because header detection never reports them. An m68k image is big-endian and needs an entry address aligned to 2 bytes. This manual has no m68k program and makes no claim about its results.
+`architecture` 仅在 `format: "raw-binary"` 时适用，那时你自己给出 CPU 族与入口地址。`6502` 与 `m68k` 是仅 raw 的族，因为头部检测从不报告它们。一个 m68k 映像是大端的，且需要对齐到 2 字节的入口地址。本手册没有 m68k 程序，也不对其结果做任何主张。
 
-Of the 207 tools, 65 have no CLI command, among them `open_binary`, `list_procedures`, `compare_functions`, and `verify_reconstruction`. The six prompts are `investigate_feature`, `compare_application_versions`, `verify_reconstruction`, `trace_crash`, `audit_residual_unknowns`, and `prepare_bounded_process_capture`, and each asks the agent to keep observations, inferences, and unknowns apart. A client that rejects large tool schemas can start the server with `REA_MCP_INPUT_SCHEMA_PROFILE=compact` {{mcp Compact input schema profile}}. That profile renders every input schema within 13,312 bytes and leaves the validation unchanged.
+207 个工具里有 65 个没有 CLI 命令，其中包括 `open_binary`、`list_procedures`、`compare_functions` 与 `verify_reconstruction`。六个提示是 `investigate_feature`、`compare_application_versions`、`verify_reconstruction`、`trace_crash`、`audit_residual_unknowns` 与 `prepare_bounded_process_capture`，每一个都要求 agent 把观察、推断与未知事项分开。拒绝大型工具模式的客户端可以用 `REA_MCP_INPUT_SCHEMA_PROFILE=compact` 启动服务器 {{mcp Compact input schema profile}}。那种配置把每一个输入模式渲染在 13,312 字节以内，并保持验证不变。
 
-## The startup deadline against the client default
+## The startup deadline against the client default {#s-the-rea-mcp-server-the-startup-deadline-against-the-client-default}
 
-**Startup deadline:** the time rea allows for Ghidra to import the target, run default auto-analysis, connect the bridge, and report healthy. It is 330,000 ms by default and set with `REA_GHIDRA_STARTUP_TIMEOUT_MS`. `open_binary` does not start that clock. It validates the file, checks the provider install, binds the provider, and returns before any import. The first Ghidra-backed call starts the engine and waits, and the client's own per-call deadline runs at the same time {{mcp Ghidra first-query deadlines and recovery}}.
+**启动截止期限：** rea 允许 Ghidra 导入目标、跑默认自动分析、连接桥并报告健康的时间。默认是 330,000 ms，用 `REA_GHIDRA_STARTUP_TIMEOUT_MS` 设置。`open_binary` 不启动那个时钟。它验证文件、检查提供者安装、绑定提供者，并在任何导入之前返回。第一次由 Ghidra 支撑的调用启动引擎并等待，且客户端自己的按调用截止期限同时跑 {{mcp Ghidra first-query deadlines and recovery}}。
 
 | Deadline | Owner | Value |
 |---|---|---|
-| `initialize` | the client | before any target query |
-| Ghidra startup | rea | 330,000 ms by default, `REA_GHIDRA_STARTUP_TIMEOUT_MS` from 1 to 2,147,483,647 ms |
-| one tool call | the client | 60,000 ms in the pinned SDK 2.3.1, which is `DEFAULT_REQUEST_TIMEOUT_MSEC` in `@modelcontextprotocol/server` |
+| `initialize` | 客户端 | 在任何目标查询之前 |
+| Ghidra 启动 | rea | 默认 330,000 ms，`REA_GHIDRA_STARTUP_TIMEOUT_MS` 从 1 到 2,147,483,647 ms |
+| 一次工具调用 | 客户端 | 钉住的 SDK 2.3.1 里是 60,000 ms，也就是 `@modelcontextprotocol/server` 里的 `DEFAULT_REQUEST_TIMEOUT_MSEC` |
 
-The docs list two more server deadlines that this manual does not use. Hopper startup is 120,000 ms by default (`REA_HOPPER_STARTUP_TIMEOUT_MS`). The Darwin `swiftc` helper is 120,000 ms by default (`REA_SWIFTC_COMPILE_TIMEOUT_MS`).
+文档还列了本手册未用的两个服务器截止期限。Hopper 启动默认是 120,000 ms（`REA_HOPPER_STARTUP_TIMEOUT_MS`）。Darwin `swiftc` 助手默认是 120,000 ms（`REA_SWIFTC_COMPILE_TIMEOUT_MS`）。
 
-The capture shows both clocks. `open_binary` took 1,632 ms. It checked the Ghidra install the way `rea doctor` does, bound the provider, and imported nothing. `list_procedures`, the first Ghidra-backed call, took 6,349 ms. Every later call on the same target took 44 ms or less:
+捕获显示了两个时钟。`open_binary` 花了 1,632 ms。它以 `rea doctor` 的方式检查了 Ghidra 安装，绑定了提供者，且什么都没导入。第一次由 Ghidra 支撑的调用 `list_procedures` 花了 6,349 ms。同一目标上每一次后来的调用花 44 ms 或更少：
 
 ```listing
 title: the first three tool calls in the server log
@@ -228,9 +228,9 @@ note: Lines 1 to 3 of 17. The time field is epoch milliseconds.
 {"level":30,"time":1792316959847,"application":"rea","mode":"mcp","layer":"server","tool":"procedure_assembly","durationMs":2.97,"status":"ok","msg":"MCP tool execution completed"}
 ```
 
-Six seconds fit under a 60 s default on this Mac, for a 33,872-byte executable. The docs record a cold first overview of about 64 s on a Linux x64 host under WSL2 {{mcp Ghidra first-query deadlines and recovery}}. On Windows x64 it took about 163 s with Ghidra 12.1.4 and a small fixture, and the default client request timed out there. A larger target, a slower disk, or a smaller heap moves the number. The client deadline is a request option, the second argument of `callTool` in the SDK. The docs use 240,000 ms as a measured example, and they do not give it as a rule.
+六秒在这台 Mac 上装进 60 s 默认，针对一个 33,872 字节的可执行文件。文档记录在 WSL2 下的 Linux x64 主机上，一次冷的首次概览大约 64 s {{mcp Ghidra first-query deadlines and recovery}}。在 Windows x64 上，用 Ghidra 12.1.4 与一个小 fixture 大约花了 163 s，且默认客户端请求在那里超时了。更大的目标、更慢的磁盘或更小的堆会移动这个数字。客户端截止期限是一个请求选项，也就是 SDK 里 `callTool` 的第二个参数。文档用 240,000 ms 作为一个测得的例子，且不把它作为规则给出。
 
-While Ghidra starts, rea sends a waiting notification every ten seconds if the request has a progress token. These notifications do not extend the client deadline. To let progress reset the deadline, set `resetTimeoutOnProgress: true` and a `maxTotalTimeout` in the same request options.
+在 Ghidra 启动时，如果请求有进度令牌，rea 每十秒发送一次等待通知。这些通知不延长客户端截止期限。要让进度重置截止期限，在同一请求选项里设置 `resetTimeoutOnProgress: true` 与一个 `maxTotalTimeout`。
 
 ```figure
 id: fig-8-1
@@ -248,16 +248,16 @@ claim: The 60 s client default covers the 6.3 s first call on this Mac, the 64 s
 caption: Read left to right in seconds. The grey bar is the client default and the dashed grey bar is the 240 s example setting from the docs. The blue bar is the rea startup deadline. Numbered marks are the three measured first calls. From capture/out/10-mcp-session.txt and the rea MCP contracts page at the tag.
 ```
 
-When the client gives up during startup, the pending query can have been interrupted. A second `open_binary` on the same target reuses the current client instead of starting fresh. The documented recovery stays on the same connection {{mcp Ghidra first-query deadlines and recovery}}. Export a bundle if retained records matter, then call `close_binary` and check its result. Then call `open_binary` with the same path and `provider_id: "ghidra"`, and retry the first query with a longer client deadline.
+当客户端在启动期间放弃时，待处理的查询可能已被中断。对同一目标的第二次 `open_binary` 重用当前客户端，而不是重新开始。文档化的恢复留在同一连接上 {{mcp Ghidra first-query deadlines and recovery}}。如果保留的记录重要就导出一个包，然后调用 `close_binary` 并检查其结果。然后用同一路径与 `provider_id: "ghidra"` 调用 `open_binary`，并用更长的客户端截止期限重试第一次查询。
 
-The docs add that recovery from a cold start was not tested on macOS {{mcp Ghidra first-query deadlines and recovery}}. So the Mac that recorded this manual has no recorded recovery run either. `close_binary` itself took 491 ms here and shut the Ghidra process down with the ephemeral project. Both tool descriptions say when to close: `open_binary` ends with `Call close_binary when the investigation is finished.`, and `close_binary` starts with `When the investigation is finished`.
+文档补充说，从未在 macOS 上测试过从冷启动的恢复 {{mcp Ghidra first-query deadlines and recovery}}。所以录制本手册的 Mac 也没有录制过恢复运行。`close_binary` 本身在这里花了 491 ms，并用短暂项目关掉了 Ghidra 进程。两个工具描述都说何时关闭：`open_binary` 以 `Call close_binary when the investigation is finished.` 结束，而 `close_binary` 以 `When the investigation is finished` 开始。
 
 ```takeaways
-- Register `npx -y rea-agents@6.7.0 mcp` with one exact version and restart the client.
-- Run `rea setup` with `--dry-run` first, and approve the plan only after you read it.
-- Read binary_session for the tools the open target supports, because tools/list lists all 207.
-- Set the client's per-call deadline above the first Ghidra call before you make that call.
-- After a client timeout during startup, call close_binary, then open_binary, then retry.
+- 用一个确切版本注册 `npx -y rea-agents@6.7.0 mcp` 并重启客户端。
+- 先用 `--dry-run` 跑 `rea setup`，且只有在你读过计划之后才批准它。
+- 读 binary_session 以了解打开的目标支持哪些工具，因为 tools/list 列出全部 207 个。
+- 在你做第一次 Ghidra 调用之前，把客户端的按调用截止期限设到高于那次调用。
+- 在启动期间客户端超时之后，调用 close_binary，然后 open_binary，然后重试。
 ```
 
 Sources: examples/mcp-registration.json; capture/out/10-mcp-01-initialize.json, 10-mcp-02-tools-list.json, 10-mcp-03-open-binary-O1.json, 10-mcp-04-binary-session.json, 10-mcp-05-list-procedures.json, 10-mcp-15-close-binary-O1.json, 10-mcp-session.txt, 10-mcp-server.log, 00-fixtures.txt, 00-commands.txt, 18-setup-claude-jsonc.json, 18-setup-claude-duplicate.json, 18-setup-configs.txt; capture/fixtures/setup/claude-jsonc.json, claude-duplicate.json; capture/README.md; rea docs/installation.md (MCP Registry, Review setup changes, Package runners and global installation), docs/client-configuration.md (Claude Code), docs/mcp-contracts.md (Identity and discovery, Schema advertisement, Compact input schema profile, Ghidra first-query deadlines and recovery, Request scope and local effects, Untrusted target content), docs/raw-binary.md; rea at rea-agents-6.7.0 (27dc42d): scripts/rea.mjs, src/main.ts, src/main/messages.ts, src/main/processShutdown.ts, src/server/createServer.ts, src/catalogIdentity.ts, src/application/ClientConfigurationDocument.ts, src/application/binary/AnalysisProviderRegistry.ts, src/domain/binaryTargetTypes.ts, src/config/providerStartupTimeout.ts, src/config/environment.ts, src/contracts/toolEffects.ts, src/cliCommandNames.ts, docs/mcp-prompts.md; @modelcontextprotocol/server 2.3.1 as installed in the npx cache
