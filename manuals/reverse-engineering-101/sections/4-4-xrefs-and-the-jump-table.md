@@ -1,12 +1,12 @@
 # xrefs and the jump table
 
-> xrefs lists the addresses that refer to one address, and the single reference to _grade shows what the optimizer did to the switch and its callers.
+> xrefs 列出引用某一个地址的那些地址，而对 _grade 的那一次引用，展示出优化器对 switch 及其调用者做了什么。
 
-`main` calls `grade_label`, and `grade_label` calls `grade`. You ask `xrefs` who refers to `_grade` at `0x100000518` and get one address, `0x10000811a`, which is not in any function. The answer is right, and it tells you two things about the build.
+`main` 调用 `grade_label`，而 `grade_label` 调用 `grade`。你问 `xrefs` 谁引用 `0x100000518` 上的 `_grade`，得到一个地址 `0x10000811a`，它不在任何函数里。答案是对的，它告诉你关于这次构建的两件事。
 
-When you finish this section, you can read an `xrefs` result and find the kind of each reference in the dossier. You can also tell a jump table from a value table in two builds of `grade`.
+读完本节后，你能读一份 `xrefs` 结果，并在 dossier 里找到每种引用的种类。你也能在 `grade` 的两个构建里把跳转表与值表区分开。
 
-## The call
+## 这次调用 {#s-xrefs-and-the-jump-table-the-call}
 
 ```listing
 title: xrefs for the entry of _grade
@@ -31,13 +31,13 @@ note: The request arguments, the result, and two of the seven limitations.
 ],
 ```
 
-The bridge asks Ghidra's `ReferenceManager` for every reference to the address. It skips the synthetic entry-point references, collects the distinct source addresses, and sorts them. The result is addresses only. The `incoming_references` facet of the dossier keeps the kind of each reference, call, jump, or data.
+桥向 Ghidra 的 `ReferenceManager` 询问对该地址的每一次引用。它跳过合成的入口点引用，收集互不相同的源地址，并排序。结果只有地址。dossier 的 `incoming_references` facet 保留每种引用的种类，调用、跳转或数据。
 
-## What is at 0x10000811a
+## 0x10000811a 上是什么 {#s-xrefs-and-the-jump-table-what-is-at-0x10000811a}
 
-The address is in `__LINKEDIT`, which starts at `0x100008000` and maps file offset 32768. The difference `0x11a` is 282, so the byte is at file offset 33050. [Section 3.2](#s-inspect-binary-layout-and-the-load-image) lists `LC_FUNCTION_STARTS` at offset 33048 with 8 bytes. The reference points into the function starts table.
+该地址在 `__LINKEDIT` 里，它从 `0x100008000` 开始，映射文件偏移 32768。差值 `0x11a` 是 282，所以那个字节在文件偏移 33050。[第 3.2 节](#s-inspect-binary-layout-and-the-load-image) 列出偏移 33048 上 8 字节的 `LC_FUNCTION_STARTS`。这次引用指向函数起点表。
 
-**Function starts:** a table of unsigned LEB128 deltas, one per function, that dyld and debuggers use to find function entries in a stripped image. The eight bytes in the fixture are `80 0a 18 3c 34 48 00 00`. The first delta is `0x500`, which gives `0x100000500`, `_percent_change`. The second, at offset 33050, is `0x18`, which gives `0x100000518`, `_grade`. Then `0x3c` gives `_total`, `0x34` gives `_grade_label`, and `0x48` gives `entry`. Ghidra's Mach-O loader marks each entry as a data reference to the function it names, and the dossier shows exactly that.
+**函数起点：** 一张无符号 LEB128 差值表，每个函数一项，dyld 与调试器用它在剥离映像里找函数入口。fixture 里的八个字节是 `80 0a 18 3c 34 48 00 00`。第一个差值是 `0x500`，给出 `0x100000500`，`_percent_change`。第二个，在偏移 33050，是 `0x18`，给出 `0x100000518`，`_grade`。然后 `0x3c` 给出 `_total`，`0x34` 给出 `_grade_label`，`0x48` 给出 `entry`。Ghidra 的 Mach-O 加载器把每一项标成对其所命名函数的数据引用，而 dossier 正好显示这一点。
 
 ```listing
 title: the one incoming reference of _grade
@@ -65,7 +65,7 @@ note: Cut from incoming_references. The target_procedure block repeats the proce
 ],
 ```
 
-`source_procedure` is `null` because no function owns the table. The kind is `DATA`, and `call` is false. So nothing in the code calls `_grade`. Compare `_grade_label`, whose dossier lists two incoming references. One is an `UNCONDITIONAL_CALL` from `0x1000006ec` inside `entry`. The other is a `DATA` reference from `0x10000811c`, the fourth entry of the same table.
+`source_procedure` 是 `null`，因为没有函数拥有这张表。种类是 `DATA`，且 `call` 为 false。所以代码里没有任何东西调用 `_grade`。对比 `_grade_label`，其 dossier 列出两次传入引用。一次是来自 `entry` 内部 `0x1000006ec` 的 `UNCONDITIONAL_CALL`。另一次是来自 `0x10000811c` 的 `DATA` 引用，也就是同一张表的第四项。
 
 ```listing
 title: the two incoming references of _grade_label
@@ -85,7 +85,7 @@ note: Cut from incoming_references to the addresses and the reference types.
 "type": "DATA",
 ```
 
-The call that the source makes, `grade_label` to `grade`, is gone. At `-O1` clang inlined `grade` into `grade_label`. The assembly of `_grade_label` repeats the whole multiply and compare sequence of [section 4.3](#s-procedure-assembly) at `0x100000588` to `0x1000005a4`. The dossier of `_grade` says the same from the other side: `callers` is an empty list, and `relationship_coverage.status` is `complete`. Ghidra returned every resolved call reference, and none of them targets `_grade`. `_grade` still exists as a function because it is exported, and the only thing that refers to it is a table the linker wrote.
+源码做的那次调用，从 `grade_label` 到 `grade`，消失了。在 `-O1` 下 clang 把 `grade` 内联进了 `grade_label`。`_grade_label` 的汇编在 `0x100000588` 到 `0x1000005a4` 重复了[第 4.3 节](#s-procedure-assembly) 的整段乘法与比较序列。`_grade` 的 dossier 从另一侧说同样的话：`callers` 是空列表，且 `relationship_coverage.status` 是 `complete`。Ghidra 返回了每一次已解析的调用引用，其中没有一个以 `_grade` 为目标。`_grade` 仍然作为函数存在，因为它被导出，而唯一引用它的是链接器写的一张表。
 
 ```figure
 id: fig-4-6
@@ -95,19 +95,19 @@ claim: entry calls three of the four functions, the function starts table refers
 caption: Read across each row. Green boxes on the left are call sites inside entry, violet boxes are the functions, green boxes on the right are entries of LC_FUNCTION_STARTS. From the four analyze_function dossiers and capture/fixtures/ledger-arm64-O1.
 ```
 
-## The jump table that is not there
+## 并不存在的跳转表 {#s-xrefs-and-the-jump-table-the-jump-table-that-is-not-there}
 
-Every dossier in the captures has `"jump_tables": []` in its `native_api` facet, and the profile names the contract `jump_table_evidence: "typed-case-default-blocks-v1"`. Ghidra would fill the field if it found one. It found none, because at `-O1` neither compiler emitted a jump table for the switch in `grade`. Both turned the five cases into a table of the five return values and one bounds check.
+抓取里每一个 dossier 的 `native_api` facet 都有 `"jump_tables": []`，而配置文件把契约命名为 `jump_table_evidence: "typed-case-default-blocks-v1"`。如果 Ghidra 找到一张，就会填这个字段。它一张都没找到，因为在 `-O1` 下两个编译器都没有为 `grade` 里的 switch 发出跳转表。两者都把五种情形变成五个返回值的表与一次边界检查。
 
 | Build | Transfer | Table | Blocks in `grade` |
 |---|---|---|---|
-| `ledger-x86_64-O0.o`, lesson 33 fixture | `jmpq *%rax` | `.rodata+0x0`, five `R_X86_64_PC32` relocations, targets `0x91`, `0x88`, `0x7f`, `0x76`, `0x76` | 8 with the table, 3 without |
-| `ledger-x86_64-O1.o`, this capture | none, one `JA` | `DAT_001000b4`, `.rodata+0x14`, values `1, 2, 3, 4, 4` | 3 |
-| `ledger-arm64-O1`, this capture | none, one `b.hi` | `0x1000007d0` in `__TEXT,__const`, values `1, 2, 3, 4, 4` | 3 |
+| `ledger-x86_64-O0.o`，第 33 课 fixture | `jmpq *%rax` | `.rodata+0x0`，五个 `R_X86_64_PC32` 重定位，目标 `0x91`, `0x88`, `0x7f`, `0x76`, `0x76` | 有表 8 个，无表 3 个 |
+| `ledger-x86_64-O1.o`，本次抓取 | 无，一次 `JA` | `DAT_001000b4`，`.rodata+0x14`，值 `1, 2, 3, 4, 4` | 3 |
+| `ledger-arm64-O1`，本次抓取 | 无，一次 `b.hi` | `__TEXT,__const` 里的 `0x1000007d0`，值 `1, 2, 3, 4, 4` | 3 |
 
-**Jump table:** a table of code addresses that an indirect jump indexes, so one instruction reaches one of several blocks. **Value table:** a table of data that a load indexes, so one instruction returns one of several values. The first changes the control-flow graph. The second changes one load. At `-O0` the x86-64 object has the first, and in the object file its five entries are zero bytes with five relocations in `.rela.rodata`. At `-O1` both builds have the second.
+**跳转表：** 一张代码地址表，一次间接跳转对其索引，于是一条指令到达若干块中的一块。**值表：** 一张数据表，一次加载对其索引，于是一条指令返回若干值中的一个。前者改变控制流图。后者改变一次加载。在 `-O0` 下 x86-64 目标文件有前者，而在目标文件里它的五项是带 `.rela.rodata` 里五个重定位的零字节。在 `-O1` 下两个构建都有后者。
 
-The `outgoing_references` of `_grade` name the two edges the dossier does see. One is a `CONDITIONAL_JUMP` from `0x100000538` to `0x10000054c`. The other is a `DATA` read from `0x100000544` to `0x1000007d0`. The `referenced_names` facet labels the targets `LAB_10000054c` and `DAT_1000007d0`. The decompiler in [section 4.6](#s-analyze-function-and-pseudocode) keeps the second as a byte address and never lists the five values.
+`_grade` 的 `outgoing_references` 点名 dossier 确实看到的两条边。一条是从 `0x100000538` 到 `0x10000054c` 的 `CONDITIONAL_JUMP`。另一条是从 `0x100000544` 到 `0x1000007d0` 的 `DATA` 读。`referenced_names` facet 把目标标为 `LAB_10000054c` 与 `DAT_1000007d0`。[第 4.6 节](#s-analyze-function-and-pseudocode) 的反编译器把第二个保留为字节地址，从不列出那五个值。
 
 ```figure
 id: fig-4-5
@@ -117,15 +117,15 @@ claim: At -O0 an indirect jump through five relocated entries reaches five case 
 caption: Read each column top to bottom. The left column comes from the lesson 33 fixture ledger-x86_64-O0.o, the right from the arm64 dossier. The green boxes are data in the file, the violet boxes are what Ghidra saw. From phases/13-tools-and-protocols/33-disassembly-and-control-flow/code/fixtures and capture/out/06-function-grade.json.
 ```
 
-[Lesson 33](phases/13-tools-and-protocols/33-disassembly-and-control-flow) recovers the `-O0` table from the relocations with the rule `S + A - P`. It shows the control-flow graph with and without the table: 8 blocks and 11 edges against 3 blocks and one unresolved jump.
+[第 33 课](phases/13-tools-and-protocols/33-disassembly-and-control-flow) 用规则 `S + A - P` 从重定位恢复 `-O0` 表。它展示有表与无表的控制流图：8 个块与 11 条边，对上 3 个块与一次未解析的跳转。
 
-When Ghidra does not resolve a jump table, the case blocks are missing from `callers`, `callees`, and `basic_blocks`. The dossier limitation says that unresolved computed flows are not represented as edges. The `unresolved_calls` facet lists each call site whose destination has no known procedure. An unresolved indirect jump through a table is not a call, so it does not appear in that facet. An empty `jump_tables` list does not prove the function has no switch. Read the transfer instruction and the table bytes, as you did here.
+当 Ghidra 没有解析跳转表时，情形块从 `callers`、`callees` 与 `basic_blocks` 里缺失。dossier 限制说，未解析的计算流不会表示为边。`unresolved_calls` facet 列出每一个目标没有已知过程的调用点。经一张表的未解析间接跳转不是调用，所以不出现在那个 facet 里。空的 `jump_tables` 列表并不证明函数没有 switch。像你在这里做的那样，读转移指令与表字节。
 
 ```takeaways
-- Resolve an `xrefs` address to its segment and load command before you call it a caller.
-- Use `incoming_references` in the dossier to learn whether a reference is a call or data.
-- Read `callers: []` on an exported function as a sign of inlining, then check the caller's body.
-- Name what the bytes show: a jump table changes the graph, a value table changes a load.
+- 在把一个 `xrefs` 地址叫作调用者之前，先把它解析到其段与 load command。
+- 用 dossier 里的 `incoming_references` 弄清一次引用是调用还是数据。
+- 把导出函数上的 `callers: []` 当作内联的迹象，然后检查调用者的函数体。
+- 点名字节展示的是什么：跳转表改变图，值表改变一次加载。
 ```
 
 Sources: capture/out/10-mcp-07-xrefs-grade.json, capture/out/06-function-grade.json, capture/out/10-mcp-12-analyze-function-grade-label-O1.json, capture/out/10-mcp-09-analyze-function-percent-change-O1.json, capture/out/10-mcp-11-analyze-function-total-O1.json, capture/out/06-function-grade-x86_64-O1.json, capture/out/04-inspect-macho.json, capture/fixtures/ledger-arm64-O1; phases/13-tools-and-protocols/33-disassembly-and-control-flow/code/fixtures/ledger-x86_64-O0.objdump.txt; rea 6.7.0 at 27dc42d: bridge/ghidra/ReaGhidraBridge.java, src/ghidra/GhidraProviderCapabilities.ts

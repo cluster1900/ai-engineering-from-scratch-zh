@@ -1,22 +1,22 @@
 # AnalysisSnapshot and the exact-match answer cache
 
-> A snapshot caches exact answers under a query id bound to the target digest and the profile digest, and the dispatch of one mutating call turns the cache off.
+> 快照在绑定到目标摘要与配置摘要的查询 id 下缓存精确答案，而一次变更调用的分发会关掉缓存。
 
-The capture ran `rea function fixtures/ledger-arm64-O1 NAME --provider ghidra` four times, once per function, and each run took between 7.9 and 9.0 seconds ([the capture](manuals/reverse-engineering-101/capture/out/00-commands.txt)). Every run imported the same 33,872 bytes into a fresh Ghidra project and threw the project away. You want the second question about the same file to be free. When you finish this section, you can say which calls a snapshot can answer and build the query id by hand. You can also predict when rea refuses to replay or to save.
+抓取对每个函数跑了一次 `rea function fixtures/ledger-arm64-O1 NAME --provider ghidra`，共四次，每次花 7.9 到 9.0 秒（[抓取](manuals/reverse-engineering-101/capture/out/00-commands.txt)）。每一次都把同样的 33,872 字节导入一个新的 Ghidra 项目，再把项目扔掉。你希望关于同一文件的第二个问题是免费的。读完本节后，你能说出快照能回答哪些调用，并亲手构建查询 id。你也能预测 rea 何时拒绝重放或保存。
 
-## Three things called a snapshot
+## 三种叫作快照的东西 {#s-snapshots-and-the-answer-cache-three-things-called-a-snapshot}
 
-The word covers three things in rea, and only one of them is a cache you can keep.
+这个词在 rea 里覆盖三样东西，其中只有一样是你可以保留的缓存。
 
-**Target snapshot:** the private copy of the input that the Ghidra launcher imports with `-readOnly` and `-deleteProject`. It is deleted when the session closes, and nothing of the analysis survives it. Every new provider session imports the target again into a new temporary project {{mcp Ghidra first-query deadlines and recovery}}.
+**目标快照：** Ghidra 启动器用 `-readOnly` 与 `-deleteProject` 导入的输入私有副本。会话关闭时它被删除，分析没有任何东西从中幸存。每一个新的 provider 会话都把目标再次导入一个新的临时项目 {{mcp Ghidra first-query deadlines and recovery}}。
 
-**Analysis snapshot cache:** the in-memory table of one session, `AnalysisSnapshotCache`, which holds up to 10,000 entries for one target identity. This is the cache this section is about.
+**分析快照缓存：** 一个会话的内存表，`AnalysisSnapshotCache`，为一个目标身份持有最多 10,000 项。这就是本节讲的缓存。
 
-**Snapshot file:** the JSON file that `close_binary` writes and `open_binary` reads. It holds the target identity, the provider binding, the cache entries, and the session's Evidence bundle. The CLI documentation says what it is and what it is not. It holds cached observations, not a saved provider database. Only an exact query that qualifies can reuse a result, and a new or live query can still start the provider {{cli Save and reuse analysis snapshots}}.
+**快照文件：** `close_binary` 写入、`open_binary` 读取的 JSON 文件。它持有目标身份、provider 绑定、缓存项与会话的 Evidence 包。CLI 文档说明它是什么、不是什么。它持有缓存的观察，不是已保存的 provider 数据库。只有符合条件的精确查询能复用结果，而新的或实时的查询仍可启动 provider {{cli Save and reuse analysis snapshots}}。
 
-## The query id
+## 查询 id {#s-snapshots-and-the-answer-cache-the-query-id}
 
-**Query id:** `query_` followed by the SHA-256 of canonical JSON holding four things: the target, the binding, the operation, and the parameters. The target is the path-free identity, `sha256`, `kind`, `format`, and `architecture`. A `raw-binary` target also carries its `entry_point`. The binding is the provider and its analysis profile. For the capture that is the digest that starts `01b5d08b`, `executable`, `mach-o`, `arm64`, Ghidra `12.1.4`, and the profile below.
+**查询 id：** `query_` 后跟持有四样东西的规范 JSON 的 SHA-256：目标、绑定、操作与参数。目标是无路径身份，`sha256`、`kind`、`format` 与 `architecture`。`raw-binary` 目标还带着其 `entry_point`。绑定是 provider 及其分析配置。对抓取来说，那是以 `01b5d08b` 开头的摘要、`executable`、`mach-o`、`arm64`、Ghidra `12.1.4`，以及下面的配置。
 
 ```listing
 title: the Ghidra analysis profile that every cache key carries
@@ -43,27 +43,27 @@ note: The profile as the binary_overview record carries it. Twenty of the twenty
 },
 ```
 
-The parameters are version strings, one per observation contract that the Ghidra adapter makes. The digest is the SHA-256 of the canonical JSON of provider and parameters. A cache entry matches only when the binding's provider and digest equal the selected profile's. A release that moves `function_references` from `-v2` to `-v3` changes the digest. Every entry made under the old digest then stops matching. That is what exact means in the thesis of this section.
+参数是版本字符串，Ghidra 适配器做出的每一份观察契约一个。摘要是对 provider 与参数的规范 JSON 的 SHA-256。只有当绑定的 provider 与摘要等于所选配置时，缓存项才匹配。把 `function_references` 从 `-v2` 移到 `-v3` 的发行版会改变摘要。然后在旧摘要下做的每一项都停止匹配。这就是本节论点里精确的含义。
 
-Version 6.7.0 is such a release. For this Mach-O target the parameter list kept its 25 names, and two values moved. `instruction_references` went from `exact-address-incoming-v1` to `exact-address-incoming-without-synthetic-entry-v2`. `function_boundary_observations` went from `ghidra-function-boundary-limitations-v3` to `-v4`. The digest went from `966e6016…` to `3fc72c9b…`, so no 6.5.0 snapshot entry matches a 6.7.0 session. One Ghidra session made all eight rows of the bundle summary, so all of them carry the digest `3fc72c9b…` ([export and import](#s-evidence-bundles-export-and-import)).
+版本 6.7.0 就是这样的发行版。对这个 Mach-O 目标，参数列表保持其 25 个名字，两个值移动了。`instruction_references` 从 `exact-address-incoming-v1` 到 `exact-address-incoming-without-synthetic-entry-v2`。`function_boundary_observations` 从 `ghidra-function-boundary-limitations-v3` 到 `-v4`。摘要从 `966e6016…` 到 `3fc72c9b…`，所以没有 6.5.0 快照项匹配 6.7.0 会话。一次 Ghidra 会话做出了包摘要的全部八行，所以它们都带着摘要 `3fc72c9b…`（[导出与导入](#s-evidence-bundles-export-and-import)）。
 
-## Which calls the cache answers
+## 缓存回答哪些调用 {#s-snapshots-and-the-answer-cache-which-calls-the-cache-answers}
 
-`isSnapshotCacheable` decides, before any provider runs, whether a call can be answered from the cache. A call qualifies when all of these hold.
+`isSnapshotCacheable` 在任何 provider 跑之前决定，一次调用是否能从缓存回答。当下列全部成立时，调用符合条件。
 
-- The operation is not one of the stateful ones, `health`, `current_address`, `current_procedure`, `current_document`, `goto_address`, or `list_documents`.
-- An operation that is scoped to a document names its `document`.
-- An operation that defaults to the cursor, such as `xrefs`, names its `address`.
-- The capability declares `mutatesArtifact: false`, a `cachePolicy` other than `live`, and no permission change.
-- Its `cachePolicy` is `snapshot`, or it does not write to the file system.
+- 操作不是有状态的那些：`health`、`current_address`、`current_procedure`、`current_document`、`goto_address` 或 `list_documents`。
+- 限定到文档的操作点名其 `document`。
+- 默认到光标的操作，例如 `xrefs`，点名其 `address`。
+- 能力声明 `mutatesArtifact: false`、非 `live` 的 `cachePolicy`，以及没有权限变更。
+- 其 `cachePolicy` 是 `snapshot`，或者它不写文件系统。
 
-The Ghidra adapter marks every operation except the mutating ones and `list_documents` with `cachePolicy: "snapshot"`. `prepareSessionExecution` computes the id and looks it up. `BinarySession` returns a hit without touching the provider. The replayed answer carries one extra limitation: "Loaded from a local REA analysis snapshot; this call did not re-run the provider.".
+Ghidra 适配器把除变更操作与 `list_documents` 之外的每一个操作标为 `cachePolicy: "snapshot"`。`prepareSessionExecution` 计算 id 并查找。`BinarySession` 在不碰 provider 的情况下返回命中。重放的答案带着一条额外限制：`"Loaded from a local REA analysis snapshot; this call did not re-run the provider."`。
 
-The replayed record names the path of the target that is open now. The function `rebindEvidenceToTargetPath` writes that path into the stored record. The `evidence_id` does not change, because the path is outside the hash. On Windows, Ghidra must admit the source file before a replay, so a cache hit can still start the provider.
+重放的记录点名现在打开的目标的路径。函数 `rebindEvidenceToTargetPath` 把那条路径写入已存记录。`evidence_id` 不变，因为路径在哈希之外。在 Windows 上，Ghidra 必须在重放之前承认源文件，所以缓存命中仍可启动 provider。
 
-On a miss the provider runs, and the result is bound to the profile and the target. An Evidence record is then created and recorded, and a cache entry is stored under the id.
+在未命中时 provider 跑，结果绑定到配置与目标。然后创建并记录一份 Evidence 记录，并在 id 下存一项缓存。
 
-The capture shows no replay, because no two of its 25 MCP calls had the same operation and parameters. The first Ghidra-backed call after `open_binary` was `list_procedures`, and it took between 6 and 7 seconds while the headless import ran. Every later analysis call on that target took under 100 ms ([the capture](manuals/reverse-engineering-101/capture/out/10-mcp-session.txt)). Those later calls were fast because the bridge was already running, not because of the cache. A repeat of `analyze_function` with `"procedure": "_percent_change"` would have been the first replay.
+抓取没有展示重放，因为其 25 次 MCP 调用里没有两次有相同的操作与参数。`open_binary` 之后第一次由 Ghidra 支撑的调用是 `list_procedures`，无头导入跑时花了 6 到 7 秒。该目标上之后的每一次分析调用都不到 100 ms（[抓取](manuals/reverse-engineering-101/capture/out/10-mcp-session.txt)）。那些后来的调用快，是因为桥已经在跑，不是因为缓存。带 `"procedure": "_percent_change"` 的重复 `analyze_function` 会是第一次重放。
 
 ```figure
 id: fig-5-4
@@ -73,19 +73,19 @@ claim: A cacheable call becomes a query id over target, binding, operation, and 
 caption: Read top to bottom. The dashed reply is a replay, and the solid call is a provider run. The dashed amber arrow is the state change that a mutating call makes before its dispatch. Values are from the function capture and the session capture.
 ```
 
-## Save and load
+## 保存与加载 {#s-snapshots-and-the-answer-cache-save-and-load}
 
-`close_binary` takes `snapshot_path` and `overwrite`. `closeWithSnapshot` drains the calls in progress, exports the snapshot, writes the file, and closes the provider. Its receipt adds `primitive_entries`, `workflow_entries`, and `evidence_records`. `open_binary` takes `snapshot_path` too, reads the file before it opens the target, and imports the entries into the new session. The capture closed both targets without a path, so its two `close_binary` results are `null` (`10-mcp-15-close-binary-O1.json`, `10-mcp-25-close-binary-O2.json`). On the CLI the flag is `--snapshot`.
+`close_binary` 接受 `snapshot_path` 与 `overwrite`。`closeWithSnapshot` 排空进行中的调用，导出快照，写入文件，并关闭 provider。其回执加上 `primitive_entries`、`workflow_entries` 与 `evidence_records`。`open_binary` 也接受 `snapshot_path`，在打开目标之前读文件，并把项导入新会话。抓取关闭两个目标时都没有路径，所以其两次 `close_binary` 结果是 `null`（`10-mcp-15-close-binary-O1.json`，`10-mcp-25-close-binary-O2.json`）。在 CLI 上标志是 `--snapshot`。
 
-An exact cache hit is normally read before rea starts a provider process {{cli Save and reuse analysis snapshots}}. On Windows the Ghidra provider can start first, because it must admit the source file.
+精确的缓存命中通常在 rea 启动 provider 进程之前被读取 {{cli Save and reuse analysis snapshots}}。在 Windows 上 Ghidra provider 可以先启动，因为它必须承认源文件。
 
-Loading a file is a full check. The entries must be in canonical id order, and every query id is recomputed and must match. No id appears twice. Every entry must have an Evidence record in the bundle with the same profile and the same result. A bundle record for another target fails the whole file.
+加载文件是一次完整检查。项必须按规范 id 顺序，每一个查询 id 被重新计算且必须匹配。没有 id 出现两次。每一项必须在包里有一份带同一配置与同一结果的 Evidence 记录。另一目标的包记录会让整个文件失败。
 
-Writing is atomic: the file is staged with mode `0600`, synced, and renamed or hard-linked into place. Importing into a session whose target or profile differs fails with "Analysis snapshot profile_mismatch: target, provider, or analysis profile does not match the active binary".
+写入是原子的：文件以模式 `0600` 暂存、同步，并重命名或硬链接到位。导入到目标或配置不同的会话会以 "Analysis snapshot profile_mismatch: target, provider, or analysis profile does not match the active binary" 失败。
 
-## Invalidation before a mutating call
+## 变更调用之前的失效 {#s-snapshots-and-the-answer-cache-invalidation-before-a-mutating-call}
 
-Some Ghidra operations write to the session database, such as `annotate_native_function`, which renames a function or adds a comment. Each of them lists `mutates_artifact` in its `effects`, and each carries a limitation that names the consequence.
+有些 Ghidra 操作写入会话数据库，例如重命名函数或添加注释的 `annotate_native_function`。它们每一个都在其 `effects` 里列出 `mutates_artifact`，并带着点名后果的限制。
 
 ```listing
 title: a mutating operation as binary_session describes it
@@ -112,17 +112,17 @@ note: Two of the three limitations are cut.
 }
 ```
 
-Before rea sends such a call to the provider, `BinarySession` calls `invalidateSnapshot`. The cache is emptied and a flag is set. From then on every lookup returns nothing, every new result is not stored, and an export fails with "Analysis snapshots are unavailable because analysis metadata may have changed". The error adds the way out: export the Evidence with `export_evidence_bundle`, close the target without a snapshot, and reopen it. An import after a mutation is refused the same way.
+在 rea 把这样的调用送给 provider 之前，`BinarySession` 调用 `invalidateSnapshot`。缓存被清空，并设置一个标志。从那时起每一次查找都返回空，每一个新结果都不存储，导出以 "Analysis snapshots are unavailable because analysis metadata may have changed" 失败。错误加上出路：用 `export_evidence_bundle` 导出 Evidence，不带快照关闭目标，再重新打开。变更之后的导入以同样方式被拒绝。
 
-At 6.7.0 the order is: invalidate, then call the provider. A failed reply cannot prove that the write did not reach Ghidra. So a mutating call that fails also turns the cache off. The 6.4.0 release used the other order and invalidated only after a successful call.
+在 6.7.0，顺序是：先失效，再调用 provider。失败的回复不能证明写入没有到达 Ghidra。所以失败的变更调用也会关掉缓存。6.4.0 发行版用另一种顺序，只在成功调用之后失效。
 
-The CLI documentation states the rule. A metadata write clears the snapshot cache of the active session, even when its reply fails. The provider can already have applied the write {{cli Save and reuse analysis snapshots}}.
+CLI 文档陈述规则。一次元数据写入清除活动会话的快照缓存，即使其回复失败。provider 可能已经应用了写入 {{cli Save and reuse analysis snapshots}}。
 
 ```takeaways
-- Repeat a query with the same parameters to get the cached answer, and read the added limitation.
-- Save a snapshot with `close_binary` and `snapshot_path` before you annotate anything.
-- Expect a `profile_mismatch` refusal after a rea upgrade, and run the analysis again.
-- Treat a snapshot as answers to past questions, never as a saved Ghidra project.
+- 用相同参数重复一次查询以得到缓存答案，并读加上的限制。
+- 在注解任何东西之前，用 `close_binary` 与 `snapshot_path` 保存快照。
+- 在 rea 升级之后预期 `profile_mismatch` 拒绝，并重新跑分析。
+- 把快照当作对过去问题的答案，绝不当作已保存的 Ghidra 项目。
 ```
 
 Sources: capture/README.md; capture/out/00-commands.txt, capture/out/05-analyze-arm64-O1.json, capture/out/10-mcp-04-binary-session.json, capture/out/10-mcp-09-analyze-function-percent-change-O1.json, capture/out/10-mcp-15-close-binary-O1.json, capture/out/10-mcp-25-close-binary-O2.json, capture/out/10-mcp-session.txt, capture/fixtures/bundle-rea-6.5.0-O1.json; rea 6.7.0 at 27dc42d: src/domain/analysisSnapshot.ts, src/domain/analysisProfile.ts, src/domain/evidence.ts, src/application/binary/AnalysisSnapshotCache.ts, src/application/binary/BinarySession.ts, src/application/binary/BinarySessionExecution.ts, src/application/binary/BinarySessionRecords.ts, src/application/JsonFiles.ts, src/server/registerCloseLifecycleTool.ts, src/server/registerSessionTools.ts, src/ghidra/GhidraLauncher.ts, src/ghidra/GhidraAnalysisProfile.ts, src/ghidra/GhidraProviderCapabilities.ts; rea docs/cli.md, rea docs/mcp-contracts.md

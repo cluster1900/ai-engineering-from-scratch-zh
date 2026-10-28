@@ -1,12 +1,12 @@
 # procedure_assembly
 
-> procedure_assembly returns the Ghidra Listing text of one function as a string, one instruction per line, with the address first and no bytes.
+> procedure_assembly 把一个函数的 Ghidra Listing 文本作为字符串返回，每行一条指令，地址在前，不含字节。
 
-You want to see the division by ten in `grade` as the processor sees it. The C source says `score / 10`. The arm64 code has no divide instruction at all, and reading why is the first thing assembly teaches.
+你想看到 `grade` 里除以十在处理器眼里的样子。C 源码写的是 `score / 10`。arm64 代码里根本没有除法指令，而读懂为什么，正是汇编教的第一件事。
 
-When you finish this section, you can read the 15 instructions of `_grade`, split them into three blocks, and explain the multiply by `0x66666667`.
+读完本节后，你能读 `_grade` 的 15 条指令，把它们拆成三块，并解释乘以 `0x66666667`。
 
-## The call and the text
+## 这次调用与这段文本 {#s-procedure-assembly-the-call-and-the-text}
 
 ```listing
 title: procedure_assembly for _grade
@@ -22,9 +22,9 @@ note: The request arguments and the start of the result. The result is one strin
 "normalized_result": "0x100000518: mov w8, #0x6667\n0x10000051c: movk w8, #0x6666, LSL #16\n…
 ```
 
-The bridge resolves the procedure, scans its instructions with no limit, renders each one as text, and attaches any no-return call warnings. The record carries the limitation "Assembly is Ghidra Listing text and does not claim textual equivalence with Hopper output.". The text is Ghidra's rendering, so register names, immediates, and spacing follow Ghidra, not clang or `llvm-objdump`.
+桥解析该过程，不加限制地扫描其指令，把每一条渲染成文本，并附上任何不返回调用的警告。记录带着限制 "Assembly is Ghidra Listing text and does not claim textual equivalence with Hopper output."。这段文本是 Ghidra 的渲染，所以寄存器名、立即数与间距跟 Ghidra，不跟 clang 或 `llvm-objdump`。
 
-The dossier of [section 4.6](#s-analyze-function-and-pseudocode) carries the same lines as an array, which is easier to read.
+[第 4.6 节](#s-analyze-function-and-pseudocode) 的 dossier 以数组形式带着同样的行，读起来更容易。
 
 ```listing
 title: the fifteen instructions of _grade
@@ -51,17 +51,17 @@ note: The assembly array of the dossier, complete.
 ],
 ```
 
-## Reading the fifteen instructions
+## 读这十五条指令 {#s-procedure-assembly-reading-the-fifteen-instructions}
 
-The argument `score` arrives in `w0`, the low 32 bits of `x0`, and the result leaves in `w0`. Read the text in four groups.
+参数 `score` 到达 `w0`，也就是 `x0` 的低 32 位，结果从 `w0` 离开。把这段文本分成四组来读。
 
-The first two lines build a constant. `mov w8, #0x6667` sets the low half, and `movk w8, #0x6666, LSL #16` inserts the high half, so `w8` is `0x66666667`.
+前两行构建一个常量。`mov w8, #0x6667` 设置低半，`movk w8, #0x6666, LSL #16` 插入高半，于是 `w8` 是 `0x66666667`。
 
-The next four lines divide by ten without a divide. `smull x8, w0, w8` multiplies the two 32-bit values into a 64-bit product. `asr x8, x8, #0x22` shifts the product right by 34, and `lsr x9, x8, #0x3f` takes its sign bit. `add w8, w8, w9` adds the sign bit, which corrects the rounding for a negative score. The result is `score / 10` with C truncation. [Lesson 34](phases/13-tools-and-protocols/34-lifting-to-pseudocode) proves that `0x66666667` and a shift of 34 give that quotient for every 32-bit `int`.
+接下来四行在没有除法的情况下除以十。`smull x8, w0, w8` 把两个 32 位值乘成 64 位积。`asr x8, x8, #0x22` 把积右移 34，`lsr x9, x8, #0x3f` 取其符号位。`add w8, w8, w9` 加上符号位，这对负分数校正舍入。结果是带 C 截断的 `score / 10`。[第 34 课](phases/13-tools-and-protocols/34-lifting-to-pseudocode) 证明，对每一个 32 位 `int`，`0x66666667` 与一次移 34 都给出那个商。
 
-The next three lines are the switch. `sub w8, w8, #0x6` turns the cases 6 to 10 into the indexes 0 to 4. `cmp w8, #0x4` and `b.hi 0x10000054c` send any index above 4 to the default. The compare is unsigned, so a negative score, which gives a negative index, also goes to the default. That is one instruction doing the work of the `default` label and the cases below 6.
+接下来三行是 switch。`sub w8, w8, #0x6` 把情形 6 到 10 变成索引 0 到 4。`cmp w8, #0x4` 与 `b.hi 0x10000054c` 把任何大于 4 的索引送到默认。比较是无符号的，所以负分数给出负索引，也走到默认。那是一条指令在做 `default` 标签与低于 6 的情形的工作。
 
-The last six lines are the two returns. `adrp x9, 0x100000000` and `add x9, x9, #0x7d0` form the address `0x1000007d0`, the start of `__TEXT,__const` from [section 3.2](#s-inspect-binary-layout-and-the-load-image). `ldr w0, [x9, w8, UXTW #0x2]` loads the 32-bit word at that address plus four times the index. The 20 bytes at file offset 2000 are `1, 2, 3, 4, 4` as little-endian words, so the load returns the grade. The default path is `mov w0, #0x0` and `ret`.
+最后六行是两次返回。`adrp x9, 0x100000000` 与 `add x9, x9, #0x7d0` 组成地址 `0x1000007d0`，也就是[第 3.2 节](#s-inspect-binary-layout-and-the-load-image) 里 `__TEXT,__const` 的起点。`ldr w0, [x9, w8, UXTW #0x2]` 加载该地址加上四倍索引处的 32 位字。文件偏移 2000 上的 20 字节是小端字形式的 `1, 2, 3, 4, 4`，所以这次加载返回等级。默认路径是 `mov w0, #0x0` 与 `ret`。
 
 ```figure
 id: fig-4-4
@@ -71,9 +71,9 @@ claim: Ghidra's basic_blocks split the fifteen instructions at the one condition
 caption: Read from the top block. The arrows are the two successors of the first block, and each leaf block has an empty successors list. From capture/out/06-function-grade.json.
 ```
 
-**Basic block:** a run of instructions with one entry at the top and one exit at the bottom. Control enters only at the first instruction and leaves only after the last. The dossier's `basic_blocks` lists three for `_grade`: `0x100000518` to `0x10000053c` with successors `0x10000053c` and `0x10000054c`, and the two leaf blocks with no successors. [Lesson 33](phases/13-tools-and-protocols/33-disassembly-and-control-flow) builds the decoder and the block splitter that produce the same partition from bytes.
+**基本块：** 一段指令，顶部一个入口，底部一个出口。控制只在第一条指令进入，只在最后一条之后离开。dossier 的 `basic_blocks` 为 `_grade` 列出三个：`0x100000518` 到 `0x10000053c`，后继是 `0x10000053c` 与 `0x10000054c`，以及两个没有后继的叶块。[第 33 课](phases/13-tools-and-protocols/33-disassembly-and-control-flow) 构建从字节产生同一划分的解码器与块分割器。
 
-## The same function on x86-64
+## 同一个函数在 x86-64 上 {#s-procedure-assembly-the-same-function-on-x86-64}
 
 ```listing
 title: grade in the x86-64 object
@@ -99,17 +99,17 @@ note: The assembly array of the x86-64 dossier, complete. Ghidra renders x86 in 
 ],
 ```
 
-Fourteen instructions, the same shape. The multiply is one instruction, `IMUL RAX, RAX, 0x66666667`, and the two shifts are 34 and 63 again. `XOR EAX, EAX` sets the default return value to zero before the compare, so the default path needs no extra block and the function has one `RET`. The table is at `0x1000b4`, which is `.rodata` plus `0x14`. The listing shows that address as a plain number because Ghidra applied the relocation when it loaded the object. [Section 4.6](#s-analyze-function-and-pseudocode) returns to the `XOR` line, because the decompiler wrote it in a way that hides the zero.
+十四条指令，同样的形状。乘法是一条指令，`IMUL RAX, RAX, 0x66666667`，两次移位还是 34 与 63。`XOR EAX, EAX` 在比较之前把默认返回值设为零，所以默认路径不需要额外的块，函数只有一个 `RET`。表在 `0x1000b4`，也就是 `.rodata` 加 `0x14`。listing 把那个地址显示成一个普通数字，因为 Ghidra 在加载目标文件时应用了重定位。[第 4.6 节](#s-analyze-function-and-pseudocode) 会回到那行 `XOR`，因为反编译器写它的方式把那个零藏了起来。
 
-## Where the no-return warnings go
+## 不返回警告放在哪里 {#s-procedure-assembly-where-the-no-return-warnings-go}
 
-`raw_result.limitations` is empty for `_grade`. When a function calls something Ghidra marked as never returning, the scan can stop there, and this list names the call site. On macOS and Linux, rea runs a repair script after the import. It clears wrong no-return flags on six common library names, so the bodies you read here are the repaired ones. The docs state the effect of a flag that stays. A call that Ghidra inferred as no-return can end the body before the bytes that follow it {{ghidra §Admitted function-analysis semantics}}.
+对 `_grade`，`raw_result.limitations` 是空的。当一个函数调用某个 Ghidra 标为永不返回的东西时，扫描可以在那里停下，这份列表就点名调用点。在 macOS 与 Linux 上，rea 在导入之后跑一段修复脚本。它清除六个常见库名上错误的不返回标志，所以你在这里读到的函数体是修复过的。文档陈述留下标志的效果。一次被 Ghidra 推断为不返回的调用，可以在它后面的字节之前结束函数体 {{ghidra §Admitted function-analysis semantics}}。
 
 ```takeaways
-- Read assembly in groups: constants, arithmetic, the compare and branch, the returns.
-- Treat an unsigned compare after a subtract as a bounds check that also rejects negatives.
-- Name the table an `adrp` and `add` pair points to, then read its bytes at the file offset.
-- Check `raw_result.limitations` for a terminal call before you trust the body size.
+- 按组读汇编：常量、算术、比较与分支、返回。
+- 把一次减法之后的无符号比较当作也会拒绝负数的边界检查。
+- 点名一对 `adrp` 与 `add` 指向的表，然后在文件偏移处读它的字节。
+- 在信任函数体大小之前，检查 `raw_result.limitations` 里有没有终端调用。
 ```
 
 Sources: capture/out/10-mcp-06-procedure-assembly-grade.json, capture/out/06-function-grade.json, capture/out/06-function-grade-x86_64-O1.json, capture/out/04-inspect-macho.json, capture/fixtures/ledger-arm64-O1, capture/fixtures/ledger.c; rea 6.7.0 at 27dc42d: bridge/ghidra/ReaGhidraBridge.java, src/ghidra/GhidraProviderCapabilities.ts; rea docs/ghidra-provider.md

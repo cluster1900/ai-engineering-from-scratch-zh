@@ -1,14 +1,14 @@
 # analyze_function and pseudocode
 
-> analyze_function returns one dossier with sixteen facets, and its pseudocode is a decompiler's reading that you check against the assembly and the bytes in the same record.
+> analyze_function 返回带十六个 facet 的一份 dossier，而其伪代码是反编译器的一次阅读，你要用同一份记录里的汇编与字节来核对。
 
-You asked for `percent_change` and got a function that returns `ulong` and tests `iVar2 != 0` twice. The source returns `int` and tests once. The instructions in the same record are right, and the text around them is a reading of those instructions. Learning to tell the two apart is what this section is for.
+你要了 `percent_change`，得到一个返回 `ulong` 并两次测试 `iVar2 != 0` 的函数。源码返回 `int` 并只测试一次。同一份记录里的指令是对的，而它们周围的文本是对这些指令的一次阅读。学会把两者区分开，正是本节要做的事。
 
-When you finish this section, you can read the sixteen facets of a dossier. You can mark which lines of pseudocode follow from an instruction and which are a guess. You can also read the error for a name that does not exist.
+读完本节后，你能读一份 dossier 的十六个 facet。你能标出哪些伪代码行跟自一条指令，哪些是猜测。你也能读一个不存在的名字的错误。
 
-## The dossier
+## 这份 dossier {#s-analyze-function-and-pseudocode-the-dossier}
 
-`rea function` is the CLI name of `analyze_function`. The CLI run on `_grade` and the MCP call in the same session produced the same `evidence_id`, `ev_41e8ca1c` and 56 more digits. The id is a hash of the record's semantic content, and the file path and the display name are left out of it. [Section 5.1](#s-the-evidence-record) reads every field of the record. This section reads its `normalized_result`, which has sixteen facets.
+`rea function` 是 `analyze_function` 的 CLI 名。对 `_grade` 的 CLI 运行与同一会话里的 MCP 调用产生了同一个 `evidence_id`，`ev_41e8ca1c` 再加 56 位数字。该 id 是记录语义内容的哈希，文件路径与显示名被排除在外。[第 5.1 节](#s-the-evidence-record) 读记录的每一个字段。本节读其 `normalized_result`，它有十六个 facet。
 
 ```listing
 title: the pseudocode, the blocks, and the signature facts of _grade
@@ -54,7 +54,7 @@ note: Cut from normalized_result. The procedure, assembly, reference, and value-
 },
 ```
 
-The pseudocode is one JSON string. Decoded, it reads:
+伪代码是一个 JSON 字符串。解码后读作：
 
 ```c
 undefined4 _grade(int param_1)
@@ -72,23 +72,23 @@ undefined4 _grade(int param_1)
 
 | Facet | For `_grade` | What it holds |
 |---|---|---|
-| `procedure` | entry `0x100000518`, body 60 bytes | the identity and body of [section 4.2](#s-list-procedures-and-function-bodies) |
-| `pseudocode` | one string | the decompiler text |
-| `assembly` | 15 lines | the Listing text of [section 4.3](#s-procedure-assembly) |
-| `comments` | empty | database comments at the entry |
-| `callers`, `callees` | empty, empty | resolved functions only |
-| `incoming_references`, `outgoing_references` | 1, 2 | typed edges, as in [section 4.4](#s-xrefs-and-the-jump-table) |
-| `unresolved_calls` | empty | call sites whose destination has no known procedure |
-| `referenced_strings`, `referenced_names` | empty, 2 | `LAB_10000054c`, `DAT_1000007d0` |
-| `basic_blocks` | 3 | starts, exclusive ends, successors |
-| `native_api` | `__cdecl`, `signature_source` default | types, storage, confidence, `jump_tables` |
-| `native_value_flow` | 14 operations, 12 def-use edges | high p-code, `truncated: false` |
-| `facet_availability` | eight facets, all `available: true` | whether each facet was observed |
-| `limitations` | 4 | the facet's own limits |
+| `procedure` | 入口 `0x100000518`，函数体 60 字节 | [第 4.2 节](#s-list-procedures-and-function-bodies) 的身份与函数体 |
+| `pseudocode` | 一个字符串 | 反编译器文本 |
+| `assembly` | 15 行 | [第 4.3 节](#s-procedure-assembly) 的 Listing 文本 |
+| `comments` | 空 | 入口处的数据库注释 |
+| `callers`, `callees` | 空，空 | 仅已解析的函数 |
+| `incoming_references`, `outgoing_references` | 1, 2 | 带类型的边，如[第 4.4 节](#s-xrefs-and-the-jump-table) |
+| `unresolved_calls` | 空 | 目标没有已知过程的调用点 |
+| `referenced_strings`, `referenced_names` | 空, 2 | `LAB_10000054c`, `DAT_1000007d0` |
+| `basic_blocks` | 3 | 起点、开区间终点、后继 |
+| `native_api` | `__cdecl`，`signature_source` default | 类型、存储、置信度、`jump_tables` |
+| `native_value_flow` | 14 个操作，12 条 def-use 边 | 高 p-code，`truncated: false` |
+| `facet_availability` | 八个 facet，全部 `available: true` | 每个 facet 是否被观察到 |
+| `limitations` | 4 | 该 facet 自己的限制 |
 
-**Dossier:** rea's name for the composed record of one function. The bridge builds it from five Ghidra sources: the FunctionManager, the Listing, the ReferenceManager, the BasicBlockModel, and the decompiler. The record-level limitation names all five. The record carries ten limitations, the result four more, `native_api` three, and `native_value_flow` five. Read them once. They say in rea's words what this section shows with examples.
+**Dossier：** rea 对一个函数的合成记录的名字。桥从五个 Ghidra 源构建它：FunctionManager、Listing、ReferenceManager、BasicBlockModel 与反编译器。记录级限制点名全部五个。记录带着十条限制，结果再多四条，`native_api` 三条，`native_value_flow` 五条。读它们一次。它们用 rea 的话说明本节用例子展示的内容。
 
-The signature facts are the first thing to read. `signature_source` is `default`, which means no analyzer or user set the prototype, and every parameter and the return value carry `confidence: "low"`. The bridge gives `medium` only when the source is `analysis`. `native_api.pseudocode.compilable` is `false`, and the third `native_api` limitation is written into the Java source itself.
+签名事实是要读的第一件事。`signature_source` 是 `default`，意思是没有分析器或用户设置原型，而每一个参数与返回值都带着 `confidence: "low"`。桥只在来源是 `analysis` 时给出 `medium`。`native_api.pseudocode.compilable` 是 `false`，而第三条 `native_api` 限制就写在 Java 源码本身里。
 
 ```figure
 id: fig-4-8
@@ -98,9 +98,9 @@ claim: One record holds the identity, the text, the edges, the blocks, the signa
 caption: Read top to bottom. The left column is the facet name, the middle column is its value for _grade, the right column says what the facet holds. From capture/out/06-function-grade.json.
 ```
 
-## procedure_pseudo_code: the text alone
+## procedure_pseudo_code：仅文本 {#s-analyze-function-and-pseudocode-procedure-pseudo-code-the-text-alone}
 
-`rea decompile` is the CLI name of `procedure_pseudo_code`. It returns the text and nothing else.
+`rea decompile` 是 `procedure_pseudo_code` 的 CLI 名。它只返回文本，别的什么都不返回。
 
 ```listing
 title: the pseudocode of _total
@@ -146,13 +146,13 @@ int _total(int *param_1,uint param_2)
 }
 ```
 
-The bridge opens one `DecompInterface` per program with C output, the syntax tree, and jump loads on, and no instruction limit. Each call is `decompileFunction(function, 0, monitor)`, with no timeout, and an external or bodyless function returns `null`. The text is the `getC()` output of the result.
+桥为每个程序打开一个带 C 输出、语法树与跳转加载开启、且没有指令限制的 `DecompInterface`。每次调用是 `decompileFunction(function, 0, monitor)`，没有超时，而外部或无函数体的函数返回 `null`。文本是结果的 `getC()` 输出。
 
-`_total` reads well. The `do` loop with `uVar2 - 1` is the rotated loop that `subs x9, x9, #0x1` and `b.ne` make in the assembly. The pointer type `int *param_1` follows from the load `ldr w10, [x0], #0x4`. The one open question is `uint param_2`. The source says `int count`. The instructions compare `w1` as signed once and then count it down in `x9`, so both types fit, and Ghidra picked one.
+`_total` 读起来不错。带 `uVar2 - 1` 的 `do` 循环，就是汇编里 `subs x9, x9, #0x1` 与 `b.ne` 做出的旋转循环。指针类型 `int *param_1` 跟自加载 `ldr w10, [x0], #0x4`。唯一未决的问题是 `uint param_2`。源码说 `int count`。指令把 `w1` 当作有符号比较一次，然后在 `x9` 里倒数，所以两种类型都合适，而 Ghidra 挑了一个。
 
-## Where the text is incomplete or wrong
+## 文本不完整或出错的地方 {#s-analyze-function-and-pseudocode-where-the-text-is-incomplete-or-wrong}
 
-**Decompiler artifact:** a line of pseudocode that the decompiler needed to express the machine code and that no source line produced. The `native_api` limitations name three kinds: register variables, compiler-generated blocks, and pointer arithmetic. Three records in the captures show three kinds of gap between the text and the instructions.
+**反编译器产物：** 一行伪代码，是反编译器为表达机器码所需要的，而没有任何源码行产生它。`native_api` 限制点名三种：寄存器变量、编译器生成的块，以及指针算术。抓取里的三份记录展示文本与指令之间三种空隙。
 
 ```listing
 title: _percent_change, text and instructions
@@ -171,9 +171,9 @@ note: The pseudocode string and the complete assembly array of the dossier.
 ],
 ```
 
-Six instructions. `cbz w0, 0x100000514` jumps to the `ret` when `before` is zero, and on that path `w0` is zero and the function returns it. The other path computes `(w1 - w0) * 100` and divides with `sdiv w0, w8, w0`. Both paths return 32 bits in `w0`.
+六条指令。`cbz w0, 0x100000514` 在 `before` 为零时跳到 `ret`，而在那条路径上 `w0` 为零，函数返回它。另一条路径计算 `(w1 - w0) * 100`，并用 `sdiv w0, w8, w0` 做除法。两条路径都在 `w0` 里返回 32 位。
 
-The pseudocode says the function returns `ulong`, eight bytes, and returns `param_1`, the whole of `x0`. The ABI and the source say four bytes. Nothing in the text marks the difference. The record does: `return_type.data_type` is `ulong`, `confidence` is `low`, and `signature_source` is `default`. The second `if (iVar2 != 0)` repeats a test that one instruction made once. It changes no value, and it is not in the instructions.
+伪代码说函数返回 `ulong`，八个字节，并返回 `param_1`，也就是整个 `x0`。ABI 与源码说四个字节。文本里没有任何东西标出这个差别。记录标出了：`return_type.data_type` 是 `ulong`，`confidence` 是 `low`，`signature_source` 是 `default`。第二个 `if (iVar2 != 0)` 重复了一次指令只做一次的测试。它不改变任何值，也不在指令里。
 
 ```figure
 id: fig-4-9
@@ -183,9 +183,9 @@ claim: Four source lines became fourteen lines of pseudocode, and the three mark
 caption: Read the source first, then the pseudocode. The rose marks name the return width, the repeated test, and the return of the whole register. From capture/fixtures/ledger.c and capture/out/10-mcp-09-analyze-function-percent-change-O1.json.
 ```
 
-`_grade` shows the second kind of gap. The decompiled text keeps the table as `*(undefined4 *)(&DAT_1000007d0 + (ulong)uVar1 * 4)`. The address is right, the element size is right, and the five values are not there. [Section 3.3](#s-address-to-file-offset) turns `0x1000007d0` into file offset 2000, and the 20 bytes there are `1, 2, 3, 4, 4`. The return type is `undefined4`, four bytes of unknown meaning. The text is incomplete, and you complete it from the bytes.
+`_grade` 展示第二种空隙。反编译文本把表保留为 `*(undefined4 *)(&DAT_1000007d0 + (ulong)uVar1 * 4)`。地址是对的，元素大小是对的，那五个值却不在那里。[第 3.3 节](#s-address-to-file-offset) 把 `0x1000007d0` 变成文件偏移 2000，那里的 20 字节是 `1, 2, 3, 4, 4`。返回类型是 `undefined4`，四个字节意义未知。文本不完整，你从字节把它补全。
 
-The x86-64 build of `grade` shows the third kind. Its pseudocode has the line `uVar1 = -(param_1 >> 0x1f) ^ (uint)((ulong)((long)param_1 * 0x66666667) >> 0x3f);` for the default return value.
+`grade` 的 x86-64 构建展示第三种。其伪代码有一行 `uVar1 = -(param_1 >> 0x1f) ^ (uint)((ulong)((long)param_1 * 0x66666667) >> 0x3f);`，作为默认返回值。
 
 ```listing
 title: grade on x86-64, the default value as an expression
@@ -196,13 +196,13 @@ note: The start of the pseudocode string, cut after the line that writes the def
 "value": "\nuint grade(int param_1)\n\n{\n  uint uVar1;\n  uint uVar2;\n  \n  uVar2 = param_1 / 10 - 6;\n  uVar1 = -(param_1 >> 0x1f) ^ (uint)((ulong)((long)param_1 * 0x66666667) >> 0x3f);\n…
 ```
 
-The instruction behind that line is `XOR EAX, EAX` at `0x10002a` in [section 4.3](#s-procedure-assembly). The register is zero. Ghidra wrote it as the sign of `param_1` exclusive-or the sign bit of the product. Those are two spellings of the same bit, and the decompiler did not cancel them. The value is 0 for every `int`, so the text is not false. A reader who trusts the text believes the default depends on the score, which is false.
+那一行背后的指令是[第 4.3 节](#s-procedure-assembly) 里 `0x10002a` 上的 `XOR EAX, EAX`。寄存器是零。Ghidra 把它写成 `param_1` 的符号异或积的符号位。那是同一位的两种拼写，而反编译器没有把它们消去。对每一个 `int` 值都是 0，所以文本并非假。一个信任文本的读者会相信默认值取决于分数，而这是假的。
 
-[Lesson 34](phases/13-tools-and-protocols/34-lifting-to-pseudocode) compiles this text and tests it against the source over a grid. It then puts its own lifter output beside Ghidra's and accounts for every difference in `percent_change`, `grade`, and `total`.
+[第 34 课](phases/13-tools-and-protocols/34-lifting-to-pseudocode) 编译这段文本，并在一张网格上对照源码测试它。然后把它自己的 lifter 输出放在 Ghidra 的旁边，并对 `percent_change`、`grade` 与 `total` 里的每一个差别做出交代。
 
-The rule from the three cases is short. The assembly facet is observed. The pseudocode is observed text about a derived reading. Check a type against the storage, a constant against the bytes, and a branch against the blocks before you repeat what the text says.
+三种情形得出的规则很短。汇编 facet 是观察到的。伪代码是关于一次派生阅读的观察到的文本。在复述文本说了什么之前，用存储核对类型，用字节核对常量，用块核对分支。
 
-## A name that does not exist
+## 一个不存在的名字 {#s-analyze-function-and-pseudocode-a-name-that-does-not-exist}
 
 ```listing
 title: analyze_function for a procedure that is not there
@@ -241,7 +241,7 @@ note: The request arguments, the error flag, and the decoded error. The text con
 }
 ```
 
-The bridge tried `_nothing` as a symbol name, then as an address, and failed with `not_found`. The `diagnostics` object in the error shows the remote code `not_found` that the bridge sent. The client maps the remote codes `invalid_request`, `not_found`, and `ambiguous` to `AnalysisInputError`. That error projects to the code `invalid_request`. An error reaches the MCP client as text with `isError: true` and no result. The server log shows where the time went.
+桥先把 `_nothing` 当作符号名来试，再当作地址，并以 `not_found` 失败。错误里的 `diagnostics` 对象显示桥发送的远程码 `not_found`。客户端把远程码 `invalid_request`、`not_found` 与 `ambiguous` 映射到 `AnalysisInputError`。那个错误投影到码 `invalid_request`。错误以带 `isError: true` 且没有结果的文本到达 MCP 客户端。服务器日志显示时间花在哪里。
 
 ```listing
 title: the failed call in the server log
@@ -253,19 +253,19 @@ note: Lines 10 and 11. The first is the bridge layer, the second is the server l
 {"level":40,"time":…,"application":"rea","mode":"mcp","layer":"server","tool":"analyze_function","durationMs":…,"status":"error","msg":"MCP tool execution completed"}
 ```
 
-The lookup was a round trip on the socket to Ghidra, a couple of milliseconds in all. `retryable` is `true`: correct the name from [section 4.2](#s-list-procedures-and-function-bodies) and call again. The session stays open and the Ghidra project stays imported.
+这次查找是到 Ghidra 的一次套接字往返，总共几毫秒。`retryable` 是 `true`：从[第 4.2 节](#s-list-procedures-and-function-bodies) 改正名字再调用。会话保持打开，Ghidra 项目保持已导入。
 
-## What to do with a dossier
+## 拿一份 dossier 做什么 {#s-analyze-function-and-pseudocode-what-to-do-with-a-dossier}
 
-Read the sixteen facets in this order. Start with `procedure` for the body and `assembly` for what the processor does. Then read `basic_blocks` for the shape and the references for the edges, and `pseudocode` last. [Section 5.5](#s-compare-and-compare-functions) compares two dossiers of the same function from two builds. [Section 7.2](#s-a-proof-harness-outside-rea) shows the test that decides whether a rebuild from this text is equal to the original.
+按这个顺序读十六个 facet。从 `procedure` 看函数体、从 `assembly` 看处理器做什么开始。然后读 `basic_blocks` 看形状、读引用看边，最后读 `pseudocode`。[第 5.5 节](#s-compare-and-compare-functions) 比较同一函数两个构建的两份 dossier。[第 7.2 节](#s-a-proof-harness-outside-rea) 展示决定从这段文本重建是否等于原件的测试。
 
-To see where each line of pseudocode comes from, run the [Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler) machine. It decompiles `percent_change` from the x86-64 fixture object in nine stations, from the header to the pseudocode. The instructions, IR and pseudocode on the page are the ones that the course lifter in lesson 34 prints. Switch the build to `-O0` to see stack slots become locals, and switch the symbols off to see the name become an unknown.
+要看每一行伪代码从哪里来，跑 [Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler) 机器。它从 x86-64 fixture 目标文件经九个站反编译 `percent_change`，从头部到伪代码。页上的指令、IR 与伪代码就是第 34 课课程 lifter 打印的那些。把构建切到 `-O0` 可看到栈槽变成局部变量，关掉符号可看到名字变成未知。
 
 ```takeaways
-- Read `signature_source` and the parameter `confidence` before you trust a type in the pseudocode.
-- Check every constant and table address in the text against the assembly and the bytes.
-- Treat `compilable: false` as a fact about the pseudocode text, and do not report it as a defect.
-- Expect `invalid_request` with `retryable: true` for an unknown name, then fix the name.
+- 在信任伪代码里的类型之前，先读 `signature_source` 与参数的 `confidence`。
+- 用汇编与字节核对文本里的每一个常量与表地址。
+- 把 `compilable: false` 当作关于伪代码文本的事实，不要把它报告成缺陷。
+- 对未知名字预期带 `retryable: true` 的 `invalid_request`，然后改正名字。
 ```
 
 Sources: capture/out/06-function-grade.json, capture/out/10-mcp-10-analyze-function-grade-O1.json, capture/out/07-decompile-total.json, capture/out/07-decompile-grade-x86_64-O1.json, capture/out/10-mcp-09-analyze-function-percent-change-O1.json, capture/out/10-mcp-11-analyze-function-total-O1.json, capture/out/10-mcp-12-analyze-function-grade-label-O1.json, capture/out/10-mcp-13-analyze-function-missing.json, capture/out/10-mcp-server.log, capture/fixtures/ledger.c, capture/fixtures/ledger-arm64-O1; rea 6.7.0 at 27dc42d: src/cliCommandNames.ts, src/domain/evidence.ts, src/ghidra/GhidraProviderCapabilities.ts, src/ghidra/GhidraProviderClient.ts, src/domain/analysisErrorProjection.ts, src/server/toolResult.ts, bridge/ghidra/ReaGhidraBridge.java; the Inside a Decompiler machine: scripts/decompiler-machine/fixture.mjs, scripts/decompiler-machine/model.mjs
