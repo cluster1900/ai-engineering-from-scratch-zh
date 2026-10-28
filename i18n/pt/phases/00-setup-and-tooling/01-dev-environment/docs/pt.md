@@ -1,6 +1,6 @@
 # Ambiente de desenvolvimento
 
-> As tuas ferramentas vão moldar o teu modo de pensar.
+> As tuas ferramentas moldam o teu modo de pensar.
 
 **Type:** Build
 **Languages:** Python, Node.js, Rust
@@ -8,18 +8,21 @@
 **Time:** ~45 分钟
 
 ## Objectivo de aprendizagem
-- Desde zero começando a configurar Python 3.11+、Node.js 20+ 和 Rust toolchains
-- Configurar ambientes virtuais e gerentes de pacotes, para realizar construções replicáveis
-- Utilize CUDA/MPS 验证 GPU acesso,并运行一个测试 Tensor operação
-- Entender quatro níveis de pilha: sistemas, pacotes, tempos de execução, bibliotecas de IA
+
+- Desde zero construir Python 3.11+、Node.js 20+ 和 Rust 工具链
+- Configuração de ambiente virtual e gerenciador de embalagens, garantia de construção reprodutiva
+- Utilize CUDA/MPS 验证 GPU 访问,并跑一次测试张量运算
+- Compreender quatro níveis de tecnologia: sistemas, gestão de conteúdos, operações,
 
 ## 问题
-Você vai usar Python, TypeScript, Rust e Julia para aprender mais de 500 ações de engenharia artificial. Se o seu ambiente estiver mal, cada ação se transformará em ferramentas, em vez de aprender.
 
-Muitas pessoas saltam a configuração do ambiente. Depois, passam algumas horas a depurar erros de importação, conflitos de versão e falta de drivers CUDA.
+Você vai usar Python, TypeScript, Rust e Julia para completar 500+ sessões de engenharia de IA. Se o ambiente estiver ruim, cada sessão se tornará um conjunto de ferramentas, em vez de aprender.
+
+A maioria das pessoas saltam o ambiente construído. Depois, gastam algumas horas para depurar a importância de erros. Conflitos de versão e ausência de CUDA.
 
 ## 概念
-Um ambiente de engenharia de IA tem quatro camadas:
+
+Uma engenharia de IA  ambiente tem quatro níveis:
 
 ```mermaid
 graph TD
@@ -28,17 +31,17 @@ graph TD
     C --> D["1. System Foundation\nOS, shell, git, editor, GPU drivers"]
 ```
 
-Nós estamos instalados de baixo para cima. Cada camada depende de uma camada abaixo.
-
+Nós estamos instalados de baixo para cima. Cada camada depende dela.
 
 ```figure
 s0-env-stack
 ```
 
 ## Construí-lo
-### 步骤 1: Fundação do Sistema
 
-Verifique o seu sistema e instale componentes básicos.
+### 步骤 1: sistema base
+
+Verifique o seu sistema e instale os componentes básicos.
 
 ```bash
 # macOS
@@ -52,9 +55,9 @@ sudo apt update && sudo apt install -y build-essential git curl wget unzip
 wsl --install -d Ubuntu-24.04
 ```
 
-### 步骤 2: Python com uv
+### 步骤 2: Use uv instalar Python
 
-Nós usamos`uv` É 10-100x mais rápido do que o pip, e processará automaticamente ambientes virtuais
+Nós usamos`uv` É 10 100 vezes mais rápido do que o pip , e irá processar automaticamente o ambiente virtual
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -79,7 +82,7 @@ a = np.array([1, 2, 3])
 print(f"Vector: {a}, dot product with itself: {np.dot(a, a)}")
 ```
 
-### 步骤 3: Node.js com pnpm
+### 步骤 3: Use pnpm instalar Node.js
 
 Utilizado em TypeScript 课程(agentes、MCP servidores、aplicativos web)
 
@@ -103,9 +106,9 @@ echo 'eval "$(fnm env --use-on-cd)"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-### 步骤 4: Corrosão
+### 步骤 4:Rust
 
-Utilizadas em cursos de desempenho crítico (inferência, sistemas)
+Utilizado para cursos sensíveis ao desempenho (inferência, sistemas)
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -114,9 +117,9 @@ rustc --version
 cargo --version
 ```
 
-### 步骤 5: Julia (Foicional)
+### 步骤 5: Julia(可选)
 
-É uma boa aula de matemática.
+Usou a Julia para fazer um curso de matemática.
 
 ```bash
 curl -fsSL https://install.julialang.org | sh
@@ -151,7 +154,7 @@ if torch.cuda.is_available():
     print(f"GPU: {torch.cuda.get_device_name(0)}")
 ```
 
-没有 GPU?没有问题──大多数课程可在CPU上运行──对于训练重的课程,使用Google Colab或云GPU──
+没有GPU?没有问题──大多数课程可在CPU上运行──对训练很重课程,使用Google Colab或云GPU──
 
 ### Passo 7: Verifique o caminho que você vai começar
 
@@ -186,7 +189,8 @@ Next: python3 phases/01-math-foundations/01-linear-algebra-intuition/code/vector
 ```
 
 ## Use-o
-O seu ambiente já pode começar a verificar as rotas. As ferramentas posteriores, tais como a aula, precisam de ser reinstaladas, não é necessário deixar um conjunto completo de técnicas bloquear a sua primeira aula.
+
+O seu ambiente já pode começar a verificar as rotas que você tem feito. As ferramentas posteriores, tais como a aula, precisam de ser reinstaladas, não é necessário deixar um conjunto completo de técnicas bloquear a sua primeira aula.
 
 | Language | Used In | Package Manager |
 |----------|---------|-----------------|
@@ -196,14 +200,16 @@ O seu ambiente já pode começar a verificar as rotas. As ferramentas posteriore
 | Julia | Phase 1 (Math foundations) | Pkg |
 
 ## Entrega-o
-Este curso produz um livro de verificação que qualquer um pode usar para verificar sua própria configuração.
 
-- Não .`outputs/prompt-env-check.md`, um deles é rápido, pode ajudar assistentes de IA  diagnósticos de problemas ambientais.
+Este curso é produzido por um livro de testes que qualquer pessoa pode usar para verificar seu ambiente.
+
+- Não .`outputs/prompt-env-check.md`, um deles é um problema de diagnóstico de IA, que pode ser ajudado.
 
 ## 练习
+
 1. 运行验证脚本并修复 qualquer falha
-2. Para este curso criar um ambiente virtual Python, e instalar PyTorch
-3. Usando todas as quatro línguas escrevi um "olá mundo", e cada vez mais.
+2. Para este curso criar um Python 虚拟环境,并安装 PyTorch
+3. Usando todas as quatro línguas escrever um "olá mundo", e executar
 
 ### 提示
 
