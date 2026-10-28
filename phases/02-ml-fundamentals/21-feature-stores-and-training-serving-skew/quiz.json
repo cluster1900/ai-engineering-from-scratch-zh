@@ -4,75 +4,75 @@
   "questions": [
     {
       "stage": "pre",
-      "question": "A team joins churn labels to a user feature table on user_id only. The table holds each user's newest values. What goes wrong?",
+      "question": "团队只按 user_id 把流失标签接到用户特征表。表里存的是每个用户的最新值。会出什么问题？",
       "options": [
-        "The join drops every user who has more than one label in the set",
-        "Training rows get feature values from after the label time",
-        "Nothing, because the newest values are the most accurate ones",
-        "The model trains slower because the table has too many columns"
+        "连接会丢掉集合里有不止一个标签的每个用户",
+        "训练行会拿到标签时间之后的特征值",
+        "没什么问题，因为最新值最准确",
+        "模型训练会变慢，因为表的列太多"
       ],
       "correct": 1,
-      "explanation": "Newest values come from after most label times. For churn, they already show the quiet period that the label measures, so the input contains the answer."
+      "explanation": "最新值来自多数标签时间之后。对流失来说，它们已经包含标签所度量的那段安静期，于是输入里藏着答案。"
     },
     {
       "stage": "check",
-      "question": "A label is at day 20. Feature rows exist at days 6, 17, and 24, and the TTL is 7 days. Which row does a point-in-time join use?",
+      "question": "标签在第 20 天。特征行在第 6、17、24 天，TTL 为 7 天。point-in-time join 会用哪一行？",
       "options": [
-        "No row, so the default value is used",
-        "The day 6 row",
-        "The day 17 row",
-        "The day 24 row"
+        "没有行，因此使用默认值",
+        "第 6 天那一行",
+        "第 17 天那一行",
+        "第 24 天那一行"
       ],
       "correct": 2,
-      "explanation": "The join keeps rows at or before day 20, takes the latest one, and checks its age. Day 17 is 3 days old, inside the 7-day TTL."
+      "explanation": "join 保留第 20 天及之前的行，取最新的一条并检查其年龄。第 17 天那行已有 3 天，落在 7 天 TTL 内。"
     },
     {
       "stage": "check",
-      "question": "Training fills a missing purchase history with 365 days. The serving service fills it with -1. What kind of skew is this?",
+      "question": "训练时把缺失的购买历史填成 365 天。服务路径把它填成 -1。这是哪种 skew？",
       "options": [
-        "Different defaults between the two paths",
-        "Stale features from a failed materialization job",
-        "Concept drift in the relation between input and label",
-        "Time travel from a naive join on the user key"
+        "两条路径的默认值不同",
+        "物化任务失败导致特征过期",
+        "输入与标签关系上的概念漂移",
+        "仅按用户键做朴素 join 造成的时间穿越"
       ],
       "correct": 0,
-      "explanation": "The two paths disagree only when a value is missing. New users then get an input that the model never saw in training."
+      "explanation": "两条路径只在值缺失时才不一致。新用户于是会拿到训练时从未见过的输入。"
     },
     {
       "stage": "check",
-      "question": "Why does a feature registry create a new version when a definition changes, instead of editing the old one?",
+      "question": "特征定义变更时，为什么注册表要新建版本而不是改旧版本？",
       "options": [
-        "Editing a definition deletes the backfilled history in the offline store",
-        "Models trained on the old definition still need the old values",
-        "The online store can hold only one feature per entity at a time",
-        "Versions make the point-in-time join run faster on large tables"
+        "编辑定义会删除离线存储里回填的历史",
+        "用旧定义训练的模型仍然需要旧值",
+        "在线存储每个实体同时只能保存一个特征",
+        "版本能让大表上的 point-in-time join 更快"
       ],
       "correct": 1,
-      "explanation": "A deployed model expects the feature exactly as it was during training. A silent edit changes its inputs without a retrain."
+      "explanation": "已部署模型期望特征与训练时完全一致。静默编辑会在未重训的情况下改变其输入。"
     },
     {
       "stage": "post",
-      "question": "Logged serving values match the training join exactly, but values computed fresh on request differ on 83 percent of requests. What does this show?",
+      "question": "记录下来的 serving 值与训练 join 完全一致，但请求时现算的值在 83% 的请求上不同。这说明什么？",
       "options": [
-        "The online store is broken, because fresh values are always the correct values",
-        "The point-in-time join leaks the future, because snapshots are newer than requests",
-        "The model trained on snapshot values, so a fresh compute path would add skew",
-        "The registry has two versions of each feature, and serving reads the wrong one"
+        "在线存储坏了，因为现算值总是正确值",
+        "point-in-time join 泄漏了未来，因为快照比请求更新",
+        "模型是在快照值上训练的，现算路径会引入 skew",
+        "注册表每个特征有两个版本，serving 读错了版本"
       ],
       "correct": 2,
-      "explanation": "Freshness is part of the feature. A path that is fresher than the training data gives the model inputs from a different distribution."
+      "explanation": "新鲜度本身就是特征的一部分。比训练数据更新的路径会把模型送进另一种输入分布。"
     },
     {
       "stage": "post",
-      "question": "A backfill that runs today writes rows for last year's dates, using data that was corrected last month. How does a strict point-in-time join avoid the leak?",
+      "question": "今天跑的回填为去年的日期写入行，用的是上个月才修正的数据。严格的 point-in-time join 如何避免泄漏？",
       "options": [
-        "It joins on the entity key only and takes the newest row for each label",
-        "It also requires the created timestamp to be at or before the label time",
-        "It shortens the TTL so that last year's rows expire before training starts",
-        "It runs the backfill again with the online store as its data source"
+        "只按实体键 join，并为每个标签取最新行",
+        "还要求创建时间戳不晚于标签时间",
+        "缩短 TTL，让去年的行在训练开始前过期",
+        "再次用在线存储作为数据源跑回填"
       ],
       "correct": 1,
-      "explanation": "The event timestamp says when a value was true. The created timestamp says when the system knew it. A strict join checks both."
+      "explanation": "事件时间戳说明值何时为真。创建时间戳说明系统何时知道它。严格 join 两者都检查。"
     }
   ]
 }
