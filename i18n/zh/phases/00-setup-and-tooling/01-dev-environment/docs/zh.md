@@ -8,17 +8,20 @@
 **Time:** ~45 分钟
 
 ## 学习目标
-- 从零开始设置Python 3.11+、Node.js 20+ 和Rust工具链
-- 配置虚拟环境和包管理器,实现可复现的构建
-- 使用CUDA/MPS 验证GPU访问,并运行一个测试电压操作
-- 了解四层堆:系统,包,运行时间,人工智能图书馆
+
+- 从零构建Python 3.11+、Node.js 20+ 和Rust 工具链
+- 配置虚拟环境和包管理器,保证可复制的构建
+- 用 CUDA/MPS 验证GPU 访问,并跑一次测试张量运算
+- 了解四层技术:系统、包管理、运行时、AI库
 
 ## 问题
-你将使用Python,TypeScript,Rust 和 Julia学习500+节的AI工程课程. 如果你的环境坏了,每节都会变成工具作斗争,而不是学习.
 
-很多人会跳过环境设置. 然后他们花了几个小时去调试进口错误,版本冲突和缺失的CUDA驱动程序.
+你将使用Python,TypeScript,Rust 和 Julia学习500+节的AI工程课程. 如果环境坏,每个课程都会变成工具链架,而不是学习.
+
+许多人会跳过环境构建. 然后花几个小时去调试进口错误.版本冲突和缺失.
 
 ## 概念
+
 一个人工智能工程环境有四层:
 
 ```mermaid
@@ -30,12 +33,12 @@ graph TD
 
 我们自从安装了. 每层都依赖于下层.
 
-
 ```figure
 s0-env-stack
 ```
 
 ## 构建它
+
 ### 步骤1:系统基础
 
 检查你的系统并安装基础组件.
@@ -52,9 +55,9 @@ sudo apt update && sudo apt install -y build-essential git curl wget unzip
 wsl --install -d Ubuntu-24.04
 ```
 
-### 步骤 2: 用UV的Python
+### 步骤 2:使用使用安装Python
 
-我们使用`uv`它比比快10-100倍,并且会自动处理虚拟环境.
+我们使用`uv`它比快10100倍,并且会自动处理虚拟环境.
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -79,7 +82,7 @@ a = np.array([1, 2, 3])
 print(f"Vector: {a}, dot product with itself: {np.dot(a, a)}")
 ```
 
-### 步骤 3: Node.js 与 pnpm
+### 步骤3:使用 pnpm 安装 Node.js
 
 通过TypeScript课程 (经纪人,MCP服务器,网络应用程序)
 
@@ -103,9 +106,9 @@ echo 'eval "$(fnm env --use-on-cd)"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-### 步骤 4: 蚀
+### 步骤 4: 
 
-基于性能关键的课程 (Inference,系统)
+为了使用对性能敏感的课程 (论系统)
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -114,9 +117,9 @@ rustc --version
 cargo --version
 ```
 
-### 步骤 5: 朱莉亚 (可选)
+### 步骤 5:朱莉可选)
 
-为了让朱莉学好数学课程.
+为了让朱莉亚更拿手的偏数学课程.
 
 ```bash
 curl -fsSL https://install.julialang.org | sh
@@ -151,7 +154,7 @@ if torch.cuda.is_available():
     print(f"GPU: {torch.cuda.get_device_name(0)}")
 ```
 
-没有GPU?没有问题――大多数课程可在CPU上运行――对于训练重的课程,使用Google Colab或云GPU――
+没有GPU?没有问题. 大多数课程都能在CPU上运行.
 
 ### 步骤7:验证你要开始的路线
 
@@ -186,7 +189,8 @@ Next: python3 phases/01-math-foundations/01-linear-algebra-intuition/code/vector
 ```
 
 ## 使用它
-你的环境已经开始检查了你过的路线. 后续工具等课程需要重新安装,不必让整个技术套件阻碍你的第一课程. 下面是整个课程中所用的内容:
+
+你的环境已经开始了你检查的路线. 后续工具等课程需要重新安装,不必让整个技术阻你的第一课程. 下面是整个课程中所用的内容:
 
 | Language | Used In | Package Manager |
 |----------|---------|-----------------|
@@ -196,14 +200,16 @@ Next: python3 phases/01-math-foundations/01-linear-algebra-intuition/code/vector
 | Julia | Phase 1 (Math foundations) | Pkg |
 
 ## 交付它
-本课会产出了任何人都可以运行的验证脚本,用于检查自己的设置.
 
-查看`outputs/prompt-env-check.md`首先,我们需要一个简单的方法来帮助人工智能助理诊断环境问题.
+本课程产出了任何人都可以运行的验证脚本,用于检查自己的环境.
+
+查看`outputs/prompt-env-check.md`帮助人工智能诊断环境问题.
 
 ## 练习
+
 1. 运行验证脚本并修复任何失败项
-2. 创建一个Python虚拟环境,并安装PyTorch
-3. 用四种语言写一个"你好世界",并逐个运行
+2. 为本课程创建一个Python 虚拟环境,并安装PyTorch
+3. 用四种语言写一个"好世界",并逐个运行
 
 ### 提示
 
