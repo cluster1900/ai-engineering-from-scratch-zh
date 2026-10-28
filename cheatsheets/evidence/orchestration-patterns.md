@@ -2,7 +2,7 @@
 
 Abbreviations: L28 = phases/14-agent-engineering/28-orchestration-patterns, L12 = phases/14-agent-engineering/12-anthropic-workflow-patterns, L05 = phases/16-multi-agent-and-swarms/05-supervisor-orchestrator-pattern, L06 = phases/16-multi-agent-and-swarms/06-hierarchical-architecture, L09 = phases/16-multi-agent-and-swarms/09-parallel-swarm-networks. d = docs/en.md, c = code/main.py.
 
-## 四种拓扑并排对比
+## 四种拓扑并排对比 (comparison)
 - Who routes: central routing LLM L28/d:22, no central router L28/d:33, supervisors managing sub-supervisors L28/d:41, parallel proposers L28/d:49
 - Agents talk: all routing through supervisor L28/d:24, direct handoffs L28/d:32, only leaves do work L06/d:34, cross-critique L28/d:49
 - Demo trace: cleanest, shortest, deepest, most expensive L28/d:100
@@ -10,14 +10,14 @@ Abbreviations: L28 = phases/14-agent-engineering/28-orchestration-patterns, L12 
 - Weak point: supervisor bottleneck L09/d:11, harder to reason about L28/d:35, decomposition drift L06/d:120, cost L28/d:71
 - Frameworks: `create_supervisor` L28/d:26, swarm topology L28/d:37, nested subgraphs or crews L28/d:42, custom for debate L28/d:106
 
-## 决策顺序
+## 决策顺序 (flow)
 1. Single agent plus workflow patterns: L28/d:67
 2. Supervisor-worker with 2-4 specialists: L28/d:68
 3. Swarm when latency matters more: L28/d:69
 4. Hierarchical when context budget fails: L28/d:70
 5. Debate when accuracy matters more than cost: L28/d:71
 
-## 带并行 worker 的 Supervisor
+## 带并行 worker 的 Supervisor (architecture)
 - User query goes to Lead.run(query): L05/d:86, L05/c:87
 - Lead.plan(query) splits into 3 sub-questions: L05/d:84, L05/c:74-80
 - Worker 0 with fresh context: L05/d:34, 44, L05/c:95-98
@@ -26,7 +26,7 @@ Abbreviations: L28 = phases/14-agent-engineering/28-orchestration-patterns, L12 
 - Lead synthesizes from worker summaries only: L05/d:14, 38, L05/c:82-85, 104
 - Edges sub_q and summary: L05/c:54, 57-61, 84
 
-## 何时用各模式
+## 何时用各模式 (tips)
 - Workflow when steps can be enumerated: L12/d:48
 - Agent when next step depends on last: L12/d:54
 - Supervisor, own 200k-token window: L05/d:14
@@ -36,7 +36,7 @@ Abbreviations: L28 = phases/14-agent-engineering/28-orchestration-patterns, L12 
 - Static graphs for audit/replay: L05/d:71
 - CrewAI Flow production start, Crew autonomous roles: L28/d:56-57
 
-## 代码中的五种工作流模式
+## 代码中的五种工作流模式 (task-table)
 - `prompt_chain(input_text, llm, steps)`, output N to N+1: L12/c:33-34, L12/d:110
 - `route(input_text, classifier, handlers)`: L12/c:45-46
 - `parallel_vote(prompt, llm, n=5)`: L12/c:54, majority L12/d:40
@@ -45,18 +45,18 @@ Abbreviations: L28 = phases/14-agent-engineering/28-orchestration-patterns, L12 
 - `handlers.get(label) or handlers.get("default")`: L12/c:48
 - `python3 code/main.py`: L12/d:80
 
-## Lead 扇出到线程
+## Lead 扇出到线程 (annotated-code)
 - plan, results, threads list: L05/c:89, 92-93
 - Worker and Thread per sub-question, start: L05/c:94-98
 - join loop: L05/c:100-101, wall time max not sum L05/d:46
 - synthesize call: L05/c:104
 
-## Swarm worker 从同一队列拉取
+## Swarm worker 从同一队列拉取 (annotated-code)
 - queue creation and put: L09/c:62-64
 - worker loop, get_nowait, queue.Empty return: L09/c:68-73
 - fake_work, lock, counts, task_done: L09/c:74-77, fast workers pull next jobs L09/d:37
 
-## 上限与预算
+## 上限与预算 (defaults)
 - Swarm hops 3, `while hops < 3`: L28/c:51, bouncing L28/d:76, 113
 - `parallel_vote` n 5: L12/c:54
 - `max_iter` 5: L12/c:79
@@ -66,7 +66,7 @@ Abbreviations: L28 = phases/14-agent-engineering/28-orchestration-patterns, L12 
 - Worker token cap 10× expected synthesis input: L05/d:106
 - Supervisor specialists 2-4: L28/d:68
 
-## 要紧的数字
+## 要紧的数字 (concepts)
 - +90.2% over single-agent Opus 4: L05/d:3
 - 80% of BrowseComp variance from token usage: L05/d:3, 16
 - ~15× the tokens: L05/d:55
@@ -75,7 +75,7 @@ Abbreviations: L28 = phases/14-agent-engineering/28-orchestration-patterns, L12 
 - 8 tasks, 4 slow (0.4s), 4 fast (0.1s), 4 workers: L09/c:92, 97, 107, 111
 - ~10-15 lines per pattern: L12/d:83
 
-## 失败与修复
+## 失败与修复 (troubleshooting)
 - Lead hallucinates plan, log and diff decomposition: L05/d:63, L06/d:104
 - Workers over-explore, scope boundaries: L05/d:64
 - Silent picking, re-ask or note disagreement: L05/d:65
@@ -84,14 +84,14 @@ Abbreviations: L28 = phases/14-agent-engineering/28-orchestration-patterns, L12 
 - Starvation, priority queue with aging: L09/d:58, 61
 - Crash mid-run, idempotent workers, durable queue: L09/d:98-99
 
-## 工作流还是 agent
+## 工作流还是 agent (comparison)
 - Engineers own the graph, model owns the graph: L12/d:25-26
 - Bounded step counts, agents can spiral: L12/d:49
 - Easier to debug, harder failure modes: L12/d:28
 - Auditors read the graph, not infer from trajectories: L12/d:50
 - Predictable tasks, open-ended research: L12/d:48, 54
 
-## 问答
+## 问答 (qa)
 - Tool-call supervision, decide what each specialist sees: L28/d:28
 - Fresh context per subagent is the main mechanism: L05/d:16
 - Rainbow deployments, long-running stateful, blue-green fails: L05/d:54

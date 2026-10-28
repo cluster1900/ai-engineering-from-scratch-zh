@@ -17,7 +17,7 @@ from: phases/10-llms-from-scratch/03-data-pipelines/code/main.py, phases/19-caps
 | 跑课程演示 | `python3 code/main.py` |
 | 跑测试 | `python3 -m unittest discover code/tests -v` |
 | 丢掉近似重复 | `deduplicate(filtered_docs, threshold=0.8)` |
-| 把 id 打包装成序列 | `pack_sequences(token_ids, seq_length, pad_id=0)` |
+| 把 id 打包成序列 | `pack_sequences(token_ids, seq_length, pad_id=0)` |
 | 下载一个分片 | `process_shard(plan, downloader, dedup, manifest)` |
 | 写 HDF5 分片 | `pipeline.write_corpus(shards)` |
 | 检查分片哈希 | `validate_corpus(entries)` |

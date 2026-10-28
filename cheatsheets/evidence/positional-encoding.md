@@ -2,14 +2,14 @@
 
 Abbreviations: PE = phases/07-transformers-deep-dive/04-positional-encoding, CE = phases/19-capstone-projects/32-token-positional-embeddings, OM = phases/10-llms-from-scratch/14-open-models-architecture-walkthroughs. d = docs/en.md, c = code/main.py.
 
-## 并排对比
+## 并排对比 (comparison, 5 rows)
 - Absolute sinusoidal, poor, free, original transformer, early BERT: PE/d:68. Added to embeddings: PE/d:39. Sum: CE/d:46
 - Learned absolute, none, tiny, GPT-2, GPT-3: PE/d:69. Lookup table: CE/d:26
 - RoPE, good with scaling, free, Llama 2/3/4, Qwen 2/3, Mistral, DeepSeek-V3, Kimi: PE/d:70. Rotates Q and K: PE/d:43
 - RoPE + YaRN, excellent, fine-tune stage, Qwen2-1M, Llama 3.1 128K: PE/d:71
 - ALiBi, excellent, free, BLOOM, MPT, Baichuan: PE/d:72. Acts on attention scores: PE/d:56-59
 
-## 各方案作用在哪里
+## 各方案作用在哪里 (architecture, 8 nodes, 7 edges)
 - Token ids (B, T): CE/d:32, 36
 - Token embedding (B, T, D): CE/d:32, 52
 - Add absolute PE before attention, sinusoidal or learned: PE/d:39, CE/d:26, 80
@@ -19,7 +19,7 @@ Abbreviations: PE = phases/07-transformers-deep-dive/04-positional-encoding, CE 
 - Softmax then times V: PE/d:12, 132
 - RoPE and ALiBi act at the attention step: CE/d:107
 
-## 代码中的三种方案
+## 代码中的三种方案 (annotated-code, 12 lines)
 - def sinusoidal_pe(n, d, base=10000.0): PE/c:11
 - theta = pos / (base ** (2 * i / d)): PE/c:15
 - pe[pos][2 * i] = math.sin(theta), pe[pos][2 * i + 1] = math.cos(theta): PE/c:16-17
@@ -29,7 +29,7 @@ Abbreviations: PE = phases/07-transformers-deep-dive/04-positional-encoding, CE 
 - row.append(float("-inf")) for causal and j > i: PE/c:52-53
 - row.append(-m * abs(i - j)): PE/c:55
 
-## 代码中的任务
+## 代码中的任务 (task-table, 8)
 - sinusoidal_pe(n, d, base=10000.0): PE/c:11
 - apply_rope(x, pos, base=10000.0): PE/c:21
 - alibi_bias(n_heads, seq_len, causal=True): PE/c:44
@@ -39,7 +39,7 @@ Abbreviations: PE = phases/07-transformers-deep-dive/04-positional-encoding, CE 
 - neighbour_cosine_curve(table, max_offset=8): CE/c:169
 - python3 code/main.py: CE/c:11
 
-## 检查 RoPE 的相对性质
+## 检查 RoPE 的相对性质 (flow, 6)
 1. rng.gauss(0, 1), d = 16: PE/c:73-75
 2. apply_rope(q, pq), apply_rope(k, pk): PE/c:80-81. same function: PE/d:117
 3. dot(q_rot, k_rot), pairs (3, 5), (7, 9), (100, 102), (1024, 1026): PE/c:77, 82
@@ -47,7 +47,7 @@ Abbreviations: PE = phases/07-transformers-deep-dive/04-positional-encoding, CE 
 5. pos=4096, pos=4098, base 10000, 100000, 1_000_000: PE/c:95-97
 6. larger base slower rotation, no phase wrap: PE/c:99
 
-## 默认值与数字
+## 默认值与数字 (defaults, 8)
 - base 10000.0: PE/c:11, 21
 - rope_theta 500000.0, scaled from 10k: OM/d:170, 190
 - causal True, masks j > i: PE/c:44, 52-53
@@ -57,7 +57,7 @@ Abbreviations: PE = phases/07-transformers-deep-dive/04-positional-encoding, CE 
 - d_model 64, try 32: CE/c:197, CE/d:115
 - GPT-2 learned table 1024, context 1025 off the end: OM/d:62
 
-## 用 RoPE 做长上下文
+## 用 RoPE 做长上下文 (concepts, 6)
 - base frequency scaler, increase to extend context: PE/d:173
 - NTK-aware base * (scale_factor)^(d/(d-2)), 4K to 16K+: PE/d:150
 - YaRN preserves attention entropy, Llama 3.1 128K: PE/d:151, 175
@@ -65,7 +65,7 @@ Abbreviations: PE = phases/07-transformers-deep-dive/04-positional-encoding, CE 
 - Position interpolation, fine-tune 1–5B tokens: PE/d:153
 - Llama 3 8K to 128K: PE/d:52. 8k to 128k with scaling: OM/d:64
 
-## 要读的配置字段
+## 要读的配置字段 (command-table, 8)
 - rope_theta RoPE base frequency: OM/d:190
 - max_position_embeddings training context length: OM/d:189
 - model.config.rope_scaling, type yarn, factor: PE/d:145
@@ -75,7 +75,7 @@ Abbreviations: PE = phases/07-transformers-deep-dive/04-positional-encoding, CE 
 - sliding_window last W tokens: OM/d:183, OM/c:64
 - layer_types full or sliding: OM/d:183, OM/c:63
 
-## 故障排查
+## 故障排查 (troubleshooting, 8)
 - seq_len exceeds max_context_length: CE/c:76-78, 119-121
 - d_model must be even for sinusoidal: CE/c:97-98
 - token and positional embeddings must share d_model: CE/c:147-148
@@ -85,7 +85,7 @@ Abbreviations: PE = phases/07-transformers-deep-dive/04-positional-encoding, CE 
 - rotate both Q and K with the same function: PE/d:117
 - raise base for long context, phase wrap: PE/d:173, PE/c:99. YaRN: PE/d:151
 
-## 何时用 X
+## 何时用 X (tips, 6)
 - RoPE for new decoder, every Llama, Mistral, Qwen, DeepSeek, and Gemma: OM/d:72, PE/d:22
 - RoPE + YaRN, fine-tune stage: PE/d:71
 - ALiBi, extrapolation, no embedding needed: PE/d:20, 172
@@ -93,7 +93,7 @@ Abbreviations: PE = phases/07-transformers-deep-dive/04-positional-encoding, CE 
 - learned absolute bounded by max context, GPT-2: CE/d:60, OM/d:62
 - RoPE and ALiBi at the attention-projection step: CE/d:107
 
-## 问答
+## 问答 (qa, 6)
 - order-blind, shuffled rows: PE/d:12
 - cos((m-n) theta_i) factor: PE/d:117
 - sum keeps D constant: CE/d:46

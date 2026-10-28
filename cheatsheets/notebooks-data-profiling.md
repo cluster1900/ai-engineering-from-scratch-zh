@@ -48,7 +48,7 @@ from: phases/00-setup-and-tooling/05-jupyter-notebooks/docs/en.md, phases/00-set
 | RAM 持续增长 | 变量跨单元格持久存在 | `del variable_name` 和 `gc.collect()` |
 | 内核静默死亡 | UI 藏起了错误 | 看运行 Jupyter 的终端 |
 | `print(df)` 显示文本 | 不是最后一个表达式 | 用 `df` 结束单元格 |
-| pip install 后仍导入失败 | 包装在另一个 Python 里 | 在 notebook 里 `!pip install package` |
+| pip install 后仍导入失败 | 包被装进了另一个 Python | 在 notebook 里 `!pip install package` |
 | 单元格一直跑 | 在等 `input()` 或死循环 | Kernel > Interrupt，或按两次 `I` |
 | Colab 文件没了 | 免费会话闲置 90 分钟后结束 | `drive.mount('/content/drive')` |
 
@@ -92,10 +92,10 @@ from: phases/00-setup-and-tooling/09-data-management/docs/en.md
 
 | 设置 | 默认值 | 说明 |
 |---|---|---|
-| CSV | 慢 | Large. 人类可读，电子表格 |
-| JSON | 慢 | Large. API、嵌套数据 |
-| Parquet | 快 | Small. AI 工作的最佳存储格式 |
-| Arrow | 最快 | Small. 内存中，在 `datasets` 内部 |
+| CSV | 慢 | 大。人类可读，电子表格 |
+| JSON | 慢 | 大。API、嵌套数据 |
+| Parquet | 快 | 小。AI 工作的最佳存储格式 |
+| Arrow | 最快 | 小。内存中，在 `datasets` 内部 |
 | Train split | 80% | 验证 10%，测试 10% |
 | Dataset cache | `~/.cache/huggingface/datasets/` | 模型缓存是 `~/.cache/huggingface/hub/` |
 

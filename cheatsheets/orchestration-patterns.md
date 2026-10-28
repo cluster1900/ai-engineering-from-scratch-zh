@@ -16,7 +16,7 @@ from: phases/14-agent-engineering/28-orchestration-patterns/docs/en.md, phases/1
 | 维度 | Supervisor-worker | Swarm | Hierarchical | Debate |
 |---|---|---|---|---|
 | 谁来路由 | 一个中心 LLM | 无中心路由器 | Supervisor 的 supervisor | 并行提议者 |
-| Agent 如何交谈 | 只通过 supervisor | 直接交接 | 只有叶子做功 | 交叉批评 |
+| Agent 如何交谈 | 只通过 supervisor | 直接交接 | 只有叶子干活 | 交叉批评 |
 | 演示轨迹 | 最干净 | 最短 | 最深 | 最贵 |
 | 适合 | 2-4 个专家 | 延迟重于推理清晰度 | 大规模 agent 群体 | 准确度重于成本 |
 | 弱点 | Supervisor 是瓶颈 | 难以推理 | 分解漂移 | 成本 |

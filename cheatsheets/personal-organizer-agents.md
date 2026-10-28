@@ -84,7 +84,7 @@ from: projects/bookmark-path-organizer/solution/main.ts, projects/download-folde
 - **书签主题分**：标题中的关键词加 3。笔记中的关键词加 1。
 - **书签重复**：去掉 fragment 后 URL 相同。查询串仍然重要。
 - **文件类别**：已知扩展名加 3。workshop 和 handout 给 documents 加 1。
-- **文件冲突**：已被占用的目标得到 `-2`、`-3` 后缀，不区分大小写。
+- **文件冲突**：目标已被占用时，在扩展名（suffix）前追加 `-2`、`-3`，不区分大小写。
 - **目录配对分**：标题 Jaccard 乘 0.8 加创建者 Jaccard 乘 0.2。
 - **附近观测**：`distanceMeters()` 用半径 6371008.8 m 的球形地球。
 - **地图分组**：半径内的配对并入同一连通分量。
@@ -137,7 +137,7 @@ from: projects/calendar-focus-planner/solution/sample.ics, projects/calendar-foc
 - **为什么样例从 09:20 忙到 11:10？** 两个事件重叠，10 分钟缓冲又把它们加宽。
 - **哪个任务放不进去？** `deep` 需要 120 分钟。没有空隙那么长。
 - **为什么 `map-1` 和 `map-2` 成组？** 规范化后两个 URL 指向同一文档。
-- **`handout.txt` 去哪？** `documents/handout.txt` 已被占用，所以得到 `-2`。
+- **`handout.txt` 去哪？** `documents/handout.txt` 已被占用，所以在扩展名前追加 `-2`。
 - **`left:map-1` 和 `right:r-7` 合并了吗？** 只有你接受这一对之后。不会丢弃任何记录。
 
 ## 提示
