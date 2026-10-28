@@ -1,6 +1,6 @@
 # Environnement de développement
 
-> Vos outils vont façonner votre façon de penser. Une fois, une fois, une fois.
+> Vos outils vont façonner votre façon de penser.
 
 **Type:** Build
 **Languages:** Python, Node.js, Rust
@@ -8,18 +8,21 @@
 **Time:** ~45 分钟
 
 ## Objectif de l'apprentissage
-- Depuis zéro, nous avons mis en place Python 3.11+、Node.js 20+ 和 Rust toolchains
--  Configurer des environnements virtuels et des gestionnaires de paquets, afin de réaliser des constructions réalisables
-- Utilisation de l'accès à la GPU CUDA/MPS 验证,并运行一个测试 Tensor operation
-- Comprendre les quatre niveaux de stack: systèmes, paquets, temps d'exécution, bibliothèques d'IA
+
+- Depuis le zéro de Python 3.11+、Node.js 20+ 和 Rust 工具链
+- Configuration de l'environnement virtuel et du gestionnaire de paquets, assurance de la construction réalisable
+- Utilisez CUDA/MPS 验证 GPU 访问,并跑一次测试张量运算
+- Comprendre les quatre niveaux de la technologie: système, gestion de paquets, fonctionnement, IA
 
 ##  problématique
-Vous allez utiliser Python, TypeScript, Rust et Julia pour apprendre 500+ sections d'ingénierie AI. Si votre environnement est défectueux, chaque section de la classe deviendra un outil de lutte, et non un outil d'apprentissage.
 
-La plupart des gens sautent la configuration de l'environnement. Ensuite, ils passent quelques heures à déboguer les erreurs d'importation, les conflits de version et l'absence de pilotes CUDA.
+Vous allez utiliser Python, TypeScript, Rust et Julia pour terminer 500+ sections de cours d'ingénierie AI. Si l'environnement est mauvais, chaque section de cours deviendra un outil en chaîne de constructions, plutôt que d'apprendre.
+
+La plupart des gens sautent sur l'environnement construit. Ensuite, il faut quelques heures pour déboguer l'importation de l'erreur.
 
 ## 概念
-Un environnement d'ingénierie AI a quatre niveaux:
+
+Un ingénierie de l'IA environnement a quatre niveaux:
 
 ```mermaid
 graph TD
@@ -28,17 +31,17 @@ graph TD
     C --> D["1. System Foundation\nOS, shell, git, editor, GPU drivers"]
 ```
 
-Nous sommes installés en bas. Chaque étage dépend de la couche inférieure.
-
+Nous sommes installés en bas. Chaque étage dépend de celui qui est en bas.
 
 ```figure
 s0-env-stack
 ```
 
 ## - Je le construis.
-### 步骤 1: Fondation du système
 
-Check votre système et installer les composants de base.
+### 步骤 1: système de base
+
+检查你的系统并安装基础组件──
 
 ```bash
 # macOS
@@ -52,9 +55,9 @@ sudo apt update && sudo apt install -y build-essential git curl wget unzip
 wsl --install -d Ubuntu-24.04
 ```
 
-### 步骤 2: Python avec uv
+### 步骤 2: Utilisez l'installation de Python
 
-Nous utilisons`uv`Il est 10 à 100 fois plus rapide que le pip et traite automatiquement les environnements virtuels.
+Nous utilisons`uv`Il est 10 à 100 fois plus rapide que le pip et traite automatiquement l'environnement virtuel.
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -79,7 +82,7 @@ a = np.array([1, 2, 3])
 print(f"Vector: {a}, dot product with itself: {np.dot(a, a)}")
 ```
 
-### 步骤 3: Node.js avec pnpm
+### 步骤 3: avec pnpm installer Node.js
 
 Utilisé par TypeScript  cours ]]> agents, serveurs MCP, applications web)
 
@@ -103,9 +106,9 @@ echo 'eval "$(fnm env --use-on-cd)"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-### 步骤 4: Rust
+### 步骤 4:Rust
 
-Il s'agit d'une approche de la formation et de la formation.
+Il est utilisé pour des cours sensibles aux performances (inference, systèmes).
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -114,9 +117,9 @@ rustc --version
 cargo --version
 ```
 
-### 步骤 5: Julia (optionnelle)
+### 步骤 5: Julia(可选)
 
-Pour Julia, c'est un bon cours de maths.
+Avec Julia à la tête de la classe de mathématiques.
 
 ```bash
 curl -fsSL https://install.julialang.org | sh
@@ -151,7 +154,7 @@ if torch.cuda.is_available():
     print(f"GPU: {torch.cuda.get_device_name(0)}")
 ```
 
-没有 GPU?没有问题──大多数课程可在CPU上运行──对于训练重的课程,使用Google Colab或云GPU──
+没有GPU?没有问题──大多数课程可在CPU上运行──对训练很重课程,使用Google Colab或云GPU──
 
 ### Étape 7: Vérifiez la route que vous voulez commencer
 
@@ -186,7 +189,8 @@ Next: python3 phases/01-math-foundations/01-linear-algebra-intuition/code/vector
 ```
 
 ## Utilisez-le
-Votre environnement peut déjà commencer à vous inspectant. Les cours suivants, tels que les outils, doivent être réinstallés, ne laissez pas toute une série de techniques vous bloquer.
+
+Votre environnement peut déjà commencer à vérifier les routes que vous avez parcourues. Les cours suivants, tels que les outils, doivent être réinstallés, ne laissez pas toute une série de techniques vous bloquer.
 
 | Language | Used In | Package Manager |
 |----------|---------|-----------------|
@@ -196,14 +200,16 @@ Votre environnement peut déjà commencer à vous inspectant. Les cours suivants
 | Julia | Phase 1 (Math foundations) | Pkg |
 
 ## Je le livre.
-Ce cours a été créé pour un ouvrage de test que tout le monde peut utiliser pour vérifier sa propre configuration.
 
-Regardez !`outputs/prompt-env-check.md`, dont une aide rapide, à l'aide des assistants d'IA  diagnostiquer les problèmes environnementaux 
+Ce cours a été créé pour un test script que tout le monde peut utiliser, pour vérifier son environnement.
+
+Regardez !`outputs/prompt-env-check.md`, dont une est rapide, peut aider l'IA assistant diagnostic environnement problème.
 
 ## 练习
+
 1. 运行验证脚本并修复 tout échec
-2. Pour ce cours, créer un environnement virtuel Python, et installer PyTorch
-3. Avec toutes les quatre langues, j'écris un "bonjour au monde", et je fais un tour à tour.
+2. Pour ce cours Créer un Python environnement virtuel, et installer PyTorch
+3. En quatre langues, il écrit un "bonjour au monde", et il fonctionne individuellement.
 
 ### 提示
 
