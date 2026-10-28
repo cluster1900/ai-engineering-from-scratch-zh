@@ -224,7 +224,6 @@ Pack 是 recipe。每次 install 是一份 serving。
 - [Nx Blog, Teach Your AI Agent How to Work in a Monorepo](https://nx.dev/blog/nx-ai-agent-skills) — 跨六种工具的单一来源 generator
 - [agents.md — the open spec](https://agents.md/) — 你的 pack 的 router 必须实现的内容
 - [HKUDS/OpenHarness](https://github.com/HKUDS/OpenHarness) — pack-equivalent 的参考实现
-- [andrewgarst/agentic_harness](https://github.com/andrewgarst/agentic_harness) — 带 eval suite 的 Redis-backed 参考实现
 - [Augment Code, A good AGENTS.md is a model upgrade](https://www.augmentcode.com/blog/how-to-write-good-agents-dot-md-files) — pack doc 的质量门槛
 - [Anthropic, Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)
 - [Anthropic, Harness design for long-running application development](https://www.anthropic.com/engineering/harness-design-long-running-apps)
