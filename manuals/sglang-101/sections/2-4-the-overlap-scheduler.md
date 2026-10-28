@@ -78,7 +78,7 @@ requests.exceptions.ConnectionError: HTTPConnectionPool(host='0.0.0.0', port=300
 
 同一套 kit 配置在 CUDA 上没有错误，在 L4 和 GB10 上 64 条请求全部服务成功。每块卡在 8 个用户下各跑了一次 overlap 开和一次关。两次结果不一致：
 
-| Card, model | Output tok/s, overlap on / off | Median TPOT, overlap on / off |
+| 卡、模型 | 输出 tok/s，重叠开 / 关 | 中位 TPOT，重叠开 / 关 |
 |---|---|---|
 | L4, Qwen3-8B | 73.71 / 84.17 | 91.24 / 69.38 ms |
 | GB10, Qwen3-30B-A3B | 78.92 / 73.59 | 97.30 / 103.21 ms |

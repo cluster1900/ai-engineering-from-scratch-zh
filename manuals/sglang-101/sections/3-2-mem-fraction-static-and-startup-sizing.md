@@ -95,14 +95,14 @@ note: Lines cut from the startup of the default GPU configuration, Qwen3-30B-A3B
 
 这个选择的代价是，pool 大小跟着机器其余部分动。六次 BF16 启动用了同一条命令和同一份权重：
 
-| Configuration | Available before weights | Weights, as SGLang measured them | KV pool, tokens |
+| 配置 | 装权重前可用 | 权重，SGLang 测得 | KV 池，token 数 |
 |---|---|---|---|
 | default | 112.59 GB | 57.75 GB | 227,243 |
-| no CUDA graph | 113.21 GB | 54.78 GB | 258,017 |
+| 无 CUDA graph | 113.21 GB | 54.78 GB | 258,017 |
 | deterministic | 113.44 GB | 57.90 GB | 234,517 |
-| no radix cache | 113.17 GB | 57.34 GB | 236,315 |
-| no overlap | 113.37 GB | 57.92 GB | 233,822 |
-| EAGLE-3, with a draft model | 113.45 GB | 57.49 GB | 216,775 |
+| 无 radix 缓存 | 113.17 GB | 57.34 GB | 236,315 |
+| 无重叠 | 113.37 GB | 57.92 GB | 233,822 |
+| EAGLE-3，带 draft 模型 | 113.45 GB | 57.49 GB | 216,775 |
 
 权重没变，可测到的大小却从 54.78 GB 到 57.92 GB。SGLang 把它们量成可用内存的下降，而内核缓存在每次加载期间都在变。五次没有 draft 模型的启动里，pool 相差 14%。旗标解释不了散布，因为同一份权重量出差了 3 GB。在统一内存上，一次启动的 pool 大小是对下一次启动的估计，不是常量。
 

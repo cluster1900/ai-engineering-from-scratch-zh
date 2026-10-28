@@ -91,7 +91,7 @@ note: One line for each form, in the order the kit sent them. The other twelve l
 [2026-10-16 13:58:20] Prefill batch, #new-seq: 1, #new-token: 45, #cached-token: 2983, token usage: 0.02, #running-req: 0, #queue-req: 0, #pending-token: 0, cuda graph: False, input throughput (token/s): 225.19
 ```
 
-[prompt caching](phases/11-llm-engineering/15-prompt-caching) 和 [caching and cost](phases/11-llm-engineering/11-caching-cost) 那两课对托管模型 API 展示了同一条规则。那些 API 对缓存的输入 token 按更低价格计费。
+[prompt caching](phases/11-llm-engineering/15-prompt-caching) 和 [缓存与成本](phases/11-llm-engineering/11-caching-cost) 那两课对托管模型 API 展示了同一条规则。那些 API 对缓存的输入 token 按更低价格计费。
 
 ```takeaways
 - 在每条 prompt 里把固定内容放最前，按请求变化的内容放最后。

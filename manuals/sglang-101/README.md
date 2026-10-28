@@ -9,36 +9,36 @@ SGLang 0.5.22，从笔记本上的一次请求到一群 GPU，补上旗标列表
 - 每个数字都带四种标签之一：我们测到的、代码、SGLang 团队之外工程师的现场报告，或团队或厂商的声明。
 - 一张封面、63 张用 figure kit 根据 capture 与代码画出的图，以及根据 GPU 运行绘制的图表。
 - `capture/` 里的 capture kit：在 Apple silicon 上通过 MLX 启动真实服务器，发送请求，跑官方基准，并把看到的内容写到 `capture/out/`。
-- `capture/gpu/` 里的 GPU kit：在一块 NVIDIA GPU 上跑八种服务器配置和三种子的基准扫描，并记录每次运行的 GPU 时钟与温度。
+- `capture/gpu/` 里的 GPU 套件：在一块 NVIDIA GPU 上跑八种服务器配置和三种子的基准扫描，并记录每次运行的 GPU 时钟与温度。
 
 ## 文件
 
-| Path | Holds |
+| 路径 | 内容 |
 |---|---|
-| `manual.json` | the manifest: the pin, the parts, the palette, the sources, the cover plate |
-| `front.md`, `sections/` | the text, one file per section |
-| `figures/src/` | the figure sources, built to `figures/*.svg` |
-| `capture/` | the kit and its recorded output in `capture/out/` |
-| `capture/gpu/` | the GPU kit, its output in `capture/gpu/out-gb10/`, and the chart data in `capture/gpu/summary/` |
+| `manual.json` | 清单：钉选、各部分、调色板、源，以及封面 |
+| `front.md`, `sections/` | 正文，每节一个文件 |
+| `figures/src/` | 图源，构建到 `figures/*.svg` |
+| `capture/` | kit 及其录制输出，在 `capture/out/` |
+| `capture/gpu/` | GPU 套件、其输出在 `capture/gpu/out-gb10/`，以及图表数据在 `capture/gpu/summary/` |
 
 ## 版本钉
 
-| Item | Value |
+| 项 | 值 |
 |---|---|
-| SGLang | 0.5.22, tag `v0.5.22`, commit `baa9befa381511cd4d56f83980951e5a45fffc6d`, tagged 2026-10-13 |
-| Miles | v0.1.2, commit `a22fd824`, for section 7.2 only |
-| Verified | 2026-10-16 |
+| SGLang | 0.5.22，标签 `v0.5.22`，提交 `baa9befa381511cd4d56f83980951e5a45fffc6d`，打标于 2026-10-13 |
+| Miles | v0.1.2，提交 `a22fd824`，仅用于第 7.2 节 |
+| 已验证 | 2026-10-16 |
 
 ## 录制主机
 
-| Item | Version |
+| 项 | 版本 |
 |---|---|
-| Host | macOS 26.2 on Apple silicon, arm64 |
-| SGLang | 0.5.22 from the tag with the `srt_mps` extra |
-| Frameworks | PyTorch 2.13.0, MLX 0.32.4, Python 3.12.12 |
-| Model | `mlx-community/Qwen3-0.6B-4bit` |
+| 主机 | macOS 26.2，Apple silicon，arm64 架构 |
+| SGLang | 0.5.22，来自带 `srt_mps` extra 的标签 |
+| 框架 | PyTorch 2.13.0，MLX 0.32.4，Python 3.12.12 |
+| 模型 | `mlx-community/Qwen3-0.6B-4bit` |
 
-GPU 运行录在一台 NVIDIA DGX Spark 上，一块 GB10（compute capability 12.1，aarch64），SGLang 0.5.22 来自 PyPI，PyTorch 2.14.1+cu130，CUDA 13.0，模型为 `Qwen/Qwen3-30B-A3B-Instruct-2507` 及其 FP8 checkpoint。`capture/README.md` 说明如何跑 GPU kit。
+GPU 运行录在一台 NVIDIA DGX Spark 上，一块 GB10（compute capability 12.1，aarch64），SGLang 0.5.22 来自 PyPI，PyTorch 2.14.1+cu130，CUDA 13.0，模型为 `Qwen/Qwen3-30B-A3B-Instruct-2507` 及其 FP8 checkpoint。`capture/README.md` 说明如何跑 GPU 套件。
 
 ## 运行 kit
 

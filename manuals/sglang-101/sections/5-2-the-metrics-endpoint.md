@@ -1,22 +1,22 @@
-# The /metrics endpoint
+# /metrics 端点
 
-> Gauges report one instant, and the cache hit rate gauge reports one log interval, so you alert on counters and histograms over a time window.
+> Gauge 报告一个瞬间，缓存命中率 gauge 报告一个日志间隔，所以你要在一段时间窗口上对计数器与直方图告警。
 
-Your dashboard says the prefix cache hit rate is 94 percent. Over the same run, the server computed 104,057 prompt tokens and took 182,079 from the cache, a real hit rate of 64 percent. Both numbers came from one scrape of the server in our capture. One is a gauge that remembers the last prefill batch it logged. The other is a pair of counters that remember everything.
+你的仪表盘说前缀缓存命中率是 94%。同一次运行里，服务器计算了 104,057 个提示 token，并从缓存取了 182,079 个，真实命中率是 64%。两个数字都来自我们捕获里对服务器的一次抓取。一个是记住它记录的最后一个 prefill batch 的 gauge。另一个是记住一切的一对计数器。
 
-When you finish this section, you can turn the endpoint on and tell a gauge from a counter and a histogram. You can compute a hit rate that means something, and write six alerts for a server past its knee.
+读完本节后，你能打开该端点，并分清 gauge、计数器与直方图。你能算出有意义的命中率，并为过了拐点的服务器写六条告警。
 
-## Turn it on first
+## 先打开它 {#s-the-metrics-endpoint-turn-it-on-first}
 
-The endpoint is off by default. The field `enable_metrics` defaults to `False` at v0.5.22 {{code}}, and without `--enable-metrics` the server does not mount the path `/metrics` at all. Our capture server started with the flag, as [section 5.1](#s-sglang-benchmark-serving) shows. After the default experiments, it exported 81 metric families in 603 sample lines that start with `sglang:`.
+该端点默认关闭。字段 `enable_metrics` 在 v0.5.22 默认是 `False` {{code}}，没有 `--enable-metrics` 时服务器根本不挂载 `/metrics` 路径。我们的捕获服务器带着该标志启动，如[第 5.1 节](#s-sglang-benchmark-serving)所示。默认实验之后，它导出了 81 个以 `sglang:` 开头的度量族，共 603 条样本行。
 
-**Our position:** start every server with `--enable-metrics`, including the one on your laptop. We did not measure its cost, and we expect it to be small next to a decode step. The cost of an incident without history is the whole investigation.
+**我们的立场：** 每台服务器都以 `--enable-metrics` 启动，包括你笔记本上的那台。我们没有测它的成本，并预期它相对一次 decode 步很小。没有历史的一次事故，代价是整次调查。
 
-## Three kinds of series
+## 三种序列 {#s-the-metrics-endpoint-three-kinds-of-series}
 
-**Gauge:** a value the scheduler overwrites on each log interval, such as the number of running requests. A scrape sees the latest value only. **Counter:** a total that only grows, such as the number of prompt tokens processed. You read it with a rate over a window. **Histogram:** a set of counters, one per bucket, that counts how many requests fell under each limit. You read percentiles from it with a rate over a window.
+**Gauge：** 调度器在每个日志间隔覆盖的值，例如运行中请求数。一次抓取只看到最新值。**Counter：** 只增不减的总量，例如已处理的提示 token 数。你在窗口上用速率读它。**Histogram：** 一组计数器，每个桶一个，统计有多少请求落在每个上限之下。你在窗口上用速率从中读百分位。
 
-The snapshot below was taken when the server was idle, after all default experiments.
+下面的快照是在服务器空闲时拍的，在所有默认实验之后。
 
 ```listing
 title: gauges at idle
@@ -32,11 +32,11 @@ sglang:cache_hit_rate{…} 0.9418739997090062
 sglang:num_retracted_reqs{…} 0.0
 ```
 
-Five gauges show an idle server. One does not. The cache hit rate still holds the value from the last prefill batch that ran, which was the shared-prefix benchmark. A gauge answers "what happened in the last interval", and when nothing happens, some gauges decay and some keep their last value.
+五个 gauge 显示空闲服务器。有一个不是。缓存命中率仍持有最后一个跑过的 prefill batch 的值，也就是共享前缀基准。Gauge 回答“上一个间隔发生了什么”，而当什么都没发生时，有些 gauge 会衰减，有些保留上次的值。
 
-## The cache hit rate, two ways
+## 缓存命中率，两种算法 {#s-the-metrics-endpoint-the-cache-hit-rate-two-ways}
 
-The scheduler computes the gauge from the prefill tokens of one log interval. The value is hit tokens divided by hit tokens plus computed tokens. The counters below add up the same two quantities since the server started.
+调度器从一个日志间隔的 prefill token 计算该 gauge。值是命中 token 除以命中 token 加计算 token。下面的计数器从服务器启动起累加同样的两个量。
 
 ```listing
 title: the counters behind the hit rate
@@ -51,9 +51,9 @@ sglang:prefill_effective_tokens_total{…mode="host_hit"…} 0.0
 sglang:prefill_effective_tokens_total{…mode="storage_hit"…} 0.0
 ```
 
-The HELP text says that re-counted tokens are excluded. In the code, that is true only for the `input` mode. The three hit modes add the raw hit counts, so after a retraction they can count the same tokens twice {{code}}. Our run had no retractions, so the numbers below are exact.
+HELP 文本说重新计数的 token 被排除。在代码里，这只对 `input` 模式为真。三种命中模式加上原始命中计数，所以回撤之后它们可以把同一批 token 计两次 {{code}}。我们的运行没有回撤，所以下面的数字是精确的。
 
-From the counters, the hit rate over the whole run is 182,079 divided by 286,136, which is 0.636. The gauge says 0.942. Both are correct, and they answer different questions. The gauge describes the shared-prefix benchmark at the end of the run. The counters describe all of it, including the random-prompt benchmarks that could hit nothing.
+从计数器看，整次运行的命中率是 182,079 除以 286,136，也就是 0.636。Gauge 说 0.942。两者都对，它们回答不同的问题。Gauge 描述运行末尾的共享前缀基准。计数器描述全部，包括什么都打不中的随机提示基准。
 
 ```figure
 id: fig-5-2
@@ -63,36 +63,36 @@ claim: The gauge reported the last prefill interval at 0.942, while the counters
 caption: Left, the gauge and the interval it remembers. Right, the two counters and their ratio. Green is cached tokens, plum is computed prefill tokens. From capture/out/metrics.txt after the default experiments.
 ```
 
-The HELP text of the counter gives the formula for a windowed rate. In PromQL it reads like this:
+计数器的 HELP 文本给出窗口速率公式。用 PromQL 读起来像这样：
 
 ```promql
 sum(rate(sglang:prefill_effective_tokens_total{mode=~".*_hit"}[5m]))
   / sum(rate(sglang:prefill_effective_tokens_total[5m]))
 ```
 
-The server with `--disable-radix-cache` reported a gauge of 0.0 in its own snapshot, so the gauge does reach zero when nothing can hit. A low value from the counters is the signal [section 3.4](#s-prefix-friendly-prompts) teaches you to act on.
+带 `--disable-radix-cache` 的服务器在自己的快照里报告 gauge 为 0.0，所以当什么都打不中时 gauge 会到零。计数器给出的低值，就是[第 3.4 节](#s-prefix-friendly-prompts)教你要采取行动的信号。
 
-## What to alert on
+## 对什么告警 {#s-the-metrics-endpoint-what-to-alert-on}
 
-These six series cover the failures in this manual. Every name below appears in our capture.
+这六个序列覆盖了本手册里的失败。下面每一个名字都出现在我们的捕获里。
 
-| Series | Type | Alert when | Why |
+| 序列 | 类型 | 何时告警 | 原因 |
 |---|---|---|---|
-| `time_to_first_token_seconds` | histogram | p99 over 5 min is above your target | users wait for the first token before anything else |
-| `inter_token_latency_seconds` | histogram | p99 over 5 min is above your target | prefill batches stall running decodes, as the 1,948 ms gap in section 5.1 showed |
-| `num_queue_reqs` | gauge | above 0 for several minutes | the server is past its knee, and new requests only wait |
-| `token_usage` | gauge | near 1.0 for several minutes | the KV pool is full, and retraction comes next |
-| `num_retracted_requests_total` | counter | rate above about 1 per minute | the scheduler threw out requests and computes them again, see [section 2.3](#s-admission-and-retraction) |
-| `prefill_effective_tokens_total` | counter | windowed hit rate drops after a deploy | a prompt change broke the prefix, see section 3.4 |
+| `time_to_first_token_seconds` | histogram | 5 分钟上的 p99 高于你的目标 | 用户在别的事之前先等第一个 token |
+| `inter_token_latency_seconds` | histogram | 5 分钟上的 p99 高于你的目标 | prefill batch 会卡住正在跑的 decode，如第 5.1 节里 1,948 ms 的缺口所示 |
+| `num_queue_reqs` | gauge | 连续几分钟高于 0 | 服务器过了拐点，新请求只会等待 |
+| `token_usage` | gauge | 连续几分钟接近 1.0 | KV 池满了，接下来就是回撤 |
+| `num_retracted_requests_total` | counter | 速率大约每分钟超过 1 | 调度器丢掉请求并重新计算它们，见[第 2.3 节](#s-admission-and-retraction) |
+| `prefill_effective_tokens_total` | counter | 部署后窗口命中率下降 | 提示改动打断了前缀，见第 3.4 节 |
 
-The p99 of a histogram comes from its buckets:
+直方图的 p99 来自它的桶：
 
 ```promql
 histogram_quantile(0.99,
   sum by (le) (rate(sglang:time_to_first_token_seconds_bucket[5m])))
 ```
 
-**We measured** both histograms in the same snapshot. The queue time histogram has a sum of 251.7 s over 266 requests, a mean of 0.95 s. The streaming TTFT histogram has a sum of 612.7 s over 261 requests, a mean of 2.35 s. The two series count different requests, so their ratio is an estimate, not a measured share. It suggests that queueing was a large part of the first-token time on this Mac. For an exact share, compare queue time and TTFT of the same requests.
+**我们测过**同一快照里的两个直方图。队列时间直方图在 266 个请求上总和 251.7 s，均值 0.95 s。流式 TTFT 直方图在 261 个请求上总和 612.7 s，均值 2.35 s。两个序列统计不同的请求，所以它们的比值是估计，不是测得的份额。它暗示排队是这台 Mac 上首 token 时间的很大一部分。要精确份额，比较同一批请求的队列时间与 TTFT。
 
 ```listing
 title: queue time against first-token time
@@ -106,25 +106,25 @@ sglang:time_to_first_token_seconds_sum{…is_streaming="true"…} 612.7282021734
 sglang:time_to_first_token_seconds_count{…is_streaming="true"…} 261.0
 ```
 
-## Our position
+## 我们的立场 {#s-the-metrics-endpoint-our-position}
 
-Alert on latency and activity with histogram percentiles and counter rates over a window. Alert on state with a gauge only when the condition lasts, such as `num_queue_reqs` above 0 or `token_usage` near 1.0 for several minutes. A single gauge scrape describes the last few seconds. When a gauge and a counter disagree, as the cache hit rate did here, the counter is the one to trust.
+用窗口上的直方图百分位与计数器速率，对延迟与活动告警。只用 gauge 对状态告警，且仅当条件持续时，例如 `num_queue_reqs` 高于 0 或 `token_usage` 接近 1.0 连续几分钟。单次 gauge 抓取描述的是最近几秒。当 gauge 与计数器不一致时，就像这里的缓存命中率，该信的是计数器。
 
-Read every new metric in its HELP text and in the code before you build on it. Not every gauge works.
+在你基于它构建之前，先在 HELP 文本与代码里读每一个新度量。不是每个 gauge 都管用。
 
-## The incidents
+## 事故 {#s-the-metrics-endpoint-the-incidents}
 
-**A gauge that never moves.** The scheduler code at v0.5.22 carries a comment that `sglang:utilization` stays at 0 since a regression it links to #22713 {{code}}. Our capture agrees: the gauge reads 0.0 after a run that kept the server busy for minutes. A dashboard panel built on it would show an idle fleet during an outage.
+**一个永不移动的 gauge。** v0.5.22 的调度器代码带着一条注释：`sglang:utilization` 自一次它链到 #22713 的回退以来一直为 0 {{code}}。我们的捕获同意：在让服务器忙了几分钟的运行之后，该 gauge 读数为 0.0。建在它上面的仪表盘面板会在故障期间显示空闲集群。
 
-**A health probe that piled up work.** [Issue #35884](https://github.com/sgl-project/sglang/issues/35884) reported that a timed-out `/health` call did not cancel its request in the scheduler {{issue #35884}}. Each failed probe left one more orphaned request behind, and under load the probes added to the load they were trying to detect. A related report, [issue #22511](https://github.com/sgl-project/sglang/issues/22511), shows the message "health check failed" under high load on a large model {{issue #22511}}. Watch the queue and latency series, and treat a failing probe as one more symptom.
+**堆积工作的健康探测。** [Issue #35884](https://github.com/sgl-project/sglang/issues/35884) 报告超时的 `/health` 调用没有在调度器里取消其请求 {{issue #35884}}。每次失败的探测都留下又一个孤儿请求，负载下这些探测加重了它们试图检测的负载。相关报告 [issue #22511](https://github.com/sgl-project/sglang/issues/22511) 显示大模型高负载下的消息 "health check failed" {{issue #22511}}。看队列与延迟序列，并把失败的探测当作又一种症状。
 
 ```takeaways
-- Start every server with `--enable-metrics`, because the endpoint is off by default.
-- Alert on histogram percentiles and counter rates over a window, never on one gauge scrape.
-- Compute the cache hit rate from `prefill_effective_tokens_total`, not from the `cache_hit_rate` gauge.
-- Page on sustained `num_queue_reqs` above 0 and on `token_usage` near 1.0.
-- Ignore `sglang:utilization` at v0.5.22, because it stays at 0.
-- Compare queue time and TTFT of the same requests to see how much latency is waiting.
+- 每台服务器都以 `--enable-metrics` 启动，因为该端点默认关闭。
+- 对窗口上的直方图百分位与计数器速率告警，从不对单次 gauge 抓取告警。
+- 从 `prefill_effective_tokens_total` 计算缓存命中率，而不是从 `cache_hit_rate` gauge。
+- 对持续高于 0 的 `num_queue_reqs` 与接近 1.0 的 `token_usage` 呼叫值班。
+- 在 v0.5.22 忽略 `sglang:utilization`，因为它一直为 0。
+- 比较同一批请求的队列时间与 TTFT，看有多少延迟是在等待。
 ```
 
 Sources: python/sglang/srt/arg_groups/fields/observability.py (enable_metrics), python/sglang/srt/managers/scheduler_components/metrics_reporter.py (cache hit rate and utilization), python/sglang/srt/observability/metrics_collector.py, all at v0.5.22 (baa9befa); capture/out/metrics.txt, capture/out/no-radix-cache-metrics.txt, capture/out/server-default.command.txt; issues #35884 and #22511.

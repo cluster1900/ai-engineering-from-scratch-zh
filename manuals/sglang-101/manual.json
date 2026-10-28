@@ -245,9 +245,9 @@
     },
     {
       "number": 5,
-      "title": "Measuring a Server",
-      "thesis": "A throughput number without a latency target describes nothing, so measure the knee before you tune anything.",
-      "summary": "sglang.benchmark.serving, the /metrics endpoint, and how to read benchmarks that other people publish.",
+      "title": "测量服务器",
+      "thesis": "没有延迟目标的吞吐数字什么也描述不了，所以在调任何东西之前先测拐点。",
+      "summary": "sglang.benchmark.serving、/metrics 端点，以及如何读别人发布的基准。",
       "accent": "olive",
       "sections": [
         {
@@ -266,9 +266,9 @@
     },
     {
       "number": 6,
-      "title": "One Server Becomes a Fleet",
-      "thesis": "Split a model across GPUs only after one GPU is saturated, and split prefill from decode only after you measured that prefill hurts.",
-      "summary": "Tensor, data, attention-data, and expert parallelism, MoE serving, prefill-decode disaggregation, and the model gateway.",
+      "title": "从一台到集群",
+      "thesis": "只有一块 GPU 饱和之后才跨 GPU 拆模型，只有测到 prefill 伤害了 decode 之后才拆开 prefill 与 decode。",
+      "summary": "张量、数据、注意力数据与专家并行，MoE 服务，prefill-decode disaggregation，以及模型网关。",
       "accent": "indigo",
       "sections": [
         {
@@ -291,9 +291,9 @@
     },
     {
       "number": 7,
-      "title": "Production and Training",
-      "thesis": "Operate SGLang with its defaults written down, and expect reinforcement learning to treat the server as part of the training loop.",
-      "summary": "Deploying and tuning in order, and SGLang as the rollout engine of Miles.",
+      "title": "生产与训练",
+      "thesis": "按写下来的默认运维 SGLang，并预期强化学习会把服务器当作训练循环的一部分。",
+      "summary": "按顺序部署与调参，以及作为 Miles rollout 引擎的 SGLang。",
       "accent": "plum",
       "sections": [
         {
@@ -308,8 +308,8 @@
     }
   ],
   "reference": {
-    "title": "Reference",
-    "thesis": "The flags, metrics, incidents, terms, and sources this manual uses, in one place.",
+    "title": "参考",
+    "thesis": "本手册用到的标志、度量、事故、术语与来源，集中在一处。",
     "accent": "grey",
     "sections": [
       {

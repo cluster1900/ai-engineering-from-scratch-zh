@@ -35,12 +35,12 @@ note: Two lines from the startup log of the default kit configuration.
 
 对公开模型 config 做同样的算术，得到这些代价：
 
-| Model | Attention | Bytes per token, bf16 | Per GPU |
+| 模型 | 注意力 | 每 token 字节，bf16 | 每 GPU |
 |---|---|---|---|
-| Qwen3-0.6B (our capture) | GQA, 28 layers, 8 KV heads | 112 KiB | 112 KiB on one GPU |
-| Llama-3.1-8B | GQA, 32 layers, 8 KV heads | 128 KiB | 128 KiB on one GPU |
-| Llama-3.1-70B | GQA, 80 layers, 8 KV heads | 320 KiB | 40 KiB with 8-way tensor parallelism |
-| DeepSeek-V3 | MLA, 61 layers, latent 512 plus 64 | 68.6 KiB | 68.6 KiB on every GPU |
+| Qwen3-0.6B（我们的捕获） | GQA, 28 layers, 8 KV heads | 112 KiB | 一块 GPU 上 112 KiB |
+| Llama-3.1-8B | GQA, 32 layers, 8 KV heads | 128 KiB | 一块 GPU 上 128 KiB |
+| Llama-3.1-70B | GQA, 80 layers, 8 KV heads | 320 KiB | 8 路张量并行时 40 KiB |
+| DeepSeek-V3 | MLA，61 层，latent 512 加 64 | 68.6 KiB | 每块 GPU 上 68.6 KiB |
 
 有两个结果让多数人吃惊。0.6B 模型每个 token 的代价几乎和 8B 模型一样。决定代价的是层数和 KV head，不是参数量。在 Llama-3.1-8B 上，一段 100,000 token 的对话会占 12.2 GiB 的 KV，接近权重的大小。
 

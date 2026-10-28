@@ -14,19 +14,19 @@
 
 在 v0.5.22，该旗标接受 25 个名字。两个是别名（`nsa` 对 `dsa`，`compressed` 对 `dsv4`），所以有 23 个后端。
 
-| Backend | What it is for |
+| 后端 | 用途 |
 |---|---|
-| `flashinfer` | Paged MHA and MLA. Supports speculative topk above 1 and page sizes above 1. The general default. |
-| `fa3` | FlashAttention 3 for Hopper. The Hopper default. |
-| `fa4` | FlashAttention 4, for Blackwell. Picked when a model has different K and V head widths. |
-| `trtllm_mha`, `trtllm_mla` | TensorRT-LLM kernels through FlashInfer, for Blackwell SM100 and SM103. |
-| `flashmla`, `cutedsl_mla`, `tokenspeed_mla` | Decode kernels for MLA models such as DeepSeek. |
-| `dsa`, `dsv4`, `qsa`, `minicpm_*` | Sparse attention for one model family each. |
-| `triton` | Portable Triton kernels. The default when FlashInfer cannot run the model. |
-| `torch_native`, `flex_attention` | PyTorch reference paths. `torch_native` is the default on Apple MPS and ARM64 CPUs. |
-| `aiter`, `wave` | AMD ROCm kernels. `aiter` is the default on AMD for MHA. |
-| `intel_amx`, `intel_xpu`, `ascend`, `hpc_ops` | x86 CPUs with AMX, Intel GPUs, Huawei NPUs, and Tencent kernels for SM90. |
-| `llada2_cfg_flashinfer` | A diffusion language model variant. |
+| `flashinfer` | 分页 MHA 与 MLA。支持 speculative topk 大于 1 以及 page size 大于 1。通用默认。 |
+| `fa3` | 面向 Hopper 的 FlashAttention 3。Hopper 默认。 |
+| `fa4` | FlashAttention 4，面向 Blackwell。模型的 K 与 V head 宽度不同时选用。 |
+| `trtllm_mha`, `trtllm_mla` | 经 FlashInfer 的 TensorRT-LLM 内核，面向 Blackwell SM100 与 SM103。 |
+| `flashmla`, `cutedsl_mla`, `tokenspeed_mla` | 面向 DeepSeek 这类 MLA 模型的 decode 内核。 |
+| `dsa`, `dsv4`, `qsa`, `minicpm_*` | 各自面向一个模型族的稀疏注意力。 |
+| `triton` | 可移植的 Triton 内核。FlashInfer 跑不了该模型时的默认。 |
+| `torch_native`, `flex_attention` | PyTorch 参考路径。`torch_native` 是 Apple MPS 与 ARM64 CPU 上的默认。 |
+| `aiter`, `wave` | AMD ROCm 内核。`aiter` 是 AMD 上 MHA 的默认。 |
+| `intel_amx`, `intel_xpu`, `ascend`, `hpc_ops` | 带 AMX 的 x86 CPU、Intel GPU、华为 NPU，以及面向 SM90 的腾讯内核。 |
+| `llada2_cfg_flashinfer` | 扩散语言模型变体。 |
 
 ## 显而易见的修法，以及它为何失败 {#s-attention-backend-the-obvious-fix-and-why-it-fails}
 
@@ -85,7 +85,7 @@ note: The pool at startup, and one decode line at 33 running requests.
 [2026-10-18 16:11:42] Decode batch, #running-req: 33, #token: 20422, token usage: 0.85, cuda graph: True, gen throughput (token/s): 311.50, #queue-req: 0
 ```
 
-| Concurrency | Output tok/s, flashinfer / triton | Median TPOT, flashinfer / triton | Median TTFT, flashinfer / triton |
+| 并发 | 输出 tok/s，flashinfer / triton | 中位 TPOT，flashinfer / triton | 中位 TTFT，flashinfer / triton |
 |---|---|---|---|
 | 1 | 13.42 / 13.94 | 60.16 / 59.98 ms | 189 / 183 ms |
 | 8 | 112.62 / 112.90 | 66.01 / 65.83 ms | 170 / 187 ms |

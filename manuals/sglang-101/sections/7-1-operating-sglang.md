@@ -1,16 +1,16 @@
-# Operating SGLang
+# 运维 SGLang
 
-> Run SGLang so that a restart costs seconds and drops no request: pin the image, keep the compiled kernels, signal only the main process, and tune in a measured order.
+> 这样跑 SGLang，让一次重启只花几秒、不丢掉任何请求：钉死镜像，保留已编译内核，只给主进程发信号，并按测过的顺序调参。
 
-The first production incident with a new serving engine is rarely about tokens per second. A rolling update kills ten requests in the middle of their answers. A new pod takes four minutes to become ready, so the autoscaler starts three more. A liveness probe times out under load and restarts the busiest pod. None of these appear in a benchmark, and all of them cost more than a slow kernel.
+新服务引擎的第一次生产事故很少关乎每秒多少 token。一次滚动更新在答案做到一半时杀掉十条请求。一个新 pod 要四分钟才就绪，所以自动扩缩又再起三个。存活探针在负载下超时，并重启最忙的那个 pod。这些都不出现在基准里，却都比一个慢内核更贵。
 
-When you finish this section, you can choose an image tag and keep startup short. You can connect the health probes to the right endpoints and stop a server without losing work. You can also change settings in the order that this manual measured, and read three production reports for what each one teaches.
+读完本节后，你能选一个镜像标签并让启动保持短。你能把健康探针接到正确的端点，并在不丢工作的情况下停掉服务器。你也能按本手册测过的顺序改设置，并读三份生产报告，看每一份教什么。
 
-## Pin the image you run
+## 钉死你跑的镜像 {#s-operating-sglang-pin-the-image-you-run}
 
-The SGLang team publishes images on Docker Hub as `lmsysorg/sglang`. At v0.5.22 the `latest` tag holds the newest stable release, and `latest-runtime` holds a smaller image of the same release {{docs}}. Nightly tags follow `main`. The images contain CUDA 13 only. The docs name `lmsysorg/sglang:v0.5.19-cu129` as the last CUDA 12 tag, so a host with an older driver needs that tag or a driver upgrade.
+SGLang 团队在 Docker Hub 上以 `lmsysorg/sglang` 发布镜像。在 v0.5.22，`latest` 标签持有最新稳定发布，`latest-runtime` 持有同一发布的更小镜像 {{docs}}。Nightly 标签跟随 `main`。这些镜像只含 CUDA 13。文档把 `lmsysorg/sglang:v0.5.19-cu129` 点名为最后一个 CUDA 12 标签，所以驱动较旧的主机需要那个标签或升级驱动。
 
-The documented start command gives the container a large shared memory segment and the host IPC namespace:
+文档里的启动命令给容器一大块共享内存与主机 IPC 命名空间：
 
 ```bash
 docker run -it --gpus all \
@@ -21,11 +21,11 @@ docker run -it --gpus all \
   lmsysorg/sglang:latest bash
 ```
 
-**Our position:** never deploy `latest`. SGLang tagged v0.5.20, v0.5.21, and v0.5.22 within four weeks, from 2026-09-18 to 2026-10-13, and each release changed defaults that this manual measures. A pinned tag such as `v0.5.22` makes a regression a choice that you made. The tag `latest` makes it something that happened to you on a restart.
+**我们的立场：** 永远不要部署 `latest`。SGLang 在四周内打了 v0.5.20、v0.5.21 与 v0.5.22，从 2026-09-18 到 2026-10-13，每一次发布都改了本手册测量的那些默认。像 `v0.5.22` 这样钉死的标签，让一次回归成为你做过的选择。标签 `latest` 则让它变成重启时发生在你身上的事。
 
-## What pip install leaves out
+## pip install 漏掉了什么 {#s-operating-sglang-what-pip-install-leaves-out}
 
-The image exists for a reason that a pip install hides. **We measured** this on a host with two NVIDIA L4 GPUs, Ubuntu 24.04, a driver, and no CUDA toolkit. `pip install sglang==0.5.22` finished with no error. The first `sglang serve` then failed, and so did the next three, each for a new reason:
+镜像存在的理由，是 pip 安装会藏起来的。**我们测过**这一点：一台主机有两块 NVIDIA L4、Ubuntu 24.04、驱动，没有 CUDA toolkit。`pip install sglang==0.5.22` 没有报错就结束了。第一次 `sglang serve` 随后失败，接下来三次也失败，每一次是新的原因：
 
 ```listing
 title: four starts, four missing pieces
@@ -47,22 +47,22 @@ note: The first error line of each attempt. Repeated lines and progress bars are
 /usr/bin/ld: cannot find -lcudart: No such file or directory
 ```
 
-All four failures come from one fact. SGLang, Triton, and FlashInfer compile kernels on the target machine at startup, and a compiler needs a complete toolchain.
+四次失败都来自一个事实。SGLang、Triton 与 FlashInfer 在启动时在目标机器上编译内核，而编译器需要完整的工具链。
 
-1. Triton compiles a small C helper against the Python headers. The system Python of Ubuntu has no `Python.h`. We changed to a Python build that includes its headers, from `uv`.
-2. SGLang looks for `nvcc` under `/usr/local/cuda`. The pip wheels include `nvcc` 13.4 under `nvidia/cu13` in site-packages, but nothing points to it. We set `CUDA_HOME` to that directory.
-3. FlashInfer then compiled its attention kernels with that `nvcc` against its own bundled headers, and the versions did not match. We installed `flashinfer-jit-cache`, which holds kernels compiled in advance for SM 8.9.
-4. The JIT kernels of SGLang link with `-lcudart` from `$CUDA_HOME/lib64`. The wheel has only `lib/libcudart.so.13`. We made a `CUDA_HOME` with a `lib64` directory that holds `libcudart.so`.
+1. Triton 对着 Python 头文件编译一个小的 C 助手。Ubuntu 的系统 Python 没有 `Python.h`。我们换成了带头文件的 Python 构建，来自 `uv`。
+2. SGLang 在 `/usr/local/cuda` 下找 `nvcc`。pip wheel 在 site-packages 的 `nvidia/cu13` 下含有 `nvcc` 13.4，但没有东西指向它。我们把 `CUDA_HOME` 设成那个目录。
+3. FlashInfer 随后用那个 `nvcc` 对着它自带的头文件编译注意力内核，版本不匹配。我们安装了 `flashinfer-jit-cache`，它为 SM 8.9 预先持有已编译内核。
+4. SGLang 的 JIT 内核用 `$CUDA_HOME/lib64` 里的 `-lcudart` 链接。wheel 只有 `lib/libcudart.so.13`。我们做了一个带 `lib64` 目录、里面放着 `libcudart.so` 的 `CUDA_HOME`。
 
-The fifth start served requests. Our GB10 never had this problem, because its DGX operating system has a full toolkit in `/usr/local/cuda`.
+第五次启动开始服务请求。我们的 GB10 从未有过这个问题，因为它的 DGX 操作系统在 `/usr/local/cuda` 里有完整 toolkit。
 
-The benchmark client has one more dependency that a firewall exposes. Its `random` dataset takes its text from ShareGPT and downloads that file from the Hugging Face Hub {{code}}. With `HF_HUB_OFFLINE=1`, our first GPU benchmark failed although every model was on disk. We did not keep that log. Use `--dataset-name random-ids` on a machine without network access, or pass a local ShareGPT file with `--dataset-path`.
+基准客户端还有一个防火墙会暴露的依赖。它的 `random` 数据集从 ShareGPT 取文本，并从 Hugging Face Hub 下载那个文件 {{code}}。开着 `HF_HUB_OFFLINE=1` 时，我们第一次 GPU 基准失败了，尽管每个模型都在磁盘上。我们没有保留那份日志。在没有网络的机器上用 `--dataset-name random-ids`，或用 `--dataset-path` 传本地 ShareGPT 文件。
 
-**Our position:** run SGLang from the pinned image or on a host with a full CUDA toolkit. A pip install on a host with only a driver works after our four repairs. Each SGLang upgrade can need them again.
+**我们的立场：** 从钉死的镜像跑 SGLang，或在有完整 CUDA toolkit 的主机上跑。只装了驱动的主机上的 pip 安装，在我们四次修补之后能工作。每一次 SGLang 升级都可能再需要它们。
 
-## Cold start is weights plus compilers
+## 冷启动是权重加编译器 {#s-operating-sglang-cold-start-is-weights-plus-compilers}
 
-A new SGLang process loads the weights, compiles or loads kernels, sizes the KV pool, and captures graphs. Our capture logs each phase on one line. This run used a model that was already on disk:
+一个新的 SGLang 进程加载权重、编译或加载内核、定好 KV 池大小，并捕获 graph。我们的抓取把每个阶段记在一行上。这次跑用的模型已经在磁盘上：
 
 ```listing
 title: startup phases of the default server
@@ -73,29 +73,29 @@ note: One line from the startup log. The CUDA graph fields are all 0.00 because 
 [2026-10-16 13:58:06] Engine startup timings (s): load_weight=0.00, kv_cache_allocation=0.00, scheduler_e2e=7.01, cuda_graph={prefill=0.00, decode=0.00, target_verify=0.00, draft_prefill=0.00, draft_decode=0.00, draft_extend=0.00}, tokenizer_e2e=11.92
 ```
 
-**We measured** 18 s from the first log line to "The server is fired up and ready to roll!" for a 0.6B model on the Mac. A large model on GPUs is a different problem. **A field report** from Doubleword, an engineer blog dated 2026-04, timed SGLang v0.5.10 with Qwen3.5-122B-A10B-FP8 on 8 B200 GPUs {{field Doubleword 2026-04}}. A cold start took 695 s, and 531 s of that was weight loading. With kernel caches kept between runs, a warm start took 88 s. With a process checkpoint and weights staged in host memory, it took 9.6 s.
+**我们测到**从第一条日志行到 "The server is fired up and ready to roll!"，在 Mac 上对一个 0.6B 模型是 18 秒。GPU 上的大模型是另一个问题。**一份现场报告**来自 Doubleword，一篇工程师博客标在 2026-04，给 SGLang v0.5.10 配 Qwen3.5-122B-A10B-FP8、在 8 块 B200 上计时 {{field Doubleword 2026-04}}。冷启动花了 695 秒，其中 531 秒是权重加载。在运行之间保留内核缓存时，热启动花 88 秒。用进程检查点并把权重暂存在主机内存里，花 9.6 秒。
 
-The code helps with the cheap part of that work. When Python imports `sglang`, it points the Triton, TorchInductor, CUDA, TileLang, and FlashInfer caches into one directory, `SGLANG_CACHE_DIR`, which defaults to `~/.cache/sglang` {{code}}. Mount that directory and the Hugging Face cache on volumes that survive the pod. Then a restart reuses compiled kernels and downloaded weights.
+代码帮的是那份工作里便宜的部分。当 Python 导入 `sglang` 时，它把 Triton、TorchInductor、CUDA、TileLang 与 FlashInfer 的缓存指到一个目录 `SGLANG_CACHE_DIR`，默认是 `~/.cache/sglang` {{code}}。把那个目录与 Hugging Face 缓存挂到能活过 pod 的卷上。然后一次重启会复用已编译内核与已下载权重。
 
-The same field report defends the slow start. To them, 10 percent more tokens per second is worth more than a start that is 10 seconds faster {{field Doubleword 2026-04}}. We agree for a fleet that runs for days. For a fleet that scales to zero every night, startup time is a real cost, and the persistent caches are the first fix.
+同一份现场报告为慢启动辩护。对他们来说，每秒多 10% 的 token 比启动快 10 秒更值钱 {{field Doubleword 2026-04}}。对跑很多天的机群我们同意。对每晚缩到零的机群，启动时间是真实成本，而持久缓存是第一道修复。
 
-## Health checks: /ready, /health, and /health_generate
+## 健康检查：/ready、/health 与 /health_generate {#s-operating-sglang-health-checks-ready-health-and-health-generate}
 
-SGLang has two kinds of health endpoint {{code}}:
+SGLang 有两类健康端点 {{code}}：
 
-- `/ready` returns 200 when the tokenizer manager is ready and 503 before that.
-- `/health` and `/health_generate` share one handler. They return 503 while the server starts and while it shuts down.
-- Otherwise the handler sends a one-token request with `max_new_tokens` 1 and waits for any output from the detokenizer.
-- `SGLANG_ENABLE_HEALTH_ENDPOINT_GENERATION` defaults to true, so a plain `/health` also generates that token.
-- The wait is `SGLANG_HEALTH_CHECK_TIMEOUT`, 20 s by default. With no output in that time, the handler marks the server `UnHealthy` and returns 503.
+- `/ready` 在分词器管理器就绪时返回 200，在那之前返回 503。
+- `/health` 与 `/health_generate` 共用一个处理器。它们在服务器启动与关闭时返回 503。
+- 否则处理器发一条 `max_new_tokens` 为 1 的单 token 请求，并等待 detokenizer 的任何输出。
+- `SGLANG_ENABLE_HEALTH_ENDPOINT_GENERATION` 默认为 true，所以普通的 `/health` 也会生成那个 token。
+- 等待时间是 `SGLANG_HEALTH_CHECK_TIMEOUT`，默认 20 秒。在那段时间里没有输出时，处理器把服务器标为 `UnHealthy` 并返回 503。
 
-The docstring says that the probe request costs nothing when the server is busy, because any output from the scheduler counts as proof of life. That is true for the work, and false for the timing. **A real incident:** issue #22511 reports "health check failed. server could not get a response from detokenizer for last 20 seconds" on GLM-5 with 2 H800 GPUs under high load, on v0.5.10 {{issue #22511}}. A related issue, #35884, found that a timed-out probe left its request in the scheduler, so failed probes accumulated {{issue #35884}}.
+文档字符串说，服务器忙时探针请求不花代价，因为调度器的任何输出都算作存活证明。对工作量这是真的，对计时这是假的。**一次真实事故：** issue #22511 报告 GLM-5 在 2 块 H800、高负载、v0.5.10 上出现 `health check failed. server could not get a response from detokenizer for last 20 seconds` {{issue #22511}}。相关的 issue #35884 发现超时的探针把它的请求留在调度器里，所以失败的探针会累积 {{issue #35884}}。
 
-**Our position:** use `/ready` for the readiness probe. Keep the liveness probe from generating. Set `SGLANG_ENABLE_HEALTH_ENDPOINT_GENERATION=false`, and `/health` then returns 200 without a request to the scheduler {{code}}. Use `/health_generate` for a slower deep check that alerts a person and restarts nothing. A busy server then does not lose its busiest pod to a probe that waited in the queue.
+**我们的立场：** 用 `/ready` 做就绪探针。让存活探针不要生成。设 `SGLANG_ENABLE_HEALTH_ENDPOINT_GENERATION=false`，然后 `/health` 在不向调度器发请求的情况下返回 200 {{code}}。用 `/health_generate` 做更慢的深度检查，它提醒人、不重启任何东西。这样忙服务器就不会因为一个在队列里等着的探针而丢掉最忙的那个 pod。
 
-## Graceful shutdown: signal the main process only
+## 优雅关闭：只给主进程发信号 {#s-operating-sglang-graceful-shutdown-signal-the-main-process-only}
 
-On SIGTERM, the HTTP server sets `gracefully_exit`, and `/health` starts to return 503. A watchdog in the tokenizer manager checks the flag every 5 s {{code}}. It then logs the remaining requests every 5 s until none remain. Then it sends `ShutdownReq` to the schedulers and gives them 15 s to exit before it kills them. [Figure 7.1](#fig-7-1) shows this path and the two paths that skip the drain.
+收到 SIGTERM 时，HTTP 服务器设置 `gracefully_exit`，`/health` 开始返回 503。分词器管理器里的一个看门狗每 5 秒检查该标志 {{code}}。然后它每 5 秒记下剩余请求，直到一个都不剩。然后它向调度器发 `ShutdownReq`，并在杀掉它们之前给它们 15 秒退出。[图 7.1](#fig-7-1) 展示了这条路径，以及两条跳过排空的路径。
 
 ```figure
 id: fig-7-1
@@ -105,7 +105,7 @@ claim: Only a SIGTERM to the main process drains running requests, and a forced 
 caption: Read left to right along the top for the graceful path, then down for the two other paths. The numbers match the key. From capture/out/shutdown-exploratory.log, capture/out/server-default.log, and the shutdown code at v0.5.22.
 ```
 
-**We measured** both cases on the Mac. Our capture kit stopped each server by sending SIGTERM to its whole process group. The scheduler child received the signal too and died first:
+**我们测过** Mac 上的两种情况。我们的抓取套件通过向整个进程组发 SIGTERM 停掉每一台服务器。调度器子进程也收到信号并先死：
 
 ```listing
 title: SIGTERM to the process group
@@ -119,7 +119,7 @@ note: Four consecutive lines from the end of the default run.
 [2026-10-16 14:01:46] Sleeping 5 seconds before crash diagnostics to let GPU activity settle.
 ```
 
-The parent saw a crashed child, took the crash path, and killed the process tree. No request was running at that moment, so nothing was lost. Under load, every running request would have failed. We then started a server, sent it a request for 3,000 output tokens, and sent SIGTERM to the main process only:
+父进程看到崩溃的子进程，走上崩溃路径，并杀掉进程树。那一刻没有请求在跑，所以什么都没丢。在负载下，每一个在跑的请求都会失败。然后我们启动一台服务器，给它发一条要 3,000 个输出 token 的请求，并只向主进程发 SIGTERM：
 
 ```listing
 title: SIGTERM to the main process, with one request running
@@ -152,29 +152,29 @@ in-flight request: {"status": 200, "completion_tokens": 3000, "finish_reason": {
 server exit code: 0
 ```
 
-The request finished with all 3,000 tokens, and `/health` returned 503 during the drain. The server exited with code 0, thirteen seconds after the signal. `docker stop` and Kubernetes send SIGTERM to the main process of the container. That is the correct target when `sglang serve` is the main process, so start it with `exec` or as the entrypoint. The interactive command above makes `bash` the main process, and `bash` does not pass the signal on. A wrapper script that forwards the signal to a process group, or a supervisor that kills the group, gives you the first log instead.
+请求带着全部 3,000 个 token 结束，排空期间 `/health` 返回 503。服务器以退出码 0 退出，在信号后十三秒。`docker stop` 与 Kubernetes 向容器的主进程发 SIGTERM。当 `sglang serve` 是主进程时，那就是正确的目标，所以用 `exec` 启动它，或把它当作 entrypoint。上面的交互命令让 `bash` 成为主进程，而 `bash` 不会把信号传下去。一个把信号转发给进程组的包装脚本，或一个杀掉该组的监督器，会给你第一份日志。
 
-The code has two exits that skip the drain. If the server is already `UnHealthy`, the watchdog exits at once. It also exits at once if the environment variable `SGL_FORCE_SHUTDOWN` is true. At v0.5.22 the watchdog reads that old name directly {{code}}.
+代码有两条跳过排空的出口。如果服务器已经是 `UnHealthy`，看门狗立刻退出。如果环境变量 `SGL_FORCE_SHUTDOWN` 为 true，它也立刻退出。在 v0.5.22，看门狗直接读那个旧名字 {{code}}。
 
-The environment module declares the new name `SGLANG_FORCE_SHUTDOWN`. Its compatibility code copies `SGL_` variables to `SGLANG_` names, never the other way. **The code shows** that setting only `SGLANG_FORCE_SHUTDOWN` does not reach the watchdog. We read this in the code and did not run it, so we call it a likely bug. If you need a forced stop, set `SGL_FORCE_SHUTDOWN=1`.
+环境模块声明新名字 `SGLANG_FORCE_SHUTDOWN`。其兼容代码把 `SGL_` 变量复制到 `SGLANG_` 名字，从不反过来。**代码显示**只设 `SGLANG_FORCE_SHUTDOWN` 到不了看门狗。我们是在代码里读到的，没有跑过，所以我们把它叫作很可能的 bug。如果你需要强制停止，设 `SGL_FORCE_SHUTDOWN=1`。
 
-**Our position:** set the termination grace period longer than your longest request at your output cap. A 32K-token answer at 30 tokens per second needs more than 18 minutes. Cap `max_tokens` before you set the grace period, or a drain can never finish in time.
+**我们的立场：** 把终止宽限期设得比你在输出上限下最长的那条请求更长。一条 32K token 的答案、每秒 30 个 token，需要超过 18 分钟。在设宽限期之前先限制 `max_tokens`，否则排空永远赶不上时间。
 
-## Before you trust a measurement
+## 在信任一次测量之前 {#s-operating-sglang-before-you-trust-a-measurement}
 
-Three checks prevent most of the false results that we found on our own machines:
+三项检查挡住了我们在自己机器上发现的大多数假结果：
 
-1. Flush the prefix cache before each run that you compare, and record the cached tokens, as in [section 5.1](#s-sglang-benchmark-serving). In our kit, a warm cache made a run at a higher load look faster. In a later test with `Qwen/Qwen3-0.6B` at a cap of 16, a repeat with no flush read a median TTFT about 4.8 times lower.
-2. Record the SM clock and the temperature with every run, as in [section 5.1](#s-sglang-benchmark-serving). A hot L4 reported up to 28 percent less throughput.
-3. On a shared GB10, run SGLang in a container with a memory limit, and log free memory during startup, as in [section 3.2](#s-mem-fraction-static-and-startup-sizing).
+1. 在每一次你要比较的跑之前冲洗前缀缓存，并记下缓存的 token，如[第 5.1 节](#s-sglang-benchmark-serving)。在我们的套件里，热缓存会让更高负载的一次跑看起来更快。后来对 `Qwen/Qwen3-0.6B`、上限 16 的测试里，不冲洗的重复把中位 TTFT 读成大约低 4.8 倍。
+2. 每一次跑都记下 SM 时钟与温度，如[第 5.1 节](#s-sglang-benchmark-serving)。一块热的 L4 报告吞吐最多少 28%。
+3. 在共享的 GB10 上，在带内存上限的容器里跑 SGLang，并在启动期间记下空闲内存，如[第 3.2 节](#s-mem-fraction-static-and-startup-sizing)。
 
-When a greedy output changes between two runs, check the cache first. A request that finds its prompt in the cache runs a different prefill path, as [section 4.6](#s-deterministic-inference-and-logprobs) shows. One request at a time, a warm cache changed 21 of 32 of our greedy outputs, and a flush brought exact repeats back. These two tests ran on a shared L4 GPU with no clock lock, so trust the ratio and the counts, not the times.
+当两次跑之间的贪心输出变化时，先检查缓存。一条在缓存里找到其提示的请求走不同的 prefill 路径，如[第 4.6 节](#s-deterministic-inference-and-logprobs)所示。一次一条请求时，热缓存改了我们 32 条贪心输出里的 21 条，冲洗之后精确重复又回来了。这两次测试跑在一块没有锁时钟的共享 L4 上，所以信任比例与计数，不要信任时间。
 
-## The server aborts or hangs under heavy eviction
+## 在重度驱逐下服务器中止或挂起 {#s-operating-sglang-the-server-aborts-or-hangs-under-heavy-eviction}
 
-**Symptom:** in the middle of a multi-turn load, the server stops with `CUDA error: an illegal memory access was encountered`. Or the log stops with no error while the GPU stays at 100 percent.
+**症状：** 在多轮负载中间，服务器以 `CUDA error: an illegal memory access was encountered` 停下。或者日志停住、没有错误，而 GPU 停在 100%。
 
-We saw this on SGLang 0.5.22 with `Qwen/Qwen3-0.6B`, a pool of 8,192 tokens, and the trace of [section 3.5](#s-eviction-policies-and-hicache). From the fourth turn, the pool evicted prefixes on almost every step. CUDA graphs and the overlap scheduler were on, which is the default. The runs were on the second GPU of our L4 node on 2026-10-23, which its owner shares and which had no clock lock.
+我们在 SGLang 0.5.22 上看到这一点，配 `Qwen/Qwen3-0.6B`、8,192 token 的池，以及[第 3.5 节](#s-eviction-policies-and-hicache) 的那条轨迹。从第四轮起，池几乎在每一步都驱逐前缀。CUDA graph 与 overlap 调度器是开的，那是默认。这些跑在 2026-10-23 我们 L4 节点的第二块 GPU 上，其所有者共享它，且没有锁时钟。
 
 ```listing
 title: aborts and hangs by variant, same server and trace
@@ -190,17 +190,17 @@ lru, --enable-hierarchical-cache                 3      1        0       2
 lru, HiCache, CUDA_LAUNCH_BLOCKING=1             2      0        0       2
 ```
 
-With the defaults, 4 of 6 runs failed. HiCache did not prevent it, and 1 of its 3 runs aborted. The abort and every hang stopped in the same place: the scheduler waited for the copy of a decode result to finish. With CUDA graphs off, 0 of 4 runs failed. With `CUDA_LAUNCH_BLOCKING=1`, 0 of 3 failed.
+用默认时，6 次里有 4 次失败。HiCache 没有挡住它，其 3 次里有 1 次中止。中止与每一次挂起都停在同一个地方：调度器在等一次 decode 结果拷贝完成。关掉 CUDA graph 时，4 次里 0 次失败。开着 `CUDA_LAUNCH_BLOCKING=1` 时，3 次里 0 次失败。
 
-We did not find the kernel that faults, because the fault did not occur with blocking launches. Nothing was filed upstream.
+我们没有找到出错的那个内核，因为阻塞启动时故障没有发生。上游没有提交任何东西。
 
-**Workaround:** add `--disable-cuda-graph`. On our L4 with an 8B model, graphs saved about 1 percent of each decode step, as [section 4.1](#s-forwardmode-and-cuda-graphs) shows. A small model spends a larger share of each step on launches, so measure the cost on your model. `CUDA_LAUNCH_BLOCKING=1` also hid the fault, but it makes every kernel launch wait for the one before it. Use it to debug, never to serve.
+**变通办法：** 加上 `--disable-cuda-graph`。在我们的 L4 上配 8B 模型时，graph 大约省下每个 decode 步的 1%，如[第 4.1 节](#s-forwardmode-and-cuda-graphs)所示。小模型把更大份额的每一步花在启动上，所以在你的模型上测代价。`CUDA_LAUNCH_BLOCKING=1` 也藏起了故障，但它让每一次内核启动都等前一次。用它来调试，永远不要拿它来服务。
 
-**Also test:** a larger pool. With a pool of 16,384 tokens or more, the same trace stopped thrashing, as section 3.5 shows. We did not count crashes at the larger pools, so this is not a proven fix.
+**也要测：** 更大的池。池有 16,384 个 token 或更多时，同一条轨迹停止 thrashing，如第 3.5 节所示。我们没有在更大的池上统计崩溃，所以这不是已证明的修复。
 
-## The order to change settings
+## 改设置的顺序 {#s-operating-sglang-the-order-to-change-settings}
 
-Most tuning advice lists flags. The order matters more than the list, because each step changes what the next step measures. [Figure 7.1b](#fig-7-1b) shows the order this manual uses, and each row links to the section that measures it.
+多数调优建议列标志。顺序比列表更要紧，因为每一步都改了下一步测到的东西。[图 7.1b](#fig-7-1b) 展示本手册用的顺序，每一行链到测量它的那一节。
 
 ```figure
 id: fig-7-1b
@@ -210,39 +210,39 @@ claim: Measure first, then fix memory, prompts, and concurrency, and only then t
 caption: Read top to bottom. Each row is one setting or action, with the measurement that justifies it and the section that shows that measurement.
 ```
 
-1. Measure with `sglang.benchmark.serving` at three concurrency levels, as in [section 5.1](#s-sglang-benchmark-serving). Without a baseline, no later change has a number.
-2. Set `--mem-fraction-static` for the machine you share, as in [section 3.2](#s-mem-fraction-static-and-startup-sizing). On our Mac the automatic value crashed the server at concurrency 32.
-3. Put shared text first in every prompt, as in [section 3.4](#s-prefix-friendly-prompts). One request id at the start of a system prompt cost us about 14 times the time to first token.
-4. Cap `--max-running-requests` at the knee you measured. Past the knee on our L4, throughput fell while time to first token grew. Our GB10 kept rising to 64 users, and we did not measure a cap itself.
-5. Only now change CUDA graph settings and `--attention-backend`, one change per run, as in [section 4.1](#s-forwardmode-and-cuda-graphs) and [section 4.2](#s-attention-backend). At v0.5.22 `--disable-cuda-graph` is deprecated in favour of `--cuda-graph-backend-decode` and `--cuda-graph-backend-prefill`.
-6. Add tensor, data, or attention-data parallelism when one replica is saturated, as in [section 6.1](#s-tp-size-dp-size-and-attn-dp-size).
-7. Split prefill from decode last, and only after you measured that prefill delays decode, as in [section 6.3](#s-prefill-decode-disaggregation).
+1. 用 `sglang.benchmark.serving` 在三个并发级别上测量，如[第 5.1 节](#s-sglang-benchmark-serving)。没有基线，后面的改动就没有数字。
+2. 为你共享的那台机器设 `--mem-fraction-static`，如[第 3.2 节](#s-mem-fraction-static-and-startup-sizing)。在我们的 Mac 上，自动值在并发 32 时让服务器崩溃。
+3. 把共享文本放在每一条提示的最前面，如[第 3.4 节](#s-prefix-friendly-prompts)。系统提示开头的一个请求 id 让我们的到第一个 token 的时间大约贵 14 倍。
+4. 把 `--max-running-requests` 限制在你测到的拐点。在我们的 L4 上过了拐点，吞吐下降而到第一个 token 的时间上升。我们的 GB10 一直升到 64 个用户，我们没有单独测上限本身。
+5. 现在才改 CUDA graph 设置与 `--attention-backend`，每次跑改一个，如[第 4.1 节](#s-forwardmode-and-cuda-graphs)与[第 4.2 节](#s-attention-backend)。在 v0.5.22，`--disable-cuda-graph` 已弃用，改用 `--cuda-graph-backend-decode` 与 `--cuda-graph-backend-prefill`。
+6. 在一份副本饱和时，再加张量、数据或注意力数据并行，如[第 6.1 节](#s-tp-size-dp-size-and-attn-dp-size)。
+7. 最后才拆开 prefill 与 decode，且只有在你测到 prefill 拖延了 decode 之后，如[第 6.3 节](#s-prefill-decode-disaggregation)。
 
-## What production teams report
+## 生产团队报告了什么 {#s-operating-sglang-what-production-teams-report}
 
-Three reports by teams outside SGLang show where operating effort goes.
+三份来自 SGLang 之外的团队的报告，展示运维精力花在哪里。
 
-**LinkedIn**, an independent engineering blog dated 2026-02-20, serves ranking models of 375M to 0.6B parameters on H100 GPUs {{field LinkedIn 2026-02}}. The workload needs only prefill and the logits of the last token. Their bottlenecks were the tokenizer, ZMQ messages, Python garbage collection, the GIL, and the scheduler, and none of them were GPU kernels.
+**LinkedIn**，一篇独立工程博客标在 2026-02-20，在 H100 上服务 375M 到 0.6B 参数的排序模型 {{field LinkedIn 2026-02}}。工作负载只需要 prefill 与最后一个 token 的 logits。他们的瓶颈是分词器、ZMQ 消息、Python 垃圾回收、GIL 与调度器，没有一个是 GPU 内核。
 
-Batch tokenization took P99 latency from 4,583 ms to 464 ms. A scoring path that skips decode took P99 from 6,220 ms to 454 ms. Garbage collection pauses of 100 to 300 ms went away with a warm-up and `gc.freeze()`. The 375M ranker went from 750 to 2,200 items per second per GPU. LinkedIn wrote most of the pull requests involved, so their "before" is an older SGLang.
+批量分词把 P99 延迟从 4,583 ms 降到 464 ms。一条跳过 decode 的打分路径把 P99 从 6,220 ms 降到 454 ms。100 到 300 ms 的垃圾回收暂停，用一次预热与 `gc.freeze()` 消失了。375M 排序器从每块 GPU 每秒 750 条升到 2,200 条。LinkedIn 写了其中多数相关的 pull request，所以他们的「之前」是更旧的 SGLang。
 
-**CERIT-SC**, a Czech academic service, moved from vLLM to SGLang in 2025 and reported 100 billion tokens served by 2026-04 {{field CERIT-SC 2026-04}}. Their traffic shape is the lesson. For Kimi K2.6 the median prompt was 2,179 tokens and the 95th percentile was 99,746 tokens, which they attribute to agentic coding tools. Their SGLang problems were tool calls that leaked into reasoning output, rare hangs, and model loops that held KV cache. Their fix was operational: an output cap of 32K tokens and a presence penalty for workloads that loop. They still run both engines, chosen per model.
+**CERIT-SC**，一家捷克学术服务，在 2025 从 vLLM 迁到 SGLang，并报告到 2026-04 已服务 1000 亿 token {{field CERIT-SC 2026-04}}。他们的流量形状是教训。对 Kimi K2.6，中位提示是 2,179 个 token，第 95 百分位是 99,746 个 token，他们归因于智能体编码工具。他们的 SGLang 问题是工具调用漏进推理输出、罕见挂起，以及占住 KV 缓存的模型循环。他们的修复是运维上的：32K token 的输出上限，以及对会循环的工作负载用 presence penalty。他们仍跑两种引擎，按模型选择。
 
-**Ant Group** published a DeepSeek-R1 deployment on H20 GPUs with SGLang v0.5.2 on the LMSYS blog, dated 2025-09-26 {{field Ant Group 2025-09}}. They chose expert parallelism of 16 over 32 because at batch 32 EP16 gave 675 tokens per second against 585 for EP32. More speculative draft tokens gained 21% at batch 1 and lost about 18% at batch 32. They sell three latency tiers, and the strictest tier, below 30 ms TPOT, runs at batch 12. The measured tier table is a product decision, which is the point.
+**蚂蚁集团**在 LMSYS 博客上发表了 H20 GPU 上、SGLang v0.5.2 的 DeepSeek-R1 部署，日期 2025-09-26 {{field Ant Group 2025-09}}。他们选专家并行 16 而不是 32，因为在 batch 32 时 EP16 给出每秒 675 个 token，对上 EP32 的 585。更多推测 draft token 在 batch 1 增益 21%，在 batch 32 大约损失 18%。他们卖三个延迟档，最严的一档、低于 30 ms TPOT，跑在 batch 12。测过的档位表是产品决策，这才是重点。
 
-**Our position:** read a production report for its traffic shape and its order of fixes, never for its throughput number. LinkedIn fixed CPU work before GPU work. CERIT-SC capped output before it tuned anything. Ant Group chose the smaller expert group because the fault radius and the batch size it sells mattered more than peak throughput.
+**我们的立场：** 读生产报告要看它的流量形状与修复顺序，永远不要看它的吞吐数字。LinkedIn 在 GPU 工作之前先修 CPU 工作。CERIT-SC 在调任何东西之前先限制输出。蚂蚁集团选更小的专家组，因为故障半径与它卖的 batch 大小比峰值吞吐更要紧。
 
 ```takeaways
-- Pin an image tag such as `lmsysorg/sglang:v0.5.22` and upgrade on purpose.
-- Run outside the image only on a host with a full CUDA toolkit.
-- Mount `~/.cache/sglang` and the Hugging Face cache on persistent volumes.
-- Probe readiness with `/ready`, and liveness with `/health` with generation turned off.
-- Send SIGTERM to the main process only, and check the log for the drain lines.
-- Set `SGL_FORCE_SHUTDOWN` for a forced stop at v0.5.22, never only `SGLANG_FORCE_SHUTDOWN`.
-- Cap output length before you choose the termination grace period.
-- Change settings in the order of figure 7.1b, one change per measured run.
-- Flush the prefix cache and record the clock before every run that you compare.
-- On an illegal memory access under heavy eviction, grow the pool or add --disable-cuda-graph.
+- 钉死像 `lmsysorg/sglang:v0.5.22` 这样的镜像标签，并有意地升级。
+- 只在有完整 CUDA toolkit 的主机上在镜像外跑。
+- 把 `~/.cache/sglang` 与 Hugging Face 缓存挂到持久卷上。
+- 用 `/ready` 做就绪探针，用关掉生成的 `/health` 做存活探针。
+- 只向主进程发 SIGTERM，并在日志里检查排空行。
+- 在 v0.5.22 要强制停止时设 `SGL_FORCE_SHUTDOWN`，永远不要只设 `SGLANG_FORCE_SHUTDOWN`。
+- 在选终止宽限期之前先限制输出长度。
+- 按图 7.1b 的顺序改设置，每次测过的跑只改一个。
+- 在每一次你要比较的跑之前冲洗前缀缓存并记下时钟。
+- 在重度驱逐下出现非法内存访问时，加大池或加上 --disable-cuda-graph。
 ```
 
 Sources: python/sglang/srt/entrypoints/http_server.py (ready, health_generate, HEALTH_CHECK_TIMEOUT), python/sglang/srt/managers/tokenizer_manager.py (sigterm_watchdog, _SCHEDULER_EXIT_TIMEOUT_SECS), python/sglang/srt/environ.py (SGLANG_FORCE_SHUTDOWN, SGLANG_ENABLE_HEALTH_ENDPOINT_GENERATION, SGLANG_CACHE_DIR, redirect_third_party_caches, _handle_deprecated_envs) and python/sglang/__init__.py at v0.5.22; docs/docs/get-started/install.mdx at v0.5.22; capture/out/server-default.log, capture/out/server-default.command.txt, capture/out/shutdown-exploratory.log, capture/out/shutdown-exploratory.txt, capture/shutdown_probe.py, capture/gpu/incidents/l4-toolchain-failures.txt; python/sglang/benchmark/datasets/random.py at v0.5.22; issues #22511 and #35884; field reports: Doubleword, fergusfinn.com/blog/fast-sglang-starts (2026-04-06), LinkedIn Engineering, linkedin.com/blog/engineering/ai/scaling-llm-based-ranking-systems-with-sglang-at-linkedin (2026-02-20), CERIT-SC, blog.cerit.io/blog/run-llm2 (2025-10-19) and blog-dev.cerit.io/blog/llm3 (2026-04-27), Ant Group on the LMSYS blog, lmsys.org/blog/2025-09-26-sglang-ant-group (2025-09-26), capture/gpu/out-l4/os-release.txt, sections 3.2, 4.6, and 5.1 of this manual (the cache, clock, and memory checks), capture/gpu/out-l4/prefix-cache-flush.txt, capture/gpu/out-l4/greedy-output-cache-batch-dtype.txt, capture/gpu/out-l4/small-pool-crash.txt, capture/gpu/out-l4/eviction-multiturn.txt, section 4.1 of this manual (the cost of CUDA graphs on the L4).

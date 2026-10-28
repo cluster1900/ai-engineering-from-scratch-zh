@@ -38,10 +38,10 @@ caption: Read top to bottom. The numbers follow the default (3, 1, 4) for most m
 
 你不设形状时，SGLang 从模型架构选 `(num_steps, topk, num_draft_tokens)`。
 
-| Model | Default shape |
+| 模型 | 默认形状 |
 |---|---|
-| `LlamaForCausalLM`, Grok | (5, 4, 8): a tree of up to 8 drafts |
-| DeepSeek, GLM, GPT-OSS, MiMo, `STANDALONE`, and every other model | (3, 1, 4): a chain of 3 drafts |
+| `LlamaForCausalLM`, Grok | (5, 4, 8)：最多 8 个 draft 的树 |
+| DeepSeek、GLM、GPT-OSS、MiMo、`STANDALONE`，以及所有其他模型 | (3, 1, 4)：3 个 draft 的链 |
 
 topk 为 1 时，代码强制 draft token 数等于步数加一。
 
@@ -109,7 +109,7 @@ note: Four lines from the startup log. Timestamps are cut.
 
 **我们测到** 从 1 到 64 的每个并发上三个种子，以 BF16 服务器为基线：
 
-| Concurrency | Baseline median TPOT | EAGLE-3 median TPOT | Baseline output tok/s | EAGLE-3 output tok/s |
+| 并发 | 基线中位 TPOT | EAGLE-3 中位 TPOT | 基线输出 tok/s | EAGLE-3 输出 tok/s |
 |---|---|---|---|---|
 | 1 | 32.52 ms | 20.30 ms | 29.14 | 40.93 |
 | 8 | 102.21 ms | 59.44 ms | 74.11 | 97.06 |
@@ -146,7 +146,7 @@ note: Startup lines from the server log of the sweep. Timestamps are cut.
 
 **我们测到** 9,951 个 token 的 pool，对没有 draft 时的 24,094。那份 pool 大约装得下 15 条我们 640 token 的请求，少于上限 48。
 
-| Concurrency | Default median TPOT | EAGLE-3 median TPOT | Default output tok/s | EAGLE-3 output tok/s |
+| 并发 | 默认中位 TPOT | EAGLE-3 中位 TPOT | 默认输出 tok/s | EAGLE-3 输出 tok/s |
 |---|---|---|---|---|
 | 1 | 60.16 ms | 25.61 ms | 13.42 | 31.81 |
 | 8 | 66.01 ms | 35.58 ms | 112.62 | 181.55 |

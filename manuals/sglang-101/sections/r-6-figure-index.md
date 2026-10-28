@@ -1,19 +1,19 @@
-# Index of figures
+# 图索引
 
-> Every figure of this manual, in order, by the one claim its caption makes.
+> 本手册的每一张图，按顺序，按它的说明所下的那一个断言。
 
-Each row links to its figure, and the claim is the `claim:` field of each figure block. Measured numbers in a figure come from our runs [on the Mac](manuals/sglang-101/capture/out) or [on the GPUs](manuals/sglang-101/capture/gpu), and each section links the files it uses. Numbers from a field report name the report. The colours follow the palette of the front matter:
+每一行链到它的图，断言是每个 figure 块的 `claim:` 字段。图里测到的数字来自我们[在 Mac 上](manuals/sglang-101/capture/out)或[在 GPU 上](manuals/sglang-101/capture/gpu)的运行，每一节链到它用的文件。现场报告里的数字点名那份报告。颜色跟 front matter 的调色板走：
 
-- blue is the SGLang server process: the tokenizer manager, the scheduler, and the detokenizer
-- violet is the model and its forward pass: kernels, attention backends, and CUDA graphs
-- green is the KV cache: pool slots, radix tree nodes, and cached tokens
-- plum is model compute: prefill and decode steps
-- olive is the client and the network
-- indigo is streams and messages
-- amber is a lifecycle state, such as a request state or a scheduler phase
-- teal is durable state: host memory, storage tiers, and weights on disk
-- rose is a failure: out of memory, retraction, an abort, or a crash
-- grey is outside SGLang: the operating system, other programs, and the GPU driver
+- blue 是 SGLang 服务器进程：tokenizer manager、调度器和 detokenizer
+- violet 是模型及其前向：内核、attention 后端和 CUDA graphs
+- green 是 KV cache：pool 槽、radix 树节点和缓存的 token
+- plum 是模型计算：prefill 和 decode 步
+- olive 是客户端和网络
+- indigo 是流和消息
+- amber 是生命周期状态，例如请求状态或调度器阶段
+- teal 是持久状态：主机内存、存储层和磁盘上的权重
+- rose 是失败：内存不足、回退、中止或崩溃
+- grey 是 SGLang 之外：操作系统、其他程序和 GPU 驱动
 
 ```figure-index
 ```
