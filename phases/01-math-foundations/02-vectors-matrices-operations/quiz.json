@@ -40,10 +40,10 @@
       "stage": "check",
       "question": "在表达式 'output = relu(W @ x + b)' 中，broadcasting 起什么作用？",
       "options": [
-        "在相加前把b扩展到相容的batch维上",
+        "在相加前把 b 扩展到相容的 batch 维上",
         "把计算分发到可用的计算设备上",
-        "把W和x转成同一数值数据类型",
-        "对输出的每个位置分别应用ReLU"
+        "把 W 和 x 转成同一数值数据类型",
+        "对输出的每个位置分别应用 ReLU"
       ],
       "correct": 0,
       "explanation": "对单个输入，W @ x 与 b 必须有相同的输出形状。对形状为 (features, batch) 的按列 batch，用 b[:, None] 让偏置成为 (outputs, 1) 并沿列广播。一维的 b 按尾维对齐，不能可靠地沿 batch 轴广播。"
