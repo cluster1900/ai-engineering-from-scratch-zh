@@ -1,14 +1,14 @@
 # sglang.benchmark.serving
 
-> One benchmark run measures one concurrency, so you sweep concurrency until extra load stops adding throughput and only adds waiting.
+> 一次基准跑测一个并发，所以你扫并发，直到额外负载不再加吞吐、只加等待。
 
-A teammate posts "SGLang does 255 tokens per second on my laptop" in the team channel. The number is true. It came from our capture. It is also useless on its own. The same server gave that throughput with a median first token of 0.8 s at one load and 3.9 s at another. A throughput number without the latency that came with it describes nothing a user feels.
+一位同事在团队频道里发「SGLang 在我的笔记本上做到每秒 255 个 token」。这个数字是真的。它来自我们的抓取。它本身也没用。同一台服务器在一种负载下带着 0.8 秒的中位第一个 token 给出那个吞吐，在另一种负载下是 3.9 秒。一个没有伴随延迟的吞吐数字，描述不了用户感觉到的任何东西。
 
-When you finish this section, you can run `sglang.benchmark.serving` with settings you can defend and read every line of its report. You can find the knee where more concurrency stops paying. You can also say which of your own numbers will transfer to a GPU and which will not.
+读完本节后，你能用你能辩护的设置跑 `sglang.benchmark.serving`，并读懂其报告的每一行。你能找到更多并发不再划算的那个拐点。你也能说出你自己的哪些数字会转到 GPU 上、哪些不会。
 
-## The command we ran
+## 我们跑的命令 {#s-sglang-benchmark-serving-the-command-we-ran}
 
-The server is one process with the model `mlx-community/Qwen3-0.6B-4bit` on the capture Mac. Every run in this section talks to this one server.
+服务器是一个进程，模型是抓取 Mac 上的 `mlx-community/Qwen3-0.6B-4bit`。本节每一次跑都对着这一台服务器说话。
 
 ```listing
 title: the server under test
@@ -19,9 +19,9 @@ note: The full command, as the capture kit started it.
 SGLANG_USE_MLX=1 sglang serve --model-path mlx-community/Qwen3-0.6B-4bit --disable-cuda-graph --host 127.0.0.1 --port 30000 --enable-cache-report --enable-metrics --mem-fraction-static 0.4
 ```
 
-Two flags in that command need a note. SGLang's Apple silicon guide still passes `--disable-cuda-graph`, and the v0.5.22 help marks it deprecated in favor of `--cuda-graph-backend-{decode,prefill}=disabled`. On the MLX backend, decode is greedy unless you add `--mlx-enable-sampling`, so our runs measured the greedy path. The benchmark sends temperature 0 by default, so the client and the server agree here.
+那条命令里有两个标志需要一句说明。SGLang 的 Apple silicon 指南仍传 `--disable-cuda-graph`，而 v0.5.22 的帮助把它标成弃用，改用 `--cuda-graph-backend-{decode,prefill}=disabled`。在 MLX 后端上，除非你加 `--mlx-enable-sampling`，decode 是贪心的，所以我们的跑测的是贪心路径。基准默认发温度 0，所以这里客户端与服务器一致。
 
-The client is the benchmark module that comes with SGLang. We ran it three times, with a concurrency cap of 1, 8, and 32. The run at 8 looks like this:
+客户端是 SGLang 自带的基准模块。我们跑了三次，并发上限分别是 1、8 与 32。上限 8 的那次看起来像这样：
 
 ```bash
 python -m sglang.benchmark.serving --backend sglang --port 30000 \
@@ -29,24 +29,24 @@ python -m sglang.benchmark.serving --backend sglang --port 30000 \
   --random-range-ratio 1.0 --num-prompts 32 --max-concurrency 8 --seed 7
 ```
 
-**The path changed.** The benchmark tools moved into the `sglang.benchmark` package in 2026-06. `python -m sglang.bench_serving` still runs as a deprecated alias that imports the new module. `python -m sglang.bench_one_batch` and `python -m sglang.bench_offline_throughput` do not run at v0.5.22. [PR #40795](https://github.com/sgl-project/sglang/pull/40795) deleted both aliases on 2026-09-22 {{code}}. If a tutorial uses those two paths, it was written for an older SGLang, and its other flags are suspect too.
+**路径变了。** 基准工具在 2026-06 移进了 `sglang.benchmark` 包。`python -m sglang.bench_serving` 仍作为弃用别名跑，并导入新模块。`python -m sglang.bench_one_batch` 与 `python -m sglang.bench_offline_throughput` 在 v0.5.22 不跑。[PR #40795](https://github.com/sgl-project/sglang/pull/40795) 于 2026-09-22 删掉了两个别名 {{code}}。如果一份教程用那两条路径，它是为更旧的 SGLang 写的，它的其他标志也可疑。
 
-## Four defaults that change the result
+## 四个会改结果的默认 {#s-sglang-benchmark-serving-four-defaults-that-change-the-result}
 
-The client makes choices before it measures anything. Each one changes the number you report, and most published benchmarks do not say which ones they kept.
+客户端在测量任何东西之前就做选择。每一个都会改你报告的数字，而多数已发布的基准不说它们保留了哪些。
 
 | Setting | Default at v0.5.22 | What it does to the result |
 |---|---|---|
-| `--random-range-ratio` | 0.0 | Each length is drawn from 1 to the length you asked for, so the average prompt is about half of `--random-input-len` |
-| `ignore_eos` | on | The server ignores the end token, so every request generates exactly `--random-output-len` tokens |
-| `--request-rate` | `inf` | All requests are sent at time 0, and only `--max-concurrency` holds them back |
-| `--warmup-requests` | 1 | One request runs before the clock starts |
+| `--random-range-ratio` | 0.0 | 每一个长度从 1 抽到你要的长度，所以平均提示大约是 `--random-input-len` 的一半 |
+| `ignore_eos` | on | 服务器忽略结束 token，所以每一条请求正好生成 `--random-output-len` 个 token |
+| `--request-rate` | `inf` | 所有请求在时间 0 发出，只有 `--max-concurrency` 挡住它们 |
+| `--warmup-requests` | 1 | 时钟开始之前跑一条请求 |
 
-The first row is the trap. With the default ratio, `--random-input-len 512` gives an average prompt near 256 tokens. Your report then says 512 and describes half the work. We set the ratio to 1.0, and the report confirms it. 32 prompts of 512 tokens give `Total input tokens: 16384`. With `ignore_eos`, the run gives `Total generated tokens: 4096`, exactly 32 times 128.
+第一行是陷阱。用默认比率时，`--random-input-len 512` 给出平均接近 256 个 token 的提示。你的报告随后说 512，却描述一半的工作。我们把比率设成 1.0，报告确认了它。32 条各 512 token 的提示给出 `Total input tokens: 16384`。开着 `ignore_eos` 时，这次跑给出 `Total generated tokens: 4096`，正好是 32 乘以 128。
 
-**Our position:** pass `--random-range-ratio 1.0` every time, or write the length distribution next to the result. A benchmark that hides its lengths cannot be compared with anything.
+**我们的立场：** 每一次都传 `--random-range-ratio 1.0`，或把长度分布写在结果旁边。一份藏起其长度的基准无法与任何东西比较。
 
-## Read the report, block by block
+## 一块一块读报告 {#s-sglang-benchmark-serving-read-the-report-block-by-block}
 
 ```listing
 title: the report at a concurrency cap of 8
@@ -80,17 +80,17 @@ P99 ITL (ms):                            78.79
 Max ITL (ms):                            1948.37
 ```
 
-The function `calculate_metrics` in the benchmark module computes every line. Five of them are easy to misread.
+基准模块里的函数 `calculate_metrics` 计算每一行。其中五行容易读错。
 
-**Concurrency:** the sum of every request's end-to-end latency divided by the run duration. It is the average number of requests in progress, measured after the fact. Here it is 7.96 against a cap of 8. It tells you the cap was reached, and nothing more.
+**Concurrency：** 每一条请求端到端延迟之和除以跑的时长。它是事后测到的、平均在进行中的请求数。这里是 7.96，对上限 8。它告诉你上限达到了，别的什么都不告诉你。
 
-**Peak concurrent requests:** the run is cut into one-second buckets, and each request counts in every bucket that its interval touches. The line reports the largest bucket count. Two requests that run one after the other inside the same second both count, so the number can exceed the cap. That is why the report says 16 at a cap of 8, and 64 at a cap of 32.
+**Peak concurrent requests：** 这次跑切成一秒一个桶，每一条请求算进它的区间碰到的每一个桶。该行报告最大的桶计数。两条在同一秒里一前一后跑的请求都计入，所以数字可以超过上限。这就是为什么报告在上限 8 时说 16，在上限 32 时说 64。
 
-**TTFT:** the time from sending the request to receiving the first streamed chunk. It contains queueing, prefill, and the network.
+**TTFT：** 从发出请求到收到第一个流式块的时间。它包含排队、prefill 与网络。
 
-**TPOT:** for each request, the time after the first token divided by the remaining tokens, `(latency - ttft) / (output_len - 1)`. The report gives the mean and percentiles over requests. **ITL:** every gap between two streamed chunks, pooled across all requests. A chunk with several tokens counts as one gap.
+**TPOT：** 对每一条请求，第一个 token 之后的时间除以剩余 token，`(latency - ttft) / (output_len - 1)`。报告给出跨请求的均值与百分位。**ITL：** 两个流式块之间的每一个间隙，跨所有请求汇集。一个带几个 token 的块算作一个间隙。
 
-**Max ITL:** the single longest gap, here 1,948 ms. One request waited almost two seconds between two tokens while new prompts ran their prefill. The median ITL of 20 ms hides that stall. The P99 of 79 ms shows part of it.
+**Max ITL：** 单个最长的间隙，这里是 1,948 ms。一条请求在两个 token 之间等了将近两秒，同时新提示在跑它们的 prefill。中位 ITL 20 ms 藏起了那次卡住。P99 的 79 ms 露出一部分。
 
 ```figure
 id: fig-5-1b
@@ -100,9 +100,9 @@ claim: Concurrency and peak concurrent requests come from request timestamps aft
 caption: Read each row left to right, from the report line to the formula in calculate_metrics to our value at a cap of 8. Olive boxes are client measurements. From capture/out/bench-random-c8.txt and the benchmark module at v0.5.22.
 ```
 
-## The sweep and the knee
+## Sweep 与拐点 {#s-sglang-benchmark-serving-the-sweep-and-the-knee}
 
-One run tells you one point. Three runs at caps of 1, 8, and 32 tell you the shape.
+一次跑告诉你一个点。三次跑、上限分别是 1、8 与 32，告诉你形状。
 
 | Cap | Output tok/s | Median TTFT | P99 TTFT | Median TPOT | Concurrency |
 |---|---|---|---|---|---|
@@ -110,7 +110,7 @@ One run tells you one point. Three runs at caps of 1, 8, and 32 tell you the sha
 | 8 | 255.63 | 785.79 ms | 2180.87 ms | 22.52 ms | 7.96 |
 | 32 | 252.74 | 3917.54 ms | 8262.86 ms | 93.61 ms | 31.94 |
 
-**We measured** this on the capture Mac. From 1 to 8, output throughput rises 46 percent and the median first token gets 4.8 times slower. From 8 to 32, throughput falls about 1 percent. The median first token gets 5 times slower, and the median time per token gets 4.2 times slower.
+**我们在抓取 Mac 上测到**这一点。从 1 到 8，输出吞吐升 46%，中位第一个 token 慢 4.8 倍。从 8 到 32，吞吐大约降 1%。中位第一个 token 慢 5 倍，中位每个 token 时间慢 4.2 倍。
 
 ```figure
 id: fig-5-1
@@ -120,13 +120,13 @@ claim: Raising the cap from 8 to 32 added no throughput and made the median firs
 caption: Left, output tokens per second at each cap. Right, median TTFT at the same caps on a shared scale. Olive bars are client measurements, and rose marks the run past the knee. From capture/out/bench-random-c1.txt, c8.txt, and c32.txt.
 ```
 
-The knee is the cap after which throughput stops rising. On this machine it is at or below 8. Past the knee, the server has no idle compute left to give. New requests only wait for a share of the same decode steps. The scheduler in [section 2.2](#s-the-scheduler-loop-and-schedule-policy) accepts them anyway, because its admission limit on this Mac was `max_running_requests=4096`.
+拐点是吞吐停止上升之后的那个上限。在这台机器上它在 8 或以下。过了拐点，服务器没有空闲算力可给。新请求只是等同一批 decode 步里的一份。调度器在[第 2.2 节](#s-the-scheduler-loop-and-schedule-policy) 里仍会接纳它们，因为这台 Mac 上它的接纳上限是 `max_running_requests=4096`。
 
-**What transfers to a GPU.** The absolute numbers do not. A 0.6B model on Apple silicon says nothing about an H100. The shape transferred to the servers we measured. Each one had a latency knee, the latency past it grew faster than the throughput, and the default admission limit sat far above it.
+**什么会转到 GPU 上。** 绝对数字不会。Apple silicon 上的 0.6B 模型对 H100 什么也说不了。形状转到了我们测过的那些服务器上。每一台都有一个延迟拐点，过了之后延迟比吞吐涨得更快，而默认接纳上限远高于它。
 
-## The same sweep on a GPU, run as an experiment
+## 同一份 GPU 上的 sweep，当作实验来跑 {#s-sglang-benchmark-serving-the-same-sweep-on-a-gpu-run-as-an-experiment}
 
-One run on a GPU told us something false. The GPU kit started the default server on an NVIDIA GB10 with Qwen3-30B-A3B and ran each cap once.
+GPU 上的一次跑告诉我们假东西。GPU 套件在 NVIDIA GB10 上用 Qwen3-30B-A3B 启动默认服务器，每个上限跑一次。
 
 ```listing
 title: the server under test on the GB10
@@ -137,18 +137,18 @@ note: The full command, as the GPU kit started it.
 sglang serve --model-path Qwen/Qwen3-30B-A3B-Instruct-2507 --host 127.0.0.1 --port 30000 --enable-cache-report --enable-metrics --mem-fraction-static 0.7
 ```
 
-At a cap of 8 the single run reported a median first token of 677.61 ms. At a cap of 32 it reported 390.38 ms. More load gave a faster first token, and no queue explains that. One run is one sample, and one sample can be wrong for reasons you never see.
+在上限 8 时单次跑报告中位第一个 token 677.61 ms。在上限 32 时报告 390.38 ms。更多负载给出更快的第一个 token，没有队列能解释那一点。一次跑是一个样本，一个样本可能因为你从未看见的原因是错的。
 
-So we ran the sweep the way a model team runs a training comparison. [Our sweep script](manuals/sglang-101/capture/gpu/sweep.py) runs every cap from 1 to 64 three times, with seeds 1, 2, and 3. It passes `--output-details`, so each run keeps the TTFT and the token gaps of every request. [Our summary script](manuals/sglang-101/capture/gpu/summarize.py) reduces the three runs of each point to the median, the lowest, and the highest value.
+所以我们按模型团队跑训练比较的方式跑 sweep。[我们的 sweep 脚本](manuals/sglang-101/capture/gpu/sweep.py) 从 1 到 64 每个上限跑三次，种子是 1、2 与 3。它传 `--output-details`，所以每一次跑保留每一条请求的 TTFT 与 token 间隙。[我们的摘要脚本](manuals/sglang-101/capture/gpu/summarize.py) 把每个点的三次跑收成中位、最低与最高值。
 
 | Cap | Single kit run, median TTFT | Three seeds, median TTFT (lowest to highest) |
 |---|---|---|
 | 8 | 677.61 ms | 209.98 ms (185.25 to 216.02) |
 | 32 | 390.38 ms | 416.37 ms (338.06 to 434.64) |
 
-**We measured** both on the same GB10, with two different servers. The single kit run had a pool of 227,243 tokens on 2026-10-17, and the sweep a pool of 234,600 tokens on 2026-10-16. The 677.61 ms result did not come back in three more runs. From a cap of 2 up, the first token gets slower as the cap grows, as the queue predicts.
+**我们在同一块 GB10 上测到**两者，用两台不同的服务器。套件单次跑在 2026-10-17 有 227,243 个 token 的池，sweep 在 2026-10-16 有 234,600 个 token 的池。677.61 ms 的结果在又三次跑里没有回来。从上限 2 起，第一个 token 随上限变慢，正如队列所预测。
 
-Later we found the cause of the false result in the server log of the kit run. The kit sent every run with seed 7 to one server, and it never cleared the prefix cache. With one seed, the client sends the same first prompts in every run {{code}}. So each run found the prompts of the run before it in the cache:
+后来我们在套件跑的服务器日志里找到了假结果的原因。套件把每一次带种子 7 的跑发给同一台服务器，且从未清掉前缀缓存。用一个种子时，客户端在每一次跑里发同样的前几条提示 {{code}}。所以每一次跑都在缓存里找到前一次跑的提示：
 
 ```listing
 title: a run that found its prompts in the cache
@@ -161,7 +161,7 @@ note: Three prefill lines from the kit run at a cap of 32. The first two admit 2
 [2026-10-17 14:23:47] Prefill batch, #new-seq: 1, #new-token: 510, #cached-token: 2, token usage: 0.01, …
 ```
 
-**We counted** the prefill lines of each kit run. At a cap of 8, 16 of the 64 prompts were in the cache before the run started. At a cap of 32, 64 of the 128 prompts were, and at a cap of 64, 128 of the 256. A cached prompt skips its prefill, so its first token comes fast. Half of the requests at a cap of 32 had that advantage, and a quarter at a cap of 8. That is why the median first token fell.
+**我们数了**每一次套件跑的 prefill 行。在上限 8 时，64 条提示里有 16 条在跑开始前就在缓存里。在上限 32 时，128 条里有 64 条，在上限 64 时，256 条里有 128 条。已缓存的提示跳过其 prefill，所以它的第一个 token 来得快。上限 32 时一半请求有那个优势，上限 8 时是四分之一。这就是中位第一个 token 下降的原因。
 
 ```figure
 id: fig-5-1c
@@ -171,11 +171,11 @@ claim: Three seeds per point agree closely, so each line is a measurement and th
 caption: Read each line from left to right, one server configuration per line. The band is the lowest and the highest of three seeds. Qwen3-30B-A3B, 512 tokens in and 128 out. From capture/gpu/summary/gb10.json.
 ```
 
-The widest band in the figure is EAGLE-3 at a cap of 8, from 86.93 to 107.23 tok/s. Every other band is inside about 10 percent of its median. With that spread, a gap of 1.9 times is real. At a cap of 64, FP8 gave 440.86 tok/s and BF16 gave 235.38 tok/s. The run without CUDA graphs lies on the default line, and [section 4.1](#s-forwardmode-and-cuda-graphs) explains why.
+图里最宽的带是上限 8 时的 EAGLE-3，从 86.93 到 107.23 tok/s。其他每一条带都在其中位大约 10% 以内。有了那份散布，1.9 倍的差距是真的。在上限 64 时，FP8 给出 440.86 tok/s，BF16 给出 235.38 tok/s。没有 CUDA graph 的那次跑压在默认线上，[第 4.1 节](#s-forwardmode-and-cuda-graphs) 解释了为什么。
 
-### A median hides two populations
+### 中位数藏起两群人 {#s-sglang-benchmark-serving-a-median-hides-two-populations}
 
-`--output-details` writes the first-token time of every request. We sorted all requests of the three seeds at a cap of 16 and plotted them.
+`--output-details` 写出每一条请求的第一个 token 时间。我们把上限 16 时三个种子的所有请求排序并画出来。
 
 ```figure
 id: fig-5-1e
@@ -185,15 +185,15 @@ claim: About half of the requests waited several times longer than the other hal
 caption: Each line is drawn from 51 quantiles of the pooled requests, from the fastest to the slowest. The rose line marks P90. The time axis is logarithmic. From the per-request records in capture/gpu/summary/gb10.json, the load sweep at a cap of 16.
 ```
 
-**We measured** two groups on the GB10. For BF16, the fastest half of the requests had a first token from 186.3 to 211.8 ms. From the 68th percentile, requests waited 1,639.8 to 1,743.4 ms. The median was 237.6 ms and P90 was 1,721.5 ms, 7.2 times more. FP8 had the same two groups: 122.7 to 139.5 ms for the fast half, and 589.9 to 1,162.2 ms for the slow half.
+**我们在 GB10 上测到**两群。对 BF16，最快一半请求的第一个 token 从 186.3 到 211.8 ms。从第 68 百分位起，请求等了 1,639.8 到 1,743.4 ms。中位是 237.6 ms，P90 是 1,721.5 ms，多 7.2 倍。FP8 有同样的两群：快的一半是 122.7 到 139.5 ms，慢的一半是 589.9 到 1,162.2 ms。
 
-EAGLE-3 had the slowest median, 579.3 ms, and the shortest tail, 1,007.4 ms at P90. Its time per token had the widest spread instead: 82.8 ms at the median and 191.3 ms at P98. The number of draft tokens accepted changes from step to step.
+EAGLE-3 有最慢的中位，579.3 ms，以及最短的尾部，P90 是 1,007.4 ms。它的每个 token 时间反而有最宽的散布：中位 82.8 ms，P98 是 191.3 ms。接受的 draft token 数每一步都在变。
 
-**Our reading of the two groups:** the workload made them. Every request asked for exactly 128 tokens, because `--random-range-ratio 1.0` fixes the length. Requests that start together therefore finish together, and their replacements arrive together. Each wave then queues for prefill behind the requests ahead of it. Real traffic has mixed lengths. If you test with fixed lengths, read P90 as the cost of a burst, not as the cost of a normal request.
+**我们对两群的解读：** 工作负载制造了它们。每一条请求正好要 128 个 token，因为 `--random-range-ratio 1.0` 固定了长度。一起开始的请求因此一起结束，它们的替换一起到达。然后每一波都在前面的请求后面排队等 prefill。真实流量有混合长度。如果你用固定长度测，把 P90 读成一次突发的代价，而不是正常请求的代价。
 
-The prefix cache gives a second reading, and we cannot rule it out. The sweep also kept one server for all the runs of one configuration, with no flush. Each seed sent the same first prompts at every cap. At a cap of 16, 32 of the 64 prompts were the prompts of the run at a cap of 8. If they were still in the pool, half of the requests skipped their prefill. We did not keep the full server logs of the sweep, so we cannot count the hits.
+前缀缓存给出第二种解读，我们排除不了它。Sweep 也为同一种配置的所有跑保留一台服务器，没有冲洗。每个种子在每一个上限发同样的前几条提示。在上限 16 时，64 条提示里有 32 条是上限 8 那次跑的提示。如果它们仍在池里，一半请求跳过了其 prefill。我们没有保留 sweep 的完整服务器日志，所以数不了命中。
 
-We tested this reading on the L4, not on the GB10. On 2026-10-23 we ran the load sweep of Qwen3-8B with a flush before each run and a 900 MHz lock. We compared it with a run of the same session that had no flush:
+我们在 L4 上测了这种解读，不是在 GB10 上。在 2026-10-23 我们跑了 Qwen3-8B 的负载 sweep，每一次跑前冲洗，并锁在 900 MHz。我们把它与同一次会话里没有冲洗的一次跑比较：
 
 ```listing
 title: median TTFT with and without a flush, Qwen3-8B on our L4 at 900 MHz
@@ -209,11 +209,11 @@ users   vLLM                                   SGLang
 …
 ```
 
-On the L4, the flush raised the median TTFT of SGLang 4 to 9 times at 4 to 16 users. The time per token changed by less than 10 percent. So on the L4, the cache made most of the fast group. On the GB10 we did not rerun the sweep, so both readings stay open there.
+在 L4 上，冲洗把 SGLang 在 4 到 16 个用户时的中位 TTFT 抬高 4 到 9 倍。每个 token 时间变了不到 10%。所以在 L4 上，缓存制造了多数快的那一群。在 GB10 上我们没有重跑 sweep，所以两种解读在那里都仍开着。
 
-### We tested the waves on an L4
+### 我们在一块 L4 上测了波浪 {#s-sglang-benchmark-serving-we-tested-the-waves-on-an-l4}
 
-A reading is a hypothesis until you change the variable it blames. We ran Qwen3-8B on one L4 with a cap of 16 and 64 prompts, three seeds per point. Only `--random-range-ratio` changed, from 1.0 to 0.5 to 0.0.
+一种解读在你改掉它归咎的那个变量之前都是假设。我们在一块 L4 上用上限 16 与 64 条提示跑 Qwen3-8B，每个点三个种子。只有 `--random-range-ratio` 变了，从 1.0 到 0.5 到 0.0。
 
 ```listing
 title: one wave on the L4 with fixed lengths
@@ -228,7 +228,7 @@ note: Five consecutive lines from a run at a ratio of 1.0. Timestamps are kept, 
 [2026-10-17 15:54:40] Decode batch, #running-req: 16, #token: 9520, token usage: 0.40, cuda graph: True, gen throughput (token/s): 229.85, #queue-req: 0
 ```
 
-The wave is in the log. Only one request was running, so fifteen had just finished together, and their replacements arrived together. The scheduler prefilled them as two chunks of up to 4,096 tokens, and then all 16 decoded together.
+波浪在日志里。只有一条请求在跑，所以十五条刚一起结束，它们的替换一起到达。调度器把它们当作最多 4,096 个 token 的两块做 prefill，然后全部 16 条一起 decode。
 
 ```figure
 id: fig-5-1h
@@ -244,21 +244,21 @@ caption: Solid lines are median TTFT and dashed lines are P99 inter-token latenc
 | 0.5 | 364 ms | 396 ms | 130 ms | 95 ms |
 | 0.0 | 291 ms | 300 ms | 129 ms | 95 ms |
 
-**We measured** a first token 6.9 times slower with fixed lengths on BF16, and 11.8 times slower on FP8. The FP8 runs at the two ratios had median clocks of 1,185 and 2,040 MHz. So part of the FP8 factor is the clock. Mixed lengths sent fewer tokens. In seed 1 they sent 17,870 input tokens at a ratio of 0.0, against 32,768 at 1.0. So part of the gap is less work.
+**我们测到**固定长度时第一个 token 在 BF16 上慢 6.9 倍，在 FP8 上慢 11.8 倍。两个比率下的 FP8 跑中位时钟是 1,185 与 2,040 MHz。所以 FP8 倍数的一部分是时钟。混合长度送出更少 token。在种子 1 里，比率 0.0 送出 17,870 个输入 token，对上 1.0 时的 32,768。所以差距的一部分是更少的工作。
 
-The cache can explain another part. In each seed, the run at 1.0 came first and started with an empty cache. The runs at 0.5 and 0.0 came after it. Each of their prompts is the first part of a prompt from the run at 1.0. The BF16 pool of 24,094 tokens held only part of the 32,768 tokens of that run. The FP8 pool of 142,369 tokens could hold all of them.
+缓存能解释另一部分。在每个种子里，比率 1.0 的跑先来，并以空缓存开始。比率 0.5 与 0.0 的跑在它之后。它们的每一条提示都是比率 1.0 那次跑里一条提示的前一部分。BF16 的 24,094 token 池只持有那次跑 32,768 个 token 的一部分。FP8 的 142,369 token 池能全部持有。
 
-Less work and the cache do not explain the other half of the result. With mixed lengths, P99 ITL rose from 82 to 300 ms. New prompts arrived one by one, and each prefill stopped the running decodes. With fixed lengths, prefill happened only between waves.
+更少的工作与缓存解释不了结果的另一半。混合长度时，P99 ITL 从 82 升到 300 ms。新提示一个接一个到达，每一次 prefill 都停下在跑的 decode。固定长度时，prefill 只发生在波浪之间。
 
-The GB10 gave the same shape with Qwen3-30B-A3B, three seeds per point. With fixed lengths, the BF16 median TTFT was 1,650 ms and P99 ITL 169 ms. With mixed lengths, they were 320 ms and 230 ms. FP8 went from 1,050 ms and 92 ms to 188 ms and 127 ms. Two GPUs and two models show the same trade, so on both of our machines it came from the workload, not from the hardware.
+GB10 配 Qwen3-30B-A3B、每个点三个种子时给出同样的形状。固定长度时，BF16 中位 TTFT 是 1,650 ms，P99 ITL 是 169 ms。混合长度时，它们是 320 ms 与 230 ms。FP8 从 1,050 ms 与 92 ms 到 188 ms 与 127 ms。两块 GPU 与两个模型展示同样的权衡，所以在我们两台机器上它来自工作负载，不是来自硬件。
 
-The two settings measure two different servers. Fixed lengths measure bursts: a slow first token and smooth tokens after it. Mixed lengths measure steady traffic: a fast first token and stalls in the stream. Keep `--random-range-ratio 1.0` when you compare two builds, because it repeats exactly. Before you set a latency target from it, run your real length distribution too.
+两种设置测的是两台不同的服务器。固定长度测突发：慢的第一个 token，之后平滑的 token。混合长度测稳定流量：快的第一个 token，以及流里的卡住。在比较两个构建时保留 `--random-range-ratio 1.0`，因为它精确重复。在你从它设延迟目标之前，也跑你真实的长度分布。
 
-## Reset the prefix cache between runs
+## 在跑之间重置前缀缓存 {#s-sglang-benchmark-serving-reset-the-prefix-cache-between-runs}
 
-The prefix cache keeps the KV of earlier prompts after a run ends. It changes two things in the next run: the speed, and sometimes the greedy output, as [section 4.6](#s-deterministic-inference-and-logprobs) shows.
+前缀缓存在一次跑结束之后仍保留更早提示的 KV。它改下一次跑里的两件事：速度，有时还有贪心输出，如[第 4.6 节](#s-deterministic-inference-and-logprobs)所示。
 
-To see the size of the speed effect, we ran one load four times in a row with the same seed. We used `Qwen/Qwen3-0.6B`, 64 prompts at a cap of 16, 512 tokens in and 128 out. This was on the second GPU of our L4 node, which its owner shares and which had no clock lock. So trust the ratios, not the times.
+为了看速度效应的大小，我们用同一个种子把一种负载连跑四次。我们用 `Qwen/Qwen3-0.6B`，上限 16 时 64 条提示，512 进、128 出。这是在我们 L4 节点的第二块 GPU 上，其所有者共享它，且没有锁时钟。所以信任比率，不要信任时间。
 
 ```listing
 title: median TTFT in ms, the same load four times in a row
@@ -271,23 +271,23 @@ SGLang 0.6B   394     82.5                  289                    77
 …
 ```
 
-The repeat without a flush read a median TTFT about 4.8 times lower than the fresh run. After a flush, the TTFT went back near the fresh run. The time per token changed by less than 15 percent.
+没有冲洗的重复把中位 TTFT 读成比新鲜跑大约低 4.8 倍。冲洗之后，TTFT 回到接近新鲜跑。每个 token 时间变了不到 15%。
 
-Use this protocol for every run that you compare:
+对每一次你要比较的跑用这份协议：
 
-1. Start each run with an empty cache. Pass `--flush-cache` to `sglang.benchmark.serving`, which calls `/flush_cache` after the warm-up request {{code}}. You can also call `POST /flush_cache` yourself, or restart the server.
-2. Check that the flush ran. The server flushes only when no request runs or waits. Otherwise the route answers with HTTP 400, and the log says `Cache not flushed because there are pending requests` {{code}}.
-3. Use a new `--seed` for each run, so that the client sends new prompts.
-4. Record the cached tokens. Read `sglang:cached_tokens_total` from `/metrics` before and after the run. With `--enable-cache-report`, each OpenAI-style response also gives `usage.prompt_tokens_details.cached_tokens`.
-5. Write the cache setting and the cached tokens next to the result.
+1. 让每一次跑以空缓存开始。向 `sglang.benchmark.serving` 传 `--flush-cache`，它在预热请求之后调用 `/flush_cache` {{code}}。你也可以自己调用 `POST /flush_cache`，或重启服务器。
+2. 检查冲洗跑过了。只有没有请求在跑或等待时服务器才冲洗。否则该路由以 HTTP 400 回答，日志说 `Cache not flushed because there are pending requests` {{code}}。
+3. 每一次跑用新的 `--seed`，好让客户端发新提示。
+4. 记下已缓存的 token。在跑之前与之后从 `/metrics` 读 `sglang:cached_tokens_total`。开着 `--enable-cache-report` 时，每一条 OpenAI 风格的响应也给出 `usage.prompt_tokens_details.cached_tokens`。
+5. 把缓存设置与已缓存的 token 写在结果旁边。
 
-Our kit and our sweeps did not follow this protocol. Only the first run of each seed on each server started with an empty cache. The later TTFT numbers on this page can be too low, most of all on the GB10, whose pool held every prompt we sent. The time per token is less exposed, because a cache hit removes prefill work and leaves the decode work the same.
+我们的套件与我们的 sweep 没有遵循这份协议。每一台服务器上每个种子只有第一次跑以空缓存开始。本页后面的 TTFT 数字可能太低，尤其是在 GB10 上，它的池持有我们发过的每一条提示。每个 token 时间暴露得更少，因为缓存命中去掉 prefill 工作，并留下同样的 decode 工作。
 
-## Goodput finds the knee that throughput hides
+## Goodput 找到吞吐藏起的拐点 {#s-sglang-benchmark-serving-goodput-finds-the-knee-that-throughput-hides}
 
-On the GB10, BF16 throughput still rises at a cap of 64, because the KV pool holds 234,600 tokens. A throughput curve with no knee does not tell you where to stop. A latency target does.
+在 GB10 上，BF16 吞吐在上限 64 时仍在上升，因为 KV 池持有 234,600 个 token。一条没有拐点的吞吐曲线不告诉你该停在哪里。一个延迟目标会。
 
-**Goodput:** the number of requests per second that finish inside the latency target. Our summary script counts a request when its first token comes in under 1 s and its mean time per token is under 100 ms.
+**Goodput：** 在延迟目标内完成的每秒请求数。我们的摘要脚本在第一个 token 1 秒内到来、且平均每个 token 时间低于 100 ms 时计一条请求。
 
 | Cap | BF16 goodput | BF16 median TPOT | FP8 goodput | FP8 median TPOT |
 |---|---|---|---|---|
@@ -296,9 +296,9 @@ On the GB10, BF16 throughput still rises at a cap of 64, because the KV pool hol
 | 16 | 0 | 154.24 ms | 1.10 req/s | 81.90 ms |
 | 32 | 0 | 201.91 ms | 0 | 104.12 ms |
 
-BF16 goodput is highest at a cap of 4. From a cap of 8, the median request takes longer than 100 ms per token, so goodput is 0. Throughput at that cap is 74.11 tok/s and still rising. FP8 holds the target up to a cap of 16. **Our position:** choose the cap from goodput at your own target, and use the throughput curve only to explain it.
+BF16 goodput 在上限 4 时最高。从上限 8 起，中位请求每个 token 超过 100 ms，所以 goodput 是 0。那个上限上的吞吐是 74.11 tok/s 且仍在上升。FP8 把目标保持到上限 16。**我们的立场：** 从你自己目标下的 goodput 选上限，只用吞吐曲线来解释它。
 
-A cap is a closed loop. Each client waits for its answer before it sends the next request, so the server can never receive more work than it finishes. Real users do not wait for each other. `--request-rate` sends requests at Poisson arrival times instead, and the queue grows when the server is slower than the arrivals. We ran the same model at 0.5 to 16 requests per second, three seeds each.
+一个上限是闭环。每个客户端在发下一条请求之前等它的答案，所以服务器永远收不到比它完成得更多的工作。真实用户彼此不等。`--request-rate` 改为在泊松到达时间发请求，当服务器比到达更慢时队列增长。我们以每秒 0.5 到 16 个请求跑同一模型，每个三个种子。
 
 ```figure
 id: fig-5-1d
@@ -308,11 +308,11 @@ claim: FP8 served 1.03 requests per second within the target at 1 offered, and B
 caption: Dashed lines are requests completed per second. Solid lines are requests that met the target, with the range of three seeds as a band. Green is FP8 with an FP8 KV cache, plum is BF16. From capture/gpu/summary/gb10.json, the rate sweep.
 ```
 
-**We measured** this on the GB10. At 0.5 requests per second, BF16 already had a median time per token of 177.5 ms. The arrivals overlap: at 0.52 requests per second, each 128 tokens long at 177.5 ms per token, about 12 requests share each decode step. Only 0.07 requests per second met the target. FP8 met the target for every request up to 1 per second, then fell to 0.17 at 2.
+**我们在 GB10 上测到**这一点。在每秒 0.5 个请求时，BF16 已经有 177.5 ms 的中位每个 token 时间。到达重叠：在每秒 0.52 个请求、各 128 个 token、每个 token 177.5 ms 时，大约 12 条请求共享每一个 decode 步。只有每秒 0.07 个请求达到目标。FP8 到每秒 1 个时每一条请求都达到目标，然后在 2 时降到 0.17。
 
-At 16 per second, BF16 completed 3.88 requests per second, and its P99 first token took 55,640.4 ms. FP8 completed 8.26. The GPU clock stayed at 2,496 MHz up to 4 requests per second. At 16, the GPU reached 89 C and spent 7.3 percent of the samples in thermal slowdown. The last BF16 point measures a hot GPU as well as a full queue.
+在每秒 16 时，BF16 完成每秒 3.88 个请求，其 P99 第一个 token 花了 55,640.4 ms。FP8 完成 8.26。到每秒 4 个请求时 GPU 时钟停在 2,496 MHz。在 16 时，GPU 到了 89 C，并在 7.3% 的样本里处于热降速。最后一个 BF16 点测的是一块热 GPU，也是一个满队列。
 
-We ran the same open loop on one 24 GB L4 with Qwen3-8B, with the cool-down to 72°C before each run.
+我们在一块 24 GB L4 上用 Qwen3-8B 跑了同样的开环，每一次跑前冷却到 72°C。
 
 ```figure
 id: fig-5-1g
@@ -322,19 +322,19 @@ claim: On the L4, FP8 served 3.18 requests per second within the target at 4 off
 caption: Dashed lines are requests completed per second. Solid lines are requests that met the target, with the range of three seeds as a band. Green is FP8 with an FP8 KV cache, plum is BF16. From capture/gpu/summary/l4.json, the rate sweep.
 ```
 
-**We measured** a different shape on the smaller card. Both servers met the target for every request up to 1 per second. BF16 held 0.88 within the target at 2 offered and none from 4. FP8 held 3.18 within the target at 4 offered, three times the best BF16 point. The FP8 server also had a pool of 142,369 tokens against 24,094 for BF16. From 4 offered, the BF16 pool was the limit.
+**我们在更小的卡上测到**不同的形状。两个服务器到每秒 1 个时每一条请求都达到目标。BF16 在 offer 2 时在目标内保持 0.88，从 4 起一个都没有。FP8 在 offer 4 时在目标内保持 3.18，是最好 BF16 点的三倍。FP8 服务器还有 142,369 个 token 的池，对上 BF16 的 24,094。从 offer 4 起，BF16 池是上限。
 
-Past its peak, BF16 completed fewer requests as we offered more: 2.01 per second at 4 offered, 1.91 at 8, and 1.62 at 16. The telemetry shows why. The median SM clock fell from 1,320 MHz at 4 offered to 465 MHz at 16. At 16, 70 percent of the samples showed thermal slowdown. On our passively cooled L4, overload cost throughput as well as latency.
+过了峰值之后，我们 offer 得越多，BF16 完成的请求越少：offer 4 时每秒 2.01，8 时 1.91，16 时 1.62。遥测显示为什么。中位 SM 时钟从 offer 4 时的 1,320 MHz 降到 16 时的 465 MHz。在 16 时，70% 的样本显示热降速。在我们被动冷却的 L4 上，过载既花吞吐也花延迟。
 
-## Check the client at high rates
+## 在高速率下检查客户端 {#s-sglang-benchmark-serving-check-the-client-at-high-rates}
 
-`sglang.benchmark.serving` sends every request from one Python process with asyncio {{code}}. A 2026 study of benchmark clients found that such a client adds its own queue at high request rates. The client then reports a TTFT and a TPOT that are higher than what the server did. The study uses a client that runs in several processes instead.
+`sglang.benchmark.serving` 从一个带 asyncio 的 Python 进程发每一条请求 {{code}}。一项 2026 年对基准客户端的研究发现，这样的客户端在高请求速率下加上自己的队列。客户端随后报告高于服务器实际做的 TTFT 与 TPOT。该研究改用在几个进程里跑的客户端。
 
-We did not measure this effect. Our open loop stopped at 16 requests per second, and we did not record the CPU use of the client. Before you trust a TTFT at a high rate, compare one client process with two processes that each send half the rate.
+我们没有测这个效应。我们的开环停在每秒 16 个请求，我们没有记下客户端的 CPU 使用。在你信任高速率下的 TTFT 之前，把一个客户端进程与两个各发一半速率的进程比较。
 
-## Compare two clients on one server
+## 在一台服务器上比较两个客户端 {#s-sglang-benchmark-serving-compare-two-clients-on-one-server}
 
-Our sweep tables came from `sglang.benchmark.serving` at temperature 0, its default. Another client can read a different number from the same server. We ran three clients against one vLLM 0.31.0 server with `Qwen/Qwen3-0.6B` on 2026-10-23. They were this client with `--backend vllm`, `vllm bench serve`, and its Rust version. The GPU was the shared second L4 of our node. Its clock was throttled, but it stayed at 420 to 495 MHz for every run.
+我们的 sweep 表来自温度 0 下的 `sglang.benchmark.serving`，那是它的默认。另一个客户端可以从同一台服务器读出不同的数字。我们在 2026-10-23 对着一台带 `Qwen/Qwen3-0.6B` 的 vLLM 0.31.0 服务器跑了三个客户端。它们是带 `--backend vllm` 的这个客户端、`vllm bench serve`，以及它的 Rust 版本。GPU 是我们节点上共享的第二块 L4。它的时钟被节流，但对每一次跑都停在 420 到 495 MHz。
 
 ```listing
 title: median TTFT in ms from three clients, two rounds each
@@ -350,16 +350,16 @@ users   temperature   SGLang client    vllm bench       vllm bench, Rust
 64      0             1,688, 1,838     1,624, 1,667     1,674, 1,789
 ```
 
-- Our client read a median TTFT 3 to 10 percent higher than `vllm bench serve`. At 16 and 64 users, it read an output throughput 2 to 8 percent lower. At one user, one of its rounds read a higher throughput than every other round, so we give no throughput gap there.
-- The Python and the Rust versions of `vllm bench serve` agreed within the noise.
-- The clients send different prompt tokens from their random datasets, so part of a small gap can come from the prompts.
-- Temperature 0.7 raised the median TPOT over temperature 0. It was 10 to 13 percent higher at one user, and 3 to 6 percent higher at 16 and 64 users.
+- 我们的客户端读到的中位 TTFT 比 `vllm bench serve` 高 3% 到 10%。在 16 与 64 个用户时，它读到的输出吞吐低 2% 到 8%。在一个用户时，它的一轮读到比其他每一轮更高的吞吐，所以我们在那里不给吞吐差距。
+- `vllm bench serve` 的 Python 与 Rust 版本在噪声内一致。
+- 客户端从它们的随机数据集发不同的提示 token，所以小差距的一部分可能来自提示。
+- 温度 0.7 把中位 TPOT 抬高过温度 0。在一个用户时高 10% 到 13%，在 16 与 64 个用户时高 3% 到 6%。
 
-So a gap of a few percent between two published numbers can come from the client alone. Report the client and the temperature with every result.
+所以两个已发布数字之间几个百分点的差距可以只来自客户端。把客户端与温度和每一个结果一起报告。
 
-## Record the GPU clock with every run
+## 每一次跑都记下 GPU 时钟 {#s-sglang-benchmark-serving-record-the-gpu-clock-with-every-run}
 
-Our first sweep on an NVIDIA L4 reported that CUDA graphs did nothing. The median time per token at a cap of 1 was 103.4 ms with graphs and 103.4 ms without. The three seeds at that cap gave from 10.0 to 14.9 tok/s, a spread of half the median. Then we read `nvidia-smi` during the sweep.
+我们在 NVIDIA L4 上的第一次 sweep 报告说 CUDA graph 什么都没做。上限 1 时中位每个 token 时间带 graph 是 103.4 ms，不带也是 103.4 ms。那个上限上的三个种子给出从 10.0 到 14.9 tok/s，散布是中位的一半。然后我们在 sweep 期间读了 `nvidia-smi`。
 
 ```listing
 title: the L4 during the first sweep
@@ -371,11 +371,11 @@ index, temperature.gpu, power.draw [W], power.limit [W], clocks.current.sm [MHz]
 0, 87, 58.36 W, 72.00 W, 360 MHz, 2040 MHz, 0x0000000000000020, Active, Not Active, Not Active, 100 %
 ```
 
-The GPU was at 87 C with software thermal slowdown active, and its SM clock was 360 MHz of 2040. The L4 is a 72 W card with passive cooling, and the second card in the same chassis ran other work at the same time. We had measured a hot GPU, and the server under it was not the cause.
+GPU 在 87 C，软件热降速是 Active，其 SM 时钟是 2040 里的 360 MHz。L4 是一块 72 W、被动冷却的卡，同一机箱里的第二块卡同时跑着其他工作。我们测到的是一块热 GPU，其下的服务器不是原因。
 
-Now the sweep script samples `nvidia-smi` once a second into a `.gpu.csv` file beside each run. Before each run it waits up to 900 s for the GPU to cool below the `--cool` limit, 65 C by default. The L4 in this chassis runs warm, so we ran with `--cool 72`. The summary script adds the median SM clock, the highest temperature, and the share of samples with a thermal slowdown bit to each point. The GB10 load sweep in [figure 5.1c](#fig-5-1c) ran before we added the sampler, so its tight bands are the only check on it.
+现在 sweep 脚本每秒把 `nvidia-smi` 采样进每一次跑旁边的 `.gpu.csv` 文件。每一次跑之前它最多等 900 秒，让 GPU 冷却到 `--cool` 上限以下，默认 65 C。这个机箱里的 L4 跑得偏热，所以我们用 `--cool 72` 跑。摘要脚本给每个点加上中位 SM 时钟、最高温度，以及带热降速位的样本份额。[图 5.1c](#fig-5-1c) 里的 GB10 负载 sweep 在我们加上采样器之前跑，所以它紧的带是对它唯一的检查。
 
-We ran the L4 sweep again with the same command and the cool-down. The throttled sweep is the rose line in the next figure.
+我们用同样的命令与冷却又跑了 L4 sweep。被节流的 sweep 是下一张图里的玫瑰色线。
 
 ```figure
 id: fig-5-1f
@@ -385,37 +385,37 @@ claim: The hot sweep reported up to 28 percent less throughput than the cooled s
 caption: Blue is the sweep with a cool-down to 72 C and the clock recorded, and rose is the first sweep with no telemetry. Bands are the range of three seeds. Qwen3-8B, 512 tokens in and 128 out. From capture/gpu/summary/l4.json and capture/gpu/summary/l4-throttled.json.
 ```
 
-**We measured** the difference on the L4. At a cap of 32, the cooled sweep gave 270.11 tok/s and the hot sweep gave 194.16 tok/s. At a cap of 1, the median time per token was 60.16 ms against 103.38 ms.
+**我们在 L4 上测到**差异。在上限 32 时，冷却后的 sweep 给出 270.11 tok/s，热的 sweep 给出 194.16 tok/s。在上限 1 时，中位每个 token 时间是 60.16 ms 对上 103.38 ms。
 
-The cooled runs are not at full speed either. Their median SM clock was 1,080 to 1,515 MHz of 2,040. At caps of 1 and 64, in the worst seed, 41 to 49 percent of the samples still had the thermal bit set. The cool-down removes the worst error, and the recorded clock tells you how much is left.
+冷却后的跑也不是全速。它们的中位 SM 时钟是 2,040 里的 1,080 到 1,515 MHz。在上限 1 与 64 时，最差的种子里仍有 41% 到 49% 的样本带着热位。冷却去掉最坏的误差，记下的时钟告诉你还剩多少。
 
-**Our position:** a benchmark without the clock and the temperature of each run is not evidence. Read the clock first, then the throughput.
+**我们的立场：** 没有每一次跑的时钟与温度的基准不是证据。先读时钟，再读吞吐。
 
-## Our position
+## 我们的立场 {#s-sglang-benchmark-serving-our-position}
 
-Report the highest concurrency that still meets your latency target, and report its throughput together with p50 and p99 TTFT and TPOT. "255 tok/s at a cap of 8, with a median first token of 0.79 s" is a result. "255 tok/s" is a slogan.
+报告仍满足你延迟目标的最高并发，并把它的吞吐与同一次上限下的 p50 与 p99 TTFT 与 TPOT 一起报告。「上限 8 时 255 tok/s，中位第一个 token 0.79 s」是一个结果。「255 tok/s」是一句口号。
 
-Then enforce the knee outside the engine. The engine's own limit is set from memory, and memory runs out long after latency is unacceptable. Put the cap in your client, your gateway, or `--max-running-requests`, and size it from the sweep.
+然后在引擎外强制执行拐点。引擎自己的上限从内存设定，而内存在延迟已经不可接受很久之后才耗尽。把上限放在你的客户端、你的网关，或 `--max-running-requests` 里，并从 sweep 定它的大小。
 
-## The incident: a hand-written script
+## 事故：一份手写脚本 {#s-sglang-benchmark-serving-the-incident-a-hand-written-script}
 
-[Issue #3196](https://github.com/sgl-project/sglang/issues/3196) reported 13 tok/s for DeepSeek V3 on eight H200 GPUs, against 60 tok/s from the DeepSeek API {{issue #3196}}. Another user reached 33 tok/s on two H100 nodes. The measuring script counted words split on spaces and included the first-token time in the rate. A word is not a token, and TTFT is not decode time, so the script reported less than the server did. The fix was to measure with the benchmark client, which counts tokens and keeps TTFT and TPOT apart.
+[Issue #3196](https://github.com/sgl-project/sglang/issues/3196) 报告八块 H200 上 DeepSeek V3 是 13 tok/s，对上 DeepSeek API 的 60 tok/s {{issue #3196}}。另一位用户在两个 H100 节点上达到 33 tok/s。测量脚本按空格切词计数，并把第一个 token 时间算进速率。一个词不是一个 token，TTFT 也不是 decode 时间，所以脚本报告的比服务器做的更少。修复是用基准客户端测，它计 token，并把 TTFT 与 TPOT 分开。
 
 ```takeaways
-- Run `python -m sglang.benchmark.serving`, never a hand-written timing loop.
-- Pass `--random-range-ratio 1.0` or state the length distribution you used.
-- Test your real length mix before you set a latency target, because fixed lengths form waves.
-- Sweep at least three concurrency caps and plot throughput against median TTFT.
-- Report throughput only together with p50 and p99 TTFT and TPOT at the same cap.
-- Read Concurrency as an achieved average and Peak concurrent requests as a per-second count.
-- Enforce the knee in your client or gateway, because the engine admits far more.
-- Run each point with three seeds and plot the lowest and the highest result.
-- Choose the concurrency cap from goodput at your latency target.
-- Record the SM clock and the temperature with every run, and report them.
-- Set aside runs below a clock floor.
-- Pass --flush-cache, or call POST /flush_cache, before every run that you compare, and record the cached tokens.
-- Split the client into several processes before you trust TTFT at a high request rate.
-- Report the client and the temperature with every result, and keep both fixed.
+- 跑 `python -m sglang.benchmark.serving`，永远不要用手写计时循环。
+- 传 `--random-range-ratio 1.0`，或写明你用的长度分布。
+- 在设延迟目标之前先测你真实的长度混合，因为固定长度会形成波浪。
+- 至少扫三个并发上限，并画出吞吐对上中位 TTFT。
+- 只把吞吐与同一次上限下的 p50 与 p99 TTFT 与 TPOT 一起报告。
+- 把 Concurrency 读成已达到的平均，把 Peak concurrent requests 读成每秒计数。
+- 在你的客户端或网关里强制执行拐点，因为引擎接纳得远更多。
+- 每个点用三个种子跑，并画出最低与最高结果。
+- 从你延迟目标下的 goodput 选并发上限。
+- 每一次跑都记下 SM 时钟与温度，并报告它们。
+- 搁置低于时钟下限的跑。
+- 在每一次你要比较的跑之前传 --flush-cache，或调用 POST /flush_cache，并记下已缓存的 token。
+- 在信任高请求速率下的 TTFT 之前，把客户端拆成几个进程。
+- 把客户端与温度和每一个结果一起报告，并让两者都固定。
 ```
 
 Sources: python/sglang/benchmark/serving.py (calculate_metrics, argument defaults, flush_server_cache, --flush-cache, the asyncio client), python/sglang/benchmark/datasets/common.py (compute_random_lens), python/sglang/benchmark/datasets/random.py (sample_random_requests), python/sglang/srt/entrypoints/http_server.py (flush_cache), python/sglang/srt/managers/scheduler.py (flush_cache), python/sglang/srt/observability/metrics_collector.py (cached_tokens_total), python/sglang/srt/entrypoints/openai/usage_processor.py, python/sglang/bench_serving.py, PR #40795, all at v0.5.22 (baa9befa); capture/out/serve-help.txt, capture/out/server-default.command.txt, capture/out/server-default.log, capture/out/bench-random-c1.txt, capture/out/bench-random-c8.txt, capture/out/bench-random-c32.txt; capture/gpu/sweep.py, capture/gpu/summarize.py, capture/gpu/summary/gb10.json, capture/gpu/summary/l4.json, capture/gpu/summary/l4-throttled.json, capture/gpu/out-gb10/server-default.command.txt, capture/gpu/out-gb10/bench-random-c8.txt, capture/gpu/out-gb10/bench-random-c32.txt, capture/gpu/incidents/l4-thermal-throttle.txt; issue #3196. capture/gpu/out-l4/server-waves-default.log, capture/gpu/out-l4/waves-default-input-tokens.txt, capture/gpu/out-gb10/server-pools.log, capture/gpu/out-gb10/server-default.log, Chandrasekar and Kramberger, Identifying and Mitigating Systemic Measurement Bias in Production LLM Inference Benchmarks, arXiv 2605.24217 (2026-05), capture/gpu/out-l4/prefix-cache-flush.txt, capture/gpu/out-l4/bench-client-bias.txt, capture/gpu/out-l4/load-flushed-vs-unflushed.txt

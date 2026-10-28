@@ -1,50 +1,50 @@
-# Sources
+# 源
 
-> The manual ranks its sources by authority, and this page lists every external source the sections cite, with the sections that use each one.
+> 手册按权威给源排序，本页列出各节引用的每一个外部源，以及用到它的那些节。
 
-The ranks match [how this manual was made](#s-ref-how-this-manual-was-made). When two sources disagree, the higher one wins and the section says so. The SGLang source files each section used are recorded in the manual source and checked by the audit. They are not listed here. Every page below was read on 2026-10-16. The studies and reports added for the research update were read on 2026-10-22.
+排序与[这本手册是怎么做成的](#s-ref-how-this-manual-was-made)一致。两类源冲突时，更高的赢，节里也会说明。各节用到的 SGLang 源文件记在手册源里并由审计检查。这里不列。下面每一页都在 2026-10-16 读过。研究更新加进来的那些研究与报告在 2026-10-22 读过。
 
-## The ranked sources
+## 排序后的源 {#s-ref-sources-the-ranked-sources}
 
 | Rank | Source | What the manual takes from it | Source key |
 |---|---|---|---|
-| 1 | the SGLang source at the tag, `baa9befa` | every default and every mechanism | the source files of each section, in the manual source |
-| 2 | the captured runs [on the Mac](manuals/sglang-101/capture/out) and [on the GPUs](manuals/sglang-101/capture/gpu) | every listing and every number marked as measured | the capture file name |
-| 3 | SGLang issues and pull requests | incidents and the design history of each feature | `issue` and its number |
-| 4 | papers | the original design of RadixAttention and the methods SGLang implements | `paper` and a title |
-| 5 | the SGLang documentation at the tag | documented behaviour, checked against the code | `docs` and a heading |
-| 6 | independent field reports | GPUs and scales that this manual could not run | `field`, the author, and the month |
-| 7 | SGLang team and vendor reports | claims, always labeled as the claim of the author | `team` or the vendor, and the month |
+| 1 | 钉住标签上的 SGLang 源码，`baa9befa` | 每一个默认值和每一种机制 | 各节源文件，在手册源里 |
+| 2 | [Mac 上](manuals/sglang-101/capture/out)和 [GPU 上](manuals/sglang-101/capture/gpu)的捕获运行 | 每一段 listing 和每一个标成测得的数字 | 捕获文件名 |
+| 3 | SGLang 的 issue 与 pull request | 事故，以及每个特性的设计史 | `issue` 及其编号 |
+| 4 | 论文 | RadixAttention 的原始设计，以及 SGLang 实现的方法 | `paper` 与标题 |
+| 5 | 钉住标签上的 SGLang 文档 | 文档行为，对照代码核实 | `docs` 与标题 |
+| 6 | 独立现场报告 | 本手册跑不了的 GPU 与规模 | `field`、作者与月份 |
+| 7 | SGLang 团队与厂商报告 | 主张，一律标成作者的主张 | `team` 或厂商，以及月份 |
 
-## Rank 1 and rank 2: the code and the captures
+## 第 1 档与第 2 档：代码与捕获 {#s-ref-sources-rank-1-and-rank-2-the-code-and-the-captures}
 
 | Source | Used in |
 |---|---|
-| SGLang 0.5.22, tag `v0.5.22`, commit `baa9befa381511cd4d56f83980951e5a45fffc6d`, [github.com/sgl-project/sglang](https://github.com/sgl-project/sglang) | every section |
+| SGLang 0.5.22, tag `v0.5.22`, commit `baa9befa381511cd4d56f83980951e5a45fffc6d`, [github.com/sgl-project/sglang](https://github.com/sgl-project/sglang) | 每一节 |
 | Miles 0.1.2, tag `v0.1.2`, commit `a22fd824`, [github.com/radixark/miles](https://github.com/radixark/miles) | [7.2](#s-sglang-as-an-rl-rollout-engine) |
-| The capture kit and [its Mac runs](manuals/sglang-101/capture/out), recorded on 2026-10-16 | every section with a listing |
-| The GPU kit and [its runs](manuals/sglang-101/capture/gpu), recorded from 2026-10-16 to 2026-10-21 on an NVIDIA L4 node and a DGX Spark (GB10) | every section with a GPU measurement |
-| The Miles image `radixark/miles:latest` at Miles commit `08752a12`, with SGLang 0.5.22.dev46+g7b6993a | [7.2](#s-sglang-as-an-rl-rollout-engine) |
+| 捕获套件及其 [Mac 运行](manuals/sglang-101/capture/out)，记于 2026-10-16 | 每一节 with a listing |
+| GPU 套件及其[运行](manuals/sglang-101/capture/gpu)，于 2026-10-16 至 2026-10-21 记在一台 NVIDIA L4 节点和一台 DGX Spark (GB10) 上 | 每一节 with a GPU measurement |
+| Miles 镜像 `radixark/miles:latest`，Miles 提交 `08752a12`，带 SGLang 0.5.22.dev46+g7b6993a | [7.2](#s-sglang-as-an-rl-rollout-engine) |
 
-## Rank 3: pull requests
+## 第 3 档：pull request {#s-ref-sources-rank-3-pull-requests}
 
-The issues are in [the incident index](#s-ref-incident-index). These pull requests explain a design change.
+那些 issue 在[事故索引](#s-ref-incident-index)里。下面这些 pull request 解释一次设计变更。
 
 | Pull request | What it changed | Used in |
 |---|---|---|
-| [#9241](https://github.com/sgl-project/sglang/pull/9241) | warm-up followed by a frozen garbage collector | [1.2](#s-check-that-the-server-is-healthy) |
-| [#11210](https://github.com/sgl-project/sglang/pull/11210) | overlap with two CUDA streams in one thread | [2.4](#s-the-overlap-scheduler) |
-| [#14312](https://github.com/sgl-project/sglang/pull/14312) | renamed `sgl-router` to `sgl-model-gateway` | [6.4](#s-sgl-model-gateway) |
-| [#23906](https://github.com/sgl-project/sglang/pull/23906) | moved the prefill graph field into the per-phase config | [4.1](#s-forwardmode-and-cuda-graphs) |
-| [#29458](https://github.com/sgl-project/sglang/pull/29458) | breakable prefill graphs on CUDA | [4.1](#s-forwardmode-and-cuda-graphs) |
-| [#32114](https://github.com/sgl-project/sglang/pull/32114) | deleted Cutlass MLA, Dual Chunk FlashAttention, and the plain GPTQ CUDA kernel | [4.2](#s-attention-backend), [4.3](#s-quantization) |
-| [#37898](https://github.com/sgl-project/sglang/pull/37898) | raised the decode graph cap on 20 to 35 GB GPUs from 24 to 48 | [4.1](#s-forwardmode-and-cuda-graphs) |
-| [#35455](https://github.com/sgl-project/sglang/pull/35455) | loaded the KV scales of compressed-tensors checkpoints, merged 2026-08-20 | [4.3](#s-quantization) |
-| [#40795](https://github.com/sgl-project/sglang/pull/40795) | deleted the old benchmark aliases | [5.1](#s-sglang-benchmark-serving) |
-| [#41818](https://github.com/sgl-project/sglang/pull/41818) | added `--attn-dp-size` and gave `--dp-size` one meaning | [6.1](#s-tp-size-dp-size-and-attn-dp-size) |
-| [#42285](https://github.com/sgl-project/sglang/pull/42285), [#42286](https://github.com/sgl-project/sglang/pull/42286), [#42287](https://github.com/sgl-project/sglang/pull/42287) | remove the torch.compile path for prefill graphs | [4.1](#s-forwardmode-and-cuda-graphs) |
+| [#9241](https://github.com/sgl-project/sglang/pull/9241) | 预热后冻结垃圾回收器 | [1.2](#s-check-that-the-server-is-healthy) |
+| [#11210](https://github.com/sgl-project/sglang/pull/11210) | 同一线程里用两条 CUDA stream 做 overlap | [2.4](#s-the-overlap-scheduler) |
+| [#14312](https://github.com/sgl-project/sglang/pull/14312) | 把 `sgl-router` 改名为 `sgl-model-gateway` | [6.4](#s-sgl-model-gateway) |
+| [#23906](https://github.com/sgl-project/sglang/pull/23906) | 把 prefill graph 字段挪进按阶段配置 | [4.1](#s-forwardmode-and-cuda-graphs) |
+| [#29458](https://github.com/sgl-project/sglang/pull/29458) | CUDA 上可打断的 prefill graph | [4.1](#s-forwardmode-and-cuda-graphs) |
+| [#32114](https://github.com/sgl-project/sglang/pull/32114) | 删除 Cutlass MLA、Dual Chunk FlashAttention 以及普通 GPTQ CUDA 内核 | [4.2](#s-attention-backend), [4.3](#s-quantization) |
+| [#37898](https://github.com/sgl-project/sglang/pull/37898) | 在 20 到 35 GB GPU 上把 decode graph 上限从 24 提到 48 | [4.1](#s-forwardmode-and-cuda-graphs) |
+| [#35455](https://github.com/sgl-project/sglang/pull/35455) | 加载 compressed-tensors 检查点的 KV scale，于 2026-08-20 合并 | [4.3](#s-quantization) |
+| [#40795](https://github.com/sgl-project/sglang/pull/40795) | 删除旧基准别名 | [5.1](#s-sglang-benchmark-serving) |
+| [#41818](https://github.com/sgl-project/sglang/pull/41818) | 加入 `--attn-dp-size`，并给 `--dp-size` 一个含义 | [6.1](#s-tp-size-dp-size-and-attn-dp-size) |
+| [#42285](https://github.com/sgl-project/sglang/pull/42285), [#42286](https://github.com/sgl-project/sglang/pull/42286), [#42287](https://github.com/sgl-project/sglang/pull/42287) | 去掉 prefill graph 的 torch.compile 路径 | [4.1](#s-forwardmode-and-cuda-graphs) |
 
-## Rank 4: papers
+## 第 4 档：论文 {#s-ref-sources-rank-4-papers}
 
 | Paper | Used in |
 |---|---|
@@ -61,7 +61,7 @@ The issues are in [the incident index](#s-ref-incident-index). These pull reques
 | Chandrasekar and Kramberger, Identifying and Mitigating Systemic Measurement Bias in Production LLM Inference Benchmarks, [arXiv 2605.24217](https://arxiv.org/abs/2605.24217) | [5.1](#s-sglang-benchmark-serving) |
 | Li and others, Revisiting Disaggregated Large Language Model Serving for Performance and Energy Implications, [arXiv 2601.08833](https://arxiv.org/abs/2601.08833) | [6.3](#s-prefill-decode-disaggregation) |
 
-## Rank 5: SGLang documentation at the tag
+## 第 5 档：钉住标签上的 SGLang 文档 {#s-ref-sources-rank-5-sglang-documentation-at-the-tag}
 
 | Page | Used in |
 |---|---|
@@ -76,7 +76,7 @@ The issues are in [the incident index](#s-ref-incident-index). These pull reques
 | `docs/docs/get-started/install.mdx` | [7.1](#s-operating-sglang) |
 | `docs/docs/advanced_features/sglang_for_rl.mdx` | [7.2](#s-sglang-as-an-rl-rollout-engine) |
 
-## Rank 6: independent field reports
+## 第 6 档：独立现场报告 {#s-ref-sources-rank-6-independent-field-reports}
 
 | Author | Report | Month | Used in |
 |---|---|---|---|
@@ -109,7 +109,7 @@ The issues are in [the incident index](#s-ref-incident-index). These pull reques
 | Varad More | [Inference engine benchmark system](https://github.com/varad-more/inference-engine-benchmark-system) | 2026-04 | [3.3](#s-radixcache), [4.2](#s-attention-backend), [4.5](#s-structured-outputs-with-xgrammar), [5.3](#s-reading-other-peoples-benchmarks) |
 | vLLM community | [Discussion #17221](https://github.com/vllm-project/vllm/discussions/17221) | 2025-04 | [5.3](#s-reading-other-peoples-benchmarks) |
 
-## Rank 7: SGLang team and vendor reports
+## 第 7 档：SGLang 团队与厂商报告 {#s-ref-sources-rank-7-sglang-team-and-vendor-reports}
 
 | Author | Report | Month | Used in |
 |---|---|---|---|

@@ -1,10 +1,10 @@
-# Metrics
+# 指标
 
-> These are the Prometheus series this manual reads, what each one measures, and the question each one answers in production.
+> 本手册读取的那些 Prometheus 序列、每一项量什么，以及生产里每一项回答的问题。
 
-`--enable-metrics` turns on `/metrics`. Without the flag, the endpoint does not exist, and the default is off. Our default server exported 81 metric families with the prefix `sglang:` ([the metrics capture](manuals/sglang-101/capture/out/metrics.txt)). [Section 5.2](#s-the-metrics-endpoint) explains which ones to alert on. This table keeps the ones the manual uses.
+`--enable-metrics` 打开 `/metrics`。没有旗标，端点不存在，默认是关。我们的默认服务器导出了 81 个带前缀 `sglang:` 的指标族（[指标捕获](manuals/sglang-101/capture/out/metrics.txt)）。[第 5.2 节](#s-the-metrics-endpoint) 解释该对哪些告警。本表收着手册用到的那些。
 
-## Latency
+## 延迟 {#s-ref-metrics-latency}
 
 | Series | Type | Measures | The question it answers |
 |---|---|---|---|
@@ -14,7 +14,7 @@
 | `sglang:e2e_request_latency_seconds` | histogram | the time from arrival to the last token | how long does a full answer take |
 | `sglang:queue_time_seconds` | histogram | the time a request waits before its first prefill | is the scheduler holding requests back |
 
-## Load and memory
+## 负载与内存 {#s-ref-metrics-load-and-memory}
 
 | Series | Type | Measures | The question it answers |
 |---|---|---|---|
@@ -28,7 +28,7 @@
 | `sglang:gen_throughput` | gauge | output tokens per second in the last interval | is the server producing tokens |
 | `sglang:scheduler_idle_seconds_total` | counter | time with no runnable or queued work | is the server underused |
 
-## Cache and tokens
+## 缓存与 token {#s-ref-metrics-cache-and-tokens}
 
 | Series | Type | Measures | The question it answers |
 |---|---|---|---|
@@ -40,10 +40,10 @@
 | `sglang:num_requests_total` | counter | finished requests | how many requests were served |
 | `sglang:num_paused_reqs` | gauge | requests paused for a weight update | is an RL trainer pausing the server |
 
-## What our runs recorded
+## 我们的运行记下了什么 {#s-ref-metrics-what-our-runs-recorded}
 
-After the shared-prefix benchmark, [the default server](manuals/sglang-101/capture/out/metrics.txt) reported `sglang:cache_hit_rate` 0.94. [The server with `--disable-radix-cache`](manuals/sglang-101/capture/out/no-radix-cache-metrics.txt) reported 0.0 for the same benchmark. The gauge covers a recent window.
+共享前缀基准之后，[默认服务器](manuals/sglang-101/capture/out/metrics.txt) 报告 `sglang:cache_hit_rate` 0.94。[带 `--disable-radix-cache` 的服务器](manuals/sglang-101/capture/out/no-radix-cache-metrics.txt) 对同一基准报告 0.0。这个 gauge 覆盖最近一个窗口。
 
-The counters cover the whole life of each server, and the two servers ran different sets of benchmarks before the scrape. The default server counted 286,134 prompt tokens, 286,102 streamed plus 32. Of those, 182,079 came from the cache, a lifetime ratio of 0.64. Each counter appears once per label set, so sum the rows before you divide.
+计数器覆盖每台服务器的整个生命周期，两台服务器在抓取之前跑了不同的基准集。默认服务器计了 286,134 个 prompt token，流式 286,102 加 32。其中 182,079 来自缓存，终身比率 0.64。每个计数器按标签集出现一次，所以除之前先把行加起来。
 
 Sources: python/sglang/srt/observability/ at v0.5.22; capture/out/metrics.txt, no-radix-cache-metrics.txt, small-pool-metrics.txt.

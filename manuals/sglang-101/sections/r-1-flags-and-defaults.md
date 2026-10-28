@@ -1,12 +1,12 @@
-# Flags and defaults
+# 旗标与默认
 
-> These are the flags this manual changes or explains, with the default the code sets, the value our Mac resolved, and when to change it.
+> 本手册改过或解释过的旗标，以及代码设的默认、我们 Mac 解析出的值，和何时改它。
 
-`sglang serve --help` lists 535 options at 0.5.22 ([the captured help output](manuals/sglang-101/capture/out/serve-help.txt)). Most of them never matter to you. The table below holds the main ones this manual uses. The sections name a few more flags where they apply.
+`sglang serve --help` 在 0.5.22 列出 535 个选项（[捕获的帮助输出](manuals/sglang-101/capture/out/serve-help.txt)）。多数对你永远不重要。下表收着本手册用到的主要那些。各节在用到的地方还会点名另一些旗标。
 
-Many defaults are `None` in the code. A startup hook replaces them with a value that depends on the GPU, the model, and the free memory. The "On our Mac" column shows that resolved value, from the `server_args` line of [the default server log](manuals/sglang-101/capture/out/server-default.log).
+代码里很多默认是 `None`。启动钩子用取决于 GPU、模型和空闲内存的值替换它们。"On our Mac" 列展示那个解析后的值，来自[默认服务器日志](manuals/sglang-101/capture/out/server-default.log)的 `server_args` 行。
 
-## Memory and admission
+## 内存与准入 {#s-ref-flags-and-defaults-memory-and-admission}
 
 | Flag | Default in the code | On our Mac | Change it when | Section |
 |---|---|---|---|---|
@@ -18,7 +18,7 @@ Many defaults are `None` in the code. A startup hook replaces them with a value 
 | `--schedule-conservativeness` | 1.0 | 1.0 | you see retractions in the log, raise it | [2.3](#s-admission-and-retraction) |
 | `--page-size` | `None`, derived per attention backend | 1 | the attention backend needs pages | [3.1](#s-kv-bytes-per-token-and-the-kv-pool) |
 
-## Scheduling
+## 调度 {#s-ref-flags-and-defaults-scheduling}
 
 | Flag | Default in the code | On our Mac | Change it when | Section |
 |---|---|---|---|---|
@@ -26,7 +26,7 @@ Many defaults are `None` in the code. A startup hook replaces them with a value 
 | `--disable-overlap-schedule` | `False` | `False` | only to debug, and never on MLX at 0.5.22, where it crashed | [2.4](#s-the-overlap-scheduler) |
 | `--stream-interval` | 1 | 1 | you stream to many clients and want fewer messages | [2.5](#s-streaming-stop-strings-and-the-openai-api) |
 
-## Cache
+## 缓存 {#s-ref-flags-and-defaults-cache}
 
 | Flag | Default in the code | On our Mac | Change it when | Section |
 |---|---|---|---|---|
@@ -36,7 +36,7 @@ Many defaults are `None` in the code. A startup hook replaces them with a value 
 | `--kv-cache-dtype` | `auto` | `auto` | you need more context per GPU and can test the quality | [4.3](#s-quantization) |
 | `--enable-cache-report` | `False` | `True`, set by the kit | always, so clients see `cached_tokens` | [3.4](#s-prefix-friendly-prompts) |
 
-## Execution
+## 执行 {#s-ref-flags-and-defaults-execution}
 
 | Flag | Default in the code | On our Mac | Change it when | Section |
 |---|---|---|---|---|
@@ -46,9 +46,9 @@ Many defaults are `None` in the code. A startup hook replaces them with a value 
 | `--speculative-algorithm` | `None` | `None` | decode latency at low concurrency matters most | [4.4](#s-speculative-decoding) |
 | `--enable-deterministic-inference` | `False` | `False` | you need the same output for the same input in any batch | [4.6](#s-deterministic-inference-and-logprobs) |
 
-`--disable-cuda-graph` still works at 0.5.22, and the per-phase flags `--cuda-graph-backend-decode` and `--cuda-graph-backend-prefill` replace it.
+`--disable-cuda-graph` 在 0.5.22 仍可用，按阶段的旗标 `--cuda-graph-backend-decode` 和 `--cuda-graph-backend-prefill` 替换它。
 
-## Parallelism and operations
+## 并行与运维 {#s-ref-flags-and-defaults-parallelism-and-operations}
 
 | Flag | Default in the code | On our Mac | Change it when | Section |
 |---|---|---|---|---|
