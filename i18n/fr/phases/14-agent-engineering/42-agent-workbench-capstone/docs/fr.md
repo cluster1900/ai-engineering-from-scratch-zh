@@ -224,7 +224,6 @@ Gardez le sac à recycler et ce que vous avez fini.[career-agent-evidence.md](ht
 - [Nx Blog, Teach Your AI Agent How to Work in a Monorepo](https://nx.dev/blog/nx-ai-agent-skills) 跨六种工具的单一来源发电机
 - [agents.md — the open spec](https://agents.md/) Le routeur de votre paquet  doit mettre en œuvre le contenu
 - [HKUDS/OpenHarness](https://github.com/HKUDS/OpenHarness) réalisation de référence équivalent de pack
-- [andrewgarst/agentic_harness](https://github.com/andrewgarst/agentic_harness) 带 eval suite de Redes-supporté  référence réalisation
 - [Augment Code, A good AGENTS.md is a model upgrade](https://www.augmentcode.com/blog/how-to-write-good-agents-dot-md-files) emballage de documents
 - [Anthropic, Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)
 - [Anthropic, Harness design for long-running application development](https://www.anthropic.com/engineering/harness-design-long-running-apps)
