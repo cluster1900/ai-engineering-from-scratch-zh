@@ -224,7 +224,6 @@ python3 code/main.py
 - [Nx Blog, Teach Your AI Agent How to Work in a Monorepo](https://nx.dev/blog/nx-ai-agent-skills) 跨六种工具的单一来源发电机
 - [agents.md — the open spec](https://agents.md/) 您的包的路由器必须实现内容
 - [HKUDS/OpenHarness](https://github.com/HKUDS/OpenHarness)包装等效的参考实现
-- [andrewgarst/agentic_harness](https://github.com/andrewgarst/agentic_harness) 带 eval套件的 Redis支持 参考实现
 - [Augment Code, A good AGENTS.md is a model upgrade](https://www.augmentcode.com/blog/how-to-write-good-agents-dot-md-files)包装文件的质量门
 - [Anthropic, Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)
 - [Anthropic, Harness design for long-running application development](https://www.anthropic.com/engineering/harness-design-long-running-apps)
