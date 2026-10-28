@@ -1,24 +1,24 @@
 # Desde zero realizando operações coletivas
 
-> O conjunto de quatro operações coletivas é todo redução, transmissão, reúne e reduzir.`multiprocessing.Queue`A rede de construção de uma vez, em função da referência para a realização de verificação deles, o resto do órbito é transformado em tubos.
+> O sistema de comunicação coletiva é todo redução, transmissão, reúne e reduz_dispersão.`multiprocessing.Queue`A rede de realização de uma vez, re-controlo de referência para realização de verificação, esta pista  parte restante  é apenas conectado
 
 **Type:** Build
 **Languages:** Python
-**Prerequisites:** 第 19 阶段 Track C 课程 42-49
+**Prerequisites:** Phase 19 Track C lessons 42-49
 **Time:** ~90 分钟
 
 ## Objectivo de aprendizagem
 
-- Em duas vezes de transmissão, a realização do ciclo reduzi-lo todo (precedendo a redução do disperso e depois a coleta) e a demonstração da quantidade de comunicação por elemento 2 (N-1) /N 字节。
-- Em`multiprocessing.Queue`Sobre o ponto de envio sobre o ponto de envio construção de propagandas, tudo reunido e reduzido.
-- De acordo com o mesmo input.`torch.distributed`Glo 参考验证每个原语──
-- Defender a escolha do arco e do arco em termos de forma de grupo 延迟下限和带宽上限.
+- Use dois algoritmos para realizar o anel todo redução, primeiro redução-dispersão, re-agrupar), e provar que cada nível de comunicação é cada elemento.$2(N-1)/N$- Não, não.
+- Em`multiprocessing.Queue`上的点对点 enviar 之上实现 emissão、allgather 和 reduce_scatter。
+- Para a mesma entrada, us`torch.distributed`Como referência, verifique cada um dos seus idiomas.
+- De forma de grupo 延迟下限和带宽上限出发,论证该选环 还是树
 
 ## 问题
 
-N 级上的简单将张量 N 次发送到根并广播 N 次。 cada rank 带宽缩放为$O(N)$, o anel se torna um copo, e o hang-lock é o mais lento do link multiplicado por N.$T/N$de$2(N-1)$块, portanto cada rank 字节 下降到$2T(N-1)/N$, com o N                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          $2T$E nunca vai superá-lo, não importa o tamanho do grupo.$\log_2(N)$Salta em vez de salta$2(N-1)$                                                                                                                                                                                                                                                              
+Em N 个级 上做朴素 allreduce,将把张量向根发送 N 次,再广播回来 N 次.$O(N)$Enlargar, raiz transformar em garrafa, tempo de tempo de limite é o mais lento da linha multiplicando N.$2(N-1)$个大小为 $T/N$de cada um, cada um de cada um.$2T(N-1)/N$, com o aumento da tendência$2T$且永不超出,与集群规模无关. 树全减少在小N、高延迟链路上更优,因为深度是$\log_2(N)$Salta, em vez de$2(N-1)$O bloco mais lento da GPU decide o passo.
 
- Cada quadro de treinamento distribuído que você vai ler neste tutorial depende de estas quatro linguagens originais。 PyTorch DDP irá reduzir a gradiência com cada barril de parâmetros em um allreduce 同步。 ZeRO  através de reduce_scatter para o estado do optimizador fazer um pedaço, e através de allgather 广播更新的参数。 FSDP irá tornar-se completo em todo o conjunto com reduce_scatter。
+Você na pista 里会读的每个分布式训练框架,都依赖于四个原语──PyTorch DDP utiliza cada parâmetro em cubos de cada parâmetro, uma vez todos reduzir para a mesma escala──ZeRO utiliza reduz_scatter 分片优化器状态, reutiliza todos 广播更新后的参数──FSDP Colocar o conjunto em frente 变成所有加减少_scatter──Pipeline parallel 需要跨阶段组播 传活化──实现不了这些四个集体,无法推推训为何住,为何梯度卡不匹配现在排名3以及为何换拓后管道泡泡会翻倍──
 
 ## 概念
 
@@ -34,26 +34,25 @@ flowchart LR
   Q30 --> R0
 ```
 
-### 分两次进行所有减
+### 两遍完成的 Ring allreduce
 
-Em cada um dos passos, todos os blocos de N1 são redutores, em cada um dos passos, todos os blocos de N1 são redutores, em cada um dos passos, todos os blocos de N1 são redutores, em cada um dos passos, todos os blocos de N1 são redutores, em cada um dos passos, todos os blocos de N1 são redutores, em cada um dos passos, todos os blocos são redutores, em cada um dos passos, todos os blocos são redutores, em cada um dos passos, todos os blocos são redutores, todos os blocos são redutores, todos os blocos são redutores, todos os blocos são redutores, todos os blocos são redutores, todos os blocos são redutores, todos os blocos são redutores, todos os blocos são redutores, todos os blocos são redutores, todos os blocos são redutores.
+Colocar a quantidade de quantidade em N 个等等的大小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小小$(r - s) \bmod N$- Não .$(r + 1) \bmod N$,并从级 $(r - 1) \bmod N$接收 pedaço $(r - s - 1) \bmod N$Depois de passar por N-1 passos, o ranking r                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
 
-|原语|每 rank 字节 |步骤|何时使用 |
+| 原语 | 每 rank 字节数 | 步数 | 何时使用 |
 |-----------|---------------|-------|-------------|
-|Ring allreduce| 2T(N-1)/N | 2(N-1) |大 T、fat-pipe 同构集群 |
-|Tree allreduce | T log2(N) | 2 log2(N) |小 T 或高延迟链路 |
-|广播| T | log2(N) 树 |参数初始化，标量配置|
-|allgather| T(N-1)/N | N-1 |分片转发，ZeRO 取消分片 |
-|reduce_scatter | T(N-1)/N | N-1 | ZeRO 梯度分片 |
+| Ring allreduce | 2T(N-1)/N | 2(N-1) | 大 T、同构 fat-pipe 集群 |
+| Tree allreduce | T log2(N) | 2 log2(N) | 小 T 或高延迟链路 |
+| Broadcast | T | log2(N) tree | 参数初始化、标量配置 |
+| Allgather | T(N-1)/N | N-1 | 分片 forward、ZeRO unshard |
+| Reduce_scatter | T(N-1)/N | N-1 | ZeRO 梯度分片 |
 
-### 队列网格 como substituto da NCCL
+### Usar rede de fila em vez de NCCL
 
-NCCL em PCIe e NVLink, operando em menor carga de hardware.`multiprocessing.Queue`Para que você forneça com um único produtor e um único consumidor, o ponto de entrega de pedidos em ponto de entrega. A redução ocorre no espaço de usuário, portanto, você precisa pagar Python, mas o modelo de ligação com o NCCL tudo reduz o mesmo.
+NCCL                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           `multiprocessing.Queue`O que acontece é que o usuário deve pagar o pagamento de Python, mas o padrão de roteiro e o anel NCCL reduzem tudo.
 
-### 针对 gloo 进行验证
+### Para fazer um teste
 
-Cada língua original é testada por unidades, e a sua saída é iniciada no final do mundo em uma mesma quantidade de volume.`torch.distributed` fazer comparação. Se o seu anel reduzir a diferença de gloo em relação ao float32 epsilon, o teste falha.
-
+Cada idioma original tem uma unidade de teste: no mesmo tamanho do mundo, na mesma quantidade, coloca sua saída com o uso de um mundo.`torch.distributed`Por exemplo, a primeira fase do teste foi realizada em um laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de laboratório de
 
 ```figure
 ci-ring-allreduce
@@ -63,67 +62,67 @@ ci-ring-allreduce
 
 `code/main.py`实现:
 
-- `Mesh`类,将 N 个 `multiprocessing.Queue`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             `send(dst, tensor)`和 `recv(src)`- Não.
-- `ring_allreduce(mesh, rank, world_size, tensor)`运行两遍算法── Não é o que se passa?
-- Para os árvores`broadcast(mesh, rank, world_size, tensor, src)`- Não.
-- `allgather(mesh, rank, world_size, tensor)`Utilize N-1 轮换──
-- `reduce_scatter(mesh, rank, world_size, tensor)`Como parte de todo o redução.
-- `_gloo_reference(op, world_size, tensor)` através `torch.distributed`运行相同输入,并使用 gloo 进行字节相等比较──
+- `Mesh`类:把 N 个 `multiprocessing.Queue`接成环,并按级 暴露 `send(dst, tensor)`Com`recv(src)`- Não.
+- `ring_allreduce(mesh, rank, world_size, tensor)`Não é o que eu quero.
+- `broadcast(mesh, rank, world_size, tensor, src)`- Não, não.
+- `allgather(mesh, rank, world_size, tensor)`: Usando N-1 次轮转――
+- `reduce_scatter(mesh, rank, world_size, tensor)`Como todo redução de primeira metade.
+- `_gloo_reference(op, world_size, tensor)`O mesmo tipo de entrada é o mesmo tipo de entrada .`torch.distributed`, fazer-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-a-ver-se-ver-se-a-ver-se-ver-se-se-a-ver-se-ver-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se-se
 
-- Não .
+运行:
 
 ```bash
 python3 code/main.py
 ```
 
-输出: Compare a linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha de linha
+输出:按原语对比排列网与 gloo 输出验证表,以及证明 $2T(N-1)/N$缩放的每级 字节计计器──
 
-## 野外生产模式
+## Práctica no ambiente de produção
 
-Três modos de fazer o base de dinheiro suficientemente forte, pode ser entregue.
+Três modos podem tornar estas línguas originais mais duras que o que é possível.
 
-**在 allreduce 之前对梯度进行分桶。**O modelo de 1B 参数 possui milhares de gradientes 张量―― cada gradiente é realizado uma vez, reduzindo o pagamento de N 倍的延迟下限―― DDP irá armazenar a gradiência em cerca de 25 MB de blocos, e emitir um allreduce para cada caixinha de armazenamento; 小张量骑大张量的后面――
+**allreduce 前先对梯度分桶。**Um modelo de 10 bilhões de parametros tem 10 mil gradientes de volume. Cada gradiente de volume uma vez reduz, deve pagar N 倍延迟下限.
 
-**通信与计算重叠。**Para trás, em contrapartida, a ordem de cada nível calculada está em ordem. Quando a última fase está pronta, comece a reduzir tudo, enquanto a primeira fase continua a calcular.
+**让通信与计算重叠。**O nível de cálculo é reduzido em uma fase de cálculo, e o nível de cálculo é reduzido em uma fase de cálculo.
 
-**根据消息大小而不是宗教来选择环或树。**NCCL  forneceu um testeiro de toponímia, que pode ser usado para um número de toponímia de ~ 1 MB, para um número de toponímia de ~ 1 MB, para um número de toponímia de ~ 1 MB, para um número de toponímia de ~ 1 MB.
+**按消息大小选 ring 或 tree，不要教条。**NCCL 自带拓检测:大约 1 MB 以上选戒,以下选树──交叉点是带宽对延迟超过 1 MB 时带宽项 $2T(N-1)/N$占主导,ring 胜出; inferior a 1 MB 时$\log_2(N)$Salto num número de vantagens. Escrever um estilo de vida, vai perder em grande parte a mensagem errada.
 
 ## Use-o
 
-Modelo de produção:
+O uso em produção:
 
-- **PyTorch DDP。**Em direcção ao nível de barril`dist.all_reduce`斗大小可调; para 100Gbit 以太网,默认 25 MB é razoável.
-- **DeepSpeed ZeRO。**发出减_scatter para fazer um segmento de gradiente e fazer uma reunião antes de o transmissão para reconstruir o parâmetro completo.
-- **FSDP.**Antes de tudo, comece a fazer a eliminação de partes, calcula, depois utiliza o redutor, reduzir e perder as partes.
+- **PyTorch DDP。**Retrogrado                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          `dist.all_reduce`◊ bucket 大小可调;100Gbit 以太网下默认 25 MB 合理。
+- **DeepSpeed ZeRO。**发 reduce_scatter 分片梯度,forward 前再所有重建完整参数──本课的原语正是 ZeRO 实际发射调用──
+- **FSDP。**Para frente, antes todos juntos, coloquem essa camada em pedaços, calculados, reutilizados, reduzidos, dispersos, reduzidos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, dispersos, disperso, disperso, disperso, disperso, disperso, disperso, e disperso, e disperso, e disperso.
 
-## 发货
+## Entrega-o
 
-Use第 77-81 课中的队列网格原语──第 77 课把所有减少 接入 DDP──第 78 课把减少_scatter 接入 ZeRO──第 79 课用点对点发送和回复(em vez de coletivos) transmite a ativação do pipeline──第 81 课把这四者组合成端到端演示──
+Em 7781 课中使用这些队列网 原语──第 77 课把所有减少到DDP──第 78 课把减少_scatter 接到ZERO──第 79 课用点对点发送/recv(而不是集体)传递管道 激活──第 81 课把四者组成端到端演示──
 
 ## 练习
 
-1. Adição de árvores todos reduzir os variações, e, de acordo com a informação,
-2. 添加 `recv_timeout_ms`, para que a classificação estagnada apareça um erro de data de encerramento, em vez de ficar sempre pendurada.
-3. " Quatro idiomas originais "`multiprocessing.Queue`替换为 TCP 套接字──相同的测试,真线──
-4. Adicionar o código de acesso, para que cada linha de dados seja registrada no JSONL.
-5. Comparado com o tempo de pendura de um arco em 4 grados de 1KB,1MB,16, de tamanho de 16MB, com experiência em defender o meio-fio.
+1. 增加 tree allreduce 变体,并按消息大小在 ring与树之间切换──测出交叉点──
+2. 增加 `recv_timeout_ms`Deixe o ranking de um carregador de dados ficar em erro, em vez de ficar sempre pendurado.
+3. - Não.`multiprocessing.Queue`换成 TCP socket──同一套测试,真实线路──
+4. 加带宽探测 hook,把每级字节计计器记到JSONL──
+5. Em 4 个级别, em 1KB、1MB、16MB 张量比较环与树的墙钟时间──用实测为交叉点辩护──
 
 ## 关键术语
 
-|术语 |人们怎么说|它实际上意味着什么 |
+| 术语 | 人们常说 | 实际含义 |
 |------|----------------|------------------------|
-|allreduce| “跨等级总和”|调用后，每个等级都保留相同的简化张量 |
-|戒指| “快速拓扑”| N-1 个大小为 T/N 的块绕周期流动两次 |
-|树| “日志拓扑”|归约遵循二叉树；深度为 log2(N) 跳 |
-|allgather| “连接碎片”|每个等级都以其他等级的碎片结束 |
-|reduce_scatter | “平分总和”|每个排名仅以一个块的总和结束 |
-|桶| “融合小张量”|将N个小的全部合并为一个大的|
+| Allreduce | “跨 rank 求和” | 调用结束后每个 rank 持有相同的归约张量 |
+| Ring | “更快的拓扑” | N-1 个大小为 T/N 的 chunk 绕环流两圈 |
+| Tree | “对数拓扑” | 归约沿二叉树进行；深度为 log2(N) 跳 |
+| Allgather | “拼接分片” | 每个 rank 最终持有所有其他 rank 的分片 |
+| Reduce_scatter | “把求和切开” | 每个 rank 最终只持有某一个 chunk 的求和 |
+| Bucket | “融合小张量” | 把 N 次小 allreduce 合并成一次大的 |
 
-##  weiterlesen
+## 延伸阅读
 
-- [PyTorch 分布式：NCCL 集体](https://pytorch.org/docs/stable/distributed.html#collective-functions)
-- [Horovod环全减纸](https://arxiv.org/abs/1802.05799)
-- NCCL拓和算法选择](https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/index.html)
-- [Patarasuk 和 Yuan，带宽最优 allreduce 算法](https://www.cs.fsu.edu/~xyuan/paper/09jpdc.pdf)
-- 第 10 阶段 第 05 课 -  分布式训练概述
-- 第 19 阶段 第 77 课 - DDP 连接在这些原语之上
+- [PyTorch Distributed: NCCL collectives](https://pytorch.org/docs/stable/distributed.html#collective-functions)
+- [Horovod ring allreduce paper](https://arxiv.org/abs/1802.05799)
+- [NCCL topology and algorithm selection](https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/index.html)
+- [Patarasuk and Yuan, Bandwidth optimal allreduce algorithms](https://www.cs.fsu.edu/~xyuan/paper/09jpdc.pdf)
+- Fase 10 Lição 05 - visão geral da formação distribuída
+- Fase 19 Lição 77 - DDP cablado em cima destes primitivos

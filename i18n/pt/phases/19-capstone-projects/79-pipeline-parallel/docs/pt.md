@@ -1,24 +1,24 @@
-# 管道并行和气泡分析
+# O oleoduto paralelo à bolha  análise
 
-> 张量并行性将矩阵乘法跨等级分化――管道并行性将模型跨等级分化,每个等级一个阶段――微批次流经管道――开始和结束的空时间就是泡;最小化它是整个过程――
+> Paralelo tensor Colocar a matriz multiplicando-se para várias classes de cima e baixo. Colocar o modelo cortando para várias classes de cima e baixo.
 
 **Type:** Build
 **Languages:** Python
-**Prerequisites:** 第 19 期 Track C 课程 42-49
+**Prerequisites:** Phase 19 Track C lessons 42-49
 **Time:** ~90 分钟
 
 ## Objectivo de aprendizagem
 
-- Se o modelo de ordem for dividido em N 个阶段, e se elevará para um tubo de direção anterior de N 个等级.
-- Utilize GPipe 计划通过管道安排 M 个微批次(仅向前填充,然后向后)并计算气泡分数──
-- Comparar a bolha com Megatron-LM e PipeDream
-- Defender a distribuição de fases: o número de parâmetros de cada fase é mais importante do que o número de fases de cada fase.
+- Colocar um modelo de ordem desmontado em N 个 estágio e em N 个 rango 上模拟前沿管道。
+- Use GPipe 调度(先只做前面 填满,再倒退) Deixe M 个微洗管 过管,并计算泡 比例。
+- Com Megatron-LM、PipeDream 调度比较泡
+- 论证 fase 分配: cada fase 算力相等, é mais importante que cada fase 参数相等.
 
 ## 问题
 
-O modelo de parâmetros 70B no fp16 precisa apenas de parâmetros de 140 GB. Nenhum GPU de consumo pode suportá-lo.$\log(N)$︎ O tubo é executado através de diferentes rotas: ︎ o modelo é cortado em N 个阶段, e colocado em cada nível em um estágio. ︎ O primeiro nível é executado em 0 ︎, ︎ o primeiro nível é executado em 2 ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎, ︎
+fp16 下的 70B 参数模型,光参数需要140 GB──没有任何消费级 GPU 装备下──ZeRO-3 会将参数分片分分到各级别,但每一步前进 仍然要让每个级别都聚集 完整一层,每层付出 $\log(N)$跳──pipeline parallel 换一条路:把模型切成 N 个阶段,每个级别 放一个──Layer 1 的前进 在级别 0 做完,把激活张量交付给级别 1;级别 1 跑层 2 再交付给级别 2;以此类推──Retroverse反向流回──内存近似线性下降,因为 cada nível só tem uma fase;计算是串行的,这就是泡泡 问题──
 
-气泡是管道开始时(等第一微批到最后阶段) 和结束时(等最后微批回流) 的空时间──对于M 个微批和N 个阶段,每阶段的气泡分数为 (N-1) /(M+N-1)──当M=8、N=4时,即27%.──当M=64、N=4时,为4.5%──当M=64、N=4时,即4.5%──当每阶段有很多微批时,气泡就会缩小,这意味着每微批批的批次大小小小小小,驱动器批次设计的约.──
+Bubble é um tubo de água 开头的空(等第一微巴赫到最后阶段) 和结尾的空(等最后一个微巴赫 回抽) ⋅ M 个微巴赫、N 个阶段 时, 个阶段的泡 比如是$(N-1)/(M+N-1)$M=8、N=4 时是27%; M=64、N=4 时是4.5%── cada passo de microbatch 越多,bubble 越小, isto significa que cada microbatch é de grandeza de lote 更小
 
 ## 概念
 
@@ -32,22 +32,21 @@ flowchart LR
   R1 -.backward.-> R0
 ```
 
-### GPipe 时间表
+### GPipe 调度
 
-Antes de começar qualquer operação posterior, use todos os M 个微批次向前填充管道; então reverso向倒流. Cada micro lote de ativação deve ser mantida até o futuro, de modo que o内存 cresça linearmente.
+Antes de usar todos os M 个 microbatch Colocar o pipeline para frente 填满,再开始任何后退; então反向排空。 cada microbatch deve ser ativado para trás, para que o内存 continue crescendo 线性 M 个周期, atrás 占占 M+N-1 个周期, atrás 占 M+N-1 个个个―― cada fase é válida como 2M 个周期; cada fase é uma bolha é 2(N-1) 个周期―― quando cada vez avança e cada vez para trás, cada vez que ocupa uma unidade de tempo, quando a bolha, por exemplo, é$(N-1)/(M+N-1)$◊把 M 取得远大于N,就能把泡藏起来──
 
-### 1F1B 时间表
+### 1F1B 调度
 
-交错: assim que os pequenos lotes de avanços chegam à fase final, vamos começar a sua posterior direção e deixá-los fluir de volta.
+交错: uma microbatch avança, uma até a última fase, imediatamente começa para trás e deixa-a voltar a correr.
 
-### Por que é importante calcular a igualdade de cada fase
+### Por que é importante a cada etapa?
 
-Se a fase 0  precisa de 50 ms, a fase 1  precisa de 100 ms, então cada ciclo está na fase 1 上门控。 outros estágios cada ciclo está em vácuo  50 ms, espera a fase 1 释放。 o mesmo número de parâmetros é o eixo errado: o cálculo do transformador é principalmente orientado pela atenção adicionada a cada nível MLP, enquanto o nível embuxado tem muitos parâmetros, mas a quantidade de cálculo é muito pequena。 a distribuição de estágios deve equilibrar o FLOP de cada etapa, e não o peso de cada etapa.
+Se estágio 0 precisa de 50 ms, estágio 1 precisa de 100 ms, cada ciclo está em estágio 1 上。 outro estágio Cada ciclo está em vácuo igual a 50 ms, igual a estágio 1 放行。参数相等是错轴:transformer的算力由每层的注意加 MLP 主导,嵌入层参数多但算力少──Stage 分配应按每个阶段的 FLOPs 均衡,而不是按权重数均衡──
 
-### Micro e lote
+### Microbate e lote
 
-管道运行 M 个微批次,每个微批次的大小为 B。有效批次大小为 M*B。管道步骤结束时的梯度是组合 M*B示例的梯度。气泡分数取决于 M;优化器看到的是 M*B──调整 M significa que vai burburar(M 值较低) com cada pequena批次内存(GPipe 激活内存值较高,M 值较高) realizar transações。
-
+Pipeline 跑 M 个、每个大小为 B 的微包――有效批量是 $M \cdot B$◊ um passo de pipeline                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       $M \cdot B$个样本的梯度──Bubble 比例取决于M; optimizer sees what $M \cdot B$△调 M,就是在泡 (B) △ M 大则更低) 和每微包内存 (GPipe 下 M 大则激活内存更高) △
 
 ```figure
 cd-pipeline-bubble
@@ -57,63 +56,63 @@ cd-pipeline-bubble
 
 `code/main.py`实现:
 
-- `PipelineStage`Um pequeno .`nn.Module`, preservar um estágio de parâmetros e abrir`forward(activation)`- Não.
-- `Pipeline(stages, num_microbatches)`: usar cada fase de simulação pendurado em simulação fase em GPipe 时间表──
-- `bubble_fraction(num_stages, num_microbatches)`O que é o "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de "Colour" de " "Colour" é " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " "
-- 4 fase de demonstração, impressão de cada pequeno lote de linhas e de quantidade de bolhas de medição.
+- `PipelineStage`Um pequeno .`nn.Module`, tem um estágio de parametros,并暴露 `forward(activation)`- Não.
+- `Pipeline(stages, num_microbatches)`A primeira fase é a de um grupo de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos de grupos.
+- `bubble_fraction(num_stages, num_microbatches)`: closed式公式 $(N-1)/(M+N-1)$- Não.
+- Uma demonstração em 4 etapas: imprimir em microbatch, bem como a bolha de teste, por exemplo.
 
-- Não .
+运行:
 
 ```bash
 python3 code/main.py
 ```
 
-输出: gradual e por porção de gás e porção de bolhas em relação à previsão fechada.
+输出: por fase×microbatch de Gantt 图, bem como relativa à bolha de previsão fechada 百分比──
 
-## 野外生产模式
+## Práctica no ambiente de produção
 
-Três modos de endurecimento de tubos para transporte
+Três modos podem tornar o oleoduto paralelo ao nível de endurecimento possível.
 
-**激活检查点与管道配对。**Quando o GPipe 上运行 M 个微批次时, a memória activa é uma memória de um pequeno lote de M 倍次;; o ponto de inspeção activa é recalculado no tempo posterior para calcular a memória de troca; essa combinação permite que o tubo possa processar longas sequências;;
+**Activation checkpointing 与 pipeline 搭配。**GPipe 上有M 个微巴奇 在飞时,激活内存是单个微巴奇的M 倍──Activação de ponto de cheque em retrospectiva 时重算前, usando cálculos para mudar a memória; 两者结合,长序列上的管道才可行──
 
-**阶段平衡是测量出来的，而不是假设的。**O grupo de produção executa um processo de análise, mede cada camada de cálculo real do hardware do objetivo (FLOP 和挂钟), e depois faz uma divisão de acordo com os resultados da medição.`--num-layers-per-stage`                                                                                                                                                                                                                                                              
+**Stage 均衡靠测量，不靠假设。**O grupo de produção irá primeiro executar uma rodada de perfil, testar a capacidade de cálculo real em cada camada de hardware de meta (FLOPs e Wall clock), re-pós-média de resultados de divisão.`--num-layers-per-stage` aceitar a lista, para que cada fase tenha um número de camadas diferentes de cada nível de custo.
 
-**发送-接收调度必须避免死锁。**Cada fase está em linha de recepção, fechamento e envio de tubos.
+**Send/recv 调度必须避免死锁。**Se cada etapa tiver de enviar recovidas, os cursos serão fechados.
 
 ## Use-o
 
-Modelo de produção:
+O uso em produção:
 
-- **Megatron-LM。**Referência para as operações de tráfego de grande escala. Adopção 1F1B, apoio à quantidade de tráfego de dados + tráfego de dados
-- **DeepSpeed Pipeline。**Com o ZeRO 集成; o ZeRO-1 + 管道 é o maior conjunto de modelos abertos.
-- **PyTorch Pipe。**PyTorch 原生管道包装器, baseada em `torch.distributed.pipeline.sync.Pipe`Construção.
+- **Megatron-LM。**Utilização de 1F1B,并支持 tensor + pipeline + data parallel 组合──
+- **DeepSpeed Pipeline。**Com o ZeRO 集成;ZeRO-1 + pipeline é a maior gama de modelos de código aberto.
+- **PyTorch Pipe。**PyTorch origin生的 পাইপলাইন 包装,基于 `torch.distributed.pipeline.sync.Pipe`- Não.
 
-## 发货
+## Entrega-o
 
-Seção 80 课将每阶段参数分片存储在分片检查点中. Seção 81 课在端到端演示中组成了DDP + ZeRO + 管道 (DDP + ZeRO + 管道) 本质上;演示在运行时保持管道模拟) 
+Seção 80 课把每阶段的参数分片存进分片检查点―― 第 81 课在端到端演示里组合 DDP + ZeRO + pipeline精神 () 
 
 ## 练习
 
-1.  Realizar 1F1B  Não verificar a quantidade de bolhas  com GPipe , mas ativar 
-2. Em modelos mais profundos, analise cada fase do tempo real, e passe a fase de reequilíbrio das pendências de medição.
-3. Adicionar a acumulação de gradientes de pequenos lotes de tubos, e verificar se a gradiência é igual à equivalência de todos os lotes de gradientes de direcção anterior.
-4. O conjunto de tubos e pontos de inspeção ativados, e a redução da memória e a relação entre custos de cálculo e medição.
-5. • Capacitação de cada nível de tubos em dados e em conjunto com o DDP
+1. 实现 1F1B, testing bubble 比例与GPipe 一致,但激活内存有上界──
+2. Em um modelo mais profundo, analise a realidade em cada fase do tempo, e em cada fase de reequilíbrio.
+3.  através do microbatch do pipeline fazer gradiência acumulada, inspecção gradiência é igual ao preço do lote completo para frente
+4. ∆o controlo de ativação do gasoduto 配上, medida do seu volume de memória e redução do seu valor de cálculo
+5. Colocar o pipeline em conjunto com o DDP (conjuntos de cada pipeline em conjunto com os dados), e sugerir a segunda dimensão da sua configuração.
 
 ## 关键术语
 
-|术语 |人们怎么说|它实际上意味着什么 |
+| 术语 | 人们常说 | 实际含义 |
 |------|----------------|------------------------|
-|管道| “模型沿深度平行” |每个等级一个阶段，激活逐级流动|
-|泡泡| “管道空闲时间”|开始+结束时的 (N-1) 个步骤，其中某些阶段没有工作 |
-|微批次| “批次切片”|前进/后退各1个；随着 M 的增大，气泡会缩小 |
-| G管道| “填充然后排水” |所有 M 都在任何后退之前前进；高激活记忆|
-| 1F1B | “交错时间表” |每级一前一后；有界激活记忆|
+| Pipeline | “沿深度的模型并行” | 每个 rank 一个 stage，激活逐 stage 流动 |
+| Bubble | “Pipeline 空闲时间” | 首尾各 (N-1) 步，部分 stage 没有工作 |
+| Microbatch | “Batch 的切片” | 一次 forward/backward 单元；M 增大则 bubble 缩小 |
+| GPipe | “先填满再排空” | M 次 forward 全部完成后再 backward；激活内存高 |
+| 1F1B | “交错调度” | 每 stage 一次 forward 一次 backward；激活内存有界 |
 
-##  weiterlesen
+## 延伸阅读
 
-- [Huang 等人，GPipe：巨型神经网络的高效训练](https://arxiv.org/abs/1811.06965)
-- [Narayanan 等人，PipeDream：DNN 训练的广义管道并行性](https://arxiv.org/abs/1806.03377)
-- [Megatron-LM 管道并行文档](https://github.com/NVIDIA/Megatron-LM)
-- 第19 阶段 第76 课 - 调度使用的发送/接收原语
-- No 19 阶段 No 78 课 - ZeRO e os canais estão em contacto regular e se compõem
+- [Huang et al, GPipe: Efficient Training of Giant Neural Networks](https://arxiv.org/abs/1811.06965)
+- [Narayanan et al, PipeDream: Generalized Pipeline Parallelism for DNN Training](https://arxiv.org/abs/1806.03377)
+- [Megatron-LM pipeline parallel docs](https://github.com/NVIDIA/Megatron-LM)
+- Fase 19 Lição 76 - as primitivas de envio/recovery que o cronograma usa
+- Fase 19 Lição 78 - O ZeRO é ortogonal ao oleoduto e muitas vezes combinado
