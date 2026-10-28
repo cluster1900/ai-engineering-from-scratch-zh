@@ -10,16 +10,16 @@
 
 **ForwardMode：** 一批上的标签，告诉模型运行器跑哪种前向。调度器设置它，模型运行器、attention 后端和 graph 运行器都读它。
 
-| Mode | What the pass does |
+| 模式 | 这一趟做什么 |
 |---|---|
-| `EXTEND` | Prefill. It writes KV entries for many new tokens. Part of the prompt can already be in the cache. |
-| `DECODE` | One new token for each running request. |
-| `MIXED` | A chunk of prefill and the decode tokens in one batch. Off unless you pass `--enable-mixed-chunk`. |
-| `IDLE` | No tokens. A data-parallel attention rank with no work runs it so that collective calls still match. |
-| `TARGET_VERIFY` | Speculative decoding: the target model scores the draft tokens. |
-| `DRAFT_EXTEND_V2` | Speculative decoding: the draft model reads the accepted tokens. |
-| `PREBUILT` | A decode worker in prefill-decode disaggregation. The KV cache arrived from another server. |
-| `SPLIT_PREFILL` | A prefill that runs a few layers at a time, for prefill-decode multiplexing. |
+| `EXTEND` | Prefill。为许多新 token 写入 KV 条目。提示的一部分可能已在缓存里。 |
+| `DECODE` | 每个运行中请求一个新 token。 |
+| `MIXED` | 一块 prefill 与 decode token 同在一个 batch。默认关，除非传 `--enable-mixed-chunk`。 |
+| `IDLE` | 无 token。没有活的数据并行注意力 rank 会跑它，好让集合调用仍然对齐。 |
+| `TARGET_VERIFY` | 推测解码：目标模型给 draft token 打分。 |
+| `DRAFT_EXTEND_V2` | 推测解码：draft 模型读取已接受的 token。 |
+| `PREBUILT` | prefill-decode 分离里的 decode worker。KV 缓存来自另一台服务器。 |
+| `SPLIT_PREFILL` | 一次只跑几层的 prefill，用于 prefill-decode 复用。 |
 
 SGLang 把任何为每条请求写很多 KV 条目的前向叫 "extend"。这就是为什么代码里 `TARGET_VERIFY` 算作 extend。目标模型对每条请求的好几个 draft 位置跑一遍，像带树掩码的小 prefill。
 
@@ -47,14 +47,14 @@ caption: Read each column top to bottom. Kernel names are the ops of one Llama-s
 
 最大桶 `max_bs` 取决于 GPU 内存和张量并行大小。你不设 `--cuda-graph-max-bs-decode` 时，启动代码选它。
 
-| GPU memory | Example GPUs | Decode `max_bs` at TP below 4 | At TP 4 or more | `chunked_prefill_size` |
+| GPU 内存 | 示例 GPU | TP 低于 4 时的 decode `max_bs` | TP 为 4 或更高时 | `chunked_prefill_size` |
 |---|---|---|---|---|
-| under 20 GB | T4, RTX 4080 | 8 | 8 | 2048 |
+| 低于 20 GB | T4, RTX 4080 | 8 | 8 | 2048 |
 | 20 to 35 GB | A10, RTX 4090, RTX 5090 | 48 | 160 | 4096 |
 | 35 to 60 GB | A100 40 GB, L40 | 32 | 160 | 4096 |
 | 60 to 90 GB | H100, A100 80 GB | 256 | 512 | 8192 |
 | 90 to 160 GB | H200 | 256 | 512 | 8192 |
-| 160 GB and more | B200, MI300X | 512 | 512 | 16384 |
+| 160 GB 及以上 | B200, MI300X | 512 | 512 | 16384 |
 
 当一批 decode 大于 `max_bs` 时，graph 运行器无法回放。那一步用 eager 跑，每个内核一次启动。什么都不失败，也没有警告。那批的调度器日志行说 `cuda graph: False`，每 token 延迟上升。
 
@@ -94,7 +94,7 @@ Jarvislabs 的现场报告 {{field Jarvislabs 2026-05}} 用默认 SGLang 旗标�
 
 **我们测到** 两台服务器在从 1 到 64 的每个并发上各三个种子。默认服务器在每批 decode 上回放 decode graph，日志说 `cuda graph: True`。两个 graph 后端都设成 `disabled` 的服务器记下 `cuda graph: False`。结果几乎一样：
 
-| Concurrency | Median TPOT with graphs | Median TPOT without | Output tok/s with graphs | Output tok/s without |
+| 并发 | 带 graph 的中位 TPOT | 不带 graph 的中位 TPOT | 带 graph 的输出 tok/s | 不带 graph 的输出 tok/s |
 |---|---|---|---|---|
 | 1 | 32.52 ms | 33.09 ms | 29.14 | 28.72 |
 | 8 | 102.21 ms | 104.77 ms | 74.11 | 73.46 |
@@ -120,13 +120,13 @@ note: One decode line from each server of the first pair, on two days, at 33 run
 [2026-10-18 18:01:00] Decode batch, #running-req: 33, #token: 20422, token usage: 0.85, cuda graph: False, gen throughput (token/s): 350.78, #queue-req: 0
 ```
 
-| Concurrency | Median TPOT with graphs / without | Output tok/s with / without | P99 ITL with / without |
+| 并发 | 中位 TPOT，带 graph / 不带 | 输出 tok/s，带 / 不带 | P99 ITL，带 / 不带 |
 |---|---|---|---|
 | 1 | 60.15 / 60.64 ms | 13.93 / 14.67 | 104 / 104 ms |
 | 8 | 66.01 / 66.60 ms | 112.60 / 111.67 | 70 / 68 ms |
 | 16 | 70.08 / 70.59 ms | 201.21 / 200.16 | 80 / 73 ms |
 | 32 | 95.65 / 94.12 ms | 270.61 / 270.81 | 103 / 87 ms |
-| 64, see the note below | 103.39 / 103.12 ms | 264.10 / 265.30 | 109 / 90 ms |
+| 64，见下方说明 | 103.39 / 103.12 ms | 264.10 / 265.30 | 109 / 90 ms |
 
 L4 服务器只捕获最多 48 条正在跑请求的 decode graphs。在 64 用户时，大于 48 的批在两台服务器上都跑 eager，所以最后一行不量 graphs。
 

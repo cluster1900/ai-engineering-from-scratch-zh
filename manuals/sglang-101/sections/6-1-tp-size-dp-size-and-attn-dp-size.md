@@ -44,7 +44,7 @@ caption: Read top to bottom. The controller is the default round_robin method. E
 
 v0.5.22 的代码对旧拼法做三件事 {{code}}：
 
-| You pass | SGLang does |
+| 你传入 | SGLang 做 |
 |---|---|
 | `--dp-size 8 --enable-dp-attention` | 改写为 `--attn-dp-size 8 --dp-size 1` 并打印弃用警告 |
 | `--attn-dp-size 8` | 新拼法，同样的布局 |
@@ -81,7 +81,7 @@ SGLang 团队在 v0.4 加入该模式时给出了这个理由 {{team 2024-12}}�
 
 一个 model world 可以跨机器。三个标志描述它 {{code}}：
 
-| Flag | Default | Meaning |
+| 旗标 | 默认 | 含义 |
 |---|---|---|
 | `--nnodes` | 1 | 一个 world 里的机器数 |
 | `--node-rank` | 0 | 这台机器的位置，从 0 起 |

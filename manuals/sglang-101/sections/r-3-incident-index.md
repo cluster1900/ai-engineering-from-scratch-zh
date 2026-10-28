@@ -6,7 +6,7 @@
 
 ## 我们的捕获 {#s-ref-incident-index-our-capture}
 
-| Incident | Symptom | Cause | Fix or status | Section |
+| 事件 | 症状 | 原因 | 修复或状态 | 节 |
 |---|---|---|---|---|
 | Out of memory at concurrency 32 ([log](manuals/sglang-101/capture/out/oom-exploratory.log)) | Metal 报告 `Insufficient Memory`，整个服务器进程树退出 | 池占用了启动时看到的空闲内存的 87% | `--mem-fraction-static 0.4` | [3.2](#s-mem-fraction-static-and-startup-sizing) |
 | `--disable-overlap-schedule` on MLX ([log](manuals/sglang-101/capture/out/server-no-overlap.log)) | 第一个真实 batch 上出现 `RuntimeError`，然后服务器经 SIGQUIT 退出并杀掉其进程树 | 无 overlap 的路径仍用两个设备上的张量调用 `FutureMap.stash` | 在 0.5.22 仍 open。保持 overlap 打开 | [2.4](#s-the-overlap-scheduler) |
@@ -28,7 +28,7 @@
 
 ## 第 1 部分与第 2 部分：请求路径 {#s-ref-incident-index-part-1-and-part-2-the-request-path}
 
-| Incident | Symptom | Cause | Fix or status | Section |
+| 事件 | 症状 | 原因 | 修复或状态 | 节 |
 |---|---|---|---|---|
 | LinkedIn field report, 2026-02 | 小排名模型上 P99 延迟到秒级 | 分词、ZMQ 消息、垃圾回收、GIL 与调度器 | 批量分词、打分路径，以及热身后的 `gc.freeze`（pull request 9241） | [1.2](#s-check-that-the-server-is-healthy), [2.1](#s-sglang-serve-and-the-three-processes) |
 | [#36889](https://github.com/sgl-project/sglang/issues/36889) | `--max-running-requests 8` 被接受，但吞吐卡在 2 条流 | Mamba 状态缓存把运行中请求上限封到 2 | 只有一行 info 报告该上限 | [2.2](#s-the-scheduler-loop-and-schedule-policy) |
@@ -39,7 +39,7 @@
 
 ## 第 3 部分：KV 缓存 {#s-ref-incident-index-part-3-the-kv-cache}
 
-| Incident | Symptom | Cause | Fix or status | Section |
+| 事件 | 症状 | 原因 | 修复或状态 | 节 |
 |---|---|---|---|---|
 | [#39675](https://github.com/sgl-project/sglang/issues/39675) | Apple MPS 上第一次 prefill 内存不足 | 未知容量使分数变成 0.95 | 设置 `--mem-fraction-static` | [3.2](#s-mem-fraction-static-and-startup-sizing) |
 | [#42510](https://github.com/sgl-project/sglang/issues/42510) | draft 池分配失败 | 在为目标池定尺寸时 draft 模型副本仍留在内存里 | 已报告 | [3.2](#s-mem-fraction-static-and-startup-sizing) |
@@ -57,7 +57,7 @@
 
 ## 第 4 部分：每一次前向 {#s-ref-incident-index-part-4-each-forward-pass}
 
-| Incident | Symptom | Cause | Fix or status | Section |
+| 事件 | 症状 | 原因 | 修复或状态 | 节 |
 |---|---|---|---|---|
 | [#23769](https://github.com/sgl-project/sglang/issues/23769) | DeepSeek-V4-Pro-FP8 在图捕获期间退出 | 有注意力数据并行时，图 batch size 按 rank 计数 | 更小的图 batch size 或更低的分数 | [4.1](#s-forwardmode-and-cuda-graphs) |
 | [#36478](https://github.com/sgl-project/sglang/issues/36478) | `disable_piecewise_cuda_graph=True` 在 Python API 里引发 `TypeError` | Pull request #23906 把该字段移进按阶段的图配置 | `cuda_graph_backend_prefill="disabled"` | [4.1](#s-forwardmode-and-cuda-graphs) |
@@ -76,7 +76,7 @@
 
 ## 第 5 部分：测量 {#s-ref-incident-index-part-5-measuring}
 
-| Incident | Symptom | Cause | Fix or status | Section |
+| 事件 | 症状 | 原因 | 修复或状态 | 节 |
 |---|---|---|---|---|
 | [#3196](https://github.com/sgl-project/sglang/issues/3196) | 八块 H200 上 DeepSeek V3 只有 13 tokens per second | 脚本按词计数并把 TTFT 算进速率 | 用基准客户端测量 | [5.1](#s-sglang-benchmark-serving) |
 | `sglang:utilization` | 繁忙服务器上该 gauge 读数为 0 | 代码注释链到 #22713 的一次回退 | 用队列与延迟序列 | [5.2](#s-the-metrics-endpoint) |
@@ -87,7 +87,7 @@
 
 ## 第 6 部分与第 7 部分：集群与运维 {#s-ref-incident-index-part-6-and-part-7-fleets-and-operations}
 
-| Incident | Symptom | Cause | Fix or status | Section |
+| 事件 | 症状 | 原因 | 修复或状态 | 节 |
 |---|---|---|---|---|
 | [#19953](https://github.com/sgl-project/sglang/issues/19953) | 跨节点的注意力数据并行在第一条消息上挂起 | ZeroMQ socket 在 IPv6 的 `--dist-init-addr` 上未绑定 IPv6 | 有人提出过修复。我们无法确认是否合并 | [6.1](#s-tp-size-dp-size-and-attn-dp-size) |
 | [#9787](https://github.com/sgl-project/sglang/issues/9787) | 一块 prefill GPU 空闲，然后每个 prefill 进程崩溃 | 不平衡路由在 DeepEP dispatch 里给一块 GPU 送了太多 token | 更小的 chunk、调好的专家放置，以及 EPLB | [6.2](#s-moe-serving-deepep-and-eplb) |

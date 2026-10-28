@@ -72,7 +72,7 @@ caption: Read top to bottom. Rows 3 and 4 repeat once per bucket of the default 
 
 Miles 用 `--update-weight-transfer-mode` 挑选传输 {{code}}：
 
-| Mode | How the bytes move | Where it fits |
+| 模式 | 字节如何移动 | 适用场合 |
 |---|---|---|
 | `broadcast`（默认） | 每个流水线阶段一个 NCCL 组，训练器 rank 0 把每个 bucket 广播给每一块引擎 GPU | 分开的训练器与引擎 GPU |
 | `broadcast_packed` | 同一组，每个 bucket 一个扁字节张量 | Megatron，非共置 |
@@ -184,12 +184,12 @@ metrics.py:94 - perf 47: {'rollout/raw_reward_unfiltered': 0.6484375, 'rollout/n
 Job 'raysubmit_y4umCbEa8Qp5Bbad' succeeded
 ```
 
-| Mean, first 8 steps / last 8 steps | Default seed | Seed 2 | Seed 3 |
+| 均值，前 8 步 / 后 8 步 | 默认种子 | 种子 2 | 种子 3 |
 |---|---|---|---|
 | Raw reward | 0.636 / 0.758 | 0.653 / 0.736 | 0.614 / 0.766 |
-| Response length, tokens | 724 / 447 | 712 / 480 | 734 / 456 |
-| Share cut at 1,024 tokens | 0.33 / 0.08 | 0.30 / 0.12 | 0.34 / 0.09 |
-| Log-probability gap | 0.0153 / 0.0146 | 0.0153 / 0.0150 | 0.0156 / 0.0146 |
+| 回答长度，token | 724 / 447 | 712 / 480 | 734 / 456 |
+| 在 1,024 token 处截断份额 | 0.33 / 0.08 | 0.30 / 0.12 | 0.34 / 0.09 |
+| Log-probability 差 | 0.0153 / 0.0146 | 0.0153 / 0.0150 | 0.0156 / 0.0146 |
 
 **我们测到**三个种子都是同样的结果。奖励上升，响应变短，被截断的更少。对数概率差距在全部 144 步里停在 0.0136 与 0.0164 之间。从一步到下一步奖励的最大变化，三个种子分别是 0.207、0.160 与 0.203。
 

@@ -10,7 +10,7 @@
 
 事实来自七类源，按权威排序。两类冲突时，更高的赢，正文也会说明。
 
-| Rank | Source | What the manual takes from it | Cited as |
+| 等级 | 源 | 手册从中取用 | 引用为 |
 |---|---|---|---|
 | 1 | 钉住标签上的 SGLang 源码，`baa9befa` | 每一个默认值和每一种机制 | 各节 Sources 行里的文件列表 |
 | 2 | [Mac 上](manuals/sglang-101/capture/out)和 [GPU 上](manuals/sglang-101/capture/gpu)的捕获运行 | 每一段 listing 和每一个标成测得的数字 | 捕获文件名 |
@@ -44,14 +44,14 @@ DeepEP 和跨很多 GPU 的 prefill-decode 拆分需要我们没有的硬件。�
 
 套件需要带 MLX extra 的 SGLang 0.5.22，跑在 Apple silicon 上，因此不能在仓库 CI 里跑。没有那套环境时，`--check` 打印 `skipped` 和原因并以 0 退出。Mac 运行的每个文件都记在同一台机器上：
 
-| Item | Value |
+| 项 | 值 |
 |---|---|
-| Host | 一台 Apple silicon 笔记本，macOS 26.2，build 25C56，arm64 |
+| 主机 | 一台 Apple silicon 笔记本，macOS 26.2，build 25C56，arm64 |
 | SGLang | 0.5.22，从标签安装，带 `srt_mps` extra |
 | Frameworks | PyTorch 2.13.0，MLX 0.32.4，Python 3.12.12 |
-| Model | `mlx-community/Qwen3-0.6B-4bit` |
-| Server flags | `SGLANG_USE_MLX=1`，`--disable-cuda-graph`，`--enable-cache-report`，`--enable-metrics`，`--mem-fraction-static 0.4` |
-| Recorded on | 2026-10-16 |
+| 模型 | `mlx-community/Qwen3-0.6B-4bit` |
+| 服务器旗标 | `SGLANG_USE_MLX=1`，`--disable-cuda-graph`，`--enable-cache-report`，`--enable-metrics`，`--mem-fraction-static 0.4` |
+| 录制于 | 2026-10-16 |
 
 套件启动四台服务器：默认配置、一台关掉 radix cache、一台关掉 overlap scheduler，以及一台 4,096 token 的 pool。关掉 overlap scheduler 的服务器在 0.5.22 的第一批真实 batch 上崩溃了，套件故意记下那次崩溃。[第 2.4 节](#s-the-overlap-scheduler) 读它。
 
@@ -66,15 +66,15 @@ DeepEP 和跨很多 GPU 的 prefill-decode 拆分需要我们没有的硬件。�
 
 每一份 GB10 运行日志和 GB10 摘要数据都记在同一台机器上：
 
-| Item | Value |
+| 项 | 值 |
 |---|---|
-| Host | 一台 NVIDIA DGX Spark，Ubuntu 24.04，aarch64 |
+| 主机 | 一台 NVIDIA DGX Spark，Ubuntu 24.04，aarch64 |
 | GPU | NVIDIA GB10，compute capability 12.1，121.7 GiB 与 CPU 共享的内存 |
 | SGLang | 来自 PyPI 的 0.5.22，sglang-kernel 0.4.9，flashinfer 0.7.1 |
-| Frameworks | PyTorch 2.14.1+cu130，CUDA 13.0，driver 580.159.03，Python 3.12.3 |
+| Frameworks | PyTorch 2.14.1+cu130，CUDA 13.0，驱动 580.159.03，Python 3.12.3 |
 | Models | `Qwen/Qwen3-30B-A3B-Instruct-2507`、它的 FP8 检查点，以及 EAGLE-3 draft `lmsys/SGLang-EAGLE3-Qwen3-30B-A3B-Instruct-2507-SpecForge-Nex` |
-| Server flags | `--enable-cache-report`，`--enable-metrics`，`--mem-fraction-static 0.7` |
-| Recorded on | 2026-10-16 |
+| 服务器旗标 | `--enable-cache-report`，`--enable-metrics`，`--mem-fraction-static 0.7` |
+| 录制于 | 2026-10-16 |
 
 套件还有一个在 NVIDIA L4 上跑 Qwen3-8B 的 `l4` profile，写出了 [L4 运行日志](manuals/sglang-101/capture/gpu/out-l4) 和 [L4 摘要数据](manuals/sglang-101/capture/gpu/summary/l4.json)。第 1 部分用那台 L4 服务器做 listing。我们第一次 L4 sweep 跑热并被限速，[第 5.1 节](#s-sglang-benchmark-serving) 把它当事故讲。随后我们在每次运行前把 L4 冷却到 72°C 再跑。[第 4.3 节](#s-quantization)、[第 4.4 节](#s-speculative-decoding) 和第 5.1 节用那些运行，第 5.1 节还显示冷却后的卡在长负载下仍会降时钟。
 

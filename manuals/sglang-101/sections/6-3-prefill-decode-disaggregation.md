@@ -45,7 +45,7 @@ caption: Read left to right. The numbers are the values of the KVPoll class. Amb
 
 ## 要紧的设置 {#s-prefill-decode-disaggregation-settings-that-matter}
 
-| Setting | Default | Meaning |
+| 设置 | 默认 | 含义 |
 |---|---|---|
 | `--disaggregation-mode` | `null` | 两种角色用 `prefill` 或 `decode` |
 | `--disaggregation-transfer-backend` | `mooncake` | 还有 `mooncake_tcp`、`nixl`、`mori`、`ascend`、`fake` |

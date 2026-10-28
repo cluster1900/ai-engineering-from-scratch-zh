@@ -6,7 +6,7 @@
 
 ## 排序后的源 {#s-ref-sources-the-ranked-sources}
 
-| Rank | Source | What the manual takes from it | Source key |
+| 等级 | 源 | 手册从中取用 | 源键 |
 |---|---|---|---|
 | 1 | 钉住标签上的 SGLang 源码，`baa9befa` | 每一个默认值和每一种机制 | 各节源文件，在手册源里 |
 | 2 | [Mac 上](manuals/sglang-101/capture/out)和 [GPU 上](manuals/sglang-101/capture/gpu)的捕获运行 | 每一段 listing 和每一个标成测得的数字 | 捕获文件名 |
@@ -18,7 +18,7 @@
 
 ## 第 1 档与第 2 档：代码与捕获 {#s-ref-sources-rank-1-and-rank-2-the-code-and-the-captures}
 
-| Source | Used in |
+| 源 | 用于 |
 |---|---|
 | SGLang 0.5.22, tag `v0.5.22`, commit `baa9befa381511cd4d56f83980951e5a45fffc6d`, [github.com/sgl-project/sglang](https://github.com/sgl-project/sglang) | 每一节 |
 | Miles 0.1.2, tag `v0.1.2`, commit `a22fd824`, [github.com/radixark/miles](https://github.com/radixark/miles) | [7.2](#s-sglang-as-an-rl-rollout-engine) |
@@ -30,7 +30,7 @@
 
 那些 issue 在[事故索引](#s-ref-incident-index)里。下面这些 pull request 解释一次设计变更。
 
-| Pull request | What it changed | Used in |
+| Pull request | 它改了什么 | 用于 |
 |---|---|---|
 | [#9241](https://github.com/sgl-project/sglang/pull/9241) | 预热后冻结垃圾回收器 | [1.2](#s-check-that-the-server-is-healthy) |
 | [#11210](https://github.com/sgl-project/sglang/pull/11210) | 同一线程里用两条 CUDA stream 做 overlap | [2.4](#s-the-overlap-scheduler) |
@@ -46,7 +46,7 @@
 
 ## 第 4 档：论文 {#s-ref-sources-rank-4-papers}
 
-| Paper | Used in |
+| 论文 | 用于 |
 |---|---|
 | Zheng and others, SGLang: Efficient Execution of Structured Language Model Programs, [arXiv 2312.07104](https://arxiv.org/abs/2312.07104) | [2.2](#s-the-scheduler-loop-and-schedule-policy), [3.1](#s-kv-bytes-per-token-and-the-kv-pool), [3.3](#s-radixcache), [4.5](#s-structured-outputs-with-xgrammar) |
 | The tail-optimized LRU policy that the code names, [arXiv 2510.15152](https://arxiv.org/abs/2510.15152) | [3.5](#s-eviction-policies-and-hicache) |
@@ -63,9 +63,9 @@
 
 ## 第 5 档：钉住标签上的 SGLang 文档 {#s-ref-sources-rank-5-sglang-documentation-at-the-tag}
 
-| Page | Used in |
+| 页面 | 用于 |
 |---|---|
-| `docs/docs/hardware-platforms/apple_metal.mdx` | the front matter, [2.1](#s-sglang-serve-and-the-three-processes), [2.4](#s-the-overlap-scheduler) |
+| `docs/docs/hardware-platforms/apple_metal.mdx` | 封面，[2.1](#s-sglang-serve-and-the-three-processes)，[2.4](#s-the-overlap-scheduler) |
 | `docs/docs/advanced_features/hyperparameter_tuning.mdx` | [2.3](#s-admission-and-retraction) |
 | `docs/docs/advanced_features/hicache_design.mdx` and `radix_eviction_policy.mdx` | [3.5](#s-eviction-policies-and-hicache) |
 | `docs/docs/advanced_features/attention_backend.mdx` | [4.2](#s-attention-backend) |
@@ -78,7 +78,7 @@
 
 ## 第 6 档：独立现场报告 {#s-ref-sources-rank-6-independent-field-reports}
 
-| Author | Report | Month | Used in |
+| 作者 | 报告 | 月份 | 用于 |
 |---|---|---|---|
 | AIMultiple | [Inference engines benchmark](https://aimultiple.com/inference-engines) | 2026-01, answer 2026-10 | [1.3](#s-what-the-server-does-with-your-request), [5.3](#s-reading-other-peoples-benchmarks) |
 | Alibaba Cloud, RBG and Mooncake teams | [A production inference platform with SGLang RBG and Mooncake](https://www.alibabacloud.com/blog/building-a-production-grade-cloud-native-large-model-inference-platform-with-sglang-rbg-%2B-mooncake_602933) | 2026-03 | [3.5](#s-eviction-policies-and-hicache) |
@@ -111,7 +111,7 @@
 
 ## 第 7 档：SGLang 团队与厂商报告 {#s-ref-sources-rank-7-sglang-team-and-vendor-reports}
 
-| Author | Report | Month | Used in |
+| 作者 | 报告 | 月份 | 用于 |
 |---|---|---|---|
 | The vLLM team | [The state of FP8 KV cache and attention quantization in vLLM](https://vllm.ai/blog/2026-04-22-fp8-kvcache) | 2026-04 | [4.3](#s-quantization) |
 | LMSYS | [SGLang with Llama 3](https://www.lmsys.org/blog/2024-07-25-sglang-llama3/) | 2024-07 | [5.3](#s-reading-other-peoples-benchmarks) |
@@ -124,6 +124,6 @@
 | Modal with Decagon | [Decagon case study](https://frontend.modal.com/blog/decagon-case-study) | 2025-11 | [4.4](#s-speculative-decoding) |
 | LMSYS and RadixArk | [Miles](https://www.lmsys.org/blog/2025-11-19-miles/) | 2025-11 | [7.2](#s-sglang-as-an-rl-rollout-engine) |
 | RadixArk | [Miles v0.1](https://www.lmsys.org/blog/2026-08-18-miles-v0-1/) | 2026-08 | [7.2](#s-sglang-as-an-rl-rollout-engine) |
-| The Miles team | `docs/advanced/p2p-weight-transfer.md` at Miles v0.1.2 | 2026-10 | [7.2](#s-sglang-as-an-rl-rollout-engine) |
+| The Miles team | `docs/advanced/p2p-weight-transfer.md`，Miles v0.1.2 | 2026-10 | [7.2](#s-sglang-as-an-rl-rollout-engine) |
 
 Sources: front.md; the Sources line and the citations of every file under sections/.

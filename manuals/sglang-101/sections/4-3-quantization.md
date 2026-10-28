@@ -118,7 +118,7 @@ note: Four lines from the startup log. Timestamps are cut.
 
 速度在每个负载上都变了。表来自扫描服务器，它们有 234,600 和 1,084,458 个 token 的 pool。扫描在每个并发上跑三个种子：
 
-| Concurrency | BF16 output tok/s | FP8 output tok/s | BF16 median TPOT | FP8 median TPOT |
+| 并发 | BF16 输出 tok/s | FP8 输出 tok/s | BF16 中位 TPOT | FP8 中位 TPOT |
 |---|---|---|---|---|
 | 1 | 29.14 | 51.50 | 32.52 ms | 18.41 ms |
 | 8 | 74.11 | 137.00 | 102.21 ms | 54.96 ms |
@@ -161,7 +161,7 @@ note: Two lines from the startup log. Timestamps are cut.
 
 **我们测到** BF16 有 24,094 个 token 的 pool，FP8 有 142,369 个，是 5.91 倍。扫描里每条请求有 512 个输入 token 和 128 个输出 token。BF16 pool 大约装得下 37 条这样的请求。
 
-| Concurrency | BF16 output tok/s | FP8 output tok/s | BF16 median TTFT | FP8 median TTFT |
+| 并发 | BF16 输出 tok/s | FP8 输出 tok/s | BF16 中位 TTFT | FP8 中位 TTFT |
 |---|---|---|---|---|
 | 1 | 13.42 | 24.53 | 189.16 ms | 140.72 ms |
 | 16 | 201.09 | 313.92 | 211.78 ms | 147.52 ms |
@@ -196,7 +196,7 @@ note: The BF16 pool and the FP8 pool at the same memory fraction of 0.74.
 [2026-10-18 22:02:58] KV Cache is allocated. dtype: torch.float8_e4m3fn, #tokens: 107299, K size: 3.68 GB, V size: 3.68 GB
 ```
 
-| Shared prompt tokens | Output tok/s, BF16 / FP8 | Median TTFT, BF16 / FP8 |
+| 共享提示 token | 输出 tok/s，BF16 / FP8 | 中位 TTFT，BF16 / FP8 |
 |---|---|---|
 | 0 | 113.5 / 180.1 | 354 / 255 ms |
 | 1,024 | 95.0 / 164.1 | 470 / 349 ms |

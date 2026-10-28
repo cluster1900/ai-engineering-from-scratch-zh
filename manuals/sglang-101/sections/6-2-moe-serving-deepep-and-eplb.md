@@ -22,7 +22,7 @@ caption: Read left to right. Indigo arrows are token traffic between GPUs. The l
 
 三个标志挑选实现 {{code}}：
 
-| Flag | Default | Picks |
+| 旗标 | 默认 | 选择 |
 |---|---|---|
 | `--moe-a2a-backend` | `none` | token 如何在 GPU 之间移动：`deepep`、`mooncake`、`nixl`、`mori`、`pplx`、`flashinfer` 以及其他 |
 | `--moe-runner-backend` | `auto` | 哪个分组矩阵乘法内核跑这些专家 |
@@ -69,7 +69,7 @@ Ant Group 在 H20 上把 TBO 调低了 {{field Ant-Group 2025-09}}。它只在 b
 
 在一块 GPU 上没有跨 GPU 的分发，所以 MoE 看起来便宜。我们在一块 NVIDIA GB10 上服务 Qwen3-30B-A3B，并把并发从 1 扫到 64。其配置有 48 层，每个 MoE 层 128 个专家，每个 token 激活 8 个专家。
 
-| Concurrency | BF16 median TPOT | FP8 median TPOT |
+| 并发 | BF16 中位 TPOT | FP8 中位 TPOT |
 |---|---|---|
 | 1 | 32.52 ms | 18.41 ms |
 | 8 | 102.21 ms | 54.96 ms |

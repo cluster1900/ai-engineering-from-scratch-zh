@@ -12,13 +12,13 @@
 
 `--radix-eviction-policy` 决定分数 {{code}}。默认是 `lru`。
 
-| Policy | Evicts first | When it helps |
+| 策略 | 先驱逐 | 何时有用 |
 |---|---|---|
-| `lru` | the prefix with the oldest last access | most workloads, the default |
-| `lfu` | the prefix with the fewest hits, then the oldest | a hot set of prompts that stays stable for hours |
-| `slru` | prefixes with fewer than 2 hits, then the oldest | a stable hot set with a stream of one-time prompts |
-| `priority` | prefixes of lower-priority requests | mixed traffic with request priorities |
-| `tlru` | history that cannot change the next turn's prefill time | multi-turn agents with a tail-latency target |
+| `lru` | 上次访问最旧的前缀 | 多数工作负载，默认 |
+| `lfu` | 命中最少的前缀，然后是最旧的 | 稳定数小时的热提示集 |
+| `slru` | 命中少于 2 次的前缀，然后是最旧的 | 稳定热集加上一串一次性提示 |
+| `priority` | 低优先级请求的前缀 | 带请求优先级的混合流量 |
+| `tlru` | 不会改变下一轮 prefill 时间的历史 | 有尾延迟目标的多轮 agent |
 
 **Tail-Optimized LRU (tlru)：** 一种策略，只保留下一轮延迟目标需要的那部分对话，并先逐出其余部分。它来自代码点名的一篇论文，arXiv 2510.15152。SGLang 团队报告在并发 32 的 DeepSeek-V4-Pro 上，p99 逐 token 延迟低了 43.9% {{team 2026-10}}。那个数字来自 v0.5.21 的发布说明，我们没找到对它的独立测试。
 
@@ -128,7 +128,7 @@ claim: At 32 distinct system prompts on the L4, HiCache cut the median TTFT from
 caption: Median TTFT against the number of distinct system prompts, three seeds per point, on a log scale. Rose is the GPU pool only and green adds the host tier. From capture/gpu/summary/l4.json.
 ```
 
-| Groups | Prompt tokens to keep | Median TTFT, GPU only / HiCache | Output tok/s, GPU only / HiCache | Median SM clock, GPU only / HiCache |
+| 组数 | 要保留的提示 token | 中位 TTFT，仅 GPU / HiCache | 输出 tok/s，仅 GPU / HiCache | 中位 SM 时钟，仅 GPU / HiCache |
 |---|---|---|---|---|
 | 4 | 8,192 | 360 / 361 ms | 82.39 / 81.64 | 1,455 / 1,440 MHz |
 | 16 | 32,768 | 3,259 / 553 ms | 37.95 / 74.75 | 788 / 1,223 MHz |

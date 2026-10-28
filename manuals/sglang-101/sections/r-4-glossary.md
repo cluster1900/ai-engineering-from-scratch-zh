@@ -4,7 +4,7 @@
 
 每个术语只定义一次，在最后一列点名的那一节里。含义来自该标签的 SGLang 源码、捕获，以及各节引用的论文。
 
-| Term | Meaning in this manual | Defined in |
+| 术语 | 本手册中的含义 | 定义于 |
 |---|---|---|
 | Acceptance length | 每次 verify 提交的 token 数：接受的 draft token 加一个奖励 token | [4.4](#s-speculative-decoding) |
 | Attention backend | 为一批在分页 KV cache 上算 attention 的类 | [4.2](#s-attention-backend) |

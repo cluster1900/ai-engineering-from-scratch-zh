@@ -48,13 +48,13 @@ Varad More 的现场报告 {{field Varad More 2026-04}} 在一块 A10G 上对 16
 
 我们在一块 NVIDIA GB10 上对 `Qwen/Qwen3-30B-A3B-Instruct-2507` 跑了一次小探测，用默认的 `xgrammar` 后端。探测问 "Describe one GPU for a model server as a JSON object." 五次，一次一条请求。schema 有四个必填字段、从 1 到 1024 的整数 `memory_gb`、厂商的 `enum`，以及不允许额外属性。
 
-| Request | Constraint | Latency | Completion tokens | Valid |
+| 请求 | 约束 | 延迟 | 补全 token | 有效 |
 |---|---|---|---|---|
-| 1 | none | 3,943.9 ms | 128 | no schema |
-| 2 | a new schema | 1,636.6 ms | 41 | yes |
-| 3 | the same schema | 1,309.2 ms | 41 | yes |
-| 4 | the same schema | 1,310.9 ms | 41 | yes |
-| 5 | a second new schema | 1,291.1 ms | 41 | yes |
+| 1 | 无 | 3,943.9 ms | 128 | 无 schema |
+| 2 | 新 schema | 1,636.6 ms | 41 | yes |
+| 3 | 同一 schema | 1,309.2 ms | 41 | yes |
+| 4 | 同一 schema | 1,310.9 ms | 41 | yes |
+| 5 | 第二个新 schema | 1,291.1 ms | 41 | yes |
 
 **我们测到** 一次运行，所以把表读成方向。每条受约束的回复都是恰好四个字段的合法 JSON。无约束的回复跑到 128 token 上限，并发明了自己的键，例如 `gpu_id` 和 `power_consumption`。
 

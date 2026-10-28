@@ -39,7 +39,7 @@ caption: Read top to bottom. Each question either passes to the next or ends in 
 
 这些报告来自 SGLang 团队之外的人。每一行点名解释它的、前面章节里的机制。
 
-| Finding | Field reports | Mechanism |
+| 发现 | 现场报告 | 机制 |
 |---|---|---|
 | 独特提示的稠密模型：平局 | Spheron，SGLang 0.5.9，Llama 3.3 70B FP8 在一块 H100 上：50 个用户时 1,920 对上 1,850 tok/s。Modal：8 块 H100 上两者都大约每秒 17 次查询。Varad More：A10G 上 7B 到 9B 模型相差在 3% 以内 | 两个引擎现在用同一类内核族、分页 KV 与连续批处理 |
 | 重复前缀：SGLang 赢，幅度小于坊间说法 | Steve Rawlinson，SGLang 0.5.6 在 2 块 H100 上：一个用户时第一个 token 583 ms 对上 2,141 ms。RunPod：已缓存的 7k 上下文上每个流 35.0 对上 32.8 tok/s。Varad More：SGLang 在 16 个模型里的 10 个上领先 20 到 40 ms | radix 缓存，见[第 3.3 节](#s-radixcache) |
@@ -68,7 +68,7 @@ caption: Read each row left to right, from the workload to the reported result t
 
 现场报告告诉你该测哪种机制。我们在带 GB10 的 DGX Spark 上，以及一台带两块 24 GB L4 的机器上测了它们。下面每一行链到带有 listing、种子与图表的那一节。
 
-| Where | What we ran | Result | Mechanism |
+| 位置 | 我们跑了什么 | 结果 | 机制 |
 |---|---|---|---|
 | L4 | 4,096 token 的共享提示，缓存开与关 | 中位 TTFT 479 ms 对上 14,706 ms，吞吐 4.3 倍，关缓存那次跑在 930 MHz、低于我们的时钟下限，[第 3.3 节](#s-radixcache) | radix 缓存 |
 | L4 | FP8 权重与 KV 对上 BF16，64 个用户 | 736 对上 251 tok/s，池是 142,369 个 token 对上 24,094，[第 4.3 节](#s-quantization) | 每 GB 更多 KV |
@@ -112,7 +112,7 @@ INFO 10-17 20:13:17 [kv_cache_utils.py:2464] GPU KV cache size: 24,096 tokens, M
 INFO 10-17 22:35:43 [loggers.py:320] Engine 000: Avg prompt throughput: 460.3 tokens/s, Avg generation throughput: 323.6 tokens/s, Running: 40 reqs, Waiting: 11 reqs, GPU KV cache usage: 99.5%, Prefix cache hit rate: 8.7%
 ```
 
-| Concurrency | Output tok/s, SGLang / vLLM | Median TTFT, SGLang / vLLM | P99 ITL, SGLang / vLLM | Median SM clock, SGLang / vLLM |
+| 并发 | 输出 tok/s，SGLang / vLLM | 中位 TTFT，SGLang / vLLM | P99 ITL，SGLang / vLLM | 中位 SM 时钟，SGLang / vLLM |
 |---|---|---|---|---|
 | 1 | 13.84 / 13.51 | 185 / 192 ms | 104 / 105 ms | 1,290 / 1,290 MHz |
 | 8 | 112.46 / 112.79 | 170 / 253 ms | 71 / 68 ms | 1,485 / 1,470 MHz |
@@ -152,7 +152,7 @@ INFO 10-18 00:43:16 [loggers.py:320] Engine 000: Avg prompt throughput: 231.0 to
 
 SGLang 日志用它自己的话展示同样的事。在一次 4,096 个共享 token 的 prefill batch 里，12,952 个 token 来自缓存，406 个是新的。
 
-| Shared prompt tokens | Output tok/s, SGLang / vLLM | Median TTFT, SGLang / vLLM | P99 TTFT, SGLang / vLLM |
+| 共享提示 token | 输出 tok/s，SGLang / vLLM | 中位 TTFT，SGLang / vLLM | P99 TTFT，SGLang / vLLM |
 |---|---|---|---|
 | 0 | 113.5 / 113.8 | 354 / 408 ms | 483 / 485 ms |
 | 256 | 110.9 / 111.5 | 470 / 488 ms | 856 / 616 ms |
@@ -186,7 +186,7 @@ INFO 10-21 06:20:24 [kv_cache_utils.py:2464] GPU KV cache size: 24,096 tokens, M
 INFO 10-21 08:07:49 [loggers.py:320] Engine 000: Avg prompt throughput: 1607.0 tokens/s, Avg generation throughput: 6.4 tokens/s, Running: 8 reqs, Waiting: 0 reqs, GPU KV cache usage: 76.7%
 ```
 
-| Shared prompt tokens | Median TTFT, cache on / off, SGLang | Median TTFT, cache on / off, vLLM | Output tok/s, cache off, SGLang / vLLM |
+| 共享提示 token | 中位 TTFT，缓存开 / 关，SGLang | 中位 TTFT，缓存开 / 关，vLLM | 输出 tok/s，缓存关，SGLang / vLLM |
 |---|---|---|---|
 | 256 | 470 / 985 ms | 488 / 753 ms | 99.4 / 99.1 |
 | 1,024 | 466 / 2,202 ms | 396 / 1,213 ms | 70.2 / 70.9 |
@@ -220,7 +220,7 @@ INFO 10-18 03:15:35 [kv_cache_utils.py:2464] GPU KV cache size: 24,096 tokens, M
 INFO 10-18 06:10:22 [loggers.py:320] Engine 000: Avg prompt throughput: 1326.7 tokens/s, Avg generation throughput: 158.4 tokens/s, Running: 43 reqs, Waiting: 30 reqs, GPU KV cache usage: 99.7%, Prefix cache hit rate: 0.6%
 ```
 
-| Requests per second | Output tok/s, SGLang / vLLM | Median TTFT, SGLang / vLLM | Median TPOT, SGLang / vLLM | P99 TPOT, SGLang / vLLM | Median SM clock, SGLang / vLLM |
+| 每秒请求数 | 输出 tok/s，SGLang / vLLM | 中位 TTFT，SGLang / vLLM | 中位 TPOT，SGLang / vLLM | P99 TPOT，SGLang / vLLM | 中位 SM 时钟，SGLang / vLLM |
 |---|---|---|---|---|---|
 | 0.5 | 70.6 / 70.6 | 284 / 317 ms | 74.7 / 72.7 ms | 81 / 78 ms | 1,485 / 1,485 MHz |
 | 1 | 123.3 / 123.6 | 166 / 180 ms | 74.0 / 68.2 ms | 76 / 69 ms | 1,500 / 1,485 MHz |
@@ -261,7 +261,7 @@ INFO 10-18 18:38:07 [kv_cache_utils.py:2464] GPU KV cache size: 24,096 tokens, M
 INFO 10-18 19:14:22 [loggers.py:320] Engine 000: Avg prompt throughput: 960.0 tokens/s, Avg generation throughput: 187.3 tokens/s, Running: 16 reqs, Waiting: 0 reqs, GPU KV cache usage: 22.6%, Prefix cache hit rate: 8.5%
 ```
 
-| Length ratio | Output tok/s, SGLang / vLLM | Median TTFT, SGLang / vLLM | Median TPOT, SGLang / vLLM | P99 ITL, SGLang / vLLM |
+| 长度比 | 输出 tok/s，SGLang / vLLM | 中位 TTFT，SGLang / vLLM | 中位 TPOT，SGLang / vLLM | P99 ITL，SGLang / vLLM |
 |---|---|---|---|---|
 | 1.0, fixed lengths | 182.3 / 181.7 | 1,775 / 1,499 ms | 74.7 / 76.8 ms | 81 / 502 ms |
 | 0.5, mixed | 159.6 / 169.6 | 325 / 353 ms | 87.8 / 81.4 ms | 363 / 191 ms |
@@ -286,7 +286,7 @@ note: The pool at startup, one decode step with 16 users, and one prefill that r
 [2026-10-21 08:40:22] Prefill batch, #new-seq: 1, #new-token: 514, #cached-token: 0, token usage: 0.34, #running-req: 15, #queue-req: 0, #pending-token: 0, cuda graph: True, input throughput (token/s): 2569.89
 ```
 
-| Length ratio | Output tok/s, SGLang mixed chunk / vLLM | Median TPOT, SGLang mixed chunk / vLLM | P99 ITL, SGLang default / mixed chunk / vLLM |
+| 长度比 | 输出 tok/s，SGLang 混合块 / vLLM | 中位 TPOT，SGLang 混合块 / vLLM | P99 ITL，SGLang 默认 / 混合块 / vLLM |
 |---|---|---|---|
 | 1.0, fixed lengths | 182.3 / 181.7 | 73.1 / 76.8 ms | 81 / 203 / 502 ms |
 | 0.5, mixed | 171.8 / 169.6 | 80.8 / 81.4 ms | 363 / 193 / 191 ms |

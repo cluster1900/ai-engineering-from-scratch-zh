@@ -65,10 +65,10 @@ note: Three consecutive lines from the concurrency 8 benchmark.
 
 v0.5.22 的默认是 `fcfs` {{code}}。选项分成两组。
 
-| Group | Policies | What they use |
+| 组 | 策略 | 它们用什么 |
 |---|---|---|
-| Cache-aware | `lpm`, `dfs-weight`, `hrrn`, `shortest-prefill-first` | the radix tree: how much of each prompt is already cached |
-| Cache-agnostic | `fcfs`, `lof`, `random`, `routing-key` | arrival order, output length, or a routing key |
+| Cache-aware | `lpm`, `dfs-weight`, `hrrn`, `shortest-prefill-first` | radix 树：每条提示已有多少已在缓存 |
+| Cache-agnostic | `fcfs`, `lof`, `random`, `routing-key` | 到达顺序、输出长度，或路由键 |
 
 解析器也接受 `--schedule-policy priority`，但调度器没有这种顺序，服务器会以 "Unknown schedule_policy" 停下。要按优先级排序，用 `--enable-priority-scheduling` 配 `fcfs`。
 
@@ -87,15 +87,15 @@ v0.5.22 的默认是 `fcfs` {{code}}。选项分成两组。
 
 常见建议是把 chunk 调小，好让长 prompt 的各块之间更常插入 decode 步。我们测过这个建议。每次运行发 48 条 1,024 到 4,096 token 的 prompt，输出 256 个 token。请求以 0.5、1 或 2 每秒的泊松到达，三个种子。
 
-| GPU, model | Chunk | Rate, per second | Output tok/s | Median TTFT | P99 ITL | Median SM clock |
+| GPU、模型 | 块 | 速率，每秒 | 输出 tok/s | 中位 TTFT | P99 ITL | 中位 SM 时钟 |
 |---|---|---|---|---|---|---|
-| GB10, Qwen3-30B-A3B | 8,192, the default | 0.5 | 70.1 | 892 ms | 929 ms | 2,411 MHz |
+| GB10, Qwen3-30B-A3B | 8,192，默认 | 0.5 | 70.1 | 892 ms | 929 ms | 2,411 MHz |
 | GB10, Qwen3-30B-A3B | 1,024 | 0.5 | 68.1 | 1,253 ms | 1,977 ms | 2,398 MHz |
-| GB10, Qwen3-30B-A3B | 8,192, the default | 2 | 129.3 | 269 ms | 312 ms | 2,411 MHz |
+| GB10, Qwen3-30B-A3B | 8,192，默认 | 2 | 129.3 | 269 ms | 312 ms | 2,411 MHz |
 | GB10, Qwen3-30B-A3B | 1,024 | 2 | 130.1 | 256 ms | 260 ms | 2,411 MHz |
-| L4, Qwen3-8B | 4,096, the default | 0.5 | 44.1 | 36.0 s | 2,579 ms | 773 MHz |
+| L4, Qwen3-8B | 4,096，默认 | 0.5 | 44.1 | 36.0 s | 2,579 ms | 773 MHz |
 | L4, Qwen3-8B | 1,024 | 0.5 | 43.3 | 37.4 s | 2,922 ms | 690 MHz |
-| L4, Qwen3-8B | 4,096, the default | 2 | 46.2 | 59.8 s | 2,512 ms | 915 MHz |
+| L4, Qwen3-8B | 4,096，默认 | 2 | 46.2 | 59.8 s | 2,512 ms | 915 MHz |
 | L4, Qwen3-8B | 1,024 | 2 | 44.0 | 62.5 s | 2,930 ms | 825 MHz |
 
 **我们测到** 在两台机器上，更小的 chunk 都没有收益。在 GB10 上我们跑了默认、显式的 8,192，以及 1,024。在每秒 1 和 2 条请求时，三者都在彼此的种子散布之内。在每秒 0.5 条时，1,024 的 chunk 更差。它的 P99 ITL 是 1,977 对 929 ms，种子区间不相交。
@@ -110,7 +110,7 @@ v0.5.22 的默认是 `fcfs` {{code}}。选项分成两组。
 
 `--enable-mixed-chunk` 把 decode token 放进 prefill batch，这样 decode 步就不用等一圈 prefill。我们在同一会话里对照新的默认运行，在 L4 上跑了它，中位时钟 953 到 1,095 MHz。
 
-| Rate, per second | Output tok/s, default / mixed chunk | P99 ITL, default / mixed chunk |
+| 速率，每秒 | 输出 tok/s，默认 / 混合块 | P99 ITL，默认 / 混合块 |
 |---|---|---|
 | 0.5 | 46.5 / 46.5 | 2,521 / 2,406 ms |
 | 1 | 46.6 / 47.5 | 2,491 / 2,289 ms |
@@ -129,7 +129,7 @@ note: The pool at startup of the server with --enable-mixed-chunk.
 [2026-10-21 06:26:47] KV Cache is allocated. dtype: torch.bfloat16, #tokens: 236751, K size: 10.84 GB, V size: 10.84 GB
 ```
 
-| Rate, per second | P99 ITL, default / mixed chunk | Median TTFT, default / mixed chunk | Output tok/s, default / mixed chunk |
+| 速率，每秒 | P99 ITL，默认 / 混合块 | 中位 TTFT，默认 / 混合块 | 输出 tok/s，默认 / 混合块 |
 |---|---|---|---|
 | 0.5 | 922 / 781 ms | 841 / 910 ms | 70.9 / 72.1 |
 | 1 | 219 / 177 ms | 244 / 362 ms | 108.8 / 112.6 |

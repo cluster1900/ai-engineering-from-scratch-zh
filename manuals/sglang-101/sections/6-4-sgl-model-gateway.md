@@ -48,16 +48,16 @@ caption: Read top to bottom. Amber boxes are tests, blue boxes are outcomes, and
 
 ## 要紧的设置 {#s-sgl-model-gateway-settings-that-matter}
 
-| Flag | Default | Effect |
+| 旗标 | 默认 | 效果 |
 |---|---|---|
-| `--policy` | `cache_aware` | also `random`, `round_robin`, `power_of_two`, `prefix_hash`, `manual` |
-| `--cache-threshold` | 0.3 | the match rate above which prefix affinity wins |
-| `--balance-abs-threshold` | 64 | the load gap that marks the system as imbalanced |
-| `--balance-rel-threshold` | 1.5 | the load ratio that marks the system as imbalanced |
-| `--eviction-interval` | 120 | seconds between tree cleanups |
-| `--max-tree-size` | 67108864 | tree nodes kept per model |
-| `--prometheus-port` | 29000 | the gateway's own metrics |
-| `--request-timeout-secs` | 1800 | the longest request the gateway waits for |
+| `--policy` | `cache_aware` | 还有 `random`、`round_robin`、`power_of_two`、`prefix_hash`、`manual` |
+| `--cache-threshold` | 0.3 | 前缀亲和胜出的匹配率阈值 |
+| `--balance-abs-threshold` | 64 | 把系统标为失衡的负载差 |
+| `--balance-rel-threshold` | 1.5 | 把系统标为失衡的负载比 |
+| `--eviction-interval` | 120 | 树清理的间隔秒数 |
+| `--max-tree-size` | 67108864 | 每个模型保留的树节点数 |
+| `--prometheus-port` | 29000 | 网关自己的指标 |
+| `--request-timeout-secs` | 1800 | 网关等待的最长请求时间 |
 
 全部默认来自 v0.5.22 发布里的网关源码 {{code}}。那份源码说版本 0.3.2。仓库里最新的网关标签 `gateway-v0.3.1` 指向 2026-01-08 的一次提交。按你跑的提交钉网关，不要按那个标签。
 

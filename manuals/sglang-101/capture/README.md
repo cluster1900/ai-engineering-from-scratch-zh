@@ -20,11 +20,11 @@ python3 capture/run.py --only small-pool   # record one server configuration
 
 ## 它记录什么
 
-| Server | Flags added to the common flags | Files |
+| 服务器 | 加在公共旗标上的旗标 | 文件 |
 |---|---|---|
-| default | none | `generate.txt`, `cache-experiment.txt`, `bench-random-c1.txt`, `bench-random-c8.txt`, `bench-random-c32.txt`, `bench-shared-prefix.txt`, `metrics.txt` |
+| default | 无 | `generate.txt`, `cache-experiment.txt`, `bench-random-c1.txt`, `bench-random-c8.txt`, `bench-random-c32.txt`, `bench-shared-prefix.txt`, `metrics.txt` |
 | no-radix-cache | `--disable-radix-cache` | `no-radix-cache-bench-shared-prefix.txt`, `no-radix-cache-metrics.txt` |
-| no-overlap | `--disable-overlap-schedule` | `no-overlap-bench-random-c8.txt` (the server crashes, see the log) |
+| no-overlap | `--disable-overlap-schedule` | `no-overlap-bench-random-c8.txt`（服务器崩溃，见日志） |
 | small-pool | `--max-total-tokens 4096` | `small-pool-bench-long-output-c16.txt`, `small-pool-metrics.txt` |
 
 公共旗标是 `--model-path mlx-community/Qwen3-0.6B-4bit --disable-cuda-graph --enable-cache-report --enable-metrics --mem-fraction-static 0.4`，并设 `SGLANG_USE_MLX=1`。每台服务器写入 `server-<name>.log`，`server-<name>.command.txt` 保存确切命令。`serve-help.txt` 是 `sglang serve --help` 的输出，`environment.json` 记录版本。每个 `.txt` 旁边的基准 JSONL 保存基准写出的逐次运行记录。
@@ -50,10 +50,10 @@ python3 capture/run.py --only small-pool   # record one server configuration
 
 `gpu/` 里是面向一块 NVIDIA GPU 的第二套 kit。它需要 Linux、NVIDIA 驱动、来自 PyPI 的 `sglang==0.5.22`，以及 `PATH` 上的 `sglang` 命令。我们在自己的机器上录制，不在 CI 里录。第一台服务器启动前，`run.py` 和 `sweep.py` 会下载模型以及 `sglang.benchmark.serving` 的 `random` 数据集要读的 ShareGPT 文件，并用 `--dataset-path` 传入。随后它们为每台服务器和每次基准设置 `HF_HUB_OFFLINE=1`，因此 capture 不会再联系 Hub。跑过一次之后，或者模型已在你的 Hugging Face 缓存里时，只要你自己设好 `HF_HUB_OFFLINE=1`，kit 就可以离线工作。把 `SGLANG_KIT_DATASET` 设成 `ShareGPT_V3_unfiltered_cleaned_split.json` 的本地副本可跳过那次下载。用 `SGLANG_KIT_PROFILE` 选择硬件配置：
 
-| Profile | Models | Memory fraction | Output |
+| 配置档 | 模型 | 内存比例 | 输出 |
 |---|---|---|---|
-| `gb10` | `Qwen/Qwen3-30B-A3B-Instruct-2507`, its FP8 checkpoint, and the EAGLE-3 draft `lmsys/SGLang-EAGLE3-Qwen3-30B-A3B-Instruct-2507-SpecForge-Nex` | 0.7 | `gpu/out-gb10/`, `gpu/summary/gb10.json` |
-| `l4` | `Qwen/Qwen3-8B`, `Qwen/Qwen3-8B-FP8`, and the EAGLE-3 draft `Tengyunw/qwen3_8b_eagle3` | 0.85 | `gpu/out-l4/`, `gpu/summary/l4.json` |
+| `gb10` | `Qwen/Qwen3-30B-A3B-Instruct-2507`、其 FP8 检查点，以及 EAGLE-3 draft `lmsys/SGLang-EAGLE3-Qwen3-30B-A3B-Instruct-2507-SpecForge-Nex` | 0.7 | `gpu/out-gb10/`, `gpu/summary/gb10.json` |
+| `l4` | `Qwen/Qwen3-8B`、`Qwen/Qwen3-8B-FP8`，以及 EAGLE-3 draft `Tengyunw/qwen3_8b_eagle3` | 0.85 | `gpu/out-l4/`, `gpu/summary/l4.json` |
 
 ```bash
 SGLANG_KIT_PROFILE=gb10 python3 capture/gpu/run.py
@@ -62,17 +62,17 @@ python3 capture/gpu/sweep.py --profile gb10 --sweep load --configs default fp8 e
 python3 capture/gpu/summarize.py gb10
 ```
 
-| File | What it does |
+| 文件 | 做什么 |
 |---|---|
-| `gpu/run.py` | starts eight servers: default, no CUDA graph, no radix cache, no overlap, a 4,096-token pool, FP8 weights with an FP8 KV cache, EAGLE-3, and deterministic inference. `--only eagle3-no-env` checks the EAGLE-3 context length refusal, and `--only idle-probe` runs `ttft_idle_probe.py` |
-| `gpu/offline.py` | downloads the models and the ShareGPT file once, then sets `HF_HUB_OFFLINE=1` and adds `--dataset-path` to every `random` benchmark |
-| `gpu/sweep.py` | runs the `load`, `rate`, `prefix`, `waves`, `working-set`, and `mixed` sweeps with seeds 1, 2, and 3 and `--output-details`, into `gpu/runs/<profile>/<sweep>/<config>/`. The `dp2`, `dp2-tokens`, `tp2`, `pd`, and `pd-swap` configs need two GPUs in `CUDA_VISIBLE_DEVICES`, and `vllm` starts vLLM with the same KV pool as SGLang on that card |
-| `gpu/miles_grpo.py` | runs a short GRPO job with Miles inside the `radixark/miles` image, plain or with `MILES_TRUE_ON_POLICY=1`, for `MILES_NUM_ROLLOUT` steps (12 by default), with an optional `MILES_SEED` for the train and rollout seeds |
-| `gpu/miles_summary.py` | reduces Miles logs to `gpu/summary/miles-gb10.json`: per-step reward, response length, rollout time, the rollout and training log-probability gap, and the phase timers |
-| `gpu/summarize.py` | reduces the runs to `gpu/summary/<profile>.json`: the median, lowest, and highest value of each point, goodput, and TTFT and TPOT quantiles |
-| `gpu/determinism_probe.py` | sends one prompt at temperature 0 alone five times, then five times inside a batch of 16, and counts the different answers |
-| `gpu/structured_probe.py` | sends one question without a schema, then with a new JSON schema, the same schema twice more, and a second new schema |
-| `gpu/incidents/` | the evidence of the incidents the manual tells: the toolchain failures on the L4, the thermal throttle, the memory guard on the GB10, and the driver memory messages |
+| `gpu/run.py` | 启动八台服务器：默认、无 CUDA graph、无 radix 缓存、无重叠、4,096 token 池、带 FP8 KV 缓存的 FP8 权重、EAGLE-3，以及确定性推理。`--only eagle3-no-env` 检查 EAGLE-3 上下文长度拒绝，`--only idle-probe` 跑 `ttft_idle_probe.py` |
+| `gpu/offline.py` | 下载一次模型与 ShareGPT 文件，然后设 `HF_HUB_OFFLINE=1`，并为每次 `random` 基准加上 `--dataset-path` |
+| `gpu/sweep.py` | 以种子 1、2、3 和 `--output-details` 跑 `load`、`rate`、`prefix`、`waves`、`working-set` 与 `mixed` sweep，写入 `gpu/runs/<profile>/<sweep>/<config>/`。`dp2`、`dp2-tokens`、`tp2`、`pd` 与 `pd-swap` 配置需要 `CUDA_VISIBLE_DEVICES` 里两块 GPU，`vllm` 用与 SGLang 在该卡上相同的 KV 池启动 vLLM |
+| `gpu/miles_grpo.py` | 在 `radixark/miles` 镜像里用 Miles 跑一段短 GRPO 任务，普通或带 `MILES_TRUE_ON_POLICY=1`，跑 `MILES_NUM_ROLLOUT` 步（默认 12），可选 `MILES_SEED` 作训练与 rollout 种子 |
+| `gpu/miles_summary.py` | 把 Miles 日志收成 `gpu/summary/miles-gb10.json`：逐步 reward、回答长度、rollout 时间、rollout 与训练 log-probability 差，以及阶段计时器 |
+| `gpu/summarize.py` | 把各次运行收成 `gpu/summary/<profile>.json`：每个点的中位、最低与最高值，goodput，以及 TTFT 与 TPOT 分位数 |
+| `gpu/determinism_probe.py` | 在 temperature 0 下单独发同一提示五次，再在大小为 16 的 batch 里发五次，并统计不同答案数 |
+| `gpu/structured_probe.py` | 发一个无 schema 的问题，再带一个新 JSON schema，同一 schema 再两次，以及第二个新 schema |
+| `gpu/incidents/` | 手册所述事件的证据：L4 上的工具链失败、热节流、GB10 上的内存守卫，以及驱动内存消息 |
 
 每次 sweep 运行前，`gpu/sweep.py` 最多等 900 s，让 GPU 凉到 65 C。运行期间它每秒采样一次 `nvidia-smi`，写到该次运行旁边的 `.gpu.csv`。`gpu/summarize.py` 给每个点加上中位 SM clock、最高温度，以及带 thermal slowdown bit 的样本占比。Goodput 统计的是首 token 低于 1 s、平均每 token 时间低于 100 ms 的请求。
 
@@ -80,4 +80,4 @@ python3 capture/gpu/summarize.py gb10
 
 `gb10` 配置的 EAGLE-3 服务器需要 `SGLANG_ALLOW_OVERWRITE_LONGER_CONTEXT_LEN=1`，因为 draft 声明 2,048 token 的上下文，而 target 声明 262,144。kit 会设置它，并写入 `server-eagle3.command.txt`。
 
-GPU 套件 的 `--check` 比较每次基准的 token 与请求计数、生成的 token 计数、每条 structured 回答是否合法、temperature 0 单独跑时不同答案的数量、指标名、服务器命令，以及每份服务器日志里的 `max_running_requests` 行。如果没有 Linux、CUDA，以及该配置够用的 GPU 内存，它会打印 `skipped` 及原因并以 0 退出。
+GPU 套件的 `--check` 比较每次基准的 token 与请求计数、生成的 token 计数、每条 structured 回答是否合法、temperature 0 单独跑时不同答案的数量、指标名、服务器命令，以及每份服务器日志里的 `max_running_requests` 行。如果没有 Linux、CUDA，以及该配置够用的 GPU 内存，它会打印 `skipped` 及原因并以 0 退出。

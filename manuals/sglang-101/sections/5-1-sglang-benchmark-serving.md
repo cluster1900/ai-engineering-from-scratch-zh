@@ -35,7 +35,7 @@ python -m sglang.benchmark.serving --backend sglang --port 30000 \
 
 客户端在测量任何东西之前就做选择。每一个都会改你报告的数字，而多数已发布的基准不说它们保留了哪些。
 
-| Setting | Default at v0.5.22 | What it does to the result |
+| 设置 | v0.5.22 默认 | 对结果的影响 |
 |---|---|---|
 | `--random-range-ratio` | 0.0 | 每一个长度从 1 抽到你要的长度，所以平均提示大约是 `--random-input-len` 的一半 |
 | `ignore_eos` | on | 服务器忽略结束 token，所以每一条请求正好生成 `--random-output-len` 个 token |
@@ -104,7 +104,7 @@ caption: Read each row left to right, from the report line to the formula in cal
 
 一次跑告诉你一个点。三次跑、上限分别是 1、8 与 32，告诉你形状。
 
-| Cap | Output tok/s | Median TTFT | P99 TTFT | Median TPOT | Concurrency |
+| 上限 | 输出 tok/s | 中位 TTFT | P99 TTFT | 中位 TPOT | 并发 |
 |---|---|---|---|---|---|
 | 1 | 175.15 | 162.98 ms | 270.18 ms | 4.38 ms | 0.99 |
 | 8 | 255.63 | 785.79 ms | 2180.87 ms | 22.52 ms | 7.96 |
@@ -141,10 +141,10 @@ sglang serve --model-path Qwen/Qwen3-30B-A3B-Instruct-2507 --host 127.0.0.1 --po
 
 所以我们按模型团队跑训练比较的方式跑 sweep。[我们的 sweep 脚本](manuals/sglang-101/capture/gpu/sweep.py) 从 1 到 64 每个上限跑三次，种子是 1、2 与 3。它传 `--output-details`，所以每一次跑保留每一条请求的 TTFT 与 token 间隙。[我们的摘要脚本](manuals/sglang-101/capture/gpu/summarize.py) 把每个点的三次跑收成中位、最低与最高值。
 
-| Cap | Single kit run, median TTFT | Three seeds, median TTFT (lowest to highest) |
+| 上限 | 单次套件跑，中位 TTFT | 三个种子，中位 TTFT（最低到最高） |
 |---|---|---|
-| 8 | 677.61 ms | 209.98 ms (185.25 to 216.02) |
-| 32 | 390.38 ms | 416.37 ms (338.06 to 434.64) |
+| 8 | 677.61 ms | 209.98 ms（185.25 到 216.02） |
+| 32 | 390.38 ms | 416.37 ms（338.06 到 434.64） |
 
 **我们在同一块 GB10 上测到**两者，用两台不同的服务器。套件单次跑在 2026-10-17 有 227,243 个 token 的池，sweep 在 2026-10-16 有 234,600 个 token 的池。677.61 ms 的结果在又三次跑里没有回来。从上限 2 起，第一个 token 随上限变慢，正如队列所预测。
 
@@ -238,7 +238,7 @@ claim: With fixed lengths the median TTFT was 1,996 ms and P99 ITL 82 ms, and wi
 caption: Solid lines are median TTFT and dashed lines are P99 inter-token latency, three seeds per point, on a log scale. Plum is BF16 and green is FP8 with an FP8 KV cache. From capture/gpu/summary/l4.json.
 ```
 
-| Ratio | BF16 median TTFT | BF16 P99 ITL | FP8 median TTFT | FP8 P99 ITL |
+| 比例 | BF16 中位 TTFT | BF16 P99 ITL | FP8 中位 TTFT | FP8 P99 ITL |
 |---|---|---|---|---|
 | 1.0 | 1,996 ms | 82 ms | 1,526 ms | 55 ms |
 | 0.5 | 364 ms | 396 ms | 130 ms | 95 ms |
@@ -289,10 +289,10 @@ SGLang 0.6B   394     82.5                  289                    77
 
 **Goodput：** 在延迟目标内完成的每秒请求数。我们的摘要脚本在第一个 token 1 秒内到来、且平均每个 token 时间低于 100 ms 时计一条请求。
 
-| Cap | BF16 goodput | BF16 median TPOT | FP8 goodput | FP8 median TPOT |
+| 上限 | BF16 goodput | BF16 中位 TPOT | FP8 goodput | FP8 中位 TPOT |
 |---|---|---|---|---|
 | 4 | 0.44 req/s | 71.01 ms | 0.80 req/s | 38.60 ms |
-| 8 | 0, and up to 0.04 in one seed | 102.21 ms | 1.07 req/s | 54.96 ms |
+| 8 | 0，某一个种子上最高到 0.04 | 102.21 ms | 1.07 req/s | 54.96 ms |
 | 16 | 0 | 154.24 ms | 1.10 req/s | 81.90 ms |
 | 32 | 0 | 201.91 ms | 0 | 104.12 ms |
 

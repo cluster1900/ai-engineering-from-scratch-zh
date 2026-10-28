@@ -76,7 +76,7 @@ sum(rate(sglang:prefill_effective_tokens_total{mode=~".*_hit"}[5m]))
 
 这六个序列覆盖了本手册里的失败。下面每一个名字都出现在我们的捕获里。
 
-| Series | Type | Alert when | Why |
+| 序列 | 类型 | 何时告警 | 原因 |
 |---|---|---|---|
 | `time_to_first_token_seconds` | histogram | 5 分钟上的 p99 高于你的目标 | 用户在别的事之前先等第一个 token |
 | `inter_token_latency_seconds` | histogram | 5 分钟上的 p99 高于你的目标 | prefill batch 会卡住正在跑的 decode，如第 5.1 节里 1,948 ms 的缺口所示 |

@@ -33,7 +33,7 @@ SGLang 0.5.22，从笔记本上的一次请求到一群 GPU，补上旗标列表
 
 | 项 | 版本 |
 |---|---|
-| 主机 | macOS 26.2，Apple silicon，arm64 |
+| 主机 | macOS 26.2，Apple silicon，arm64 架构 |
 | SGLang | 0.5.22，来自带 `srt_mps` extra 的标签 |
 | 框架 | PyTorch 2.13.0，MLX 0.32.4，Python 3.12.12 |
 | 模型 | `mlx-community/Qwen3-0.6B-4bit` |

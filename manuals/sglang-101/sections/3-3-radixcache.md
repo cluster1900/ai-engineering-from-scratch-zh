@@ -10,12 +10,12 @@
 
 Capture kit 把 SGLang 自己的共享前缀基准跑两遍。四组各 16 条 prompt，每组共享一段 2,048 token 的 system prompt，每条再加 128 token 的问题。第二台服务器用 `--disable-radix-cache` 启动。
 
-| Result | Radix cache on | --disable-radix-cache |
+| 结果 | radix 缓存开 | `--disable-radix-cache` |
 |---|---|---|
 | Benchmark duration | 48.81 s | 129.68 s |
-| Median time to first token | 1,358 ms | 7,222 ms |
-| P99 time to first token | 3,277 ms | 13,548 ms |
-| Output tokens per second | 83.91 | 31.59 |
+| 中位首 token 时间 | 1,358 ms | 7,222 ms |
+| P99 首 token 时间 | 3,277 ms | 13,548 ms |
+| 每秒输出 token | 83.91 | 31.59 |
 
 我们测到运行短了 2.7 倍，等首 token 的中位时间短了 5.3 倍。调度器日志说明时间花在哪里。
 
@@ -83,7 +83,7 @@ claim: With a 4,096-token shared prompt on the L4, the radix cache cut the media
 caption: Median TTFT against the shared prompt length, three seeds per point, on a log scale. Green is the default and rose is --disable-radix-cache. From capture/gpu/summary/l4.json.
 ```
 
-| Shared prompt | Median TTFT, cache on | Median TTFT, cache off | Output tok/s, cache on | Output tok/s, cache off |
+| 共享提示 | 中位 TTFT，缓存开 | 中位 TTFT，缓存关 | 输出 tok/s，缓存开 | 输出 tok/s，缓存关 |
 |---|---|---|---|---|
 | 0 | 349 ms | 379 ms | 113.56 | 113.33 |
 | 1,024 | 462 ms | 2,202 ms | 105.76 | 70.15 |
