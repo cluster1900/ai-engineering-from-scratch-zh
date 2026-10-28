@@ -4,75 +4,75 @@
   "questions": [
     {
       "stage": "pre",
-      "question": "A team reports an offline AUC of 0.91 for a churn model. What is missing before anyone can call the model useful?",
+      "question": "团队报告某流失模型离线 AUC 为 0.91。在任何人能说模型有用之前，还缺什么？",
       "options": [
-        "The decision that uses each score and a baseline to compare against",
-        "A larger gradient-boosted model with more trees and a tuned learning rate",
-        "An AUC above 0.95, because production systems reject lower scores",
-        "A GPU server, because churn models need accelerators to serve traffic"
+        "使用每个分数的决策，以及用来对比的基线",
+        "更大的梯度提升模型，更多树和调过的学习率",
+        "AUC 高于 0.95，因为生产系统会拒绝更低的分数",
+        "一台 GPU 服务器，因为流失模型需要加速器才能服务流量"
       ],
       "correct": 0,
-      "explanation": "An offline metric alone says nothing about value. The design needs the action that each score starts and the strongest baseline that the model must beat."
+      "explanation": "单看离线指标说明不了价值。设计需要明确每个分数会触发什么动作，以及模型必须击败的最强基线。"
     },
     {
       "stage": "check",
-      "question": "What is a guardrail metric?",
+      "question": "什么是护栏指标（guardrail metric）？",
       "options": [
-        "A metric that only the security team is allowed to read",
-        "The metric with the largest value on the validation set",
-        "The offline metric that the training job minimizes on each batch",
-        "A metric that must not get worse when the new model launches"
+        "只有安全团队才允许读取的指标",
+        "验证集上取值最大的那个指标",
+        "训练任务在每个 batch 上最小化的离线指标",
+        "新模型上线时绝不能变差的指标"
       ],
       "correct": 3,
-      "explanation": "Guardrails protect the parts of the system that the model is not trying to improve, such as cost, latency, and complaint rate."
+      "explanation": "护栏保护的是模型并不试图改进的那些系统部分，例如成本、延迟和投诉率。"
     },
     {
       "stage": "check",
-      "question": "Scores must be at most 30 minutes old, and one full batch run takes one hour. What follows?",
+      "question": "分数最多只能陈旧 30 分钟，而一次完整 batch 跑要一小时。由此得出什么？",
       "options": [
-        "Batch inference still works if you run the job twice as often each day",
-        "Online inference cannot work, because it is slower than a key-value lookup read",
-        "Batch inference works if you add replicas to the key-value store",
-        "Batch inference cannot meet the limit, so the design needs online scoring"
+        "只要每天把任务跑得更勤，batch 推理仍然可行",
+        "在线推理不可行，因为它比键值查找读还慢",
+        "只要给键值存储加副本，batch 推理就能满足",
+        "batch 推理无法满足该限制，设计需要在线打分"
       ],
       "correct": 3,
-      "explanation": "A batch score is at least as old as one run. When the staleness limit is shorter than the job, no schedule can meet it."
+      "explanation": "batch 分数至少与一次运行一样旧。当陈旧上限短于任务时长时，任何调度都满足不了。"
     },
     {
       "stage": "check",
-      "question": "A churn model scores F1 0.56. The majority baseline scores 0.00, and a one-feature rule scores 0.46. What is the lift?",
+      "question": "某流失模型 F1 为 0.56。多数类基线得 0.00，单特征规则得 0.46。提升（lift）是多少？",
       "options": [
-        "0.51, the average gain over the two baselines in the comparison",
-        "0.10, measured against the rule, which is the strongest baseline",
-        "0.56, measured against the majority baseline, which scores zero",
-        "0.00, because lift is only defined against the current production system"
+        "0.51，相对两个基线的平均增益",
+        "0.10，相对最强基线即该规则测得",
+        "0.56，相对得分为零的多数类基线测得",
+        "0.00，因为 lift 只相对当前生产系统定义"
       ],
       "correct": 1,
-      "explanation": "Lift is the gap to the strongest baseline. Comparing with the weakest baseline makes any model look good."
+      "explanation": "lift 是相对最强基线的差距。拿最弱基线对比会让任何模型都显得很好。"
     },
     {
       "stage": "post",
-      "question": "A fraud model blocks risky payments, and the team retrains it each month on labeled payments. What problem does this create?",
+      "question": "某欺诈模型会拦截高风险支付，团队每月用已标注支付重训。这会造成什么问题？",
       "options": [
-        "Blocked payments never get a fraud label, so the training data loses examples",
-        "The monthly retraining schedule makes the model overfit to the most recent month",
-        "Blocking payments raises the p99 latency of the model service above its budget",
-        "Labeled payments leak the label because the label is stored in the same table"
+        "被拦截的支付永远拿不到欺诈标签，训练数据会丢失样本",
+        "每月重训日程会让模型对最近一个月过拟合",
+        "拦截支付会把模型服务的 p99 延迟抬到预算之上",
+        "已标注支付会泄漏标签，因为标签存在同一张表里"
       ],
       "correct": 0,
-      "explanation": "This is a feedback loop. The model's decisions remove outcomes from future training data, so keep a small random holdout that the model does not block."
+      "explanation": "这是反馈环。模型的决策会从未来训练数据中移除结果，因此要保留一小块模型不拦截的随机 holdout。"
     },
     {
       "stage": "post",
-      "question": "Which rollout stage lets a new model score live traffic while nobody uses its output?",
+      "question": "哪一种上线阶段让新模型对线上流量打分，同时没有人使用它的输出？",
       "options": [
-        "Canary release",
-        "A/B test with a holdout",
-        "Shadow deployment",
-        "Full rollout with rollback"
+        "金丝雀发布（canary release）",
+        "带 holdout 的 A/B 测试",
+        "影子部署（shadow deployment）",
+        "可回滚的全量上线"
       ],
       "correct": 2,
-      "explanation": "In shadow mode, the system logs the new model's predictions and compares them with the current model. Users see only the current model's decisions."
+      "explanation": "在影子模式下，系统记录新模型的预测并与当前模型对比。用户只看到当前模型的决策。"
     }
   ]
 }
