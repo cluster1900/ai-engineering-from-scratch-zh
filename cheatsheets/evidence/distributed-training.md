@@ -44,7 +44,7 @@ Abbreviations: P10 = phases/10-llms-from-scratch, P19 = phases/19-capstone-proje
 - Per-rank bytes row: L76/d:43-47
 - Steps row: L76/d:43-47
 - Use when row: L76/d:43-47
-- Message size row, ring above ~1 MB, tree below: L76/d:89
+- Message size row, ring above ~1 MB, tree below: L76/d:88
 
 ## 在队列网格上做 ring allreduce (architecture, 4 nodes, 4 edges)
 - rank 0 and queue 0 to 1: L76/d:27
@@ -76,10 +76,10 @@ Abbreviations: P10 = phases/10-llms-from-scratch, P19 = phases/19-capstone-proje
 - lesson 48 run, two ranks, ddp-demo.json: L48/d:124, 127
 - --world-size 4 and 1e-3 spread: L48/d:143
 - --no-write: L48/c:384
-- lesson 76 output: L76/d:76, 79
+- lesson 76 output: L76/d:75, 78
 - lesson 77 output: L77/d:79, 82
 - lesson 78 output: L78/d:83, 86
-- lesson 79 output: L79/d:68, 71
+- lesson 79 output: L79/d:67, 70
 
 ## 代码中的默认值 (defaults, 8)
 - --world-size 2: L48/c:379
@@ -88,7 +88,7 @@ Abbreviations: P10 = phases/10-llms-from-scratch, P19 = phases/19-capstone-proje
 - --batch-size 8: L48/c:382
 - nccl on GPUs: L48/d:23
 - RECV_TIMEOUT_S = 30.0: L76/c:29
-- DDP bucket default 25 MB: L76/d:95
+- DDP bucket default 25 MB: L76/d:94
 - NUM_STAGES = 4: L79/c:27
 - NUM_MICROBATCHES = 8: L79/c:28
 
@@ -98,7 +98,7 @@ Abbreviations: P10 = phases/10-llms-from-scratch, P19 = phases/19-capstone-proje
 - deadlock, find_unused_parameters=True: L77/d:88
 - no_sync for accumulation: L77/d:92
 - SUM without division retunes LR: L77/d:52
-- pipeline send-recv deadlock, even and odd ranks: L79/d:81
+- pipeline send-recv deadlock, even and odd ranks: L79/d:80
 - equalise FLOPs per stage: L79/d:45
 - 105 GB, 16 GPUs or activation checkpointing: L05/d:116
 
@@ -106,7 +106,7 @@ Abbreviations: P10 = phases/10-llms-from-scratch, P19 = phases/19-capstone-proje
 - mean not sum: L77/d:52
 - mixed precision 25%: L05/d:450
 - 27% at M=8 N=4, 4.5% at M=64: L79/d:21
-- 1F1B same bubble, bounded activation memory: L79/d:41, 111
+- 1F1B same bubble, bounded activation memory: L79/d:41, 110
 - reduce_scatter delivers own shard: L78/d:64
 - ZeRO-3 equals FSDP: L05/d:174
 - DualPipe overkill under 1k GPUs: L19/d:100
