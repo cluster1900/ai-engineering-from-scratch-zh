@@ -3,7 +3,16 @@
 
 Reports table cells, list items, link texts, and prose lines that look like
 predominantly ASCII English, excluding code fences, inline code, Sources lines,
-allowed names, tip citation templates, and intentional EN columns.
+allowed names, tip citation templates, and opt-in intentional EN columns.
+
+Allowlist is intentionally tight:
+- CJK ideographs mark localized text; fullwidth punctuation alone does not.
+- `docs/` matches only path-like tip citations / doc pointers, not any substring.
+- First-column skips (incident names, glossary terms, Sources titles) require
+  explicit flags — they are never automatic.
+
+Canonical path: scripts/check_manual_residual_en.py (do not duplicate under
+manuals/_shared/). Not a CI gate unless a workflow step is added on purpose.
 """
 from __future__ import annotations
 
@@ -71,8 +80,12 @@ def strip_links(s: str) -> str:
 
 
 def has_cjk(s: str) -> bool:
-    # CJK ideographs, or CJK punctuation / fullwidth forms that mark localized text
-    return bool(CJK.search(s) or re.search(r"[\u3000-\u303f\uff00-\uffef]", s))
+    """True only when the text has CJK ideographs.
+
+    Fullwidth / CJK punctuation alone (e.g. a Chinese comma before leftover
+    English) must NOT count — that was an allowlist hole that hid residual EN.
+    """
+    return bool(CJK.search(s))
 
 
 def latin_ratio(s: str) -> float:
@@ -94,7 +107,9 @@ def is_commandish_title(title: str) -> bool:
         return True
     if PRODUCT_H1.match(t):
         return True
-    if t in {"Glossary", "Sources", "Index of figures", "RadixCache", "术语表", "源", "图索引"}:
+    # Product/section H1s kept EN by convention: Glossary / Sources / RadixCache.
+    # "Index of figures" is NOT allowlisted — it must be translated (图索引).
+    if t in {"Glossary", "Sources", "RadixCache", "术语表", "源", "图索引"}:
         return True
     # command / API name dominates the H1 (tool_name and …)
     if re.match(r"^[A-Za-z][A-Za-z0-9_./:\-]*(?:\s*,\s*[A-Za-z][A-Za-z0-9_./:\-]*)*(?:\s+and\s+.+)?$", t):
@@ -136,8 +151,15 @@ def is_allowed_cell(text: str) -> bool:
     if re.fullmatch(r"[\d,.]+\s+(and|to|against|on|per)\s+[\d,.]+(\s+\w+)?", bare, re.I):
         if len(LATIN_WORD.findall(bare)) <= 3:
             return True
-    # tip/docs citation leftovers that are titles kept EN
-    if "docs/" in t:
+    # tip docs path citation (path-like only — not any "docs/" substring)
+    if re.fullmatch(r"(?:[A-Za-z0-9_.\-]+/)*docs/[A-Za-z0-9_./\-]+\.md", bare):
+        return True
+    # tip doc pointer: optional tool + docs/*.md + comma + work/doc title (EN kept)
+    if re.match(
+        r"^(?:[A-Za-z0-9_.\-]+\s+)?(?:[A-Za-z0-9_.\-]+/)*docs/"
+        r"[A-Za-z0-9_./\-]+\.md\s*[，,]\s*.+$",
+        bare,
+    ):
         return True
     # Sources report title cells: mostly markdown links to blog posts
     if t.count("](") >= 1 and ("http" in t or t.startswith("[")):
@@ -188,7 +210,11 @@ def split_row(line: str) -> list[str]:
     return [c.strip() for c in body.split("|")]
 
 
-def scan_file(path: Path, allow_incident_col: bool) -> list[tuple[int, str, str]]:
+def scan_file(
+    path: Path,
+    allow_incident_col: bool,
+    allow_ref_title_col: bool = False,
+) -> list[tuple[int, str, str]]:
     hits: list[tuple[int, str, str]] = []
     lines = path.read_text(encoding="utf-8").splitlines()
     in_fence = False
@@ -226,11 +252,12 @@ def scan_file(path: Path, allow_incident_col: bool) -> list[tuple[int, str, str]
         if TABLE_ROW.match(line):
             cells = split_row(line)
             for ci, cell in enumerate(cells):
+                # Col0 skips are opt-in only (review: blanket skip was too loose).
                 if allow_incident_col and path.name.startswith("r-3-incident") and ci == 0:
                     continue
-                if path.name.startswith("r-4-glossary") and ci == 0:
+                if allow_ref_title_col and path.name.startswith("r-4-glossary") and ci == 0:
                     continue
-                if path.name.startswith("r-5-sources") and ci == 0:
+                if allow_ref_title_col and path.name.startswith("r-5-sources") and ci == 0:
                     continue
                 if looks_english_prose(cell):
                     hits.append((lineno, f"TABLE_CELL[{ci}]", cell[:120]))
@@ -268,7 +295,17 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("manual")
     ap.add_argument("--root", default=".")
-    ap.add_argument("--allow-incident-col", action="store_true")
+    ap.add_argument(
+        "--allow-incident-col",
+        action="store_true",
+        help="skip col0 of r-3-incident*.md (EN incident name / title column)",
+    )
+    ap.add_argument(
+        "--allow-ref-title-col",
+        action="store_true",
+        help="skip col0 of r-4-glossary*.md and r-5-sources*.md "
+        "(EN term / paper-title columns)",
+    )
     ap.add_argument("--explain", action="store_true",
                     help="print ALLOWED hits that were suppressed (debug)")
     args = ap.parse_args()
@@ -281,7 +318,9 @@ def main() -> int:
     files = 0
     for path in sorted(root.rglob("*.md")):
         files += 1
-        for lineno, kind, text in scan_file(path, args.allow_incident_col):
+        for lineno, kind, text in scan_file(
+            path, args.allow_incident_col, args.allow_ref_title_col
+        ):
             rel = str(path.relative_to(Path(args.root)))
             all_hits.append((rel, lineno, kind, text))
 
