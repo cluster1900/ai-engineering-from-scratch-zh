@@ -716,7 +716,12 @@
     "in": "في",
     "to": "إلى",
     "before running the grader.": "قبل أن تدير الصف",
-    "Lesson - AI Engineering from Scratch": "الدرس - هندسة الذكاء الاصطناعي من الصفر"
+    "Lesson - AI Engineering from Scratch": "الدرس - هندسة الذكاء الاصطناعي من الصفر",
+    "Change theme": "تغيير الموضوع",
+    "Theme": "الموضوع",
+    "System": "النظام",
+    "Light": "الضوء",
+    "Dark": "مظلم"
   },
   "pinned": [
     "Skip to content",
