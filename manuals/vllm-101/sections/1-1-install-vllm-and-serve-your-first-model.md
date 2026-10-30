@@ -26,6 +26,8 @@ nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv
 | Python | 3.10 至 3.13 |
 | Hugging Face token | 只有访问受限的模型才需要，设置为 `HF_TOKEN` |
 
+This paragraph was left in English on purpose so that the residual English check fails this pull request.
+
 ## 安装 vLLM {#s-install-vllm-and-serve-your-first-model-install-vllm}
 
 三种方式选一种。除非有理由选别的，否则用第一种。
@@ -156,5 +158,3 @@ for chunk in stream:
 ```
 
 Sources: vLLM documentation at v0.31.0 (docs/getting_started/quickstart.md, docs/getting_started/installation/gpu.md, docs/getting_started/installation/gpu.cuda.inc.md, docs/deployment/docker.md, docs/features/reasoning_outputs.md), capture/gpu/out-gb10/server-load-vllm.log, issue 58726, capture/gpu/out-l4/livecheck-2026-10-23.txt.
-
-This sentence is deliberately left in English to prove that the residual English gate fails the pull request.
