@@ -428,7 +428,14 @@ export async function takeShot({ url, out, width = 1440, height = 900, theme = '
   }
 }
 
-const RAW_BASE = 'https://raw.githubusercontent.com/rohitg00/ai-engineering-from-scratch/main/';
+const RAW_BASE = 'https://raw.githubusercontent.com/cluster1900/ai-engineering-from-scratch-zh/main/';
+const UPSTREAM_RAW_BASE = 'https://raw.githubusercontent.com/rohitg00/ai-engineering-from-scratch/main/';
+
+export async function rawFetch(relPath, init) {
+  const res = await fetch(RAW_BASE + relPath, init);
+  if (res.status === 404) return fetch(UPSTREAM_RAW_BASE + relPath, init);
+  return res;
+}
 const LESSON_RE = /^phases\/\d{2}-[a-z0-9-]+\/\d{2}-[a-z0-9-]+$/;
 const RUNNERS = {
   python: { ext: 'py', cmd: 'python3 main.py' },
@@ -466,8 +473,9 @@ function texPlain(tex) {
 }
 
 function mdSection(md, heading) {
+  const aliases = (Array.isArray(heading) ? heading : [heading]).map((h) => `## ${h}`.toLowerCase());
   const lines = md.split('\n');
-  const start = lines.findIndex((l) => l.trim().toLowerCase() === `## ${heading}`.toLowerCase());
+  const start = lines.findIndex((l) => aliases.includes(l.trim().toLowerCase()));
   if (start < 0) return '';
   const rest = lines.slice(start + 1);
   const end = rest.findIndex((l) => /^## /.test(l));
@@ -505,13 +513,13 @@ function mdRow(line) {
 export function parseLesson(md) {
   const title = (/^# (.+)$/m.exec(md) || [])[1] || '';
   const hook = (/^> (.+)$/m.exec(md) || [])[1] || '';
-  const languages = ((/^\*\*Languages:\*\*\s*(.+)$/m.exec(md) || [])[1] || '').split(',').map((x) => mdPlain(x).toLowerCase().replace(/\s*\(.*?\)\s*/g, ' ').trim()).filter(Boolean);
-  const objectives = mdItems(mdSection(md, 'Learning Objectives')).map(mdPlain).filter(Boolean).slice(0, 6);
-  const rows = mdSection(md, 'Key Terms').split('\n').filter((l) => l.trim().startsWith('|') && !/^\s*\|\s*:?-{2,}/.test(l)).map(mdRow);
+  const languages = ((/^\*\*(?:Languages:|语言：)\*\*\s*(.+)$/m.exec(md) || [])[1] || '').split(/[,，、]/).map((x) => mdPlain(x).toLowerCase().replace(/\s*[（(].*?[）)]\s*/g, ' ').trim()).filter((x) => x && x !== '无');
+  const objectives = mdItems(mdSection(md, ['Learning Objectives', '学习目标'])).map(mdPlain).filter(Boolean).slice(0, 6);
+  const rows = mdSection(md, ['Key Terms', '关键术语']).split('\n').filter((l) => l.trim().startsWith('|') && !/^\s*\|\s*:?-{2,}/.test(l)).map(mdRow);
   const width = rows.length ? rows[0].length : 0;
   const terms = rows.slice(1).filter((r) => r.length === width && width >= 2 && r[0] && r[width - 1]).map((r) => ({ term: r[0], means: r[width - 1] })).slice(0, 8);
-  const exercise = mdPlain((mdItems(mdSection(md, 'Exercises'))[0] || '').replace(/^\*\*[^*]+\*\*\s*/, ''));
-  const reading = mdItems(mdSection(md, 'Further Reading')).map((item) => {
+  const exercise = mdPlain((mdItems(mdSection(md, ['Exercises', '练习']))[0] || '').replace(/^\*\*[^*]+\*\*\s*/, ''));
+  const reading = mdItems(mdSection(md, ['Further Reading', '延伸阅读'])).map((item) => {
     const link = /\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/.exec(item);
     const bare = /(https?:\/\/[^\s)]+)/.exec(item);
     return { text: mdPlain(link ? link[1] : item).slice(0, 160), url: link ? link[2] : bare ? bare[1] : '' };
@@ -581,7 +589,7 @@ async function readLessonFile(repo, lesson, rel) {
     const file = path.join(repo, lesson, rel);
     return fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null;
   }
-  const res = await fetch(RAW_BASE + lesson + '/' + rel);
+  const res = await rawFetch(lesson + '/' + rel);
   if (res.status === 404) return null;
   if (!res.ok) throw new Error(`could not fetch ${lesson}/${rel}: ${res.status}`);
   return res.text();
@@ -606,7 +614,7 @@ export async function loadPractice(lesson, { repo } = {}) {
   let run = '';
   if (runner) {
     const entry = `code/main.${runner.ext}`;
-    const exists = repo ? fs.existsSync(path.join(repo, clean, entry)) : await fetch(RAW_BASE + clean + '/' + entry, { method: 'HEAD' }).then((r) => r.ok, () => false);
+    const exists = repo ? fs.existsSync(path.join(repo, clean, entry)) : await rawFetch(clean + '/' + entry, { method: 'HEAD' }).then((r) => r.ok, () => false);
     if (exists) run = `cd "${repo ? path.join(repo, clean, 'code') : `${clean}/code`}" && ${runner.cmd}`;
   }
   const [phase, slug] = clean.split('/').slice(1);
@@ -620,7 +628,7 @@ export async function loadPractice(lesson, { repo } = {}) {
     questions,
     source: fromQuiz.length ? 'quiz' : questions.length ? 'terms' : 'none',
     web: `https://aiengineeringfromscratch.com/lesson?path=${clean}`,
-    github: `https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/${clean}`,
+    github: `https://github.com/cluster1900/ai-engineering-from-scratch-zh/tree/main/${clean}`,
   };
 }
 

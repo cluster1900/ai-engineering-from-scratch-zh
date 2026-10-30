@@ -392,6 +392,80 @@ test('parseLesson reads the parts a practice page needs', async () => {
   assert.deepEqual(info.reading, [{ text: 'A paper', url: 'https://arxiv.org/abs/1' }]);
 });
 
+const ZH_LESSON_MD = [
+  '# 小课',
+  '',
+  '> 一句钩子。',
+  '',
+  '**类型：** Build',
+  '**语言：** Python（with numpy）、TypeScript',
+  '',
+  '## 学习目标',
+  '- 解释缩放',
+  '- 构建它',
+  '',
+  '## 练习',
+  '',
+  '1. **简单。** 运行 `code/main.py` 并读输出。',
+  '',
+  '## 关键术语',
+  '',
+  '| 术语 | 人们怎么说 | 实际含义 |',
+  '|------|------------|----------|',
+  '| Alpha | "速率" | 草稿被保留的概率 |',
+  '| Beta | "另一个" | 管道 |',
+  '',
+  '## 延伸阅读',
+  '',
+  '- [一篇论文](https://arxiv.org/abs/1) 和笔记',
+  '',
+].join('\n');
+
+test('parseLesson reads zh headings and language aliases', async () => {
+  const { parseLesson } = await import(script);
+  const info = parseLesson(ZH_LESSON_MD);
+  assert.deepEqual(info.languages, ['python', 'typescript']);
+  assert.deepEqual(info.objectives, ['解释缩放', '构建它']);
+  assert.ok(info.terms.length >= 1);
+  assert.equal(info.terms[0].term, 'Alpha');
+  assert.equal(info.exercise, '运行 code/main.py 并读输出。');
+  assert.deepEqual(info.reading, [{ text: '一篇论文', url: 'https://arxiv.org/abs/1' }]);
+});
+
+test('rawFetch falls back to upstream on 404 and skips it on 200', async (t) => {
+  const { loadPractice } = await import(script);
+  const lesson = 'phases/99-test-phase/01-tiny-lesson';
+  const zhBase = 'https://raw.githubusercontent.com/cluster1900/ai-engineering-from-scratch-zh/main/';
+  const upstreamBase = 'https://raw.githubusercontent.com/rohitg00/ai-engineering-from-scratch/main/';
+  const origFetch = globalThis.fetch;
+  t.after(() => {
+    globalThis.fetch = origFetch;
+  });
+
+  const requested404 = [];
+  globalThis.fetch = async (url) => {
+    requested404.push(String(url));
+    if (String(url).startsWith(zhBase)) return new Response('not found', { status: 404 });
+    return new Response(LESSON_MD, { status: 200 });
+  };
+  const data = await loadPractice(lesson);
+  assert.ok(data);
+  assert.equal(data.title, 'Tiny Lesson');
+  assert.equal(requested404[1], `${upstreamBase}${lesson}/docs/en.md`);
+  assert.equal(data.github, `https://github.com/cluster1900/ai-engineering-from-scratch-zh/tree/main/${lesson}`);
+
+  const requested200 = [];
+  globalThis.fetch = async (url) => {
+    requested200.push(String(url));
+    return new Response(LESSON_MD, { status: 200 });
+  };
+  const hit = await loadPractice(lesson);
+  assert.ok(hit);
+  assert.equal(hit.title, 'Tiny Lesson');
+  assert.ok(requested200.every((u) => u.startsWith(zhBase)));
+  assert.ok(!requested200.some((u) => u.startsWith(upstreamBase)));
+});
+
 test('quiz questions accept the course schema and term questions are stable', async () => {
   const { quizQuestions, termQuestions, parseLesson } = await import(script);
   const one = { stage: 'post', question: 'Q?', options: ['a', 'b', 'c', 'd'], correct: 2, explanation: 'because' };
