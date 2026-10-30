@@ -104,3 +104,22 @@ test('dictionaries come from the translations branch, English and unknown langua
     delete globalThis.fetch;
   }
 });
+
+test('zh overrides are a subset of DEFAULT_ZH', () => {
+  const dict = i18n.DEFAULT_ZH;
+  assert.ok(dict && typeof dict === 'object');
+  const missing = [];
+  for (const [key, value] of Object.entries(OVERRIDES.zh)) {
+    if (!Object.prototype.hasOwnProperty.call(dict, key)) missing.push(key);
+    else assert.equal(dict[key], value, `DEFAULT_ZH value differs from zh override for ${JSON.stringify(key)}`);
+  }
+  assert.equal(missing.length, 0, `DEFAULT_ZH missing zh override keys: ${missing.map((key) => JSON.stringify(key)).join(', ')}`);
+});
+
+test('theme button keeps the existing zh label', () => {
+  const dict = i18n.DEFAULT_ZH;
+  assert.equal(dict['Change theme'], '切换主题');
+  assert.equal(dict['Toggle theme'], '切换主题');
+  assert.equal(dict['Change theme'], dict['Toggle theme']);
+  assert.equal(i18n.translateText('Change theme', dict), '切换主题');
+});
