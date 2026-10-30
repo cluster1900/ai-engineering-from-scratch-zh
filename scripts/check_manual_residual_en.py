@@ -131,14 +131,27 @@ def _joined_token(s: str, start: int, end: int) -> str:
     return s[i:j]
 
 
+A2A_PINNED_ID = re.compile(r"a2a-server(?:-lf-v\d+\.\d+\.\d+)?")
+_A2A_PINNED_IN_TEXT = re.compile(
+    r"(?<![\w./-])a2a-server(?:-lf-v\d+\.\d+\.\d+)?(?![\w/-]|\.\w)"
+)
+_A2A_CONTEXT_WORDS = frozenset({"rust", "rs"})
+
+
+def _only_pinned_id_context(s: str) -> bool:
+    rest = _A2A_PINNED_IN_TEXT.sub(" ", s)
+    return all(w.lower() in _A2A_CONTEXT_WORDS for w in LATIN_WORD.findall(rest))
+
+
 def func_word_in_prose(s: str) -> bool:
     """True if FUNC_WORDS matches a standalone word, not an identifier token.
 
     Hyphen and dot are word boundaries for ``\\b``, so ``server`` in
     ``a2a-server`` and ``at`` in a dotted path would otherwise fire.
-    A joined token is treated as an identifier only when it starts with
-    ``a2a-server`` or ``server-common/`` and every function-word segment
-    is ``server``; a hyphen-chained English sentence is still prose.
+    A joined token is treated as an identifier only when it fullmatches
+    ``a2a-server(?:-lf-vX.Y.Z)?``. After the pinned id is removed from the
+    line, the only Latin words (2+ letters) left may be Rust/rs
+    (case-insensitive). A hyphen-chained English sentence is still prose.
     """
     for m in FUNC_WORDS.finditer(s):
         left = s[m.start() - 1] if m.start() > 0 else ""
@@ -151,12 +164,9 @@ def func_word_in_prose(s: str) -> bool:
             right in ("-", ".") and right2.isalnum()
         ):
             token = _joined_token(s, m.start(), m.end())
-            # Only the pinned SDK identifiers in a2a-101 (see EXPECTED_MAIN_ONLY);
-            # every function-word segment inside must be "server".
-            segs = [x.lower() for x in re.split(r"[-./_]", token) if x]
-            if re.match(r"(?:a2a-server|server-common/)", token) and all(
-                x == "server" for x in segs if FUNC_WORDS.fullmatch(x)
-            ):
+            # Only the pinned a2a-rs SDK identifier (see EXPECTED_MAIN_ONLY),
+            # and only when nothing but "Rust" / "a2a-rs" sits beside it.
+            if A2A_PINNED_ID.fullmatch(token) and _only_pinned_id_context(s):
                 continue
         return True
     return False

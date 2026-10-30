@@ -81,6 +81,16 @@ D_SLASH_CELL = (
     "Restart-the/servers-nightly, "
     "[arXiv 2501.00001](https://arxiv.org/abs/2501.00001)"
 )
+A = "[arXiv 2501.00001](https://arxiv.org/abs/2501.00001)"
+B5_SENT = "Engineers restart a2a-server nightly because memory leaks."
+B5_SENT_PINNED = (
+    "Engineers restart a2a-server-lf-v0.5.1 nightly because memory leaks badly."
+)
+B5_CHAIN = (
+    "a2a-server-crashed-nightly-leaking-memory-everywhere-today-sadly-again-forever"
+)
+B5_RESTARTS_CELL = "a2a-server-restarts-nightly-because-memory-leaks, " + A
+B5_SERVERX4_CELL = "a2a-server-server-server-server, " + A
 WHITELIST_PLUS_EN = " We restart the server every night because it leaks."
 WHITELIST_MILES_26 = "Rollout Routing Replay，arXiv 2510.11370。"
 WHITELIST_MILES_27 = (
@@ -153,6 +163,11 @@ ENGLISH_CORPUS = [
     D1E_NIGHTLY,
     D_VERSIONS,
     D_SLASH_CELL,
+    B5_SENT,
+    B5_SENT_PINNED,
+    B5_CHAIN,
+    B5_RESTARTS_CELL,
+    B5_SERVERX4_CELL,
 ]
 
 # Main-only hits on the current manuals. Each entry is (relpath, lineno, text)
@@ -203,6 +218,30 @@ def _scan(name: str, text: str) -> tuple[list[tuple[int, str, str]], int]:
         path = Path(tmp) / name
         path.write_text(text, encoding="utf-8")
         return chk.scan_file(path)
+
+
+def _body(s: str) -> tuple[str, str]:
+    return "3-1-intro.md", f"{s}\n"
+
+
+def _list(s: str) -> tuple[str, str]:
+    return "3-1-intro.md", f"- {s}\n"
+
+
+def _cell(s: str) -> tuple[str, str]:
+    return "3-1-intro.md", f"| a | b |\n|---|---|\n| {s} | x |\n"
+
+
+def _heading(s: str) -> tuple[str, str]:
+    return "3-1-intro.md", f"## {s}\n"
+
+
+def _srccell(s: str) -> tuple[str, str]:
+    return "r-5-sources.md", f"| a | b |\n|---|---|\n| {s}, {A} | x |\n"
+
+
+def _srccell_raw(s: str) -> tuple[str, str]:
+    return "r-5-sources.md", f"| a | b |\n|---|---|\n| {s} | x |\n"
 
 
 def _load_main_oracle():
@@ -278,8 +317,7 @@ class ResidualEnglishTests(unittest.TestCase):
         self.assertTrue(chk.func_word_in_prose("Then run this."))
         self.assertFalse(chk.func_word_in_prose("a2a-server-lf-v0.5.1"))
         self.assertTrue(chk.func_word_in_prose(N5C_HYPHEN))
-        # Identifier exemption needs both the a2a-server prefix and
-        # server-only function-word segments (kills prefix-only / segments-only).
+        # Hyphen-chained prose and non-pinned identifiers stay flagged.
         self.assertTrue(chk.func_word_in_prose("a2a-server-we-restart-the-server"))
         self.assertTrue(chk.func_word_in_prose("foo-server-v2"))
 
@@ -583,6 +621,93 @@ class NeverLooserThanMainTests(unittest.TestCase):
                 }
                 main_only.update(main_set - new_set)
         self.assertEqual(main_only, EXPECTED_MAIN_ONLY)
+
+
+class PinnedIdentifierContextTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.oracle = _load_main_oracle()
+
+    def _assert_both_flag(self, name, text):
+        hits, explained = _scan(name, text)
+        self.assertTrue(hits, f"new checker must flag: {text[:80]!r}")
+        self.assertEqual(explained, 0)
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / name
+            path.write_text(text, encoding="utf-8")
+            oracle_hits = self.oracle.scan_file(path, False, False)
+            self.assertTrue(
+                oracle_hits, f"oracle (main) must also flag: {text[:80]!r}"
+            )
+
+    def test_b5_sentences_flagged_in_every_listed_context(self):
+        cases = []
+        for sample in (B5_SENT, B5_SENT_PINNED):
+            for ctx in (_body, _list, _cell, _heading, _srccell):
+                cases.append((sample, ctx))
+        for ctx in (_body, _list, _cell, _srccell):
+            cases.append((B5_CHAIN, ctx))
+        for sample in (
+            "a2a-server-restarts-nightly-because-memory-leaks",
+            "a2a-server-server-server-server",
+        ):
+            cases.append((sample, _srccell))
+        for sample, ctx in cases:
+            with self.subTest(sample=sample[:70], ctx=ctx.__name__):
+                name, text = ctx(sample)
+                self._assert_both_flag(name, text)
+
+    def test_b4_digit_slash_hyphen_flagged_in_every_listed_context(self):
+        cases = []
+        for ctx in (_body, _list, _cell, _srccell):
+            cases.append((D1C_HYPHEN, ctx))
+        for sample in (D1E_CELL, D1E_NIGHTLY, D_SLASH_CELL, D_VERSIONS):
+            for ctx in (_body, _list, _cell, _heading, _srccell_raw):
+                cases.append((sample, ctx))
+        for sample, ctx in cases:
+            with self.subTest(sample=sample[:70], ctx=ctx.__name__):
+                name, text = ctx(sample)
+                self._assert_both_flag(name, text)
+
+    def test_x1_pinned_id_match_is_case_sensitive(self):
+        for sample in ("Rust A2A-SERVER-lf-v0.5.1", "Rust A2A-Server"):
+            for ctx in (_body, _list, _cell):
+                with self.subTest(sample=sample, ctx=ctx.__name__):
+                    name, text = ctx(sample)
+                    self._assert_both_flag(name, text)
+
+    def test_x2_prefix_only_a2a_is_not_exempt(self):
+        for sample in ("Rust a2a-common", "Rust a2a-common-lf-v0.5.1"):
+            for ctx in (_body, _list, _cell):
+                with self.subTest(sample=sample, ctx=ctx.__name__):
+                    name, text = ctx(sample)
+                    self._assert_both_flag(name, text)
+
+    def test_x3_token_must_fullmatch_not_search(self):
+        for sample in ("Rust a2a-server.", "Rust a2a-server-lf-v0.5.1."):
+            for ctx in (_body, _list, _cell):
+                with self.subTest(sample=sample, ctx=ctx.__name__):
+                    name, text = ctx(sample)
+                    self._assert_both_flag(name, text)
+
+    def test_x9b_extra_non_function_word_is_not_exempt(self):
+        for sample in ("Rust restart a2a-server", "Restart a2a-server"):
+            for ctx in (_body, _list, _cell):
+                with self.subTest(sample=sample, ctx=ctx.__name__):
+                    name, text = ctx(sample)
+                    self._assert_both_flag(name, text)
+
+    def test_only_pinned_id_context_helper(self):
+        self.assertFalse(chk._only_pinned_id_context("Rust x.a2a-server"))
+        self.assertFalse(chk._only_pinned_id_context("Rust a2a-server/x x"))
+        self.assertFalse(chk._only_pinned_id_context("Rust the a2a-server"))
+        self.assertTrue(chk._only_pinned_id_context("Rust a2a-server-lf-v0.5.1"))
+        self.assertTrue(chk._only_pinned_id_context("a2a-rs, a2a-server 0.5.1"))
+
+    def test_x10_func_word_in_prose_rust_rs_without_lowering_token(self):
+        self.assertFalse(chk.func_word_in_prose("Rust a2a-server-lf-v0.5.1"))
+        self.assertFalse(chk.func_word_in_prose("RUST a2a-server"))
+        self.assertFalse(chk.func_word_in_prose("a2a-rs, a2a-server 0.5.1"))
 
 
 if __name__ == "__main__":
