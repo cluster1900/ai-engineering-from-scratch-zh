@@ -1,10 +1,11 @@
 """Unit tests for scripts/check_manual_residual_en.py."""
 from __future__ import annotations
 
+import subprocess
 import sys
 import tempfile
 import unittest
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -100,6 +101,56 @@ class SourcesListFlagTests(unittest.TestCase):
             allow_ref_title_col=True,
         )
         self.assertEqual([kind for _lineno, kind, _text in hits], ["LIST"])
+
+
+class ExcludedDirTests(unittest.TestCase):
+    def test_is_excluded_research_tree(self):
+        self.assertTrue(
+            chk.is_excluded(PurePosixPath("manuals/a2a-101/research/briefs/x.md"))
+        )
+        self.assertTrue(
+            chk.is_excluded(
+                PurePosixPath("manuals/a2a-101/research/nested/deeper/x.md")
+            )
+        )
+        self.assertFalse(
+            chk.is_excluded(PurePosixPath("manuals/a2a-101/research-notes/x.md"))
+        )
+        self.assertFalse(
+            chk.is_excluded(PurePosixPath("manuals/other-101/research/x.md"))
+        )
+        self.assertFalse(
+            chk.is_excluded(PurePosixPath("manuals/a2a-101/sections/research.md"))
+        )
+
+    def test_main_skips_excluded_research_dir(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            research = root / "manuals" / "a2a-101" / "research"
+            sections = root / "manuals" / "a2a-101" / "sections"
+            research.mkdir(parents=True)
+            sections.mkdir(parents=True)
+            (research / "x.md").write_text(
+                "This leftover English paragraph lives only under research.\n",
+                encoding="utf-8",
+            )
+            (sections / "s.md").write_text(
+                "This leftover English paragraph lives under sections.\n",
+                encoding="utf-8",
+            )
+            script = Path(__file__).resolve().parent / "check_manual_residual_en.py"
+            proc = subprocess.run(
+                [sys.executable, str(script), "--root", str(root), "a2a-101"],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(proc.returncode, 1)
+            self.assertIn("FAIL_hits=1", proc.stdout)
+            self.assertIn("files_scanned=1", proc.stdout)
+            self.assertIn("excluded_files=1 (manuals/a2a-101/research)", proc.stdout)
+            self.assertIn("manuals/a2a-101/sections/s.md", proc.stdout)
+            self.assertNotIn("manuals/a2a-101/research/x.md", proc.stdout)
 
 
 if __name__ == "__main__":

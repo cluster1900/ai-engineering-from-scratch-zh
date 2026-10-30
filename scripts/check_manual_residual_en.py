@@ -20,7 +20,7 @@ from __future__ import annotations
 import argparse
 import re
 import sys
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 CJK = re.compile(r"[\u4e00-\u9fff]")
 LATIN_WORD = re.compile(r"[A-Za-z]{2,}")
@@ -78,6 +78,18 @@ ALLOWED_PREFIXES = (
 PRODUCT_H1 = re.compile(
     r"^(Reverse Engineering 101|SGLang 101)( capture kit)?$"
 )
+
+# Verbatim upstream spec text + line-number-cited briefs, not rendered on
+# site; translating would break line citations.
+EXCLUDED_DIRS = (PurePosixPath("manuals/a2a-101/research"),)
+
+
+def is_excluded(rel: PurePosixPath) -> bool:
+    """True when rel sits inside an EXCLUDED_DIRS path (exact path-part match)."""
+    for excluded in EXCLUDED_DIRS:
+        if rel.parts[: len(excluded.parts)] == excluded.parts:
+            return True
+    return False
 
 
 def strip_inline_code(s: str) -> str:
@@ -416,15 +428,20 @@ def main() -> int:
     all_hits: list[tuple[str, int, str, str]] = []
     explained = 0
     files = 0
+    excluded_files = 0
+    repo_root = Path(args.root)
     for path in sorted(root.rglob("*.md")):
+        rel = PurePosixPath(path.relative_to(repo_root).as_posix())
+        if is_excluded(rel):
+            excluded_files += 1
+            continue
         files += 1
         file_hits, file_explained = scan_file(
             path, args.allow_incident_col, args.allow_ref_title_col
         )
         explained += file_explained
         for lineno, kind, text in file_hits:
-            rel = str(path.relative_to(Path(args.root)))
-            all_hits.append((rel, lineno, kind, text))
+            all_hits.append((str(rel), lineno, kind, text))
 
     by_kind: dict[str, int] = {}
     by_file: dict[str, int] = {}
@@ -437,6 +454,7 @@ def main() -> int:
         f"FAIL_hits={len(all_hits)} unexplained={len(all_hits)} "
         f"explained={explained}"
     )
+    print(f"excluded_files={excluded_files} (manuals/a2a-101/research)")
     print("by_kind:", ", ".join(f"{k}={v}" for k, v in sorted(by_kind.items())) or "(none)")
     if by_file:
         print("by_file:")
