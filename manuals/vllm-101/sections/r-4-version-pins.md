@@ -19,7 +19,7 @@
 
 | 项目 | NVIDIA L4 | DGX Spark |
 |---|---|---|
-| GPU | NVIDIA L4，compute capability 8.9 | NVIDIA GB10，compute capability 12.1 |
+| GPU | NVIDIA L4，计算能力 8.9 | NVIDIA GB10，计算能力 12.1 |
 | 内存 | 24 GB GDDR6，可见 22.1 GiB | 统一 LPDDR5x，标称 128 GB，GPU 可见 121.69 GiB |
 | CPU 架构 | x86_64 | aarch64 |
 | 驱动 | 615.71.09 | 580.159.03 |

@@ -1,71 +1,71 @@
 # A2A 101 capture kit
 
-Every request, response, and stream frame in A2A 101 comes from this kit. It runs three remote agents and a recording client on your machine, with the Python standard library only. It needs no network and no keys.
+A2A 101 中每一个请求、响应和流帧都来自本 kit。它在你的机器上运行三个远程 agent 和一个录制客户端，只用 Python 标准库。它不需要网络，也不需要密钥。
 
 ```bash
 python3 run.py          # writes out/
 python3 run.py --check  # captures again into a temporary folder and compares
 ```
 
-The output is deterministic. Ids come from seeded generators, timestamps from a clock that starts at 2026-10-06T09:00:00Z and moves 250 ms each time it stamps a new task or a status, and every scenario runs its steps in a fixed order. Two runs write byte-identical files, so `--check` is a plain comparison with nothing masked.
+输出是确定性的。id 来自带种子的生成器，时间戳来自一个从 2026-10-06T09:00:00Z 开始的时钟，每给一个新任务或一个状态打一次时间戳就前进 250 ms，每个场景按固定顺序跑它的步骤。两次运行写出逐字节相同的文件，所以 `--check` 就是一次普通比较，什么都不掩码。
 
-## The agents
+## 这些 agent
 
-| Agent | Port | What it does | What it demonstrates |
+| Agent | 端口 | 作用 | 展示内容 |
 |---|---|---|---|
-| `test-runner` | 41241 | runs a test suite and streams the log | streaming, artifacts in chunks, polling, cancel, push notifications, both JSON bindings |
-| `code-reviewer` | 41242 | reviews a diff against a base branch | direct message replies, `TASK_STATE_INPUT_REQUIRED`, rejected content types, no push support |
-| `deployer` | 41243 | deploys a build to staging after an operator approves | bearer authentication, `TASK_STATE_AUTH_REQUIRED` with approval outside A2A, rejection, extended and signed cards |
+| `test-runner` | 41241 | 运行测试套件并流式传输日志 | 流式传输、分块 artifact、轮询、取消、推送通知、两种 JSON 绑定 |
+| `code-reviewer` | 41242 | 对照基准分支审查 diff | 直接消息回复、`TASK_STATE_INPUT_REQUIRED`、被拒绝的内容类型、不支持推送 |
+| `deployer` | 41243 | 操作员批准后把构建部署到 staging | bearer 认证、`TASK_STATE_AUTH_REQUIRED` 且在 A2A 之外批准、拒绝、扩展 card 与签名 card |
 
-`planner.py` is the client agent of section 7.1. It reads the three cards, picks an agent for each skill, and handles every state a task reaches.
+`planner.py` 是第 7.1 节的客户端 agent。它读取三张 card，为每个 skill 选一个 agent，并处理任务到达的每一种状态。
 
-## The scenarios
+## 这些场景
 
-| File | Shows |
+| 文件 | 展示 |
 |---|---|
-| `01-agent-cards.http` | the three cards from `/.well-known/agent-card.json` |
-| `02-message-reply.http` | a question answered with a message and no task |
-| `03-blocking-task.http` | a `SendMessage` that waits until the task completes |
-| `04-polling.http` | `returnImmediately`, then `GetTask` while working and after completion |
-| `05-streaming.http` | every frame of `SendStreamingMessage`, with the log in chunks |
-| `06-input-required.http` | the reviewer asks for a base branch and the client answers on the same task |
-| `07-auth-required.http` | a deploy waits for an operator while its stream stays open |
-| `08-rejected.http` | a production deploy the agent refuses |
-| `09-failed.http` | a commit that does not exist |
-| `10-cancel.http` | cancel a running task, cancel it again, and message it after it ended |
-| `11-errors.http` | task not found, a missing version header, a v0.3 method name, invalid parameters, an unsupported media type, push not supported, a malformed body |
-| `12-list-tasks.http` | `ListTasks` pages and a status filter |
-| `13-history.http` | `GetTask` with and without `historyLength` |
-| `14-resubscribe.http` | a stream dropped after four frames and picked up with `SubscribeToTask` |
-| `15-push.http` | a webhook registered in `SendMessage`, the notifications it receives, and the config operations |
-| `16-rest-binding.http` | the same operations over HTTP+JSON, including its error shape |
-| `17-signed-card.txt` | canonicalizing, signing, and verifying the deployer card |
-| `18-extended-card.http` | `GetExtendedAgentCard` without and with a token |
-| `19-planner.http` and `19-planner.log` | the planner's run and its decisions |
+| `01-agent-cards.http` | 来自 `/.well-known/agent-card.json` 的三张 card |
+| `02-message-reply.http` | 用一条消息回答问题，没有任务 |
+| `03-blocking-task.http` | 一次等到任务完成的 `SendMessage` |
+| `04-polling.http` | `returnImmediately`，然后在工作中和完成后做 `GetTask` |
+| `05-streaming.http` | `SendStreamingMessage` 的每一帧，日志以分块到达 |
+| `06-input-required.http` | 审查方询问基准分支，客户端在同一任务上回答 |
+| `07-auth-required.http` | 一次部署等待操作员，流保持打开 |
+| `08-rejected.http` | agent 拒绝的一次生产环境部署 |
+| `09-failed.http` | 一个不存在的 commit |
+| `10-cancel.http` | 取消一个运行中的任务，再取消一次，并在结束后给它发消息 |
+| `11-errors.http` | 任务未找到、缺少版本 header、一个 v0.3 方法名、无效参数、不支持的媒体类型、不支持推送、格式错误的正文 |
+| `12-list-tasks.http` | `ListTasks` 分页和一个状态过滤器 |
+| `13-history.http` | `GetTask` 带和不带 `historyLength` |
+| `14-resubscribe.http` | 流在四帧后断开，再用 `SubscribeToTask` 接上 |
+| `15-push.http` | 在 `SendMessage` 中注册的 webhook、它收到的通知，以及配置操作 |
+| `16-rest-binding.http` | 同一组操作走 HTTP+JSON，包括它的错误形状 |
+| `17-signed-card.txt` | 对 deployer card 做规范化、签名和验证 |
+| `18-extended-card.http` | 不带 token 和带 token 的 `GetExtendedAgentCard` |
+| `19-planner.http` 和 `19-planner.log` | planner 的运行及其决定 |
 
-Files named `*.events.json` hold the frames of a stream, pretty-printed.
+名为 `*.events.json` 的文件保存流的各帧，并做了 pretty-print。
 
-## How this kit differs from the reference SDK
+## 本 kit 与参考 SDK 的差异
 
-The records were compared with traffic from `a2a-sdk` 1.2.2, the Python reference implementation. The structures, field names, field order inside objects, enum values, error codes, and history bookkeeping match. These choices differ or fill a gap the specification leaves open:
+这些记录与 `a2a-sdk` 1.2.2（Python 参考实现）的流量做过对照。结构、字段名、对象内的字段顺序、枚举值、错误码和 history 记账都一致。下列选择与它不同，或者补上了规范留下的空隙：
 
-- The kit writes JSON-RPC envelopes as `jsonrpc`, `id`, `result`. The SDK writes `result`, `id`, `jsonrpc`. JSON objects have no order, so both are the same message.
-- The kit stamps the first `TASK_STATE_SUBMITTED` status with a time. The SDK leaves it out. The field is optional.
-- Streams close when a task reaches a terminal state or `TASK_STATE_INPUT_REQUIRED`, and stay open through `TASK_STATE_AUTH_REQUIRED`, as the in-task authorization section asks. The specification disagrees with itself about interrupted states. The SDK's default request handler closes a stream when the agent's `execute()` call returns, so the agent code decides (`src/a2a/server/agent_execution/active_task.py`).
-- HTTP+JSON errors and push notifications are sent as `application/a2a+json`, as the specification says. The SDK sends both as `application/json`.
-- The push `token` travels in an `X-A2A-Notification-Token` header. The specification gives the token no transport. The header is the SDK's (`src/a2a/server/tasks/base_push_notification_sender.py`).
-- A push configuration created without an `id` gets a new UUID. The SDK uses the task id. The specification only says the server assigns one.
-- `DeleteTaskPushNotificationConfig` over JSON-RPC returns `{}`, the JSON form of an empty protobuf message. The SDK returns `null`.
-- Error details carry metadata such as the task id, as the specification's examples do. The SDK sends an empty `metadata` object.
-- Idle streams get no keep-alive comments. The SDK's server sends one every 15 seconds.
-- The input check reads only the card's `defaultInputModes`. It treats a `text` part without a `mediaType` as `text/plain` and a `data` part as `application/json`. The SDK's check is off by default. When it is on, the SDK also accepts each skill's `inputModes` and skips parts without a `mediaType`.
-- An `artifactUpdate` with `append` for an unknown `artifactId` starts a new artifact. The SDK rejects it with `InvalidAgentResponseError`.
-- When a client answers an interrupted task, the kit's server sets `TASK_STATE_WORKING` itself, with no message, before the agent code resumes.
-- Webhooks receive status and artifact updates, never the first Task snapshot. The SDK pushes that Task too.
-- The version check accepts exactly `1.0`, from the `A2A-Version` header or an `A2A-Version` query parameter, as §3.6.1 allows. The SDK compares only the major version and reads only the header.
-- Authentication runs in front of the protocol. A missing or wrong bearer token gets HTTP 401 with a `WWW-Authenticate` challenge before any A2A method runs, for both bindings.
-- The deployer signs its card with HS256, because the standard library has no ECDSA. Real deployments sign with ES256 or RS256 and publish the key in a JWKS.
-- The canonical form sorts keys and drops spaces. That matches RFC 8785 for the plain ASCII text of these cards, and for the deployer card it equals the SDK's canonical bytes.
-- The card response carries no `Cache-Control` or `ETag` header. The SDK sends a weak `ETag` and answers a matching request with `304`.
-- A client message with any role other than `ROLE_USER` gets `-32602`. The specification names no error for that case.
-- `POST /approve/<task id>` on the deployer stands for an operator who approves a deploy outside A2A. It is not part of A2A.
+- kit 把 JSON-RPC 信封写成 `jsonrpc`、`id`、`result`。SDK 写成 `result`、`id`、`jsonrpc`。JSON 对象没有顺序，所以两者是同一条消息。
+- kit 给第一个 `TASK_STATE_SUBMITTED` 状态打上时间。SDK 省略它。该字段是可选的。
+- 任务到达终止状态或 `TASK_STATE_INPUT_REQUIRED` 时流会关闭，经过 `TASK_STATE_AUTH_REQUIRED` 时保持打开，这是任务内授权一节的要求。规范对中断状态自相矛盾。SDK 的默认请求处理器在 agent 的 `execute()` 调用返回时关闭流，所以由 agent 代码决定（`src/a2a/server/agent_execution/active_task.py`）。
+- HTTP+JSON 错误和推送通知按规范以 `application/a2a+json` 发送。SDK 把两者都作为 `application/json` 发送。
+- 推送 `token` 放在 `X-A2A-Notification-Token` header 中传输。规范没有给 token 规定传输方式。这个 header 来自 SDK（`src/a2a/server/tasks/base_push_notification_sender.py`）。
+- 创建推送配置时如果没有 `id`，会得到一个新的 UUID。SDK 使用任务 id。规范只说由服务器分配一个。
+- JSON-RPC 上的 `DeleteTaskPushNotificationConfig` 返回 `{}`，即空 protobuf 消息的 JSON 形式。SDK 返回 `null`。
+- 错误详情携带诸如任务 id 之类的 metadata，与规范的示例一致。SDK 发送一个空的 `metadata` 对象。
+- 空闲流不会收到 keep-alive 注释。SDK 的服务器每 15 秒发送一条。
+- 输入检查只读取 card 的 `defaultInputModes`。它把一个 `text` part 在没有 `mediaType` 时当作 `text/plain`，把 `data` part 当作 `application/json`。SDK 的检查默认关闭。打开时，SDK 也接受每个 skill 的 `inputModes`，并跳过没有 `mediaType` 的 part。
+- 一个 `artifactUpdate` 若带 `append` 且 `artifactId` 未知，会开始一个新 artifact。SDK 以 `InvalidAgentResponseError` 拒绝它。
+- 客户端回答一个中断的任务时，kit 的服务器自己把状态设为 `TASK_STATE_WORKING`，不带消息，然后再让 agent 代码继续。
+- webhook 收到状态和 artifact 更新，从不会收到第一个 Task 快照。SDK 也会推送那个 Task。
+- 版本检查只接受恰好为 `1.0` 的值，来自 `A2A-Version` header 或 `A2A-Version` 查询参数，这是 §3.6.1 允许的。SDK 只比较主版本号，并且只读取 header。
+- 认证在协议之前运行。缺少或错误的 bearer token 会在任何 A2A 方法运行之前得到带 `WWW-Authenticate` 质询的 HTTP 401，两种绑定都是如此。
+- deployer 用 HS256 给它的 card 签名，因为标准库没有 ECDSA。真实部署用 ES256 或 RS256 签名，并把密钥发布在 JWKS 中。
+- 规范化形式会排序键并去掉空格。对这几张 card 的纯 ASCII 文本，这与 RFC 8785 一致；对 deployer card，它等于 SDK 的规范化字节。
+- card 响应不带 `Cache-Control` 或 `ETag` header。SDK 发送一个弱 `ETag`，并对匹配的请求回答 `304`。
+- 客户端消息的 role 若不是 `ROLE_USER`，会得到 `-32602`。规范没有为这种情况指定错误。
+- deployer 上的 `POST /approve/<task id>` 代表在 A2A 之外批准部署的操作员。它不是 A2A 的一部分。
