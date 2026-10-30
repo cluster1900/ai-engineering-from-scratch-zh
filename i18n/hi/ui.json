@@ -716,7 +716,12 @@
     "in": "में",
     "to": "करने के लिए",
     "before running the grader.": "ग्रेड चलाने से पहले।",
-    "Lesson - AI Engineering from Scratch": "पाठ - स्क्रैच से एआई इंजीनियरिंग"
+    "Lesson - AI Engineering from Scratch": "पाठ - स्क्रैच से एआई इंजीनियरिंग",
+    "Change theme": "विषय परिवर्तन",
+    "Theme": "विषय",
+    "System": "प्रणाली",
+    "Light": "प्रकाश",
+    "Dark": "अंधेरा"
   },
   "pinned": [
     "Skip to content",
