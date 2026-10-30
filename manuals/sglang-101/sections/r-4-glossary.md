@@ -48,7 +48,7 @@
 | Online quantization | SGLang 在加载时转换全精度权重 | [4.3](#s-quantization) |
 | OpenAI API | OpenAI 格式的 `/v1/chat/completions`、`/v1/completions` 和 `/v1/models` 端点 | [2.5](#s-streaming-stop-strings-and-the-openai-api) |
 | Overlap scheduling | 一批的 CPU 活与另一批的 GPU 活同时跑 | [2.4](#s-the-overlap-scheduler) |
-| Pause and resume | 带模式的 `POST /pause_generation`，默认 `abort` 结束每条正在跑的请求 | [7.2](#s-sglang-as-an-rl-rollout-engine) |
+| 暂停与恢复（Pause and resume） | 带模式的 `POST /pause_generation`，默认 `abort` 结束每条正在跑的请求 | [7.2](#s-sglang-as-an-rl-rollout-engine) |
 | Peak concurrent requests | 基准运行一秒内任一时刻活跃请求的最大计数 | [5.1](#s-sglang-benchmark-serving) |
 | Pipeline parallelism (PP) | 整层按顺序去不同 GPU，`--pp-size` 设阶段数 | [6.1](#s-tp-size-dp-size-and-attn-dp-size) |
 | Prefill | 整段 prompt 上的前向，算出它的 key、value 和第一个输出 token | [1.3](#s-what-the-server-does-with-your-request) |

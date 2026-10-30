@@ -2,14 +2,20 @@
 """Flag residual English prose in a translated AIEFS zh manual.
 
 Reports table cells, list items, link texts, and prose lines that look like
-predominantly ASCII English, excluding code fences, inline code, Sources lines,
-allowed names, tip citation templates, and opt-in intentional EN columns.
+predominantly ASCII English, excluding code fences, inline code, allowed
+names, and tip citation templates. No column is skipped wholesale.
+
+A Sources-title rule applies automatically only in files matching
+r-*-sources*.md and counts matching items as explained (not silent pass):
+- list items of the form "标题，arXiv NNNN.NNNNN。"
+- table cells that end with [arXiv NNNN.NNNNN](https://arxiv.org/abs/NNNN.NNNNN)
+  whose link label id matches the abs path
+- list items that are a bare markdown link (optional 。/.) or a CJK-containing
+  prefix followed by ，/, and a link; an ASCII/English prefix does not match
 
 Allowlist is intentionally tight:
 - CJK ideographs mark localized text; fullwidth punctuation alone does not.
 - `docs/` matches only path-like tip citations / doc pointers, not any substring.
-- First-column skips (incident names, glossary terms, Sources titles) require
-  explicit flags — they are never automatic.
 
 Canonical path: scripts/check_manual_residual_en.py (do not duplicate under
 manuals/_shared/). Wired as the Residual English gate in
@@ -39,7 +45,12 @@ CJK_LIST_SEP = re.compile(r"[、，；]")
 PAREN_GROUP = re.compile(r"[（(][^）)]*[）)]")
 PRODUCT_ITEM = re.compile(r"^[A-Z0-9][\w.+\-/]*(?:\s+[A-Z0-9][\w.+\-/]*)*$")
 SOURCES_ARXIV_LIST = re.compile(r"^.+，arXiv \d{4}\.\d{5}。$")
-SOURCES_LINK_LIST = re.compile(r"^(?:.+[，,]\s*)?\[[^\]]+\]\([^)]+\)[。.]?$")
+SOURCES_ARXIV_CELL = re.compile(
+    r"^.+, \[arXiv (\d{4}\.\d{5})\]\(https://arxiv\.org/abs/\1\)$"
+)
+SOURCES_LINK_LIST = re.compile(
+    r"^(?:.*[\u4e00-\u9fff].*[，,]\s*)?\[[^\]]+\]\([^)]+\)[。.]?$"
+)
 SOURCES_FILENAME = re.compile(r"^r-.+-sources.*\.md$")
 LOWERCASE_PHRASE = re.compile(r"\b[a-z]{2,}\b(?:\s+[a-z]{2,}\b)+")
 FUNC_WORDS = re.compile(
@@ -125,9 +136,31 @@ def func_word_in_prose(s: str) -> bool:
     return False
 
 
+def _is_product_looking_token(word: str) -> bool:
+    if any(c.isdigit() for c in word):
+        return True
+    if re.search(r"[a-z][A-Z]", word):
+        return True
+    letters = [c for c in word if c.isalpha()]
+    if len(letters) >= 2 and word.isupper():
+        return True
+    if any(c in ".+-/" for c in word):
+        return True
+    return False
+
+
 def is_product_item(item: str) -> bool:
     core = PAREN_GROUP.sub("", item).strip()
-    return bool(core) and bool(PRODUCT_ITEM.match(core))
+    if not core or not PRODUCT_ITEM.match(core):
+        return False
+    words = core.split()
+    if len(words) > 4:
+        return False
+    if any(FUNC_WORDS.fullmatch(w) for w in words):
+        return False
+    if len(words) > 1 and not any(_is_product_looking_token(w) for w in words):
+        return False
+    return True
 
 
 def split_cjk_list(text: str) -> list[str] | None:
@@ -170,6 +203,18 @@ def is_sources_filename(name: str) -> bool:
 def is_sources_title_list_item(body: str) -> bool:
     t = body.strip()
     return bool(SOURCES_ARXIV_LIST.match(t) or SOURCES_LINK_LIST.match(t))
+
+
+def is_sources_title_cell(cell: str) -> bool:
+    return bool(SOURCES_ARXIV_CELL.match(cell.strip()))
+
+
+def is_automatic_sources_title(name: str, text: str, *, table_cell: bool) -> bool:
+    if not is_sources_filename(name):
+        return False
+    if table_cell:
+        return is_sources_title_cell(text)
+    return is_sources_title_list_item(text)
 
 
 def has_cjk(s: str) -> bool:
@@ -307,11 +352,7 @@ def split_row(line: str) -> list[str]:
     return [c.strip() for c in body.split("|")]
 
 
-def scan_file(
-    path: Path,
-    allow_incident_col: bool,
-    allow_ref_title_col: bool = False,
-) -> tuple[list[tuple[int, str, str]], int]:
+def scan_file(path: Path) -> tuple[list[tuple[int, str, str]], int]:
     hits: list[tuple[int, str, str]] = []
     explained = 0
     lines = path.read_text(encoding="utf-8").splitlines()
@@ -350,13 +391,7 @@ def scan_file(
         if TABLE_ROW.match(line):
             cells = split_row(line)
             for ci, cell in enumerate(cells):
-                # Col0 skips are opt-in only (review: blanket skip was too loose).
-                skip_col = (
-                    (allow_incident_col and path.name.startswith("r-3-incident") and ci == 0)
-                    or (allow_ref_title_col and path.name.startswith("r-4-glossary") and ci == 0)
-                    or (allow_ref_title_col and path.name.startswith("r-5-sources") and ci == 0)
-                )
-                if skip_col:
+                if is_automatic_sources_title(path.name, cell, table_cell=True):
                     if looks_english_prose(cell):
                         explained += 1
                     continue
@@ -368,11 +403,7 @@ def scan_file(
         lm = LIST_ITEM.match(line)
         if lm:
             body = lm.group(2)
-            if (
-                allow_ref_title_col
-                and is_sources_filename(path.name)
-                and is_sources_title_list_item(body)
-            ):
+            if is_automatic_sources_title(path.name, body, table_cell=False):
                 if looks_english_prose(body):
                     explained += 1
                 i += 1
@@ -405,18 +436,6 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("manual")
     ap.add_argument("--root", default=".")
-    ap.add_argument(
-        "--allow-incident-col",
-        action="store_true",
-        help="skip col0 of r-3-incident*.md (EN incident name / title column)",
-    )
-    ap.add_argument(
-        "--allow-ref-title-col",
-        action="store_true",
-        help="skip col0 of r-4-glossary*.md and r-5-sources*.md "
-        "(EN term / paper-title columns); also skip LIST items in "
-        "r-*-sources*.md that are a title plus ，arXiv NNNN.NNNNN。 or a link",
-    )
     ap.add_argument("--explain", action="store_true",
                     help="print ALLOWED hits that were suppressed (debug)")
     args = ap.parse_args()
@@ -436,9 +455,7 @@ def main() -> int:
             excluded_files += 1
             continue
         files += 1
-        file_hits, file_explained = scan_file(
-            path, args.allow_incident_col, args.allow_ref_title_col
-        )
+        file_hits, file_explained = scan_file(path)
         explained += file_explained
         for lineno, kind, text in file_hits:
             all_hits.append((str(rel), lineno, kind, text))

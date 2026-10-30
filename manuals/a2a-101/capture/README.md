@@ -1,4 +1,4 @@
-# A2A 101 capture kit
+# A2A 101 捕获套件
 
 A2A 101 中每一个请求、响应和流帧都来自本 kit。它在你的机器上运行三个远程 agent 和一个录制客户端，只用 Python 标准库。它不需要网络，也不需要密钥。
 
@@ -11,7 +11,7 @@ python3 run.py --check  # captures again into a temporary folder and compares
 
 ## 这些 agent
 
-| Agent | 端口 | 作用 | 展示内容 |
+| 名称 | 端口 | 作用 | 展示内容 |
 |---|---|---|---|
 | `test-runner` | 41241 | 运行测试套件并流式传输日志 | 流式传输、分块 artifact、轮询、取消、推送通知、两种 JSON 绑定 |
 | `code-reviewer` | 41242 | 对照基准分支审查 diff | 直接消息回复、`TASK_STATE_INPUT_REQUIRED`、被拒绝的内容类型、不支持推送 |

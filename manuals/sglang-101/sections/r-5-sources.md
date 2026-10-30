@@ -49,7 +49,7 @@
 | 论文 | 用于 |
 |---|---|
 | Zheng and others, SGLang: Efficient Execution of Structured Language Model Programs, [arXiv 2312.07104](https://arxiv.org/abs/2312.07104) | [2.2](#s-the-scheduler-loop-and-schedule-policy), [3.1](#s-kv-bytes-per-token-and-the-kv-pool), [3.3](#s-radixcache), [4.5](#s-structured-outputs-with-xgrammar) |
-| The tail-optimized LRU policy that the code names, [arXiv 2510.15152](https://arxiv.org/abs/2510.15152) | [3.5](#s-eviction-policies-and-hicache) |
+| 代码中所指的尾部优化 LRU 策略，[arXiv 2510.15152](https://arxiv.org/abs/2510.15152) | [3.5](#s-eviction-policies-and-hicache) |
 | Lee and others, From Tokens to Layers: Redefining Stall-Free Scheduling for MoE Serving with Layered Prefill, [arXiv 2510.08055](https://arxiv.org/abs/2510.08055) | [2.2](#s-the-scheduler-loop-and-schedule-policy) |
 | Liu, Yu, and Yang, When Fancy Eviction Fails: Rethinking Cache Replacement For LLM Prefix Reuse, [arXiv 2609.28870](https://arxiv.org/abs/2609.28870) | [3.5](#s-eviction-policies-and-hicache) |
 | Abramovich and others, SPEED-Bench: A Unified and Diverse Benchmark for Speculative Decoding, [arXiv 2604.09557](https://arxiv.org/abs/2604.09557) | [4.4](#s-speculative-decoding), [6.2](#s-moe-serving-deepep-and-eplb) |
@@ -81,9 +81,9 @@
 | 作者 | 报告 | 月份 | 用于 |
 |---|---|---|---|
 | AIMultiple | [Inference engines benchmark](https://aimultiple.com/inference-engines) | 2026-01, answer 2026-10 | [1.3](#s-what-the-server-does-with-your-request), [5.3](#s-reading-other-peoples-benchmarks) |
-| Alibaba Cloud, RBG and Mooncake teams | [A production inference platform with SGLang RBG and Mooncake](https://www.alibabacloud.com/blog/building-a-production-grade-cloud-native-large-model-inference-platform-with-sglang-rbg-%2B-mooncake_602933) | 2026-03 | [3.5](#s-eviction-policies-and-hicache) |
+| Alibaba Cloud、RBG 与 Mooncake 团队 | [A production inference platform with SGLang RBG and Mooncake](https://www.alibabacloud.com/blog/building-a-production-grade-cloud-native-large-model-inference-platform-with-sglang-rbg-%2B-mooncake_602933) | 2026-03 | [3.5](#s-eviction-policies-and-hicache) |
 | Ant Group | [DeepSeek-R1 on H20 with SGLang, on the LMSYS blog](https://www.lmsys.org/blog/2025-09-26-sglang-ant-group/) | 2025-09 | [4.4](#s-speculative-decoding), [6.1](#s-tp-size-dp-size-and-attn-dp-size), [6.2](#s-moe-serving-deepep-and-eplb), [7.1](#s-operating-sglang) |
-| basbunarhasan on the NVIDIA developer forum | [SGLang with NVFP4 and DSpark on a DGX Spark](https://forums.developer.nvidia.com/t/qwen3-8-27b-at-34-38-tok-s-on-dgx-spark-open-source-one-command-setup-sglang-nvfp4-dspark/380257) | 2026-08 | [3.2](#s-mem-fraction-static-and-startup-sizing) |
+| basbunarhasan（NVIDIA 开发者论坛） | [SGLang with NVFP4 and DSpark on a DGX Spark](https://forums.developer.nvidia.com/t/qwen3-8-27b-at-34-38-tok-s-on-dgx-spark-open-source-one-command-setup-sglang-nvfp4-dspark/380257) | 2026-08 | [3.2](#s-mem-fraction-static-and-startup-sizing) |
 | CERIT-SC | [Running LLMs at CERIT-SC](https://blog.cerit.io/blog/run-llm2/) and [a later post](https://blog-dev.cerit.io/blog/llm3/) | 2025-10, 2026-04 | [7.1](#s-operating-sglang) |
 | Cloudflare | [Smaller, faster, safer models](https://blog.cloudflare.com/smaller-faster-safer-models/) | 2026-08 | [3.1](#s-kv-bytes-per-token-and-the-kv-pool), [4.3](#s-quantization) |
 | Crusoe | [MLPerf Inference v6.1 results on AMD MI355X](https://www.crusoe.ai/resources/blog/serving-5-75-million-tokens-per-second-crusoes-mlperf-inference-v6-1-results-on-amd-mi355x) | 2026-09 | [5.3](#s-reading-other-peoples-benchmarks), [6.2](#s-moe-serving-deepep-and-eplb) |
@@ -92,7 +92,7 @@
 | Doubleword | [Fast SGLang starts](https://fergusfinn.com/blog/fast-sglang-starts/) | 2026-04 | [7.1](#s-operating-sglang) |
 | dstack | [Benchmarking prefill-decode ratios](https://dstack.ai/blog/benchmarking-pd-ratios/) | 2025-09 | [6.3](#s-prefill-decode-disaggregation) |
 | Hazy Research | [Tensor-parallel Llama megakernel](https://hazyresearch.stanford.edu/blog/2025-09-28-tp-llama-main) | 2025-09 | [4.1](#s-forwardmode-and-cuda-graphs) |
-| InferenceX by SemiAnalysis | [GLM-5 FP8 on MI355X](https://inferencex.semianalysis.com/blog/mi355x-glm5-fp8-sglang-40-cheaper-than-b200), [DeepSeek-V4-Pro on MI355X in 26 days](https://inferencex.semianalysis.com/blog/mi355x-deepseek-v4-pro-sglang-110x-in-26-days), and [GLM-5 NVFP4 on B200](https://inferencex.semianalysis.com/blog/b200-glm5-nvfp4-vs-h200-fp8-3-6x-perf-per-dollar) | 2026-05 | [4.1](#s-forwardmode-and-cuda-graphs), [5.3](#s-reading-other-peoples-benchmarks) |
+| SemiAnalysis 的 InferenceX | [GLM-5 FP8 on MI355X](https://inferencex.semianalysis.com/blog/mi355x-glm5-fp8-sglang-40-cheaper-than-b200), [DeepSeek-V4-Pro on MI355X in 26 days](https://inferencex.semianalysis.com/blog/mi355x-deepseek-v4-pro-sglang-110x-in-26-days), and [GLM-5 NVFP4 on B200](https://inferencex.semianalysis.com/blog/b200-glm5-nvfp4-vs-h200-fp8-3-6x-perf-per-dollar) | 2026-05 | [4.1](#s-forwardmode-and-cuda-graphs), [5.3](#s-reading-other-peoples-benchmarks) |
 | Jarvislabs | [SGLang vs vLLM on H100](https://jarvislabs.ai/blog/vllm-sglang-trtllm-comparison) | 2026-05 | [4.1](#s-forwardmode-and-cuda-graphs), [5.3](#s-reading-other-peoples-benchmarks) |
 | Jarvislabs | [Managed endpoints](https://jarvislabs.ai/blog/managed-endpoints) | 2026-08 | [3.4](#s-prefix-friendly-prompts), [6.4](#s-sgl-model-gateway) |
 | joshua8.ai | [LLM inference benchmark](https://joshua8.ai/llm-inference-benchmark/) | 2026-01 | [4.1](#s-forwardmode-and-cuda-graphs), [4.3](#s-quantization), [5.3](#s-reading-other-peoples-benchmarks) |
@@ -107,23 +107,23 @@
 | Steve Rawlinson | [vLLM vs SGLang on dual H100](https://rawlinson.ca/articles/vllm-vs-sglang-performance-benchmark-h100) | 2025-12 | [3.2](#s-mem-fraction-static-and-startup-sizing), [5.3](#s-reading-other-peoples-benchmarks) |
 | Thinking Machines | [Defeating nondeterminism in LLM inference](https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/) | 2025-09 | [4.6](#s-deterministic-inference-and-logprobs) |
 | Varad More | [Inference engine benchmark system](https://github.com/varad-more/inference-engine-benchmark-system) | 2026-04 | [3.3](#s-radixcache), [4.2](#s-attention-backend), [4.5](#s-structured-outputs-with-xgrammar), [5.3](#s-reading-other-peoples-benchmarks) |
-| vLLM community | [Discussion #17221](https://github.com/vllm-project/vllm/discussions/17221) | 2025-04 | [5.3](#s-reading-other-peoples-benchmarks) |
+| vLLM 社区 | [Discussion #17221](https://github.com/vllm-project/vllm/discussions/17221) | 2025-04 | [5.3](#s-reading-other-peoples-benchmarks) |
 
 ## 第 7 档：SGLang 团队与厂商报告 {#s-ref-sources-rank-7-sglang-team-and-vendor-reports}
 
 | 作者 | 报告 | 月份 | 用于 |
 |---|---|---|---|
-| The vLLM team | [The state of FP8 KV cache and attention quantization in vLLM](https://vllm.ai/blog/2026-04-22-fp8-kvcache) | 2026-04 | [4.3](#s-quantization) |
+| vLLM 团队 | [The state of FP8 KV cache and attention quantization in vLLM](https://vllm.ai/blog/2026-04-22-fp8-kvcache) | 2026-04 | [4.3](#s-quantization) |
 | LMSYS | [SGLang with Llama 3](https://www.lmsys.org/blog/2024-07-25-sglang-llama3/) | 2024-07 | [5.3](#s-reading-other-peoples-benchmarks) |
 | LMSYS | [SGLang v0.4: zero-overhead batch scheduler](https://lmsys.org/blog/2024-12-04-sglang-v0-4/) | 2024-12 | [2.4](#s-the-overlap-scheduler), [6.1](#s-tp-size-dp-size-and-attn-dp-size), [6.4](#s-sgl-model-gateway) |
 | LMSYS | [DeepSeek with PD disaggregation and large-scale EP on 96 H100 GPUs](https://lmsys.org/blog/2025-05-05-large-scale-ep/) | 2025-05 | [6.2](#s-moe-serving-deepep-and-eplb), [6.3](#s-prefill-decode-disaggregation) |
-| The Mooncake team on the LMSYS blog | [Kimi K2 with large-scale EP](https://www.lmsys.org/blog/2025-07-20-k2-large-scale-ep/) | 2025-07 | [6.3](#s-prefill-decode-disaggregation) |
+| Mooncake 团队（LMSYS 博客） | [Kimi K2 with large-scale EP](https://www.lmsys.org/blog/2025-07-20-k2-large-scale-ep/) | 2025-07 | [6.3](#s-prefill-decode-disaggregation) |
 | LMSYS | [SGLang HiCache](https://lmsys.org/blog/2025-09-10-sglang-hicache/) | 2025-09 | [3.5](#s-eviction-policies-and-hicache) |
 | SGLang | [v0.5.21 release notes](https://github.com/sgl-project/sglang/releases/tag/v0.5.21) | 2026-10 | [3.5](#s-eviction-policies-and-hicache) |
 | Google Cloud | [EAGLE-3 on Vertex AI](https://docs.cloud.google.com/gemini-enterprise-agent-platform/blog/posts/from-research-to-production-accelerate-oss-llm-with-eagle-3-on-vertex) | 2025-11 | [4.4](#s-speculative-decoding) |
-| Modal with Decagon | [Decagon case study](https://frontend.modal.com/blog/decagon-case-study) | 2025-11 | [4.4](#s-speculative-decoding) |
-| LMSYS and RadixArk | [Miles](https://www.lmsys.org/blog/2025-11-19-miles/) | 2025-11 | [7.2](#s-sglang-as-an-rl-rollout-engine) |
+| Modal 与 Decagon | [Decagon case study](https://frontend.modal.com/blog/decagon-case-study) | 2025-11 | [4.4](#s-speculative-decoding) |
+| LMSYS 与 RadixArk | [Miles](https://www.lmsys.org/blog/2025-11-19-miles/) | 2025-11 | [7.2](#s-sglang-as-an-rl-rollout-engine) |
 | RadixArk | [Miles v0.1](https://www.lmsys.org/blog/2026-08-18-miles-v0-1/) | 2026-08 | [7.2](#s-sglang-as-an-rl-rollout-engine) |
-| The Miles team | `docs/advanced/p2p-weight-transfer.md`，Miles v0.1.2 | 2026-10 | [7.2](#s-sglang-as-an-rl-rollout-engine) |
+| Miles 团队 | `docs/advanced/p2p-weight-transfer.md`，Miles v0.1.2 | 2026-10 | [7.2](#s-sglang-as-an-rl-rollout-engine) |
 
 Sources: front.md; the Sources line and the citations of every file under sections/.

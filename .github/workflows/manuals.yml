@@ -10,6 +10,7 @@ on:
       - 'scripts/audit_manuals.js'
       - 'scripts/check_manual_residual_en.py'
       - 'scripts/test_check_manual_residual_en.py'
+      - 'scripts/testdata/check_manual_residual_en_main_89cbf1a.py'
       - '.github/workflows/manuals.yml'
   push:
     branches: [main]
@@ -21,6 +22,7 @@ on:
       - 'scripts/audit_manuals.js'
       - 'scripts/check_manual_residual_en.py'
       - 'scripts/test_check_manual_residual_en.py'
+      - 'scripts/testdata/check_manual_residual_en_main_89cbf1a.py'
       - '.github/workflows/manuals.yml'
   release:
     types: [published]
@@ -56,7 +58,7 @@ jobs:
           set -euo pipefail
           python3 scripts/test_check_manual_residual_en.py
           for m in manuals/*/manual.json; do
-            python3 scripts/check_manual_residual_en.py --allow-incident-col --allow-ref-title-col "$(basename "$(dirname "$m")")"
+            python3 scripts/check_manual_residual_en.py "$(basename "$(dirname "$m")")"
           done
 
   pdf:
