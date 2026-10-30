@@ -716,7 +716,12 @@
     "in": "İçinde",
     "to": "-",
     "before running the grader.": "- Yetişkinlik yapmadan önce.",
-    "Lesson - AI Engineering from Scratch": "Ders - Yapay zeka Mühendisliği Baştan Başlangıç"
+    "Lesson - AI Engineering from Scratch": "Ders - Yapay zeka Mühendisliği Baştan Başlangıç",
+    "Change theme": "Tema değiştir",
+    "Theme": "Tema",
+    "System": "Sistem",
+    "Light": "Işık",
+    "Dark": "Karanlık"
   },
   "pinned": [
     "Skip to content",
