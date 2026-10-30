@@ -156,3 +156,5 @@ for chunk in stream:
 ```
 
 Sources: vLLM documentation at v0.31.0 (docs/getting_started/quickstart.md, docs/getting_started/installation/gpu.md, docs/getting_started/installation/gpu.cuda.inc.md, docs/deployment/docker.md, docs/features/reasoning_outputs.md), capture/gpu/out-gb10/server-load-vllm.log, issue 58726, capture/gpu/out-l4/livecheck-2026-10-23.txt.
+
+This sentence is deliberately left in English to prove that the residual English gate fails the pull request.
