@@ -8,6 +8,9 @@ on:
       - 'site/build-projects.js'
       - 'site/test_manuals.js'
       - 'scripts/audit_manuals.js'
+      - 'scripts/check_manual_residual_en.py'
+      - 'scripts/test_check_manual_residual_en.py'
+      - 'scripts/check_manual_residual_en_main_89cbf1a.py'
       - '.github/workflows/manuals.yml'
   push:
     branches: [main]
@@ -17,6 +20,9 @@ on:
       - 'site/build-projects.js'
       - 'site/test_manuals.js'
       - 'scripts/audit_manuals.js'
+      - 'scripts/check_manual_residual_en.py'
+      - 'scripts/test_check_manual_residual_en.py'
+      - 'scripts/check_manual_residual_en_main_89cbf1a.py'
       - '.github/workflows/manuals.yml'
   release:
     types: [published]
@@ -47,6 +53,13 @@ jobs:
         run: node --test site/test_manuals.js
       - name: Editorial audit, figure lint, provenance and capture drift
         run: node scripts/audit_manuals.js
+      - name: Residual English gate
+        run: |
+          set -euo pipefail
+          python3 scripts/test_check_manual_residual_en.py
+          for m in manuals/*/manual.json; do
+            python3 scripts/check_manual_residual_en.py "$(basename "$(dirname "$m")")"
+          done
 
   pdf:
     if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'

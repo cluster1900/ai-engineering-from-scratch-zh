@@ -27,6 +27,7 @@ const TAKEAWAYS_LABEL = 'What to do with this';
 const OUTCOME_PHRASE = 'When you finish this section, you can';
 // zh translations open with the same promise in Chinese.
 const OUTCOME_PHRASES = [OUTCOME_PHRASE, '读完本节后，你能'];
+const RESEARCH_LINK_LABEL = '（英文原文）';
 const escapeHtml = figkit.escapeHtml;
 
 function ensure(condition, message) { if (!condition) throw new Error(message); }
@@ -265,6 +266,15 @@ function evidenceLink(url, label) {
   return url ? `<a class="m-evidence" href="${url}" target="_blank" rel="noopener">${label}</a>` : '';
 }
 
+function isResearchPath(fileOrRel) {
+  const posix = String(fileOrRel).replace(/\\/g, '/');
+  const relPath = path.isAbsolute(fileOrRel)
+    ? path.relative(ROOT, fileOrRel).split(path.sep).join('/')
+    : posix;
+  const p = path.posix.normalize(relPath).replace(/^\.\//, '');
+  return /^manuals\/[^/]+\/research(?:\/|$)/.test(p) || /^(?:\.\.\/)*research(?:\/|$)/.test(p);
+}
+
 function measuredEvidence(doc, manual) {
   const last = doc.blocks[doc.blocks.length - 1];
   const sources = last && last.type === 'paragraph' && /^Sources:\s/.test(last.text) ? last.text : '';
@@ -350,6 +360,9 @@ function linkHtml(label, href, where, acc) {
   ensure(!/^[a-z][a-z0-9+.-]*:/i.test(href) && !href.startsWith('/'), `${where}: unsupported link target "${href}"`);
   const [target, fragment] = href.split('#');
   acc.repoLinks.push({ path: target, where });
+  if (isResearchPath(target)) {
+    ensure(label.endsWith(RESEARCH_LINK_LABEL), `${where}: research link must end with ${RESEARCH_LINK_LABEL}`);
+  }
   const full = path.join(ROOT, target);
   if (/^manuals\/[^/]+\/capture(?:\/|$)/.test(target)) {
     return `<a href="${escapeHtml(evidenceUrl(full, where) + (fragment ? `#${fragment}` : ''))}" target="_blank" rel="noopener">${label}</a>`;
@@ -603,7 +616,7 @@ function blockHtml(block, doc, manual, acc) {
     case 'figure-index': return tableHtml(['Fig.', 'The claim it makes'], [...manual.figures.values()].map(figure => ({ accent: figure.accent, cells: [`<a class="m-xref" href="#${figure.id}">${figure.number}</a>`, figure.claimHtml] })));
     case 'contents': return tocHtml(manual, 'web');
     case 'lab-runs': return labRunsHtml(manual, where);
-    case 'listing': return `<figure class="m-listing"><div class="m-listing-head"><span class="m-listing-title">${inline(block.title)}</span><span>${escapeHtml(block.lang)}</span>${block.sourceFile ? evidenceLink(evidenceUrl(block.sourceFile, where), 'Full log') : ''}</div><pre><code>${highlight(block.code, block.lang)}</code></pre>${block.note ? `<figcaption class="m-listing-note">${inline(block.note)}</figcaption>` : ''}</figure>`;
+    case 'listing': return `<figure class="m-listing"><div class="m-listing-head"><span class="m-listing-title">${inline(block.title)}</span><span>${escapeHtml(block.lang)}</span>${block.sourceFile ? evidenceLink(evidenceUrl(block.sourceFile, where), 'Full log' + (isResearchPath(block.sourceFile) || isResearchPath(block.source) ? RESEARCH_LINK_LABEL : '')) : ''}</div><pre><code>${highlight(block.code, block.lang)}</code></pre>${block.note ? `<figcaption class="m-listing-note">${inline(block.note)}</figcaption>` : ''}</figure>`;
     case 'takeaways': return `<aside class="m-takeaways"><div class="m-box-label">${TAKEAWAYS_LABEL}</div><ul>${block.items.map(item => `<li>${inline(item)}</li>`).join('')}</ul></aside>`;
     case 'rule': return `<aside class="m-rule"><div class="m-box-label">${escapeHtml(block.label)}</div><p>${inline(block.quote)}</p></aside>`;
     default: throw new Error(`${where}: unknown block ${block.type}`);
@@ -1155,11 +1168,13 @@ module.exports = {
   KINDS,
   OUTCOME_PHRASE,
   OUTCOME_PHRASES,
+  RESEARCH_LINK_LABEL,
   SCHEMA,
   LISTING_LANGS,
   evidenceUrl,
   evidenceRevision,
   inlineHtml,
+  isResearchPath,
   llmsBlock,
   manualSitemapUrls,
   readerCaption,
@@ -1170,5 +1185,6 @@ module.exports = {
   parseDocument,
   printPage,
   proseSpans,
+  writePrint,
   writeWeb,
 };

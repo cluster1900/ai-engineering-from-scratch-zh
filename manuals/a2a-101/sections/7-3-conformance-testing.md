@@ -44,7 +44,7 @@ PUSH-GET-002 MUST grpc=SKIPPED,http_json=PASS,jsonrpc=PASS PASS
 PUSH-LIST-001 MUST grpc=SKIPPED,http_json=PASS,jsonrpc=FAIL FAIL
 ```
 
-[我们对这次运行的记录](manuals/a2a-101/research/tck-run.md)对每一行都做了分类。
+[我们对这次运行的记录（英文原文）](manuals/a2a-101/research/tck-run.md)对每一行都做了分类。
 
 ## TCK 在哪些地方偏离了 v1.0.1 {#s-conformance-testing-where-the-tck-departs-from-v1-0-1}
 
