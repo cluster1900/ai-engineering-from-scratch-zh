@@ -116,6 +116,16 @@ test('zh overrides are a subset of DEFAULT_ZH', () => {
   assert.equal(missing.length, 0, `DEFAULT_ZH missing zh override keys: ${missing.map((key) => JSON.stringify(key)).join(', ')}`);
 });
 
+test('every ui-strings.json key has a non-empty DEFAULT_ZH translation', () => {
+  const missing = [];
+  for (const key of KEYS) {
+    if (!Object.prototype.hasOwnProperty.call(i18n.DEFAULT_ZH, key) || typeof i18n.DEFAULT_ZH[key] !== 'string' || i18n.DEFAULT_ZH[key].trim().length === 0) {
+      missing.push(key);
+    }
+  }
+  assert.equal(missing.length, 0, `DEFAULT_ZH missing or empty keys (${missing.length}): ${JSON.stringify(missing)}`);
+});
+
 test('theme button keeps the existing zh label', () => {
   const dict = i18n.DEFAULT_ZH;
   assert.equal(dict['Change theme'], '切换主题');
