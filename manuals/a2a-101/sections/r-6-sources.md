@@ -18,7 +18,7 @@
 
 ## 随附文件 {#s-ref-sources-vendored-files}
 
-[随附文件](manuals/a2a-101/research/sources)按 Apache License 2.0 从该标签复制而来，许可证见 [LICENSE](manuals/a2a-101/research/sources/LICENSE)。审计会检查每个来源标记使用的都是手册声明过的来源键。
+[随附文件（英文原文）](manuals/a2a-101/research/sources)按 Apache License 2.0 从该标签复制而来，许可证见 [LICENSE（英文原文）](manuals/a2a-101/research/sources/LICENSE)。审计会检查每个来源标记使用的都是手册声明过的来源键。
 
 | 文件 | 上游 | 来源键 |
 |---|---|---|
@@ -27,7 +27,7 @@
 | specification-main.md | main 上 `679ab3a` 处的 `docs/specification.md`，3618 行，未发布 | `spec-main` 加节号，只用于标签之后新增的规则 |
 | docs.md | 十四个项目页面，共 3019 行，非规范性。本版新增了 `multi-tenancy`、`custom-protocol-bindings` 和 `extension-and-binding-governance`。 | `docs` 加页面名 |
 
-规范 第 1.4 节把 proto 路径写成 `spec/a2a.proto`，这是错的（[冲突 D15](#s-ref-sources-the-conflict-register)）。两份简报按行索引这些文件：[规范简报](manuals/a2a-101/research/brief-spec.md)，包含 40 条发现和下面的冲突登记表；[docs 简报](manuals/a2a-101/research/brief-docs.md)，标出了过时的页面。
+规范 第 1.4 节把 proto 路径写成 `spec/a2a.proto`，这是错的（[冲突 D15](#s-ref-sources-the-conflict-register)）。两份简报按行索引这些文件：[规范简报（英文原文）](manuals/a2a-101/research/brief-spec.md)，包含 40 条发现和下面的冲突登记表；[docs 简报（英文原文）](manuals/a2a-101/research/brief-docs.md)，标出了过时的页面。
 
 ## SDK 与测试 kit {#s-ref-sources-the-sdks-and-the-test-kit}
 
@@ -45,7 +45,7 @@
 
 ## 冲突登记表 {#s-ref-sources-the-conflict-register}
 
-此表浓缩了 [规范简报](manuals/a2a-101/research/brief-spec.md)的第 12.2 节，D36 到 D40 是撰写手册时发现的。最后一列说明 A2A 仓库在打标签之后对每一项做了什么，核查于 2026-10-06。“已在 main 修复”表示已合并但未发布。“部分修复”表示 main 上仍有残留。
+此表浓缩了 [规范简报（英文原文）](manuals/a2a-101/research/brief-spec.md)的第 12.2 节，D36 到 D40 是撰写手册时发现的。最后一列说明 A2A 仓库在打标签之后对每一项做了什么，核查于 2026-10-06。“已在 main 修复”表示已合并但未发布。“部分修复”表示 main 上仍有残留。
 
 | ID | 来源的说法 | 手册遵循 | 讨论于 | 上游 |
 |---|---|---|---|---|

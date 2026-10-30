@@ -32,7 +32,7 @@
 | 4 | 参考 SDK a2a-python 1.2.2 | 规范没有规定时，一个生产级实现的做法 | `sdk` 加上源文件 |
 | 5 | `capture/` 中的 capture kit | 本手册展示的每个请求、响应和流帧 | capture 文件名 |
 
-proto、规范和文档页面原样存放在[仓库中](manuals/a2a-101/research/sources)。
+proto、规范和文档页面原样存放在[仓库中（英文原文）](manuals/a2a-101/research/sources)。
 
 规范在[`SubscribeToTask` 的 HTTP 方法](#s-json-rpc)（[冲突 D1](#s-ref-sources)）和[一次发送是否等待](#s-send-message)（[冲突 D2](#s-ref-sources)）上与自身或 proto 不一致。它在[流何时关闭](#s-input-required-and-auth-required)（[冲突 D3](#s-ref-sources)）和[card 的安全字段名](#s-security-schemes-and-in-task-authorization)（[冲突 D6](#s-ref-sources)）上也不一致。[来源参考](#s-ref-sources)列出了全部四十处冲突，以及讨论每处冲突的章节。
 

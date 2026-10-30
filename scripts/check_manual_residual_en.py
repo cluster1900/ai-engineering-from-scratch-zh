@@ -7,9 +7,11 @@ names, and tip citation templates. No column is skipped wholesale.
 
 A Sources-title rule applies automatically only in files matching
 r-*-sources*.md and counts matching items as explained (not silent pass):
-- list items of the form "标题，arXiv NNNN.NNNNN。"
+- list items of the form "标题，arXiv NNNN.NNNNN。" whose pre-arXiv text is
+  title-like (is_title_like), not an English sentence
 - table cells that end with [arXiv NNNN.NNNNN](https://arxiv.org/abs/NNNN.NNNNN)
-  whose link label id matches the abs path
+  whose link label id matches the abs path and whose pre-arXiv text is
+  title-like
 - list items that are a bare markdown link (optional 。/.) or a CJK-containing
   prefix followed by ，/, and a link; an ASCII/English prefix does not match
 
@@ -90,8 +92,12 @@ PRODUCT_H1 = re.compile(
     r"^(Reverse Engineering 101|SGLang 101)( capture kit)?$"
 )
 
-# Verbatim upstream spec text + line-number-cited briefs, not rendered on
-# site; translating would break line citations.
+# research/ holds verbatim upstream spec/source copies and line-cited briefs
+# kept as English originals. Those files are never rendered as pages and are
+# not in the EPUB. Translating them would break quote checks and they would
+# no longer be originals. Rendered links into research/ are kept and labeled
+# 「（英文原文）」.
+# Decision: https://github.com/cluster1900/bot-hub/issues/109#issuecomment-6519284164
 EXCLUDED_DIRS = (PurePosixPath("manuals/a2a-101/research"),)
 
 
@@ -196,17 +202,80 @@ def cjk_list_has_lowercase_prose(text: str) -> bool:
     return False
 
 
+_TITLE_WORD_PUNCT = "\"'“”‘’()[]{}.,:;!?"
+
+
+def is_title_like(text: str) -> bool:
+    """True when text looks like a paper/work title rather than a sentence.
+
+    Applied to the whole title (a trailing ``:`` subtitle is not split off).
+    Hyphenated words contribute only their first segment to the 4+ letter
+    capitalization check, so ``Off-policy`` and ``Stall-Free`` pass.
+    """
+    t = text.strip()
+    if not t or t[-1] in ".!?":
+        return False
+    raw_words = t.split()
+    if len(raw_words) < 2:
+        return False
+    alpha_words: list[str] = []
+    capitalized = 0
+    for raw in raw_words:
+        core = raw.strip(_TITLE_WORD_PUNCT)
+        if not core or not any(c.isascii() and c.isalpha() for c in core):
+            continue
+        alpha_words.append(core)
+        if core[0].isupper() or core[0].isdigit():
+            capitalized += 1
+        head = core.split("-", 1)[0]
+        n_letters = sum(1 for c in head if c.isascii() and c.isalpha())
+        if (
+            n_letters >= 4
+            and not FUNC_WORDS.fullmatch(head)
+            and not FUNC_WORDS.fullmatch(core)
+        ):
+            if not (head[0].isupper() or head[0].isdigit()):
+                return False
+    if len(alpha_words) < 2:
+        return False
+    return capitalized * 2 >= len(alpha_words)
+
+
+def _sources_title_from_before_arxiv(before: str) -> str:
+    """Title portion of the text before an arXiv marker.
+
+    Strip has already removed the trailing ``, `` / ``，`` that joins the
+    arXiv id. If a fullwidth ideographic comma remains, the title is the
+    segment after the last one only when the prefix contains a CJK
+    ideograph (author join such as ``Zheng 等`` or ``Liu、Yu 与 Yang``).
+    Otherwise the whole string is the title.
+    """
+    before = before.strip()
+    if "，" in before:
+        prefix, rest = before.rsplit("，", 1)
+        if CJK.search(prefix):
+            return rest.strip()
+    return before
+
+
 def is_sources_filename(name: str) -> bool:
     return bool(SOURCES_FILENAME.match(name))
 
 
 def is_sources_title_list_item(body: str) -> bool:
     t = body.strip()
-    return bool(SOURCES_ARXIV_LIST.match(t) or SOURCES_LINK_LIST.match(t))
+    if SOURCES_ARXIV_LIST.match(t):
+        before = t[: t.rfind("，arXiv ")]
+        return is_title_like(_sources_title_from_before_arxiv(before))
+    return bool(SOURCES_LINK_LIST.match(t))
 
 
 def is_sources_title_cell(cell: str) -> bool:
-    return bool(SOURCES_ARXIV_CELL.match(cell.strip()))
+    t = cell.strip()
+    if not SOURCES_ARXIV_CELL.match(t):
+        return False
+    before = t[: t.rfind(", [arXiv ")]
+    return is_title_like(_sources_title_from_before_arxiv(before))
 
 
 def is_automatic_sources_title(name: str, text: str, *, table_cell: bool) -> bool:

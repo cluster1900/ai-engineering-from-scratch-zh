@@ -25,8 +25,23 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 
 COUNTER_TITLE_CASE_COMMA = "Run The Server，Then Check The Logs"
 COUNTER_TITLE_CASE_DUNHAO = "Start The Engine、Wait For Warmup"
+COUNTER_TITLE_CASE_NO_PRODUCT = "Restart Engine，Check Logs Again"
 COUNTER_ENGLISH_PREFIX_LINK = (
     "This is a whole English sentence about serving，[link](https://example.com/post)"
+)
+COUNTER_ARXIV_LIST_SENTENCE = (
+    "This is a whole English sentence about serving，arXiv 2510.15152。"
+)
+COUNTER_ARXIV_LIST_POLICY = (
+    "We use this paper for the cache policy，arXiv 2510.11370。"
+)
+COUNTER_ARXIV_CELL_SENTENCE = (
+    "This is a whole English sentence about serving, "
+    "[arXiv 2510.15152](https://arxiv.org/abs/2510.15152)"
+)
+COUNTER_ARXIV_CELL_POLICY = (
+    "the tail-optimized policy that the code names, "
+    "[arXiv 2510.15152](https://arxiv.org/abs/2510.15152)"
 )
 
 ENGLISH_CORPUS = [
@@ -66,6 +81,11 @@ ENGLISH_CORPUS = [
     "The remaining English heading still needs work",
     "This is leftover English and must be translated.",
     "A complete English sentence followed by a citation，[paper](https://example.com/x)",
+    COUNTER_ARXIV_LIST_SENTENCE,
+    COUNTER_ARXIV_LIST_POLICY,
+    COUNTER_ARXIV_CELL_SENTENCE,
+    COUNTER_ARXIV_CELL_POLICY,
+    COUNTER_TITLE_CASE_NO_PRODUCT,
 ]
 
 # Main-only hits on the current manuals. Each entry is (relpath, lineno, text)
@@ -99,17 +119,9 @@ EXPECTED_MAIN_ONLY = {
     # automatic Sources title counted as explained
     ("manuals/miles-101/sections/r-4-sources.md", 26, "Rollout Routing Replay，arXiv 2510.11370。"),
     ("manuals/miles-101/sections/r-4-sources.md", 27, "Score Centering Stabilizes Off-policy Reinforcement Learning，arXiv 2609.20807。"),
-    ("manuals/sglang-101/sections/r-5-sources.md", 51, "Zheng and others, SGLang: Efficient Execution of Structured Language Model Programs, [arXiv 2312.07104](https://arxiv.or"),
-    ("manuals/sglang-101/sections/r-5-sources.md", 53, "Lee and others, From Tokens to Layers: Redefining Stall-Free Scheduling for MoE Serving with Layered Prefill, [arXiv 251"),
-    ("manuals/sglang-101/sections/r-5-sources.md", 54, "Liu, Yu, and Yang, When Fancy Eviction Fails: Rethinking Cache Replacement For LLM Prefix Reuse, [arXiv 2609.28870](http"),
-    ("manuals/sglang-101/sections/r-5-sources.md", 55, "Abramovich and others, SPEED-Bench: A Unified and Diverse Benchmark for Speculative Decoding, [arXiv 2604.09557](https:/"),
-    ("manuals/sglang-101/sections/r-5-sources.md", 56, "Kumar, Sanghavi, and Das, Test-Time Speculation, [arXiv 2605.09329](https://arxiv.org/abs/2605.09329)"),
-    ("manuals/sglang-101/sections/r-5-sources.md", 57, "Agrawal and others, On Evaluating Performance of LLM Inference Serving Systems, [arXiv 2507.09019](https://arxiv.org/abs"),
-    ("manuals/sglang-101/sections/r-5-sources.md", 58, "Zhao and others, CoRun: Padding is Simple and Efficient for Deterministic LLM Inference, [arXiv 2608.14376](https://arxi"),
-    ("manuals/sglang-101/sections/r-5-sources.md", 59, "Qin and others, Vosti: Specifying, Implementing, and Verifying Deterministic LLM Inference, [arXiv 2609.38981](https://a"),
-    ("manuals/sglang-101/sections/r-5-sources.md", 60, "Patodiya, Same Request, Different Answer: Quantization Amplifies Cache-Induced Divergence in LLM Serving, [arXiv 2609.04"),
-    ("manuals/sglang-101/sections/r-5-sources.md", 61, "Chandrasekar and Kramberger, Identifying and Mitigating Systemic Measurement Bias in Production LLM Inference Benchmarks"),
-    ("manuals/sglang-101/sections/r-5-sources.md", 62, "Li and others, Revisiting Disaggregated Large Language Model Serving for Performance and Energy Implications, [arXiv 260"),
+    # author joins on other paper rows are now CJK (等 / 与); main no longer flags them.
+    # Patodiya is a single Latin name, so main still flags the cell.
+    ("manuals/sglang-101/sections/r-5-sources.md", 60, "Patodiya，Same Request, Different Answer: Quantization Amplifies Cache-Induced Divergence in LLM Serving, [arXiv 2609.047"),
     # product-name list false positive
     ("manuals/vllm-101/sections/4-5-change-the-attention-backend-only-for-a-reason.md", 34, "FlashInfer、FlashAttention、Triton、FlexAttention、TurboQuant"),
     ("manuals/vllm-101/sections/4-5-change-the-attention-backend-only-for-a-reason.md", 35, "FlashAttention、FlashInfer、Triton、FlexAttention、TurboQuant"),
@@ -166,6 +178,13 @@ class ProductNameListTests(unittest.TestCase):
         self.assertEqual([kind for _lineno, kind, _text in hits], ["LIST"])
         self.assertEqual(explained, 0)
 
+    def test_title_case_cjk_list_without_product_token_is_list_hit(self):
+        hits, explained = _scan(
+            "page.md", "- Restart Engine，Check Logs Again\n"
+        )
+        self.assertEqual([kind for _lineno, kind, _text in hits], ["LIST"])
+        self.assertEqual(explained, 0)
+
 
 class SdkIdentifierTests(unittest.TestCase):
     def test_sdk_cells_with_tip_cites_are_allowed(self):
@@ -201,10 +220,65 @@ class ResidualEnglishTests(unittest.TestCase):
         self.assertIn("HEADING", kinds)
 
 
+class TitleLikeTests(unittest.TestCase):
+    def test_hyphenated_and_manual_titles_pass(self):
+        self.assertTrue(
+            chk.is_title_like(
+                "Score Centering Stabilizes Off-policy Reinforcement Learning"
+            )
+        )
+        self.assertTrue(
+            chk.is_title_like(
+                "From Tokens to Layers: Redefining Stall-Free Scheduling "
+                "for MoE Serving with Layered Prefill"
+            )
+        )
+        self.assertTrue(chk.is_title_like("Rollout Routing Replay"))
+        self.assertTrue(chk.is_title_like("Test-Time Speculation"))
+
+    def test_english_sentences_are_not_title_like(self):
+        self.assertFalse(
+            chk.is_title_like("This is a whole English sentence about serving")
+        )
+        self.assertFalse(
+            chk.is_title_like("We use this paper for the cache policy")
+        )
+        self.assertFalse(
+            chk.is_title_like("the tail-optimized policy that the code names")
+        )
+
+    def test_miles_arxiv_list_items_are_automatic_titles(self):
+        path = REPO_ROOT / "manuals/miles-101/sections/r-4-sources.md"
+        lines = path.read_text(encoding="utf-8").splitlines()
+        for lineno in (26, 27):
+            lm = chk.LIST_ITEM.match(lines[lineno - 1])
+            self.assertIsNotNone(lm, lines[lineno - 1])
+            body = lm.group(2)
+            self.assertTrue(chk.is_sources_title_list_item(body), body)
+
+    def test_sglang_arxiv_cells_are_automatic_titles(self):
+        path = REPO_ROOT / "manuals/sglang-101/sections/r-5-sources.md"
+        lines = path.read_text(encoding="utf-8").splitlines()
+        matched = 0
+        for lineno in range(51, 63):
+            row = lines[lineno - 1]
+            if not chk.TABLE_ROW.match(row):
+                continue
+            cell = chk.split_row(row)[0]
+            if chk.SOURCES_ARXIV_CELL.match(cell.strip()):
+                self.assertTrue(chk.is_sources_title_cell(cell), cell)
+                matched += 1
+            else:
+                hits, explained = _scan("r-5-sources.md", row + "\n")
+                self.assertEqual(hits, [], cell)
+                self.assertEqual(explained, 0)
+        self.assertGreaterEqual(matched, 11)
+
+
 class SourcesListFlagTests(unittest.TestCase):
     LINE = "- Rollout Routing Replay，arXiv 2510.11370。\n"
     PAPER_CELL = (
-        "Zheng and others, SGLang: Efficient Execution of Structured Language "
+        "SGLang: Efficient Execution of Structured Language "
         "Model Programs, [arXiv 2312.07104](https://arxiv.org/abs/2312.07104)"
     )
 
@@ -238,6 +312,39 @@ class SourcesListFlagTests(unittest.TestCase):
         kinds = [kind for _lineno, kind, _text in hits]
         self.assertIn("LIST", kinds)
         self.assertIn("TABLE_CELL[0]", kinds)
+        self.assertEqual(explained, 0)
+
+    def test_sentence_plus_arxiv_is_hit_not_explained_in_sources(self):
+        for sample in (
+            COUNTER_ARXIV_LIST_SENTENCE,
+            COUNTER_ARXIV_LIST_POLICY,
+            COUNTER_ARXIV_CELL_SENTENCE,
+            COUNTER_ARXIV_CELL_POLICY,
+        ):
+            with self.subTest(sample=sample[:60]):
+                self.assertTrue(chk.looks_english_prose(sample))
+        self.assertFalse(
+            chk.is_sources_title_list_item(COUNTER_ARXIV_LIST_SENTENCE)
+        )
+        self.assertFalse(
+            chk.is_sources_title_list_item(COUNTER_ARXIV_LIST_POLICY)
+        )
+        self.assertFalse(
+            chk.is_sources_title_cell(COUNTER_ARXIV_CELL_SENTENCE)
+        )
+        self.assertFalse(chk.is_sources_title_cell(COUNTER_ARXIV_CELL_POLICY))
+        hits, explained = _scan(
+            "r-5-sources.md",
+            f"- {COUNTER_ARXIV_LIST_SENTENCE}\n"
+            f"- {COUNTER_ARXIV_LIST_POLICY}\n"
+            f"| {COUNTER_ARXIV_CELL_SENTENCE} | 用于 |\n"
+            f"| {COUNTER_ARXIV_CELL_POLICY} | 用于 |\n",
+        )
+        kinds = [kind for _lineno, kind, _text in hits]
+        self.assertGreaterEqual(kinds.count("LIST"), 2)
+        self.assertGreaterEqual(
+            sum(1 for kind in kinds if kind.startswith("TABLE_CELL")), 2
+        )
         self.assertEqual(explained, 0)
 
     def test_sources_rule_stays_off_outside_sources_files(self):
