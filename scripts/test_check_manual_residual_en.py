@@ -766,6 +766,65 @@ class ScanLevelMustReportTests(unittest.TestCase):
         self.assertEqual(len(chk.MAIN_ONLY_ALLOWED_TEXTS), 26)
         self.assertEqual(len(EXPECTED_MAIN_ONLY), 30)
 
+    def test_truncated_allowed_text_plus_appended_english_is_reported(self):
+        # main truncates hit text at 120 chars; a reviewed 120-char prefix must
+        # not exempt a cell that continues with English (inside or after {{}}).
+        en = "we restart the server every night because it leaks memory"
+        truncated = sorted(t for t in chk.MAIN_ONLY_ALLOWED_TEXTS if len(t) >= 120)
+        self.assertEqual(len(truncated), 4)
+        self.assertEqual(
+            sorted(f[:120] for f in chk.MAIN_ONLY_ALLOWED_FULL_CELLS), truncated
+        )
+        for full in chk.MAIN_ONLY_ALLOWED_FULL_CELLS:
+            self.assertIn(full[:120], chk.MAIN_ONLY_ALLOWED_TEXTS)
+            stem = full[:-2] if full.endswith("}}") else full
+            close = "}}" if full.endswith("}}") else ""
+            for name in ("4-5-streaming.md", "r-5-sources.md"):
+                for tpl in ("| {s} | x |\n", "- {s}\n", "{s}\n", "## {s}\n"):
+                    for cell in (stem + " and " + en + close, full + " " + en):
+                        self._assert_both_flag(name, tpl.format(s=cell))
+        # the reviewed cells themselves stay silent
+        for full in chk.MAIN_ONLY_ALLOWED_FULL_CELLS:
+            name = "r-5-sources.md" if full.startswith("Patodiya") else "4-5-streaming.md"
+            hits, _ = _scan(name, "| " + full + " | `POST` |\n")
+            self.assertEqual(hits, [], full[:60])
+        # whitelisted Sources titles >120 chars stay explained in list form too
+        for title in chk.SOURCES_TITLE_WHITELIST:
+            hits, _ = _scan("r-5-sources.md", "- " + title + "\n")
+            self.assertEqual(hits, [], title[:60])
+
+    def test_sdk_rust_rest_citation_after_rust_is_reported(self):
+        # review r7 item 7: "Rust" in front of a reviewed sdk-rust citation is
+        # residual English in every context main checks (blockquotes are a
+        # main-inherited gap, see test_note_span_then_rust_is_known_gap).
+        sample = "Rust {{sdk-rust a2a-server/src/rest.rs at a2a-server-lf-v0.5.1}}"
+        for ctx in (_body, _list, _cell, _cell2, _heading, _h4, _ordered,
+                    _srccell, _srccell_raw, _srclist):
+            self._assert_both_flag(*ctx(sample))
+
+    def test_note_span_then_rust_is_known_gap(self):
+        # KNOWN GAP, inherited from main (89cbf1a): main skips any cell/line
+        # that starts with "{{" (ALLOWED_PREFIXES), so "{{note ...}} Rust" is
+        # silent in both checkers. Tracked in the #141 follow-up issue; if this
+        # starts failing because the PR now reports it, update the issue.
+        samples = (
+            "{{note …}} Rust",
+            "{{note the server restarts nightly}} Rust",
+        )
+        ctxs = (_body, _list, _cell, _cell2, _heading, _h4, _ordered,
+                _srccell, _srccell_raw, _srclist,
+                lambda s: ("3-1-intro.md", f"> {s}\n"))
+        for sample in samples:
+            for ctx in ctxs:
+                name, text = ctx(sample)
+                hits, explained = _scan(name, text)
+                with tempfile.TemporaryDirectory() as tmp:
+                    path = Path(tmp) / name
+                    path.write_text(text, encoding="utf-8")
+                    oracle_hits = self.oracle.scan_file(path, False, False)
+                self.assertEqual(oracle_hits, [], f"main now reports {text!r}")
+                self.assertEqual((hits, explained), ([], 0), f"PR now reports {text!r}")
+
     def test_x7_lookaround_distinguishers_reported_at_scan_level(self):
         samples = (
             "1_a2a-server1 a2a-server",
@@ -943,6 +1002,62 @@ class ScanLevelMustReportTests(unittest.TestCase):
                         oracle_hits,
                         f"oracle (main) must still flag: {text[:80]!r}",
                     )
+
+
+class CliFailClosedTests(unittest.TestCase):
+    """The CLI itself must exit non-zero, not only the CI gate (review r7)."""
+
+    SCRIPT = Path(__file__).resolve().parent / "check_manual_residual_en.py"
+    CLEAN = "## 小节\n\n这一段全部是中文，没有残留英文。\n"
+
+    def _manual(self, root: Path) -> Path:
+        sections = root / "manuals" / "a2a-101" / "sections"
+        sections.mkdir(parents=True)
+        (sections / "a.md").write_text(self.CLEAN, encoding="utf-8")
+        return sections
+
+    def _run(self, script: Path, root: Path):
+        return subprocess.run(
+            [sys.executable, str(script), "--root", str(root), "a2a-101"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+    def test_clean_manual_exits_zero(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._manual(root)
+            proc = self._run(self.SCRIPT, root)
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            self.assertIn("FAIL_hits=0", proc.stdout)
+
+    def test_undecodable_file_exits_nonzero(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            sections = self._manual(root)
+            (sections / "b.md").write_bytes(
+                b"\xff\xfe We restart the server every night.\n"
+            )
+            proc = self._run(self.SCRIPT, root)
+            self.assertNotEqual(proc.returncode, 0, proc.stdout)
+            self.assertNotIn("FAIL_hits=0", proc.stdout)
+            self.assertIn("UnicodeDecodeError", proc.stderr)
+
+    def test_missing_main_baseline_exits_nonzero(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._manual(root)
+            scripts = root / "scripts"
+            scripts.mkdir()
+            # Same checker, but the frozen main baseline is absent next to it.
+            copy = scripts / self.SCRIPT.name
+            copy.write_bytes(self.SCRIPT.read_bytes())
+            self.assertFalse((scripts / ORACLE_PATH.name).exists())
+            proc = self._run(copy, root)
+            self.assertNotEqual(proc.returncode, 0, proc.stdout)
+            self.assertNotIn("FAIL_hits=0", proc.stdout)
+            self.assertIn(ORACLE_PATH.name, proc.stderr)
 
 
 if __name__ == "__main__":

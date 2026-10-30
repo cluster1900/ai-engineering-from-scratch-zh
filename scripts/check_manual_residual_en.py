@@ -381,9 +381,9 @@ def split_row(line: str) -> list[str]:
 
 
 
-# Never looser than main by construction: anything the frozen main checker
-# reports is reported here too, unless the exact text is a reviewed main-only
-# line (see EXPECTED_MAIN_ONLY in the tests) or a whitelisted Sources title.
+# Union with main: anything the frozen main checker reports is reported here
+# too, unless the exact (untruncated) text is a reviewed main-only line (see
+# EXPECTED_MAIN_ONLY in the tests) or a whitelisted Sources title.
 MAIN_ONLY_ALLOWED_TEXTS = frozenset({
     'FlashAttention、FlashInfer、Triton、FlexAttention、TurboQuant',
     'FlashInfer、FlashAttention、Triton、FlexAttention、TurboQuant',
@@ -430,13 +430,57 @@ def _main_baseline():
     return _MAIN_BASELINE
 
 
+# Main truncates hit text to 120 chars, so a 120-char hit text is only a
+# prefix. Such a hit is exempt only when its FULL untruncated text is one of
+# these reviewed cells (or a whitelisted Sources title); otherwise anything
+# appended after char 120 (e.g. English inside a {{...}} span) would ride on
+# the allowlist.
+_MAIN_TRUNC = 120
+MAIN_ONLY_ALLOWED_FULL_CELLS = frozenset({
+    'a2a-java {{sdk-java reference/rest/src/main/java/org/a2aproject/sdk/server/rest/quarkus/A2AServerRoutes.java at v1.4.0.Final}}',
+    'a2a-java {{sdk-java server-common/src/main/java/org/a2aproject/sdk/server/requesthandlers/DefaultRequestHandler.java at v1.4.0.Final}}',
+    'a2a-java {{sdk-java server-common/src/main/java/org/a2aproject/sdk/server/tasks/BasePushNotificationSender.java at v1.4.0.Final}}',
+    'Patodiya，Same Request, Different Answer: Quantization Amplifies Cache-Induced Divergence in LLM Serving, [arXiv 2609.04748](https://arxiv.org/abs/2609.04748)',
+})
+
+
+def _main_full_text(lines, ln, kind, txt):
+    """Untruncated text behind a main hit; None if it cannot be recovered."""
+    if len(txt) < _MAIN_TRUNC:
+        return txt
+    if not (1 <= ln <= len(lines)):
+        return None
+    base, line = _main_baseline(), lines[ln - 1]
+    m = re.fullmatch(r"TABLE_CELL\[(\d+)\]", kind)
+    if m:
+        cells = base.split_row(line)
+        ci = int(m.group(1))
+        return cells[ci] if ci < len(cells) else None
+    if kind == "LIST":
+        lm = base.LIST_ITEM.match(line)
+        return lm.group(2) if lm else None
+    if kind == "HEADING":
+        hm = base.HEADING.match(line)
+        return hm.group(2).strip() if hm else None
+    if kind == "PROSE":
+        return line.strip()
+    return None
+
+
 def _union_with_main(path, hits):
     have = {(ln, txt) for ln, _k, txt in hits}
+    lines = path.read_text(encoding="utf-8").splitlines()
     for ln, kind, txt in _main_baseline().scan_file(path, False, False):
-        if (ln, txt) in have or txt in MAIN_ONLY_ALLOWED_TEXTS:
+        if (ln, txt) in have:
             continue
-        if is_whitelisted_sources_title(path.name, txt):
-            continue
+        full = _main_full_text(lines, ln, kind, txt)
+        if full is not None:
+            if txt in MAIN_ONLY_ALLOWED_TEXTS and (
+                len(txt) < _MAIN_TRUNC or full in MAIN_ONLY_ALLOWED_FULL_CELLS
+            ):
+                continue
+            if is_whitelisted_sources_title(path.name, full):
+                continue
         hits.append((ln, "MAIN_" + kind, txt))
     hits.sort(key=lambda h: h[0])
     return hits
