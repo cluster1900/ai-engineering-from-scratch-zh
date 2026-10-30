@@ -134,6 +134,10 @@ jobs:
         run: node --test site/test_project_copy.js
       - name: homepage curiosity supports pointer and keyboard input
         run: node --test site/test_intelligence_check.js
+      - name: the theme menu offers system, light, and dark on every page
+        run: node --test site/test_theme_menu.js
+      - name: lesson screen serves screens locally, records clicks, and checks machine specs
+        run: node --test site/test_lesson_screen.js
       - name: build the static site
         run: node site/build.js
       - name: dynamic lesson and certification routes preserve their public contracts
