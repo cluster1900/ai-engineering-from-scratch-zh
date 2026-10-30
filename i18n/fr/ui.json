@@ -716,7 +716,12 @@
     "in": "dans",
     "to": "à",
     "before running the grader.": "avant de faire le grade.",
-    "Lesson - AI Engineering from Scratch": "Leçon: ingénierie de l'IA à partir de zéro"
+    "Lesson - AI Engineering from Scratch": "Leçon: ingénierie de l'IA à partir de zéro",
+    "Change theme": "Modifier le thème",
+    "Theme": "Thème",
+    "System": "Système",
+    "Light": "Lumière",
+    "Dark": "Les ténèbres"
   },
   "pinned": [
     "Skip to content",
