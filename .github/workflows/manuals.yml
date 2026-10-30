@@ -10,7 +10,7 @@ on:
       - 'scripts/audit_manuals.js'
       - 'scripts/check_manual_residual_en.py'
       - 'scripts/test_check_manual_residual_en.py'
-      - 'scripts/testdata/check_manual_residual_en_main_89cbf1a.py'
+      - 'scripts/check_manual_residual_en_main_89cbf1a.py'
       - '.github/workflows/manuals.yml'
   push:
     branches: [main]
@@ -22,7 +22,7 @@ on:
       - 'scripts/audit_manuals.js'
       - 'scripts/check_manual_residual_en.py'
       - 'scripts/test_check_manual_residual_en.py'
-      - 'scripts/testdata/check_manual_residual_en_main_89cbf1a.py'
+      - 'scripts/check_manual_residual_en_main_89cbf1a.py'
       - '.github/workflows/manuals.yml'
   release:
     types: [published]

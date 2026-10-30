@@ -379,6 +379,69 @@ def split_row(line: str) -> list[str]:
     return [c.strip() for c in body.split("|")]
 
 
+
+
+# Never looser than main by construction: anything the frozen main checker
+# reports is reported here too, unless the exact text is a reviewed main-only
+# line (see EXPECTED_MAIN_ONLY in the tests) or a whitelisted Sources title.
+MAIN_ONLY_ALLOWED_TEXTS = frozenset({
+    'FlashAttention、FlashInfer、Triton、FlexAttention、TurboQuant',
+    'FlashInfer、FlashAttention、Triton、FlexAttention、TurboQuant',
+    'L4（SM 8.9）、H100（SM 9.0）、DGX Spark（SM 12.1）',
+    'Patodiya，Same Request, Different Answer: Quantization Amplifies Cache-Induced Divergence in LLM Serving, [arXiv 2609.047',
+    'Rollout Routing Replay，arXiv 2510.11370。',
+    'Rust a2a-server-lf-v0.5.1',
+    'Score Centering Stabilizes Off-policy Reinforcement Learning，arXiv 2609.20807。',
+    'a2a-dotnet {{sdk-dotnet src/A2A.AspNetCore/A2AEndpointRouteBuilderExtensions.cs at v1.0.0-preview2}}',
+    'a2a-dotnet {{sdk-dotnet src/A2A/Server/A2AServer.cs at v1.0.0-preview2}}',
+    'a2a-go {{sdk-go a2asrv/agentexec.go at v2.6.0}}',
+    'a2a-go {{sdk-go a2asrv/push/sender.go at v2.6.0}}',
+    'a2a-go {{sdk-go a2asrv/rest.go at v2.6.0}}',
+    'a2a-java {{sdk-java reference/rest/src/main/java/org/a2aproject/sdk/server/rest/quarkus/A2AServerRoutes.java at v1.4.0.F',
+    'a2a-java {{sdk-java server-common/src/main/java/org/a2aproject/sdk/server/requesthandlers/DefaultRequestHandler.java at ',
+    'a2a-java {{sdk-java server-common/src/main/java/org/a2aproject/sdk/server/tasks/BasePushNotificationSender.java at v1.4.',
+    'a2a-js {{sdk-js src/server/express/rest_handler.ts at v1.3.0}}',
+    'a2a-js {{sdk-js src/server/push_notification/default_push_notification_sender.ts at v1.3.0}}',
+    'a2a-js {{sdk-js src/server/request_handler/default_request_handler.ts at v1.3.0}}',
+    'a2a-python 1.2.2 {{sdk src/a2a/server/agent_execution/active_task.py}} {{sdk src/a2a/utils/errors.py}}',
+    'a2a-python 1.2.2 {{sdk src/a2a/server/routes/rest_routes.py}}',
+    'a2a-python 1.2.2 {{sdk src/a2a/server/tasks/base_push_notification_sender.py}}',
+    'a2a-rs a2a-server-lf-v0.5.1',
+    'a2a-rs {{sdk-rust a2a-server/src/handler.rs at a2a-server-lf-v0.5.1}}',
+    'a2a-rs {{sdk-rust a2a-server/src/push/sender.rs at a2a-server-lf-v0.5.1}}',
+    'a2a-rs {{sdk-rust a2a-server/src/rest.rs at a2a-server-lf-v0.5.1}}',
+    'a2a-rs, a2a-server 0.5.1',
+})
+_MAIN_BASELINE = None
+
+
+def _main_baseline():
+    global _MAIN_BASELINE
+    if _MAIN_BASELINE is None:
+        import importlib.util
+        # Byte-frozen copy of origin/main 89cbf1a's checker. Runtime dependency
+        # of scan_file (not a test fixture), so it lives next to the checker.
+        # sha256 is pinned in the tests; do not edit it.
+        p = Path(__file__).resolve().parent / "check_manual_residual_en_main_89cbf1a.py"
+        spec = importlib.util.spec_from_file_location("_residual_en_main_baseline", p)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        _MAIN_BASELINE = mod
+    return _MAIN_BASELINE
+
+
+def _union_with_main(path, hits):
+    have = {(ln, txt) for ln, _k, txt in hits}
+    for ln, kind, txt in _main_baseline().scan_file(path, False, False):
+        if (ln, txt) in have or txt in MAIN_ONLY_ALLOWED_TEXTS:
+            continue
+        if is_whitelisted_sources_title(path.name, txt):
+            continue
+        hits.append((ln, "MAIN_" + kind, txt))
+    hits.sort(key=lambda h: h[0])
+    return hits
+
+
 def scan_file(path: Path) -> tuple[list[tuple[int, str, str]], int]:
     hits: list[tuple[int, str, str]] = []
     explained = 0
@@ -456,7 +519,7 @@ def scan_file(path: Path) -> tuple[list[tuple[int, str, str]], int]:
                 hits.append((lineno, "PROSE", stripped[:120]))
 
         i += 1
-    return hits, explained
+    return _union_with_main(path, hits), explained
 
 
 def main() -> int:

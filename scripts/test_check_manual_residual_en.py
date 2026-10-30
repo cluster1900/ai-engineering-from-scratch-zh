@@ -17,7 +17,6 @@ import check_manual_residual_en as chk
 # Frozen origin/main (89cbf1a) checker used as the "never looser than main" oracle.
 ORACLE_PATH = (
     Path(__file__).resolve().parent
-    / "testdata"
     / "check_manual_residual_en_main_89cbf1a.py"
 )
 ORACLE_SHA256 = "685dec0330c2b3616e15396bb54eddfa399acf02fdd681c24d72fa0f803d9b4d"
@@ -242,6 +241,22 @@ def _srccell(s: str) -> tuple[str, str]:
 
 def _srccell_raw(s: str) -> tuple[str, str]:
     return "r-5-sources.md", f"| a | b |\n|---|---|\n| {s} | x |\n"
+
+
+def _srclist(s: str) -> tuple[str, str]:
+    return "r-5-sources.md", f"- {s}, {A}\n"
+
+
+def _h4(s: str) -> tuple[str, str]:
+    return "3-1-intro.md", f"#### {s}\n"
+
+
+def _cell2(s: str) -> tuple[str, str]:
+    return "3-1-intro.md", f"| a | b |\n|---|---|\n| x | {s} |\n"
+
+
+def _ordered(s: str) -> tuple[str, str]:
+    return "3-1-intro.md", f"1. {s}\n"
 
 
 def _load_main_oracle():
@@ -708,6 +723,226 @@ class PinnedIdentifierContextTests(unittest.TestCase):
         self.assertFalse(chk.func_word_in_prose("Rust a2a-server-lf-v0.5.1"))
         self.assertFalse(chk.func_word_in_prose("RUST a2a-server"))
         self.assertFalse(chk.func_word_in_prose("a2a-rs, a2a-server 0.5.1"))
+
+    def test_pinned_id_exemption_is_exact_helper(self):
+        # Helper-level on purpose: under the union with main these inputs are
+        # reported by main anyway, so mutants m3/x1/x2/x3/x9b are scan-level
+        # equivalent (0 distinguishers over 1361 inputs x 7 contexts, see the
+        # PR body). These assertions pin the exemption to the exact id.
+        for s in (
+            "Rust a2a-server.",  # token is not a fullmatch (m3, x3)
+            "Rust A2A-SERVER",  # case-sensitive id (x1)
+            "RUST A2A-Server-lf-v0.5.1",  # case-sensitive id (x1)
+            "Rust a2a-for",  # only a2a-server, not any a2a-* (x2)
+            "Rust a2a-with",  # only a2a-server, not any a2a-* (x2)
+            "Restart a2a-server",  # context words are only rust/rs (x9b)
+        ):
+            self.assertTrue(chk.func_word_in_prose(s), s)
+        self.assertFalse(chk.func_word_in_prose("Rust a2a-server"))
+
+
+class ScanLevelMustReportTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.oracle = _load_main_oracle()
+
+    def _assert_both_flag(self, name, text):
+        hits, explained = _scan(name, text)
+        self.assertTrue(hits, f"new checker must flag: {text[:80]!r}")
+        self.assertEqual(explained, 0)
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / name
+            path.write_text(text, encoding="utf-8")
+            oracle_hits = self.oracle.scan_file(path, False, False)
+            self.assertTrue(
+                oracle_hits, f"oracle (main) must also flag: {text[:80]!r}"
+            )
+
+    def test_union_allowed_texts_are_exactly_expected_main_only_texts(self):
+        self.assertEqual(
+            chk.MAIN_ONLY_ALLOWED_TEXTS,
+            {t for _rel, _ln, t in EXPECTED_MAIN_ONLY},
+        )
+        self.assertEqual(len(chk.MAIN_ONLY_ALLOWED_TEXTS), 26)
+        self.assertEqual(len(EXPECTED_MAIN_ONLY), 30)
+
+    def test_x7_lookaround_distinguishers_reported_at_scan_level(self):
+        samples = (
+            "1_a2a-server1 a2a-server",
+            "1_a2a-serverx a2a-server",
+            "rsa2a-server1 a2a-server",
+        )
+        for sample in samples:
+            for ctx in (_body, _list, _cell, _heading):
+                with self.subTest(sample=sample, ctx=ctx.__name__):
+                    name, text = ctx(sample)
+                    self._assert_both_flag(name, text)
+
+    def test_x9_context_word_distinguishers_reported_at_scan_level(self):
+        samples = (
+            "the1 a2a-server",
+            "the_ a2a-server",
+            "1_ a2a-server the_",
+        )
+        for sample in samples:
+            for ctx in (_body, _list, _cell, _heading):
+                with self.subTest(sample=sample, ctx=ctx.__name__):
+                    name, text = ctx(sample)
+                    self._assert_both_flag(name, text)
+
+    def test_adv_r6_a_rust_rs_identifier_combos(self):
+        samples = (
+            "Rust a2a-server",
+            "RS a2a-server",
+            "Rust Rust a2a-server",
+            "Rust a2a-server a2a-server",
+            "Rust a2a-server-lf-v0.5.1 a2a-server-lf-v0.4.0",
+            "Rust a2a-server rust rust rust rust rust rust",
+            "rUsT a2a-server",
+            "rust rs rust a2a-server",
+        )
+        contexts = (_body, _list, _cell, _heading, _srccell, _srclist)
+        # Dropped _srccell/_srclist for samples where, after stripping the
+        # appended arXiv markdown link, main's Sources-title heuristic
+        # (LATIN_WORD count < 4) treats the cell/list as allowed.
+        drop_src = {
+            "Rust a2a-server",
+            "RS a2a-server",
+            "Rust Rust a2a-server",
+            "Rust a2a-server a2a-server",
+            "rUsT a2a-server",
+        }
+        for sample in samples:
+            for ctx in contexts:
+                if ctx in (_srccell, _srclist) and sample in drop_src:
+                    continue
+                with self.subTest(sample=sample[:70], ctx=ctx.__name__):
+                    name, text = ctx(sample)
+                    self._assert_both_flag(name, text)
+
+    def test_adv_r6_b_zero_width_and_bom(self):
+        samples = (
+            "Rust\u200ba2a-server",
+            "Rust a2a-server\u200b",
+            "Rust a2a-server\u2060",
+            "\ufeffRust a2a-server",
+        )
+        # Dropped _srccell/_srclist for every sample: after stripping the
+        # arXiv link, main sees only ~2 LATIN_WORD tokens and allows it.
+        for sample in samples:
+            for ctx in (_body, _list, _cell, _heading):
+                with self.subTest(sample=sample, ctx=ctx.__name__):
+                    name, text = ctx(sample)
+                    self._assert_both_flag(name, text)
+
+    def test_adv_r6_c_fullwidth_cjk_punctuation(self):
+        samples = (
+            "Rust，a2a-server",
+            "Rust（a2a-server）",
+            "Rust：a2a-server",
+            "Rust a2a-server。",
+            "Rust「a2a-server」",
+            "Rust a2a-server！",
+            "Rust a2a-server、a2a-server",
+        )
+        # Dropped _srccell/_srclist for every sample: CJK punctuation does
+        # not add LATIN_WORD tokens, so main's Sources-title heuristic
+        # allows the linked cell/list.
+        for sample in samples:
+            for ctx in (_body, _list, _cell, _heading):
+                with self.subTest(sample=sample, ctx=ctx.__name__):
+                    name, text = ctx(sample)
+                    self._assert_both_flag(name, text)
+
+    def test_adv_r6_d_single_letters(self):
+        samples = (
+            "Rust x a2a-server",
+            "Rust I a2a-server",
+            "Rust a2a-server s e r v e r",
+        )
+        # Dropped _srccell/_srclist for every sample: single letters are
+        # not LATIN_WORD ([A-Za-z]{2,}), so the linked Sources cell/list
+        # stays under main's 4-word Sources-title threshold.
+        for sample in samples:
+            for ctx in (_body, _list, _cell, _heading):
+                with self.subTest(sample=sample, ctx=ctx.__name__):
+                    name, text = ctx(sample)
+                    self._assert_both_flag(name, text)
+
+    def test_adv_r6_e_english_hidden_in_code_or_tip(self):
+        samples = (
+            "Rust a2a-server `the server restarts nightly`",
+            "Rust a2a-server {{note the server restarts nightly}}",
+        )
+        contexts = (_body, _list, _cell, _heading, _srccell, _srclist)
+        # Dropped _srccell/_srclist for the inline-code sample only: main
+        # strips `...` before the Sources-title word count, leaving
+        # "Rust a2a-server" (< 4 LATIN_WORD). The {{note ...}} sample is
+        # kept because main does not strip tip spans.
+        drop_src = {"Rust a2a-server `the server restarts nightly`"}
+        for sample in samples:
+            for ctx in contexts:
+                if ctx in (_srccell, _srclist) and sample in drop_src:
+                    continue
+                with self.subTest(sample=sample[:70], ctx=ctx.__name__):
+                    name, text = ctx(sample)
+                    self._assert_both_flag(name, text)
+
+    def test_b8_tip_span_english_lines_reported(self):
+        samples = (
+            "See {{note the server restarts nightly because it leaks}}",
+            "Paper {{note we restart the server every night because it leaks memory}}",
+            "Zheng et al. {{note the server restarts nightly}}",
+            "Rust {{note the server restarts nightly}}",
+        )
+        contexts = (
+            _body,
+            _list,
+            _cell,
+            _heading,
+            _h4,
+            _cell2,
+            _ordered,
+            _srccell,
+            _srccell_raw,
+            _srclist,
+        )
+        for sample in samples:
+            for ctx in contexts:
+                with self.subTest(sample=sample[:70], ctx=ctx.__name__):
+                    name, text = ctx(sample)
+                    self._assert_both_flag(name, text)
+
+    def test_sources_list_context_reported(self):
+        samples = (
+            "a2a-server-restarts-nightly-because-memory-leaks",
+            "a2a-server-server-server-server",
+            B5_SENT,
+            B5_SENT_PINNED,
+        )
+        for sample in samples:
+            with self.subTest(sample=sample[:70], ctx="_srclist"):
+                name, text = _srclist(sample)
+                self._assert_both_flag(name, text)
+
+    def test_reviewed_main_only_texts_stay_silent(self):
+        sample = "Rust a2a-server-lf-v0.5.1"
+        for ctx in (_body, _cell):
+            with self.subTest(ctx=ctx.__name__):
+                name, text = ctx(sample)
+                hits, explained = _scan(name, text)
+                self.assertEqual(
+                    hits, [], f"new checker must stay silent: {text[:80]!r}"
+                )
+                self.assertEqual(explained, 0)
+                with tempfile.TemporaryDirectory() as tmp:
+                    path = Path(tmp) / name
+                    path.write_text(text, encoding="utf-8")
+                    oracle_hits = self.oracle.scan_file(path, False, False)
+                    self.assertTrue(
+                        oracle_hits,
+                        f"oracle (main) must still flag: {text[:80]!r}",
+                    )
 
 
 if __name__ == "__main__":
