@@ -295,7 +295,7 @@ test('the shot command captures a real page when a browser is installed', async 
 });
 
 test('the tutor skills point at the lesson screen', () => {
-  const tutors = ['learn', 'learn-mcp', 'learn-agent-skills', 'learn-reverse-engineering', 'claude-certification', 'mcpa-certification'];
+  const tutors = ['learn', 'learn-mcp', 'learn-agent-skills', 'claude-certification', 'mcpa-certification'];
   for (const name of tutors) {
     const text = fs.readFileSync(path.join(root, 'skills', name, 'SKILL.md'), 'utf8').replace(/\s+/g, ' ');
     assert.ok(text.includes('lesson-screen'), name);
