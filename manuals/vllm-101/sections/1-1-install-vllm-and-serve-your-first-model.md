@@ -26,8 +26,6 @@ nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv
 | Python | 3.10 至 3.13 |
 | Hugging Face token | 只有访问受限的模型才需要，设置为 `HF_TOKEN` |
 
-This paragraph was left in English on purpose so that the residual English check fails this pull request.
-
 ## 安装 vLLM {#s-install-vllm-and-serve-your-first-model-install-vllm}
 
 三种方式选一种。除非有理由选别的，否则用第一种。
