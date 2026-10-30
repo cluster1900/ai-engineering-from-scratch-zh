@@ -136,7 +136,7 @@ from: phases/10-llms-from-scratch/09-constitutional-ai-self-improvement/docs/en.
 | 3-5 轮后多样性丢失 | 自生成数据更窄 | 混入新鲜的人类数据 |
 | 某个 prompt 的优势为零 | 整组奖励相同 | 跳过该 prompt |
 | 分布内好，OOD 崩 | 保留了捷径 rationale | 过程奖励和留出 OOD 评测 |
-| 训练 MSE 低，测试 MSE 松 | 仅训练集评估器 | 评估时现做留出输入 |
+| 训练 MSE 低，测试 MSE 偏高 | 仅训练集评估器 | 评估时现做留出输入 |
 | 报告分数高于真实分数 | 智能体编辑了自己的打分器 | 评估器防火墙 |
 | 差距 C - A 越过阈值 | 能力速率高于对齐速率 | 暂停供人工审查 |
 

@@ -31,7 +31,7 @@ from: phases/17-infrastructure-and-production/28-self-hosted-serving-selection, 
 - **TRT-LLM**：仅 NVIDIA 的基础设施，以及 Blackwell 上成本主导的工作。
 - **llama.cpp**：CPU、edge 或 Apple Silicon。
 - **Ollama**：开发笔记本上的单用户。不是共享生产。
-- **TGI**：仅用于现有部署。自 Dec 11, 2025 起为维护模式。
+- **TGI**：仅用于现有部署。自 2025 年 12 月 11 日起为维护模式。
 - **原生 CPU 卸载**：单个引擎有 HBM 压力。
 - **LMCache**：多个引擎共享前缀，或抢占很重。
 

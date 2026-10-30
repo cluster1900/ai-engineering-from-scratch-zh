@@ -140,11 +140,11 @@ from: phases/17-infrastructure-and-production/26-compliance-frameworks/code/main
 type: concepts
 from: phases/18-ethics-safety-alignment/24-regulatory-frameworks-eu-us-uk-korea/docs/en.md, phases/17-infrastructure-and-production/26-compliance-frameworks/docs/en.md
 
-- **1 Aug 2024**：生效。
-- **2 Feb 2025**：禁止性做法与 AI 素养开始适用。
-- **2 Aug 2025**：GPAI 与治理义务开始适用。
-- **2 Aug 2026**：全面适用，Article 50 透明度、罚则。
-- **2 Aug 2027**：存量 GPAI 与嵌入式高风险系统。
+- **2024 年 8 月 1 日**：生效。
+- **2025 年 2 月 2 日**：禁止性做法与 AI 素养开始适用。
+- **2025 年 8 月 2 日**：GPAI 与治理义务开始适用。
+- **2026 年 8 月 2 日**：全面适用，Article 50 透明度、罚则。
+- **2027 年 8 月 2 日**：存量 GPAI 与嵌入式高风险系统。
 - **Art. 99(4)**：高风险义务最高 €15M 或 3%。
 - **Art. 99(3)**：禁止性做法最高 €35M 或 7%。
 
@@ -171,7 +171,7 @@ from: phases/17-infrastructure-and-production/25-security-secrets-audit/docs/en.
 | 401 `signature mismatch` | Body 字节被改过 | 发送文件的精确字节 |
 | 401 `timestamp outside acceptance window` | 过旧或未来的时间戳 | 用当前 Unix 时间戳签名 |
 | 已知投递 ID 上出现 409 | 同一 ID，不同 body | 使用新的投递 ID |
-| `--dir, 16-byte key env and seconds 1..600 required` | 密钥太短或没有 inbox 目录 | 设置 16-byte WEBHOOK_SECRET 和 `--dir` |
+| `--dir, 16-byte key env and seconds 1..600 required` | 密钥太短或没有 inbox 目录 | 设置 16 字节的 WEBHOOK_SECRET 和 `--dir` |
 
 ## 问题
 type: qa
