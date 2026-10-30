@@ -12,7 +12,8 @@ Allowlist is intentionally tight:
   explicit flags — they are never automatic.
 
 Canonical path: scripts/check_manual_residual_en.py (do not duplicate under
-manuals/_shared/). Not a CI gate unless a workflow step is added on purpose.
+manuals/_shared/). Wired as the Residual English gate in
+.github/workflows/manuals.yml.
 """
 from __future__ import annotations
 
@@ -33,6 +34,14 @@ COMMANDISH = re.compile(r"^[A-Za-z0-9_./+:#\-]+$")
 TOKENISH = re.compile(r"^[\s0-9A-Za-z_./+:#\-`<>=,~|()\[\]{}\"'%,*x×±]+$")
 META_KEY = re.compile(r"^(title|source|note|lang|alt|caption|figure|id)\s*:", re.I)
 TIP_CITE = re.compile(r"^\{\{[a-zA-Z0-9_ ./:#\-]+\}\}$")
+TIP_SPAN = re.compile(r"\{\{[^{}]*\}\}")
+CJK_LIST_SEP = re.compile(r"[、，；]")
+PAREN_GROUP = re.compile(r"[（(][^）)]*[）)]")
+PRODUCT_ITEM = re.compile(r"^[A-Z0-9][\w.+\-/]*(?:\s+[A-Z0-9][\w.+\-/]*)*$")
+SOURCES_ARXIV_LIST = re.compile(r"^.+，arXiv \d{4}\.\d{5}。$")
+SOURCES_LINK_LIST = re.compile(r"^(?:.+[，,]\s*)?\[[^\]]+\]\([^)]+\)[。.]?$")
+SOURCES_FILENAME = re.compile(r"^r-.+-sources.*\.md$")
+LOWERCASE_PHRASE = re.compile(r"\b[a-z]{2,}\b(?:\s+[a-z]{2,}\b)+")
 FUNC_WORDS = re.compile(
     r"\b(the|and|for|with|from|that|this|when|what|which|where|who|"
     r"into|onto|over|under|after|before|every|each|its|their|our|"
@@ -77,6 +86,78 @@ def strip_inline_code(s: str) -> str:
 
 def strip_links(s: str) -> str:
     return LINK.sub(" ", s)
+
+
+def strip_tip_spans(s: str) -> str:
+    return TIP_SPAN.sub(" ", s)
+
+
+def func_word_in_prose(s: str) -> bool:
+    """True if FUNC_WORDS matches a standalone word, not an identifier token.
+
+    Hyphen and dot are word boundaries for ``\\b``, so ``server`` in
+    ``a2a-server`` and ``at`` in a dotted path would otherwise fire.
+    """
+    for m in FUNC_WORDS.finditer(s):
+        left = s[m.start() - 1] if m.start() > 0 else ""
+        right = s[m.end()] if m.end() < len(s) else ""
+        left2 = s[m.start() - 2] if m.start() > 1 else ""
+        right2 = s[m.end() + 1] if m.end() + 1 < len(s) else ""
+        # only inside an identifier: the separator must join word chars,
+        # so sentence-final "this." is still prose
+        if (left in ("-", ".") and left2.isalnum()) or (
+            right in ("-", ".") and right2.isalnum()
+        ):
+            continue
+        return True
+    return False
+
+
+def is_product_item(item: str) -> bool:
+    core = PAREN_GROUP.sub("", item).strip()
+    return bool(core) and bool(PRODUCT_ITEM.match(core))
+
+
+def split_cjk_list(text: str) -> list[str] | None:
+    if not CJK_LIST_SEP.search(text):
+        return None
+    return [part.strip() for part in CJK_LIST_SEP.split(text) if part.strip()]
+
+
+def is_product_name_list(text: str) -> bool:
+    items = split_cjk_list(text)
+    if not items:
+        return False
+    return all(is_product_item(item) for item in items)
+
+
+def cjk_list_has_lowercase_prose(text: str) -> bool:
+    """CJK-joined list whose leftover item is lowercase English words.
+
+    A single identifier token (arm64, load, block-wise) is not enough;
+    ``compute capability`` is.
+    """
+    items = split_cjk_list(text)
+    if not items or all(is_product_item(item) for item in items):
+        return False
+    for item in items:
+        if is_product_item(item):
+            continue
+        core = PAREN_GROUP.sub("", item).strip()
+        if has_cjk(core):
+            continue
+        if LOWERCASE_PHRASE.search(core):
+            return True
+    return False
+
+
+def is_sources_filename(name: str) -> bool:
+    return bool(SOURCES_FILENAME.match(name))
+
+
+def is_sources_title_list_item(body: str) -> bool:
+    t = body.strip()
+    return bool(SOURCES_ARXIV_LIST.match(t) or SOURCES_LINK_LIST.match(t))
 
 
 def has_cjk(s: str) -> bool:
@@ -132,16 +213,18 @@ def is_allowed_cell(text: str) -> bool:
     # person / org names used as link text
     if re.fullmatch(r"[A-Z][a-z]+(?:\s+[A-Z][a-z]+)+", t):
         return True
-    bare = strip_inline_code(strip_links(t)).strip()
+    bare = strip_tip_spans(strip_inline_code(strip_links(t))).strip()
     if not bare:
         return True
+    if is_product_name_list(bare):
+        return True
     if has_cjk(bare):
-        # product/version soup with CJK punctuation still allowed
+        # product/version soup with CJK ideographs still allowed
         return True
     if not LATIN_WORD.search(bare):
         return True
     # identifier / version / metric soup without English prose words
-    if not FUNC_WORDS.search(bare) and TOKENISH.match(bare):
+    if not func_word_in_prose(bare) and TOKENISH.match(bare):
         return True
     if re.fullmatch(r"[A-Za-z0-9_./+\-]+", bare) and len(bare) <= 48:
         return True
@@ -164,7 +247,7 @@ def is_allowed_cell(text: str) -> bool:
     # Sources report title cells: mostly markdown links to blog posts
     if t.count("](") >= 1 and ("http" in t or t.startswith("[")):
         # after stripping links, little prose left
-        if len(LATIN_WORD.findall(bare)) < 4 or not FUNC_WORDS.search(bare):
+        if len(LATIN_WORD.findall(bare)) < 4 or not func_word_in_prose(bare):
             return True
     # string-literal example cells (format strings)
     if t.count("`") >= 4 and "usage:" in t:
@@ -181,20 +264,22 @@ def looks_english_prose(text: str) -> bool:
     for p in ALLOWED_PREFIXES:
         if t0.startswith(p):
             return False
-    t = strip_inline_code(strip_links(t0)).strip()
+    t = strip_tip_spans(strip_inline_code(strip_links(t0))).strip()
     if not t:
         return False
     if is_allowed_cell(t0) or is_allowed_cell(t):
         return False
+    if cjk_list_has_lowercase_prose(t0) or cjk_list_has_lowercase_prose(t):
+        return True
     if has_cjk(t):
         # Already translated unless English still dominates
-        if latin_ratio(t) > 0.55 and FUNC_WORDS.search(t) and len(LATIN_WORD.findall(t)) >= 5:
+        if latin_ratio(t) > 0.55 and func_word_in_prose(t) and len(LATIN_WORD.findall(t)) >= 5:
             return True
         return False
     words = LATIN_WORD.findall(t)
     if len(words) == 0:
         return False
-    if FUNC_WORDS.search(t):
+    if func_word_in_prose(t):
         return True
     if len(words) >= 4 and latin_ratio(t) > 0.8:
         return True
@@ -214,8 +299,9 @@ def scan_file(
     path: Path,
     allow_incident_col: bool,
     allow_ref_title_col: bool = False,
-) -> list[tuple[int, str, str]]:
+) -> tuple[list[tuple[int, str, str]], int]:
     hits: list[tuple[int, str, str]] = []
+    explained = 0
     lines = path.read_text(encoding="utf-8").splitlines()
     in_fence = False
     i = 0
@@ -253,11 +339,14 @@ def scan_file(
             cells = split_row(line)
             for ci, cell in enumerate(cells):
                 # Col0 skips are opt-in only (review: blanket skip was too loose).
-                if allow_incident_col and path.name.startswith("r-3-incident") and ci == 0:
-                    continue
-                if allow_ref_title_col and path.name.startswith("r-4-glossary") and ci == 0:
-                    continue
-                if allow_ref_title_col and path.name.startswith("r-5-sources") and ci == 0:
+                skip_col = (
+                    (allow_incident_col and path.name.startswith("r-3-incident") and ci == 0)
+                    or (allow_ref_title_col and path.name.startswith("r-4-glossary") and ci == 0)
+                    or (allow_ref_title_col and path.name.startswith("r-5-sources") and ci == 0)
+                )
+                if skip_col:
+                    if looks_english_prose(cell):
+                        explained += 1
                     continue
                 if looks_english_prose(cell):
                     hits.append((lineno, f"TABLE_CELL[{ci}]", cell[:120]))
@@ -267,6 +356,15 @@ def scan_file(
         lm = LIST_ITEM.match(line)
         if lm:
             body = lm.group(2)
+            if (
+                allow_ref_title_col
+                and is_sources_filename(path.name)
+                and is_sources_title_list_item(body)
+            ):
+                if looks_english_prose(body):
+                    explained += 1
+                i += 1
+                continue
             if looks_english_prose(body):
                 hits.append((lineno, "LIST", body[:120]))
             i += 1
@@ -288,7 +386,7 @@ def scan_file(
                 hits.append((lineno, "PROSE", stripped[:120]))
 
         i += 1
-    return hits
+    return hits, explained
 
 
 def main() -> int:
@@ -304,7 +402,8 @@ def main() -> int:
         "--allow-ref-title-col",
         action="store_true",
         help="skip col0 of r-4-glossary*.md and r-5-sources*.md "
-        "(EN term / paper-title columns)",
+        "(EN term / paper-title columns); also skip LIST items in "
+        "r-*-sources*.md that are a title plus ，arXiv NNNN.NNNNN。 or a link",
     )
     ap.add_argument("--explain", action="store_true",
                     help="print ALLOWED hits that were suppressed (debug)")
@@ -315,12 +414,15 @@ def main() -> int:
         return 2
 
     all_hits: list[tuple[str, int, str, str]] = []
+    explained = 0
     files = 0
     for path in sorted(root.rglob("*.md")):
         files += 1
-        for lineno, kind, text in scan_file(
+        file_hits, file_explained = scan_file(
             path, args.allow_incident_col, args.allow_ref_title_col
-        ):
+        )
+        explained += file_explained
+        for lineno, kind, text in file_hits:
             rel = str(path.relative_to(Path(args.root)))
             all_hits.append((rel, lineno, kind, text))
 
@@ -331,7 +433,10 @@ def main() -> int:
         by_file[rel] = by_file.get(rel, 0) + 1
 
     print(f"manual={args.manual} files_scanned={files}")
-    print(f"FAIL_hits={len(all_hits)} unexplained={len(all_hits)}")
+    print(
+        f"FAIL_hits={len(all_hits)} unexplained={len(all_hits)} "
+        f"explained={explained}"
+    )
     print("by_kind:", ", ".join(f"{k}={v}" for k, v in sorted(by_kind.items())) or "(none)")
     if by_file:
         print("by_file:")
