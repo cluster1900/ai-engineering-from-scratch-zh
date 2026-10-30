@@ -758,7 +758,12 @@
     "in": "在",
     "to": "中设置为",
     "before running the grader.": "，然后再运行评分器。",
-    "Lesson - AI Engineering from Scratch": "课程学习 · 从零构建 AI 工程"
+    "Lesson - AI Engineering from Scratch": "课程学习 · 从零构建 AI 工程",
+    "Change theme": "切换主题",
+    "Theme": "主题",
+    "System": "跟随系统",
+    "Light": "浅色",
+    "Dark": "深色"
   },
   "pinned": [
     "Skip to content",
@@ -1519,6 +1524,11 @@
     "in",
     "to",
     "before running the grader.",
-    "Lesson - AI Engineering from Scratch"
+    "Lesson - AI Engineering from Scratch",
+    "Change theme",
+    "Theme",
+    "System",
+    "Light",
+    "Dark"
   ]
 }
