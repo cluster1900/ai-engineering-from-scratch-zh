@@ -716,7 +716,12 @@
     "in": "em",
     "to": "para",
     "before running the grader.": "Antes de correr o graduação.",
-    "Lesson - AI Engineering from Scratch": "Lição - Engenharia de IA a partir do zero"
+    "Lesson - AI Engineering from Scratch": "Lição - Engenharia de IA a partir do zero",
+    "Change theme": "Mudança de tema",
+    "Theme": "Temática",
+    "System": "Sistema",
+    "Light": "Luz",
+    "Dark": "Escuridão"
   },
   "pinned": [
     "Skip to content",
