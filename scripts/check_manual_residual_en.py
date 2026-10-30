@@ -5,15 +5,12 @@ Reports table cells, list items, link texts, and prose lines that look like
 predominantly ASCII English, excluding code fences, inline code, allowed
 names, and tip citation templates. No column is skipped wholesale.
 
-A Sources-title rule applies automatically only in files matching
-r-*-sources*.md and counts matching items as explained (not silent pass):
-- list items of the form "标题，arXiv NNNN.NNNNN。" whose pre-arXiv text is
-  title-like (is_title_like), not an English sentence
-- table cells that end with [arXiv NNNN.NNNNN](https://arxiv.org/abs/NNNN.NNNNN)
-  whose link label id matches the abs path and whose pre-arXiv text is
-  title-like
-- list items that are a bare markdown link (optional 。/.) or a CJK-containing
-  prefix followed by ，/, and a link; an ASCII/English prefix does not match
+A fixed exact-text whitelist of three Sources titles applies only in files
+matching r-*-sources*.md. Matching is ``text.strip()`` equality against
+SOURCES_TITLE_WHITELIST (no regex, no capitalisation heuristic). A match
+that looks_english_prose would flag is counted as explained, not a silent
+pass. Every other Sources line uses the same rules as the rest of the
+manual.
 
 Allowlist is intentionally tight:
 - CJK ideographs mark localized text; fullwidth punctuation alone does not.
@@ -46,14 +43,17 @@ TIP_SPAN = re.compile(r"\{\{[^{}]*\}\}")
 CJK_LIST_SEP = re.compile(r"[、，；]")
 PAREN_GROUP = re.compile(r"[（(][^）)]*[）)]")
 PRODUCT_ITEM = re.compile(r"^[A-Z0-9][\w.+\-/]*(?:\s+[A-Z0-9][\w.+\-/]*)*$")
-SOURCES_ARXIV_LIST = re.compile(r"^.+，arXiv \d{4}\.\d{5}。$")
-SOURCES_ARXIV_CELL = re.compile(
-    r"^.+, \[arXiv (\d{4}\.\d{5})\]\(https://arxiv\.org/abs/\1\)$"
-)
-SOURCES_LINK_LIST = re.compile(
-    r"^(?:.*[\u4e00-\u9fff].*[，,]\s*)?\[[^\]]+\]\([^)]+\)[。.]?$"
-)
 SOURCES_FILENAME = re.compile(r"^r-.+-sources.*\.md$")
+# Exact list-item / table-cell bodies (after strip) in r-*-sources*.md only.
+# miles-101 r-4-sources.md:26-27 and sglang-101 r-5-sources.md:60.
+SOURCES_TITLE_WHITELIST = frozenset({
+    "Rollout Routing Replay，arXiv 2510.11370。",
+    "Score Centering Stabilizes Off-policy Reinforcement Learning，arXiv 2609.20807。",
+    "Patodiya，Same Request, Different Answer: Quantization Amplifies "
+    "Cache-Induced Divergence in LLM Serving, "
+    "[arXiv 2609.04748](https://arxiv.org/abs/2609.04748)",
+})
+_ID_JOIN = frozenset("-./_")
 LOWERCASE_PHRASE = re.compile(r"\b[a-z]{2,}\b(?:\s+[a-z]{2,}\b)+")
 FUNC_WORDS = re.compile(
     r"\b(the|and|for|with|from|that|this|when|what|which|where|who|"
@@ -121,11 +121,23 @@ def strip_tip_spans(s: str) -> str:
     return TIP_SPAN.sub(" ", s)
 
 
+def _joined_token(s: str, start: int, end: int) -> str:
+    """Expand ``s[start:end]`` across identifier joiners ``-./_``."""
+    i, j = start, end
+    while i > 0 and (s[i - 1].isalnum() or s[i - 1] in _ID_JOIN):
+        i -= 1
+    while j < len(s) and (s[j].isalnum() or s[j] in _ID_JOIN):
+        j += 1
+    return s[i:j]
+
+
 def func_word_in_prose(s: str) -> bool:
     """True if FUNC_WORDS matches a standalone word, not an identifier token.
 
     Hyphen and dot are word boundaries for ``\\b``, so ``server`` in
     ``a2a-server`` and ``at`` in a dotted path would otherwise fire.
+    Only a joined token that contains a digit, ``/``, or ``_`` is treated
+    as an identifier; a hyphen-chained English sentence is still prose.
     """
     for m in FUNC_WORDS.finditer(s):
         left = s[m.start() - 1] if m.start() > 0 else ""
@@ -137,7 +149,9 @@ def func_word_in_prose(s: str) -> bool:
         if (left in ("-", ".") and left2.isalnum()) or (
             right in ("-", ".") and right2.isalnum()
         ):
-            continue
+            token = _joined_token(s, m.start(), m.end())
+            if any(ch.isdigit() or ch in "/_" for ch in token):
+                continue
         return True
     return False
 
@@ -202,88 +216,16 @@ def cjk_list_has_lowercase_prose(text: str) -> bool:
     return False
 
 
-_TITLE_WORD_PUNCT = "\"'“”‘’()[]{}.,:;!?"
-
-
-def is_title_like(text: str) -> bool:
-    """True when text looks like a paper/work title rather than a sentence.
-
-    Applied to the whole title (a trailing ``:`` subtitle is not split off).
-    Hyphenated words contribute only their first segment to the 4+ letter
-    capitalization check, so ``Off-policy`` and ``Stall-Free`` pass.
-    """
-    t = text.strip()
-    if not t or t[-1] in ".!?":
-        return False
-    raw_words = t.split()
-    if len(raw_words) < 2:
-        return False
-    alpha_words: list[str] = []
-    capitalized = 0
-    for raw in raw_words:
-        core = raw.strip(_TITLE_WORD_PUNCT)
-        if not core or not any(c.isascii() and c.isalpha() for c in core):
-            continue
-        alpha_words.append(core)
-        if core[0].isupper() or core[0].isdigit():
-            capitalized += 1
-        head = core.split("-", 1)[0]
-        n_letters = sum(1 for c in head if c.isascii() and c.isalpha())
-        if (
-            n_letters >= 4
-            and not FUNC_WORDS.fullmatch(head)
-            and not FUNC_WORDS.fullmatch(core)
-        ):
-            if not (head[0].isupper() or head[0].isdigit()):
-                return False
-    if len(alpha_words) < 2:
-        return False
-    return capitalized * 2 >= len(alpha_words)
-
-
-def _sources_title_from_before_arxiv(before: str) -> str:
-    """Title portion of the text before an arXiv marker.
-
-    Strip has already removed the trailing ``, `` / ``，`` that joins the
-    arXiv id. If a fullwidth ideographic comma remains, the title is the
-    segment after the last one only when the prefix contains a CJK
-    ideograph (author join such as ``Zheng 等`` or ``Liu、Yu 与 Yang``).
-    Otherwise the whole string is the title.
-    """
-    before = before.strip()
-    if "，" in before:
-        prefix, rest = before.rsplit("，", 1)
-        if CJK.search(prefix):
-            return rest.strip()
-    return before
-
-
 def is_sources_filename(name: str) -> bool:
     return bool(SOURCES_FILENAME.match(name))
 
 
-def is_sources_title_list_item(body: str) -> bool:
-    t = body.strip()
-    if SOURCES_ARXIV_LIST.match(t):
-        before = t[: t.rfind("，arXiv ")]
-        return is_title_like(_sources_title_from_before_arxiv(before))
-    return bool(SOURCES_LINK_LIST.match(t))
+def is_whitelisted_sources_title(name: str, text: str) -> bool:
+    """True when *text* is one of the three exact Sources titles.
 
-
-def is_sources_title_cell(cell: str) -> bool:
-    t = cell.strip()
-    if not SOURCES_ARXIV_CELL.match(t):
-        return False
-    before = t[: t.rfind(", [arXiv ")]
-    return is_title_like(_sources_title_from_before_arxiv(before))
-
-
-def is_automatic_sources_title(name: str, text: str, *, table_cell: bool) -> bool:
-    if not is_sources_filename(name):
-        return False
-    if table_cell:
-        return is_sources_title_cell(text)
-    return is_sources_title_list_item(text)
+    Applied only in ``r-*-sources*.md``. Comparison is strip-then-equality.
+    """
+    return is_sources_filename(name) and text.strip() in SOURCES_TITLE_WHITELIST
 
 
 def has_cjk(s: str) -> bool:
@@ -460,7 +402,7 @@ def scan_file(path: Path) -> tuple[list[tuple[int, str, str]], int]:
         if TABLE_ROW.match(line):
             cells = split_row(line)
             for ci, cell in enumerate(cells):
-                if is_automatic_sources_title(path.name, cell, table_cell=True):
+                if is_whitelisted_sources_title(path.name, cell):
                     if looks_english_prose(cell):
                         explained += 1
                     continue
@@ -472,7 +414,7 @@ def scan_file(path: Path) -> tuple[list[tuple[int, str, str]], int]:
         lm = LIST_ITEM.match(line)
         if lm:
             body = lm.group(2)
-            if is_automatic_sources_title(path.name, body, table_cell=False):
+            if is_whitelisted_sources_title(path.name, body):
                 if looks_english_prose(body):
                     explained += 1
                 i += 1

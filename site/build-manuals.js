@@ -267,11 +267,12 @@ function evidenceLink(url, label) {
 }
 
 function isResearchPath(fileOrRel) {
-  const posix = String(fileOrRel).split(path.sep).join('/');
+  const posix = String(fileOrRel).replace(/\\/g, '/');
   const relPath = path.isAbsolute(fileOrRel)
     ? path.relative(ROOT, fileOrRel).split(path.sep).join('/')
     : posix;
-  return /^manuals\/[^/]+\/research(?:\/|$)/.test(relPath) || /^research(?:\/|$)/.test(relPath);
+  const p = path.posix.normalize(relPath).replace(/^\.\//, '');
+  return /^manuals\/[^/]+\/research(?:\/|$)/.test(p) || /^(?:\.\.\/)*research(?:\/|$)/.test(p);
 }
 
 function measuredEvidence(doc, manual) {

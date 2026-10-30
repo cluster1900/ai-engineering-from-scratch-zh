@@ -215,16 +215,15 @@ function researchAnchorTexts(html) {
 }
 
 test('rendered links into research/ are labeled as English originals', () => {
-  const loaded = manuals.loadAll({ only: 'a2a-101' });
-  assert.equal(loaded.length, 1);
+  const loaded = manuals.loadAll();
   const webDir = tempDir('manuals-research-web-');
   const printDir = tempDir('manuals-research-print-');
-  manuals.writeWeb(loaded, webDir, { only: 'a2a-101' });
+  manuals.writeWeb(loaded, webDir);
   manuals.writePrint(loaded, printDir);
   const webLinks = researchAnchorTexts(htmlFiles(webDir));
   const printLinks = researchAnchorTexts(htmlFiles(printDir));
-  assert.ok(webLinks.length > 0, 'expected at least one research link in web output');
-  assert.ok(printLinks.length > 0, 'expected at least one research link in print output');
+  assert.equal(webLinks.length, 24);
+  assert.equal(printLinks.length, 12);
   for (const text of webLinks) assert.ok(text.endsWith(manuals.RESEARCH_LINK_LABEL), text);
   for (const text of printLinks) assert.ok(text.endsWith(manuals.RESEARCH_LINK_LABEL), text);
 });
@@ -236,6 +235,17 @@ test('an unlabeled markdown link into research/ fails the build', () => {
   assert.doesNotThrow(() => manuals.loadManual(fixture({ 'front.md': labeled }).dir));
 });
 
+test('an unlabeled relative research link in a section fails the build', () => {
+  const intro = SECTION.replace(
+    'Your test needs a manual.',
+    'See [x](../research/brief-spec.md). Your test needs a manual.',
+  );
+  assert.throws(
+    () => manuals.loadManual(fixture({ 'sections/1-1-intro.md': intro }).dir),
+    /research link must end with/,
+  );
+});
+
 test('a listing whose source is under research/ labels the full-log link', () => {
   const { dir } = fixture({
     'sections/1-1-intro.md': SECTION.replace('source: capture/out/task.json', 'source: research/sources/spec.md'),
@@ -243,6 +253,9 @@ test('a listing whose source is under research/ labels the full-log link', () =>
   manuals.loadManual(dir);
   assert.ok(manuals.isResearchPath('research/sources/spec.md'));
   assert.ok(manuals.isResearchPath('manuals/a2a-101/research/tck-summary.txt'));
+  assert.ok(manuals.isResearchPath('manuals/a2a-101/sections/../research/brief-spec.md'));
+  assert.ok(manuals.isResearchPath('sections/../research/x'));
+  assert.ok(manuals.isResearchPath('../research/brief-spec.md'));
   assert.ok(!manuals.isResearchPath('manuals/a2a-101/capture/out/task.json'));
   const html = manuals.printPage(manuals.loadManual(path.join(__dirname, '..', 'manuals', 'a2a-101')));
   assert.match(html, /<a class="m-evidence"[^>]*>Full log（英文原文）<\/a>/);

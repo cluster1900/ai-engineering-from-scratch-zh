@@ -43,6 +43,45 @@ COUNTER_ARXIV_CELL_POLICY = (
     "the tail-optimized policy that the code names, "
     "[arXiv 2510.15152](https://arxiv.org/abs/2510.15152)"
 )
+COUNTER_ARXIV_LIST_TITLECASE_WE = (
+    "- We Use This For Everything In The Code，arXiv 2510.15152。"
+)
+COUNTER_ARXIV_CELL_TITLECASE_WE = (
+    "| a | We Use This For Everything In The Code, "
+    "[arXiv 2510.15152](https://arxiv.org/abs/2510.15152) |"
+)
+COUNTER_ARXIV_CELL_TITLECASE_THIS = (
+    "| a | This Is The Paper We Use, "
+    "[arXiv 2510.15152](https://arxiv.org/abs/2510.15152) |"
+)
+COUNTER_ARXIV_LIST_TITLECASE_THIS = (
+    "- This Is The Paper We Use，arXiv 2510.15152。"
+)
+L1_CELL = (
+    "We Use This For Everything In The Code, "
+    "[arXiv 2501.00001](https://arxiv.org/abs/2501.00001)"
+)
+L1_LIST = "We Use This For Everything In The Code，arXiv 2501.00001。"
+N6_CELL = (
+    "We Ran It on GPU and saw KV hit, "
+    "[arXiv 2501.00001](https://arxiv.org/abs/2501.00001)"
+)
+N5C_HYPHEN = "We-always-restart-the-server-first-because-it-leaks"
+WHITELIST_MILES_26 = "Rollout Routing Replay，arXiv 2510.11370。"
+WHITELIST_MILES_27 = (
+    "Score Centering Stabilizes Off-policy Reinforcement Learning，"
+    "arXiv 2609.20807。"
+)
+WHITELIST_SGLANG_60 = (
+    "Patodiya，Same Request, Different Answer: Quantization Amplifies "
+    "Cache-Induced Divergence in LLM Serving, "
+    "[arXiv 2609.04748](https://arxiv.org/abs/2609.04748)"
+)
+WHITELIST_FILES = (
+    ("manuals/miles-101/sections/r-4-sources.md", WHITELIST_MILES_26),
+    ("manuals/miles-101/sections/r-4-sources.md", WHITELIST_MILES_27),
+    ("manuals/sglang-101/sections/r-5-sources.md", WHITELIST_SGLANG_60),
+)
 
 ENGLISH_CORPUS = [
     COUNTER_TITLE_CASE_COMMA,
@@ -86,6 +125,14 @@ ENGLISH_CORPUS = [
     COUNTER_ARXIV_CELL_SENTENCE,
     COUNTER_ARXIV_CELL_POLICY,
     COUNTER_TITLE_CASE_NO_PRODUCT,
+    COUNTER_ARXIV_LIST_TITLECASE_WE,
+    COUNTER_ARXIV_CELL_TITLECASE_WE,
+    COUNTER_ARXIV_CELL_TITLECASE_THIS,
+    COUNTER_ARXIV_LIST_TITLECASE_THIS,
+    L1_CELL,
+    L1_LIST,
+    N6_CELL,
+    N5C_HYPHEN,
 ]
 
 # Main-only hits on the current manuals. Each entry is (relpath, lineno, text)
@@ -116,7 +163,7 @@ EXPECTED_MAIN_ONLY = {
     ("manuals/a2a-101/sections/4-6-push-notification-configs.md", 83, "a2a-js {{sdk-js src/server/push_notification/default_push_notification_sender.ts at v1.3.0}}"),
     ("manuals/a2a-101/sections/4-6-push-notification-configs.md", 84, "a2a-dotnet {{sdk-dotnet src/A2A/Server/A2AServer.cs at v1.0.0-preview2}}"),
     ("manuals/a2a-101/sections/4-6-push-notification-configs.md", 85, "a2a-rs {{sdk-rust a2a-server/src/push/sender.rs at a2a-server-lf-v0.5.1}}"),
-    # automatic Sources title counted as explained
+    # whitelisted Sources title counted as explained
     ("manuals/miles-101/sections/r-4-sources.md", 26, "Rollout Routing Replay，arXiv 2510.11370。"),
     ("manuals/miles-101/sections/r-4-sources.md", 27, "Score Centering Stabilizes Off-policy Reinforcement Learning，arXiv 2609.20807。"),
     # author joins on other paper rows are now CJK (等 / 与); main no longer flags them.
@@ -210,6 +257,7 @@ class ResidualEnglishTests(unittest.TestCase):
     def test_sentence_final_function_word_is_still_prose(self):
         self.assertTrue(chk.func_word_in_prose("Then run this."))
         self.assertFalse(chk.func_word_in_prose("a2a-server-lf-v0.5.1"))
+        self.assertTrue(chk.func_word_in_prose(N5C_HYPHEN))
 
     def test_english_heading_is_flagged(self):
         hits, _explained = _scan(
@@ -220,80 +268,43 @@ class ResidualEnglishTests(unittest.TestCase):
         self.assertIn("HEADING", kinds)
 
 
-class TitleLikeTests(unittest.TestCase):
-    def test_hyphenated_and_manual_titles_pass(self):
-        self.assertTrue(
-            chk.is_title_like(
-                "Score Centering Stabilizes Off-policy Reinforcement Learning"
-            )
+class SourcesWhitelistTests(unittest.TestCase):
+    LINE = f"- {WHITELIST_MILES_26}\n"
+
+    def test_whitelist_has_exactly_three_verbatim_manual_entries(self):
+        self.assertEqual(len(chk.SOURCES_TITLE_WHITELIST), 3)
+        self.assertEqual(
+            chk.SOURCES_TITLE_WHITELIST,
+            frozenset(text for _rel, text in WHITELIST_FILES),
         )
-        self.assertTrue(
-            chk.is_title_like(
-                "From Tokens to Layers: Redefining Stall-Free Scheduling "
-                "for MoE Serving with Layered Prefill"
-            )
-        )
-        self.assertTrue(chk.is_title_like("Rollout Routing Replay"))
-        self.assertTrue(chk.is_title_like("Test-Time Speculation"))
+        for rel, text in WHITELIST_FILES:
+            body = (REPO_ROOT / rel).read_text(encoding="utf-8")
+            self.assertIn(text, body)
 
-    def test_english_sentences_are_not_title_like(self):
-        self.assertFalse(
-            chk.is_title_like("This is a whole English sentence about serving")
-        )
-        self.assertFalse(
-            chk.is_title_like("We use this paper for the cache policy")
-        )
-        self.assertFalse(
-            chk.is_title_like("the tail-optimized policy that the code names")
-        )
-
-    def test_miles_arxiv_list_items_are_automatic_titles(self):
-        path = REPO_ROOT / "manuals/miles-101/sections/r-4-sources.md"
-        lines = path.read_text(encoding="utf-8").splitlines()
-        for lineno in (26, 27):
-            lm = chk.LIST_ITEM.match(lines[lineno - 1])
-            self.assertIsNotNone(lm, lines[lineno - 1])
-            body = lm.group(2)
-            self.assertTrue(chk.is_sources_title_list_item(body), body)
-
-    def test_sglang_arxiv_cells_are_automatic_titles(self):
-        path = REPO_ROOT / "manuals/sglang-101/sections/r-5-sources.md"
-        lines = path.read_text(encoding="utf-8").splitlines()
-        matched = 0
-        for lineno in range(51, 63):
-            row = lines[lineno - 1]
-            if not chk.TABLE_ROW.match(row):
-                continue
-            cell = chk.split_row(row)[0]
-            if chk.SOURCES_ARXIV_CELL.match(cell.strip()):
-                self.assertTrue(chk.is_sources_title_cell(cell), cell)
-                matched += 1
-            else:
-                hits, explained = _scan("r-5-sources.md", row + "\n")
-                self.assertEqual(hits, [], cell)
-                self.assertEqual(explained, 0)
-        self.assertGreaterEqual(matched, 11)
-
-
-class SourcesListFlagTests(unittest.TestCase):
-    LINE = "- Rollout Routing Replay，arXiv 2510.11370。\n"
-    PAPER_CELL = (
-        "SGLang: Efficient Execution of Structured Language "
-        "Model Programs, [arXiv 2312.07104](https://arxiv.org/abs/2312.07104)"
-    )
-
-    def test_sources_arxiv_list_explained_automatically(self):
+    def test_whitelisted_miles_list_items_are_explained(self):
         hits, explained = _scan("r-4-sources.md", self.LINE)
         self.assertEqual(hits, [])
         self.assertEqual(explained, 1)
+        hits, explained = _scan("r-4-sources.md", f"- {WHITELIST_MILES_27}\n")
+        self.assertEqual(hits, [])
+        self.assertEqual(explained, 1)
 
-    def test_sources_arxiv_cell_explained_automatically(self):
+    def test_whitelisted_sglang_cell_is_explained(self):
         hits, explained = _scan(
             "r-5-sources.md",
-            f"| {self.PAPER_CELL} | [2.2](#s) |\n",
+            f"| {WHITELIST_SGLANG_60} | [4.6](#s) |\n",
         )
         self.assertEqual(hits, [])
         self.assertEqual(explained, 1)
+
+    def test_non_whitelisted_arxiv_cell_is_not_explained(self):
+        paper = (
+            "SGLang: Efficient Execution of Structured Language "
+            "Model Programs, [arXiv 2312.07104](https://arxiv.org/abs/2312.07104)"
+        )
+        hits, explained = _scan("r-5-sources.md", f"| {paper} | [2.2](#s) |\n")
+        self.assertTrue(any(kind.startswith("TABLE_CELL") for _n, kind, _t in hits))
+        self.assertEqual(explained, 0)
 
     def test_sources_rule_does_not_allow_plain_list_prose(self):
         hits, _explained = _scan(
@@ -323,16 +334,9 @@ class SourcesListFlagTests(unittest.TestCase):
         ):
             with self.subTest(sample=sample[:60]):
                 self.assertTrue(chk.looks_english_prose(sample))
-        self.assertFalse(
-            chk.is_sources_title_list_item(COUNTER_ARXIV_LIST_SENTENCE)
-        )
-        self.assertFalse(
-            chk.is_sources_title_list_item(COUNTER_ARXIV_LIST_POLICY)
-        )
-        self.assertFalse(
-            chk.is_sources_title_cell(COUNTER_ARXIV_CELL_SENTENCE)
-        )
-        self.assertFalse(chk.is_sources_title_cell(COUNTER_ARXIV_CELL_POLICY))
+                self.assertFalse(
+                    chk.is_whitelisted_sources_title("r-5-sources.md", sample)
+                )
         hits, explained = _scan(
             "r-5-sources.md",
             f"- {COUNTER_ARXIV_LIST_SENTENCE}\n"
@@ -346,6 +350,76 @@ class SourcesListFlagTests(unittest.TestCase):
             sum(1 for kind in kinds if kind.startswith("TABLE_CELL")), 2
         )
         self.assertEqual(explained, 0)
+
+    def test_title_case_sentence_plus_arxiv_is_hit_not_explained(self):
+        samples = (
+            (COUNTER_ARXIV_LIST_TITLECASE_WE, "LIST"),
+            (COUNTER_ARXIV_CELL_TITLECASE_WE, "TABLE_CELL"),
+            (COUNTER_ARXIV_CELL_TITLECASE_THIS, "TABLE_CELL"),
+            (COUNTER_ARXIV_LIST_TITLECASE_THIS, "LIST"),
+        )
+        oracle = _load_main_oracle()
+        for line, kind_prefix in samples:
+            with self.subTest(line=line[:70]):
+                hits, explained = _scan("r-5-sources.md", line + "\n")
+                kinds = [kind for _lineno, kind, _text in hits]
+                if kind_prefix == "LIST":
+                    self.assertIn("LIST", kinds, hits)
+                else:
+                    self.assertTrue(
+                        any(kind.startswith("TABLE_CELL") for kind in kinds),
+                        hits,
+                    )
+                self.assertEqual(explained, 0)
+                with tempfile.TemporaryDirectory() as tmp:
+                    path = Path(tmp) / "r-5-sources.md"
+                    path.write_text(line + "\n", encoding="utf-8")
+                    oracle_hits = oracle.scan_file(path, False, False)
+                    self.assertTrue(
+                        oracle_hits,
+                        f"oracle (main) must also flag: {line[:70]}",
+                    )
+
+    def test_l1_n6_n11_are_hits_not_explained(self):
+        oracle = _load_main_oracle()
+        cases = (
+            ("r-5-sources.md", f"| {L1_CELL} | x |\n", "TABLE_CELL"),
+            ("r-5-sources.md", f"- {L1_LIST}\n", "LIST"),
+            ("r-5-sources.md", f"| {N6_CELL} | x |\n", "TABLE_CELL"),
+            ("r-9-sources-notes.md", f"| {L1_CELL} | x |\n", "TABLE_CELL"),
+        )
+        for name, text, kind_prefix in cases:
+            with self.subTest(name=name, kind=kind_prefix, text=text[:70]):
+                hits, explained = _scan(name, text)
+                kinds = [kind for _lineno, kind, _text in hits]
+                if kind_prefix == "LIST":
+                    self.assertIn("LIST", kinds, hits)
+                else:
+                    self.assertTrue(
+                        any(kind.startswith("TABLE_CELL") for kind in kinds),
+                        hits,
+                    )
+                self.assertEqual(explained, 0)
+                with tempfile.TemporaryDirectory() as tmp:
+                    path = Path(tmp) / name
+                    path.write_text(text, encoding="utf-8")
+                    oracle_hits = oracle.scan_file(path, False, False)
+                    self.assertTrue(
+                        oracle_hits,
+                        f"oracle (main) must also flag: {text[:70]}",
+                    )
+
+    def test_hyphen_chained_sentence_is_list_hit(self):
+        oracle = _load_main_oracle()
+        line = f"- {N5C_HYPHEN}\n"
+        hits, explained = _scan("page.md", line)
+        self.assertEqual([kind for _lineno, kind, _text in hits], ["LIST"])
+        self.assertEqual(explained, 0)
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "page.md"
+            path.write_text(line, encoding="utf-8")
+            oracle_hits = oracle.scan_file(path, False, False)
+            self.assertTrue(oracle_hits, "oracle (main) must also flag N5c")
 
     def test_sources_rule_stays_off_outside_sources_files(self):
         hits, explained = _scan("page.md", self.LINE)
