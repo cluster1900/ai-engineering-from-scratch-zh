@@ -67,6 +67,21 @@ N6_CELL = (
     "[arXiv 2501.00001](https://arxiv.org/abs/2501.00001)"
 )
 N5C_HYPHEN = "We-always-restart-the-server-first-because-it-leaks"
+D1C_HYPHEN = "We-restart-2-servers-because-it-leaks-every-night."
+D1E_CELL = (
+    "We-restart-2-servers-because-it-leaks, "
+    "[arXiv 2501.00001](https://arxiv.org/abs/2501.00001)"
+)
+D1E_NIGHTLY = (
+    "Restart-the-2-servers-nightly, "
+    "[arXiv 2501.00001](https://arxiv.org/abs/2501.00001)"
+)
+D_VERSIONS = "Run-it-v2 then-v3 with-v4 after-v5 now."
+D_SLASH_CELL = (
+    "Restart-the/servers-nightly, "
+    "[arXiv 2501.00001](https://arxiv.org/abs/2501.00001)"
+)
+WHITELIST_PLUS_EN = " We restart the server every night because it leaks."
 WHITELIST_MILES_26 = "Rollout Routing Replay，arXiv 2510.11370。"
 WHITELIST_MILES_27 = (
     "Score Centering Stabilizes Off-policy Reinforcement Learning，"
@@ -133,6 +148,11 @@ ENGLISH_CORPUS = [
     L1_LIST,
     N6_CELL,
     N5C_HYPHEN,
+    D1C_HYPHEN,
+    D1E_CELL,
+    D1E_NIGHTLY,
+    D_VERSIONS,
+    D_SLASH_CELL,
 ]
 
 # Main-only hits on the current manuals. Each entry is (relpath, lineno, text)
@@ -258,6 +278,10 @@ class ResidualEnglishTests(unittest.TestCase):
         self.assertTrue(chk.func_word_in_prose("Then run this."))
         self.assertFalse(chk.func_word_in_prose("a2a-server-lf-v0.5.1"))
         self.assertTrue(chk.func_word_in_prose(N5C_HYPHEN))
+        # Identifier exemption needs both the a2a-server prefix and
+        # server-only function-word segments (kills prefix-only / segments-only).
+        self.assertTrue(chk.func_word_in_prose("a2a-server-we-restart-the-server"))
+        self.assertTrue(chk.func_word_in_prose("foo-server-v2"))
 
     def test_english_heading_is_flagged(self):
         hits, _explained = _scan(
@@ -420,6 +444,53 @@ class SourcesWhitelistTests(unittest.TestCase):
             path.write_text(line, encoding="utf-8")
             oracle_hits = oracle.scan_file(path, False, False)
             self.assertTrue(oracle_hits, "oracle (main) must also flag N5c")
+
+    def test_digit_slash_hyphen_chained_sentences_are_hits(self):
+        oracle = _load_main_oracle()
+        prose = (D1C_HYPHEN, D_VERSIONS)
+        cells = (D1E_CELL, D1E_NIGHTLY, D_SLASH_CELL)
+        for sample in prose:
+            with self.subTest(kind="PROSE", sample=sample[:70]):
+                hits, explained = _scan("page.md", sample + "\n")
+                self.assertEqual(
+                    [kind for _lineno, kind, _text in hits], ["PROSE"], hits
+                )
+                self.assertEqual(explained, 0)
+                with tempfile.TemporaryDirectory() as tmp:
+                    path = Path(tmp) / "page.md"
+                    path.write_text(sample + "\n", encoding="utf-8")
+                    oracle_hits = oracle.scan_file(path, False, False)
+                    self.assertTrue(
+                        oracle_hits, f"oracle (main) must also flag: {sample[:70]}"
+                    )
+        for sample in cells:
+            with self.subTest(kind="TABLE_CELL", sample=sample[:70]):
+                text = f"| {sample} | x |\n"
+                hits, explained = _scan("r-5-sources.md", text)
+                kinds = [kind for _lineno, kind, _text in hits]
+                self.assertTrue(
+                    any(kind.startswith("TABLE_CELL") for kind in kinds), hits
+                )
+                self.assertEqual(explained, 0)
+                with tempfile.TemporaryDirectory() as tmp:
+                    path = Path(tmp) / "r-5-sources.md"
+                    path.write_text(text, encoding="utf-8")
+                    oracle_hits = oracle.scan_file(path, False, False)
+                    self.assertTrue(
+                        oracle_hits, f"oracle (main) must also flag: {sample[:70]}"
+                    )
+
+    def test_whitelisted_title_plus_appended_english_is_hit(self):
+        list_line = f"- {WHITELIST_MILES_26}{WHITELIST_PLUS_EN}\n"
+        hits, explained = _scan("r-5-sources.md", list_line)
+        self.assertIn("LIST", [kind for _lineno, kind, _text in hits], hits)
+        self.assertEqual(explained, 0)
+        cell_text = f"| {WHITELIST_SGLANG_60}{WHITELIST_PLUS_EN} | x |\n"
+        hits, explained = _scan("r-5-sources.md", cell_text)
+        self.assertTrue(
+            any(kind.startswith("TABLE_CELL") for _n, kind, _t in hits), hits
+        )
+        self.assertEqual(explained, 0)
 
     def test_sources_rule_stays_off_outside_sources_files(self):
         hits, explained = _scan("page.md", self.LINE)

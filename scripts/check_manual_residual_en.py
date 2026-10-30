@@ -136,8 +136,9 @@ def func_word_in_prose(s: str) -> bool:
 
     Hyphen and dot are word boundaries for ``\\b``, so ``server`` in
     ``a2a-server`` and ``at`` in a dotted path would otherwise fire.
-    Only a joined token that contains a digit, ``/``, or ``_`` is treated
-    as an identifier; a hyphen-chained English sentence is still prose.
+    A joined token is treated as an identifier only when it starts with
+    ``a2a-server`` or ``server-common/`` and every function-word segment
+    is ``server``; a hyphen-chained English sentence is still prose.
     """
     for m in FUNC_WORDS.finditer(s):
         left = s[m.start() - 1] if m.start() > 0 else ""
@@ -150,7 +151,12 @@ def func_word_in_prose(s: str) -> bool:
             right in ("-", ".") and right2.isalnum()
         ):
             token = _joined_token(s, m.start(), m.end())
-            if any(ch.isdigit() or ch in "/_" for ch in token):
+            # Only the pinned SDK identifiers in a2a-101 (see EXPECTED_MAIN_ONLY);
+            # every function-word segment inside must be "server".
+            segs = [x.lower() for x in re.split(r"[-./_]", token) if x]
+            if re.match(r"(?:a2a-server|server-common/)", token) and all(
+                x == "server" for x in segs if FUNC_WORDS.fullmatch(x)
+            ):
                 continue
         return True
     return False

@@ -256,6 +256,8 @@ test('a listing whose source is under research/ labels the full-log link', () =>
   assert.ok(manuals.isResearchPath('manuals/a2a-101/sections/../research/brief-spec.md'));
   assert.ok(manuals.isResearchPath('sections/../research/x'));
   assert.ok(manuals.isResearchPath('../research/brief-spec.md'));
+  assert.ok(manuals.isResearchPath('manuals\\a2a-101\\research\\brief-spec.md'));
+  assert.ok(manuals.isResearchPath('sections\\..\\research\\brief-spec.md'));
   assert.ok(!manuals.isResearchPath('manuals/a2a-101/capture/out/task.json'));
   const html = manuals.printPage(manuals.loadManual(path.join(__dirname, '..', 'manuals', 'a2a-101')));
   assert.match(html, /<a class="m-evidence"[^>]*>Full log（英文原文）<\/a>/);
