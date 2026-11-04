@@ -98,7 +98,7 @@ from: phases/06-speech-and-audio/13-neural-audio-codecs/docs/en.md, phases/06-sp
 - **词表**：8 个码本、每个 1024 个码，得到 $1024^8 = 10^{24}$。
 - **LM token**：$10 \times 12.5 \times 8 = 1000$ 个 token，对应 10 秒的 Mimi。
 - **玩具 RVQ 比特**：8 个码是 3 比特。每帧比特数是码本数乘 3。
-- **Mel hop**：24 kHz 下 12.5 ms 是 300 个样本。
+- **Mel 帧移**：24 kHz 下 12.5 ms 是 300 个样本。
 - **HiFi-GAN**：上采样率 8, 8, 2, 2 得到 256x，从 mel 速率到音频速率。
 
 ## Codec 数字
@@ -123,7 +123,7 @@ from: phases/06-speech-and-audio/07-text-to-speech/docs/en.md, phases/06-speech-
 - **FastSpeech 2**：时长预测器，1 次前向，比 Tacotron 快 10×。
 - **VITS**：编码器、flow 时长和 HiFi-GAN，端到端训练。25M。
 - **F5-TTS**：flow-matching 的扩散 Transformer。从 5 秒克隆。335M。
-- **Kokoro**：82M，可在 CPU 上跑，仅 English。
+- **Kokoro**：82M，可在 CPU 上跑，仅英语。
 - **KNN-VC**：把每个 WavLM 源帧换成目标池中最近的帧。
 - **Mimi**：码本 0 从 WavLM 蒸馏。码本 1-7 是声学的。
 
@@ -159,7 +159,7 @@ from: phases/06-speech-and-audio/07-text-to-speech/docs/en.md, phases/06-speech-
 type: tips
 from: phases/06-speech-and-audio/07-text-to-speech/docs/en.md, phases/06-speech-and-audio/08-voice-cloning-conversion/docs/en.md, phases/06-speech-and-audio/13-neural-audio-codecs/docs/en.md
 
-- CPU 上实时 English：Kokoro。
+- CPU 上实时英语：Kokoro。
 - 从 5 秒参考克隆：F5-TTS 或 OpenVoice v2。
 - 把语音改写成目标声音：KNN-VC 或 Diff-HierVC。
 - 在音频上做生成模型：从 Mimi 或 SNAC 开始。

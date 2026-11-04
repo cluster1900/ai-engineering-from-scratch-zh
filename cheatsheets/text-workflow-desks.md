@@ -62,7 +62,7 @@ from: projects/meeting-notes-to-actions/solution, projects/meeting-notes-to-acti
 2. **proposals**：把 `NAME will TASK by YYYY-MM-DD` 行加为提案。
 3. **validate_action**：owner 或 due 为 "?" 时加上 `needs_owner` 或 `needs_date`。
 4. **deduplicate**：对 owner、due 和 task 做 casefold。合并它们的源行。
-5. **inbox**：给每个行动项一个来自 SHA-256 的 16 hex id。
+5. **inbox**：给每个行动项一个来自 SHA-256 的 16 位十六进制 id。
 6. **Reviewer**：选择 pending、approved 或 rejected。下载 decisions.json。
 7. **Rerun**：`--decisions decisions.json` 只导出已批准的完整行动项。
 
@@ -114,8 +114,8 @@ from: projects/changelog-writer-from-git/solution/main.go, projects/inbox-triage
 |---|---|---|
 | Label 标志 | v0.2.0 | 发布标题 |
 | To 标志 | HEAD | 包含的结束修订 |
-| 每次发布的提交 | 1000 | 更多会给出 budget exceeded |
-| 收件箱 `--model` | local-model | 仅可选 provider |
+| 每次发布的提交 | 1000 | 更多会报超出预算 |
+| 收件箱 `--model` | local-model | 仅用于可选提供方 |
 | 消息大小 | 1 MB | 每个 .eml 文件 |
 | 反馈输入 | 2 MB | 最多 10000 条记录 |
 | 模型主题输入 | 50 | `--suggest` 的反馈记录 |
@@ -147,7 +147,7 @@ from: projects/inbox-triage-desk/solution/main.py, projects/plain-language-rewri
 - **主题顺序**：先按不同来源最多，再按 id。
 - **分组**：Breaking changes、Features、Fixes、Other。
 - **Breaking**：`BREAKING CHANGE:` 页脚，或类型后的 `!`。
-- **Revert**："This reverts commit" 带一个 40 hex id。
+- **Revert**："This reverts commit" 带一个 40 位十六进制 id。
 
 ## 问题
 type: qa
@@ -166,5 +166,5 @@ from: projects/inbox-triage-desk/README.md, projects/meeting-notes-to-actions/RE
 - 运行你自己的导出前，先写下预期结果。
 - 把输入放在输出旁边，好让别人复现。
 - 读 JSON 回执，并在集成前测试一个新输入。
-- 远程 provider 需要 HTTPS。HTTP 只对 loopback 有效。
+- 远程提供方需要 HTTPS。HTTP 只对回环有效。
 - 核心阶段之后阅读 integration.go。

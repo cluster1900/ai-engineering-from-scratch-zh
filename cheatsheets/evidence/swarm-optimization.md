@@ -25,9 +25,9 @@ Abbreviations: P = phases/16-multi-agent-and-swarms/19-swarm-optimization-pso-ac
 - CTDE central critic, local policy: R/d:38
 - Self-play copy of past self: R/d:44
 - League population of past policies: R/d:46
-- Fits: loosely-coupled R/d:36, cooperative navigation R/d:128, zero-sum R/d:44, cycles R/d:46
+- Fits: loosely-coupled R/d:36, cooperative navigation R/d:132, zero-sum R/d:44, cycles R/d:46
 - Examples: MADDPG, COMA, MAPPO, QMIX R/d:39-42, AlphaZero R/d:44, AlphaStar R/d:46
-- Notes: convergence none R/d:36, most common R/d:38, dominance cycle R/d:118, exploiters R/d:46
+- Notes: convergence none R/d:36, most common R/d:38, dominance cycle R/d:123, exploiters R/d:46
 
 ## 队列 swarm 对照固定分配 (comparison, 5 rows)
 - Who picks: S/c:30-35, 39-43, 60-64
@@ -97,9 +97,9 @@ Abbreviations: P = phases/16-multi-agent-and-swarms/19-swarm-optimization-pso-ac
 - Decay too fast forgets solutions: P/d:91-92
 - Starvation, priority queue with aging: S/d:58-61, 97
 - Crash mid-run, idempotent and durable: S/d:98-99
-- Policy drift, centralized critic, slow learning rates: R/d:116
-- Non-stationary replay, relabel or weight by recency: R/d:114
-- Auction agents bid zero, reward design: R/d:116
+- Policy drift, centralized critic, slow learning rates: R/d:120
+- Non-stationary replay, relabel or weight by recency: R/d:118
+- Auction agents bid zero, reward design: R/d:121
 
 ## 问题 (qa, 5)
 - Discrete prompt, evaluator only: P/d:12, 86

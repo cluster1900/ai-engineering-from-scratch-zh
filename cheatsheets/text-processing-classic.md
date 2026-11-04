@@ -13,7 +13,7 @@ type: flow
 from: phases/05-nlp-foundations-to-advanced/01-text-processing/docs/en.md, phases/05-nlp-foundations-to-advanced/02-bag-of-words-tfidf/docs/en.md, phases/05-nlp-foundations-to-advanced/05-sentiment-analysis/docs/en.md
 
 1. **Tokenize**：把字符串切成词 token。把标点留作独立 token。
-2. **Stem 或 lemmatize**：要速度就做词干。含义重要时带 POS 标签做词形还原。
+2. **词干或词形还原**：要速度就做词干。含义重要时带 POS 标签做词形还原。
 3. **否定范围**：在否定词之后到标点之前，给 token 加上 `NOT_` 前缀。
 4. **Count**：词袋。每行一个文档，每列一个词表词。
 5. **Weight**：TF-IDF 压低常见词。L2 行让余弦变成点积。
@@ -141,7 +141,7 @@ from: phases/05-nlp-foundations-to-advanced/01-text-processing/docs/en.md, phase
 | 部署后准确率下降 | 训练与推理的预处理不同 | 在模型里随一份预处理函数一起交付 |
 | 升级后 token 变了 | 库版本漂移 | 钉住版本。冻结 20 个样例句 |
 | `ponies` 词干变成 `poni` | 只有步骤 1a 的 `ies` 规则 | 使用带步骤 1b 的完整 Porter |
-| `watched` 仍是 `watched` | Lemma 表没有 `ed` 规则 | 使用 WordNet 或 spaCy |
+| `watched` 仍是 `watched` | 词形还原表没有 `ed` 规则 | 使用 WordNet 或 spaCy |
 | "not good" 读成正面 | 停用词表丢掉了否定 | `stop_words=None` 再加 bigram |
 | 分数高，少数类差 | 不平衡上的 Micro-F1 或准确率 | 报告 macro-F1，在 95-5 上用 AUPRC |
 | LDA 垃圾主题 | 停用词和高频词 | 设置 `min_df` 和 `max_df` |

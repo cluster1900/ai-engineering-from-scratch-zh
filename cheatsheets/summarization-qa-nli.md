@@ -38,7 +38,7 @@ from: phases/05-nlp-foundations-to-advanced/12-text-summarization/docs/en.md, ph
 | 生成摘要 | `summarizer(article, max_length=120, min_length=60, do_sample=False)` |
 | 带词干的 ROUGE | `rouge_scorer.RougeScorer(["rouge1", "rouge2", "rougeL"], use_stemmer=True)` |
 | 抽取式 QA | `pipeline("question-answering", model="deepset/roberta-base-squad2")` |
-| 允许空答案 | 向 pipeline 调用传入 `handle_impossible_answer=True` |
+| 允许空答案 | 在 pipeline 调用中传入 `handle_impossible_answer=True` |
 | SQuAD 指标 | `exact_match(pred, gold)` 和 `token_f1(pred, gold)` |
 | 零样本主题标签 | `zs(text, candidate_labels=labels)` |
 
@@ -79,7 +79,7 @@ from: phases/05-nlp-foundations-to-advanced/12-text-summarization/docs/en.md, ph
 - **EM**：归一化后的精确匹配。否则分数是 0。
 - **Token F1**：token 重叠上的 $F_1 = \frac{2PR}{P + R}$。它给出部分分数。
 - **BERTScore**：上下文嵌入相似度。与 ROUGE 一起报告。
-- **G-Eval**：带思维链的 LLM 评判。与人类一致约 80% 的时间。
+- **G-Eval**：带思维链的 LLM 评判。与人类判断约 80% 一致。
 - **实体级 F1**：只出现在摘要里的实体值得怀疑。
 - **RAGAS**：忠实度、答案相关性、上下文精确率、上下文召回率。
 
@@ -100,7 +100,7 @@ from: phases/05-nlp-foundations-to-advanced/12-text-summarization/docs/en.md, ph
 - ROUGE 里始终使用词干。否则 "running" 和 "run" 对不上。
 - 报告 ROUGE-L、BERTScore 和 G-Eval。在 50-100 篇人工标注摘要上校准。
 - 告诉模型只用上下文，并说 "I don't know."
-- 始终检查 QA pipeline 的 `score` 字段。
+- 始终检查 QA 流水线的 `score` 字段。
 - 上线零样本分类前，先跑 100 条带标签的健全性检查。
 - 输入超过上下文窗口时，用分块 map-reduce，不要截断。
 

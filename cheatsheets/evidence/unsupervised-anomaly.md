@@ -26,18 +26,18 @@ Abbreviations: L07 = phases/02-ml-fundamentals/07-unsupervised-learning, L16 = p
 - SklearnPCA(n_components=2), explained_variance_ratio_: L10/d:289, 293
 - TSNE(n_components=2, perplexity=30, random_state=42): L10/d:298
 - UMAP(n_components=2, n_neighbors=15, min_dist=0.1, random_state=42): L10/d:309
-- IsolationForest(n_estimators=100, contamination=0.05, random_state=42) and iso.fit(X_train): L16/d:341-342
+- IsolationForest(n_estimators=100, contamination=0.05, random_state=42) and iso.fit(X_train): L16/d:367-368
 - fit on normal data: L16/d:59
-- LocalOutlierFactor(n_neighbors=20, contamination=0.05, novelty=True): L16/d:345
-- OneClassSVM(kernel="rbf", gamma="auto", nu=0.05): L16/d:372
+- LocalOutlierFactor(n_neighbors=20, contamination=0.05, novelty=True): L16/d:371
+- OneClassSVM(kernel="rbf", gamma="auto", nu=0.05): L16/d:398
 
 ## 公式 (concepts, 8)
 - inertia: L07/d:491
 - silhouette, -1 to +1: L07/d:63
-- z-score and threshold: L16/d:87-90, 452
+- z-score and threshold: L16/d:87-90, 478
 - IQR fences: L16/d:106-113
 - isolation score, near 1 anomaly, near 0.5 normal: L16/d:151-155
-- c(n) = 2 * H(n-1) - 2*(n-1)/n: L16/d:321
+- c(n) = 2 * H(n-1) - 2*(n-1)/n: L16/d:347
 - explained ratio: L10/d:184-186
 - fraction lost: L10/d:174-180
 
@@ -56,7 +56,7 @@ Abbreviations: L07 = phases/02-ml-fundamentals/07-unsupervised-learning, L16 = p
 - Z-score / IQR per feature, very fast: L16/d:191-192
 - Isolation Forest no assumptions, high dims: L16/d:157, 193
 - LOF local anomalies, different densities, slow: L16/d:183-185, 194
-- One-Class SVM small to medium, quadratic kernel matrix: L16/d:378
+- One-Class SVM small to medium, quadratic kernel matrix: L16/d:403
 
 ## 异常检测流水线 (flow, 7 steps)
 1. baseline data: L16/d:220
@@ -73,7 +73,7 @@ Abbreviations: L07 = phases/02-ml-fundamentals/07-unsupervised-learning, L16 = p
 - n_estimators 100: L16/d:162, AD:91
 - max_samples 256: L16/d:163, AD:91
 - predict threshold 0.5: AD:130
-- contamination 0.05, threshold only: L16/d:164, 341, 357
+- contamination 0.05, threshold only: L16/d:164, 367, 382
 - t-SNE perplexity 30, typical 5-50: L10/d:298, 102
 - variance kept 0.95 or 0.90: L10/d:83, 190
 
@@ -81,10 +81,10 @@ Abbreviations: L07 = phases/02-ml-fundamentals/07-unsupervised-learning, L16 = p
 - K-Means on moons, not spherical, DBSCAN eps=0.3: L07/d:431, 436-440
 - K-Means local minimum, K-Means++ initialization: L07/d:55, 473
 - Z-score fails on multimodal data and outliers in training: L16/d:96, 100
-- joint-space anomalies missed by IQR, Isolation Forest catches: L16/d:119, L16/d:435
+- joint-space anomalies missed by IQR, Isolation Forest catches: L16/d:119, L16/d:461
 - 0.1% anomalies, 99.9% accuracy useless, Precision@k and AUPRC: L16/d:200-202
-- alert fatigue, start with a high threshold: L16/d:401
-- median score drifts upward, data changing or model stale: L16/d:428, 426
+- alert fatigue, start with a high threshold: L16/d:427
+- median score drifts upward, data changing or model stale: L16/d:454, 452
 - t-SNE distances between clusters not meaningful: L10/d:103
 
 ## 缩写 (glossary, 8)
@@ -95,7 +95,7 @@ Abbreviations: L07 = phases/02-ml-fundamentals/07-unsupervised-learning, L16 = p
 - t-SNE preserves neighbors: L10/d:95
 - UMAP faster, better global structure: L10/d:108-110
 - LOF > 1.0 lower density: L16/d:176-178
-- AUPRC better than AUROC: L16/d:457
+- AUPRC better than AUROC: L16/d:482
 
 ## 问题 (qa, 6)
 - elbow and silhouette for K: L07/d:61-63

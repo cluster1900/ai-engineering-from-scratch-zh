@@ -97,9 +97,9 @@ Abbreviations: L15 = phases/02-ml-fundamentals/15-time-series, L22 = phases/01-m
 ## 时间中的异常 (tips, 5)
 - contextual anomaly, 90 degrees summer vs winter, time features: L16/d:34, 37
 - collective anomalies, sequence-aware, fifty failed logins: L16/d:35, 37
-- rolling statistics, ratios, time-since-last-event: L16/d:403
-- 30 days history buffer: L16/d:427
-- score distribution monitoring, threshold drift: L16/d:400, 428
+- rolling statistics, ratios, time-since-last-event: L16/d:429
+- 30 days history buffer: L16/d:453
+- score distribution monitoring, threshold drift: L16/d:426, 454
 
 ## 问题 (qa, 6)
 - not independent, random splits leak: L15/d:23, 149

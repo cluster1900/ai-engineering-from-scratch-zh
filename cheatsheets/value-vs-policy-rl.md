@@ -19,7 +19,7 @@ from: phases/09-reinforcement-learning/04-q-learning-sarsa/docs/en.md, phases/09
 | 选动作 | 在 Q 上 ε-greedy | 在 Q 上 ε-greedy | 从 $\pi_\theta$ 采样 | 从 $\pi_\theta$ 采样 |
 | 数据 | Q-learning 异策略，SARSA 同策略 | 异策略，回放缓冲 | 同策略，一次更新 | A2C 一次更新，PPO K 个 epoch |
 | 目标 | $r + \gamma \max_{a'} Q(s', a')$ | 相同，来自目标网 $\theta^-$ | 回报 $G_t$ | GAE 优势 |
-| 偏差与方差 | 自举偏差，低方差 | Max 向上偏差 | 无偏，高方差 | Critic 偏差，方差低得多 |
+| 偏差与方差 | 自举偏差，低方差 | `max` 向上偏差 | 无偏，高方差 | Critic 偏差，方差低得多 |
 | 连续动作 | 否 | 否，转到 SAC 或 TD3 | 是，高斯策略 | 是，高斯策略 |
 | 玩具 GridWorld | 约 2,000 个 episode | 约 500 个 episode | 带基线约 500 个 episode | PPO，ε 为 0.2，K 为 4 |
 
@@ -64,7 +64,7 @@ from: phases/09-reinforcement-learning/08-ppo/docs/en.md, phases/09-reinforcemen
 4. **Epoch**：做 K 个 epoch，把缓冲洗牌成 minibatch。
 5. **比率**：`ratio = exp(logp - rec["log_pi_old"])`。
 6. **裁剪**：有益一侧越过 1 ± ε 的样本得到零梯度。
-7. **损失**：加上价值 MSE 和熵奖励。走一步梯度。
+7. **损失**：加上价值 MSE 和熵奖励。做一次梯度更新。
 8. **丢弃**：丢掉这次 rollout，再收集一次新的。
 
 ## 价值侧：TD 目标
@@ -179,4 +179,4 @@ from: phases/09-reinforcement-learning/04-q-learning-sarsa/docs/en.md, phases/09
 - **为什么价值方法在连续动作上弱？** 在 10 维力矩上做 `argmax` 很难。
 - **为什么基线无偏？** 期望中的基线乘以对数策略梯度是 0。
 - **为什么 PPO 能复用一次 rollout？** 策略漂得太远时，裁剪会停住更新。
-- **最常见的 PPO bug？** 符号反了。最小化裁剪替代目标的相反数。
+- **最常见的 PPO 错误？** 符号反了。最小化裁剪替代目标的相反数。

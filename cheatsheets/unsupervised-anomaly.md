@@ -85,7 +85,7 @@ from: phases/02-ml-fundamentals/07-unsupervised-learning/docs/en.md
 | DBSCAN | K 未知、任意形状、能找噪声。密度变化时失败 |
 | Hierarchical | 小数据，需要树状图。$O(n^2)$ 内存 |
 | GMM | 重叠的椭圆形簇，软分配 |
-| Ward linkage | 合并使簇内方差升幅最小的那一对 |
+| Ward 链接 | 合并使簇内方差升幅最小的那一对 |
 
 ## 降维与检测：何时用 X
 type: command-table
@@ -126,7 +126,7 @@ from: phases/02-ml-fundamentals/16-anomaly-detection/docs/en.md, phases/02-ml-fu
 | `max_samples` | 256 | 每棵树的行数，来自原论文 |
 | `predict` 阈值 | 0.5 | 分数高于它就是异常 |
 | `contamination` | 0.05 | 只设切断点，不改分数 |
-| t-SNE perplexity | 30 | 典型范围 5-50 |
+| t-SNE 困惑度 | 30 | 典型范围 5-50 |
 | 保留的方差 | 0.95 | 或 0.90 作为 PCA 切断点 |
 
 ## 失败与修复

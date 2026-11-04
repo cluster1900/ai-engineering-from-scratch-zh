@@ -33,25 +33,25 @@ from: phases/16-multi-agent-and-swarms/20-marl-maddpg-qmix-mappo/docs/en.md, pha
 | 训练信号 | 每个 agent 的 critic 能看到全部动作 | 对各 agent 的 Q 做单调混合 | 中心化价值函数 |
 | 策略类型 | 离策略 | 离策略 | 在策略 PPO |
 | 测试平台 | Particle World | SMAC | Football、Hanabi、MPE |
-| 限制 | 超过约 ~10 个 agent 时 critic 会增长 | 奖励必须单调 | 要超越的默认基线 |
+| 限制 | 超过约 10 个 agent 时 critic 会增长 | 奖励必须单调 | 要超越的默认基线 |
 | 演示 | `run_maddpg_style` | `run_qmix_style` | `run_mappo_style` |
 
 ## MARL 范式
 type: comparison
 from: phases/09-reinforcement-learning/10-multi-agent-rl/docs/en.md
 
-| 因素 | IQL / IPPO | CTDE | Self-play | League play |
+| 因素 | IQL / IPPO | CTDE | 自博弈 | 联赛式训练 |
 |---|---|---|---|---|
 | 思路 | 其他 agent 就是环境 | 中心 critic，局部策略 | 过去自己的副本 | 过去策略的种群 |
 | 适用 | 松耦合任务 | 合作导航 | 零和博弈 | 策略循环 |
 | 例子 | Independent Q | MADDPG、COMA、MAPPO、QMIX | AlphaZero | AlphaStar |
-| 说明 | 理论收敛：无 | 最常见的现代范式 | 可能卡在支配循环 | 加入 exploiters 和 main exploiters |
+| 说明 | 理论收敛：无 | 最常见的现代范式 | 可能卡在支配循环 | 加入剥削者与主剥削者 |
 
 ## 队列 swarm 对照固定分配
 type: comparison
 from: phases/16-multi-agent-and-swarms/09-parallel-swarm-networks/docs/en.md, phases/16-multi-agent-and-swarms/09-parallel-swarm-networks/code/main.py
 
-| 因素 | Sequential | Fixed assignment | Swarm |
+| 因素 | 顺序 | 固定分配 | Swarm |
 |---|---|---|---|
 | 谁挑选工作 | 一个 worker | 预先分配的 worker id | Worker 从共享队列拉取 |
 | 函数 | `run_sequential` | `run_fixed_assignment` | `run_swarm` |
@@ -63,14 +63,14 @@ from: phases/16-multi-agent-and-swarms/09-parallel-swarm-networks/docs/en.md, ph
 type: concepts
 from: phases/16-multi-agent-and-swarms/19-swarm-optimization-pso-aco/docs/en.md, phases/16-multi-agent-and-swarms/20-marl-maddpg-qmix-mappo/docs/en.md, phases/16-multi-agent-and-swarms/09-parallel-swarm-networks/docs/en.md, phases/09-reinforcement-learning/10-multi-agent-rl/docs/en.md
 
-- **PSO**：连续参数、便宜的自动适应度、种群 10-30。
+- **PSO**：连续参数、适应度计算便宜且自动、种群 10-30。
 - **ACO**：随时间重复、需要可解释证据的路由。
 - **二者都不要**：适应度需要人工审阅，或延迟必须严格。
 - **遗传算法**：PSO 覆盖不了的离散组合空间。
 - **Swarm**：许多时长可变的独立任务。
 - **Supervisor**：任务需要一份连贯的全局计划。
 - **MAPPO**：合作 MARL 从这里开始。
-- **Self-play**：零和博弈。策略循环时用 league play。
+- **自博弈**：零和博弈。策略循环时用联赛式训练。
 
 ## 运行这些模式
 type: task-table
@@ -81,7 +81,7 @@ from: phases/16-multi-agent-and-swarms/19-swarm-optimization-pso-aco/code/main.p
 | 跑任意一课演示 | `python3 code/main.py` |
 | 在 2 个 prompt 参数上做 PSO | `history = run_lmpso()` |
 | ACO 路由对照随机 | `run_amro_s(n_tasks=200, seed=0)` |
-| 打印轨迹 | `print_pheromone_table(router)` |
+| 打印信息素表 | `print_pheromone_table(router)` |
 | 每种 MARL 风格到达目标的步数 | `bench(label, runner)` 跑 500 次试验 |
 | 从共享队列拉取 | `run_swarm(tasks, n_workers)` |
 | 网格上的独立 Q | `independent_q(episodes=1500)` |
@@ -172,9 +172,9 @@ type: qa
 from: phases/16-multi-agent-and-swarms/19-swarm-optimization-pso-aco/docs/en.md, phases/16-multi-agent-and-swarms/20-marl-maddpg-qmix-mappo/docs/en.md, phases/09-reinforcement-learning/10-multi-agent-rl/docs/en.md
 
 - **为什么 prompt 用无梯度方法？** Prompt 是离散字符串。PSO 和 ACO 只需要一个评估器。
-- **20 粒子、50 次迭代的 PSO 要花多少？** 按每次调用约 ~$0.02 计，大约 $20。
+- **20 粒子、50 次迭代的 PSO 要花多少？** 按每次调用约 $0.02 计，大约 $20。
 - **为什么 QMIX 能去中心化？** 单调混合让每个 agent 取自己的 argmax。
-- **为什么不为 LLM agent 训练 MARL？** 大多数系统用 prompt 策略。只在有数据、奖励和基础设施时才训练。
+- **为什么不为 LLM 智能体训练 MARL？** 大多数系统用 prompt 策略。只在有数据、奖励和基础设施时才训练。
 - **为什么联合 Q 演示难以扩展？** 两个 agent 时动作空间是 `|A|² = 16`。
 
 ## 上线检查清单
@@ -184,6 +184,6 @@ from: phases/16-multi-agent-and-swarms/19-swarm-optimization-pso-aco/docs/en.md,
 - 从 10-20 个粒子和 20-50 次迭代开始。
 - 每轮记录信息素或 g_best。
 - 发出每次迭代成本指标。
-- 给每个 swarm 任务一个 trace ID。队列变长时施加反压。
+- 给每个 swarm 任务一个追踪 ID。队列变长时施加反压。
 - 让执行路径只看见 `o_i`。
 - 记录每个 agent 的观测与动作流。

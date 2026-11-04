@@ -118,7 +118,7 @@ from: phases/04-computer-vision/22-3d-gaussian-splatting/docs/en.md
 | `.ply` | 原始 Gaussian 点云。可移植，文件最大 |
 | `.splat` | 量化格式 |
 | `KHR_gaussian_splatting` | glTF 标准，可在查看器间移植 |
-| `UsdVolParticleField3DGaussianSplat` | OpenUSD 26.03 schema |
+| `UsdVolParticleField3DGaussianSplat` | OpenUSD 26.03 模式 |
 
 ## 3D 表示并列对比
 type: comparison
@@ -180,6 +180,6 @@ from: phases/04-computer-vision/22-3d-gaussian-splatting/docs/en.md, phases/08-g
 - **为什么 3DGS 取代了 NeRF？** 它以 100+ fps 渲染，几分钟训完，还能直接编辑。
 - **为什么 3DGS 能达到 NeRF 质量？** 两者积分同一个辐射场方程。
 - **服务时限制视频 DiT 的是什么？** 内存带宽，不是 FLOPs。
-- **什么最能提升 Sora？** 大约 10x 更详细的标题。
+- **什么最能提升 Sora？** 大约 10x 更详细的描述。
 - **2026 年的 3D 栈怎么工作？** 扩散做出多视图图像。然后做一次 3D 拟合，常常是 splat。
 - **视频质量怎么量？** 视觉用 FVD，prompt 对齐用每帧 CLIPScore。

@@ -59,7 +59,7 @@ from: phases/05-nlp-foundations-to-advanced/20-structured-outputs-constrained-de
 | 任务 | 代码 |
 |---|---|
 | 用 FSM 做本地 JSON | `generator = outlines.generate.json(model, Review)` |
-| Pydantic 加重试，任意 provider | `client = instructor.from_anthropic(Anthropic())` |
+| Pydantic 加重试，任意提供方 | `client = instructor.from_anthropic(Anthropic())` |
 | 厂商 schema 模式 | `client.beta.chat.completions.parse(..., response_format=Product)` |
 | 校验一个 dict | `validate_schema(data, schema)` 返回一个错误列表 |
 | 解析、校验、重试 | `extract_with_retry(text, schema, max_retries=3)` |
@@ -73,9 +73,9 @@ from: phases/05-nlp-foundations-to-advanced/20-structured-outputs-constrained-de
 
 - **拒绝是否应触发重试？** 不。记录它并返回带类型的拒绝。
 - **约束解码更慢吗？** 常常更快。强制 token 会跳过生成。
-- **需要大模型吗？** 不。带 grammar 的 3B 模型胜过靠 prompt 的 70B 模型。
+- **需要大模型吗？** 不。带文法的 3B 模型胜过靠 prompt 的 70B 模型。
 - **接受能证明答案正确吗？** 不。它并不确立事实正确性。
-- **为什么先调用 checkSchema？** 这样损坏的 schema 就花不了 provider 预算。
+- **为什么先调用 checkSchema？** 这样损坏的 schema 就花不了提供方预算。
 
 ## 提示
 type: tips
@@ -83,10 +83,10 @@ from: phases/05-nlp-foundations-to-advanced/20-structured-outputs-constrained-de
 
 - 本地模型、扁平 schema：Outlines。递归 schema：XGrammar 或 llguidance。
 - 自托管服务器：vLLM `guided_json`、`guided_regex`、`guided_choice`。
-- 当模型必须从多个 schema 中选一个时，使用 tool use。
+- 当模型必须从多个 schema 中选一个时，使用工具调用。
 - 把结构化的 `Issue[]` 发回模型，而不是自由文本。
-- 把每一次尝试都留在 trace 里。后期成功不能掩盖更早的失败。
-- 守卫会拒绝 `$ref`、format 和 combinators。
+- 把每一次尝试都留在轨迹里。后期成功不能掩盖更早的失败。
+- 守卫会拒绝 `$ref`、format 和组合子。
 - 在项目命令里，`<ws>` 是 `learning-artifacts/json-schema-output-guard`。
 
 ## 带 Instructor 的 Pydantic schema
@@ -133,8 +133,8 @@ from: phases/11-llm-engineering/03-structured-outputs/docs/en.md, phases/05-nlp-
 
 - **基于 Prompt**："Respond in valid JSON"。约 90% 合法。没有强制。
 - **JSON mode**：合法 JSON 语法。没有 schema 保证。
-- **Schema mode**：输出匹配 JSON Schema。每个主流 provider 都原生支持。
-- **约束解码**：掩掉非法 token。按构造 100% 合法。
+- **Schema mode**：输出匹配 JSON Schema。每个主流提供方都原生支持。
+- **约束解码**：掩掉非法 token。构造上保证 100% 合法。
 - **Instructor**：不碰 logits。它解析、校验并重试。
 - **Outlines**：把 schema 或 regex 编译成 FSM。递归需要展平。
 - **XGrammar、llguidance**：CFG 引擎。它们处理递归 schema。
@@ -162,13 +162,13 @@ from: phases/05-nlp-foundations-to-advanced/20-structured-outputs-constrained-de
 | 症状 | 原因 | 修复 |
 |---|---|---|
 | JSON 合法，答案错误 | `answer` 在 `reasoning` 前面 | 把推理字段放在前面 |
-| 模型编造一个日期 | Grammar 太严 | 允许 `null` 或一个哨兵值 |
+| 模型编造一个日期 | 文法太严 | 允许 `null` 或一个哨兵值 |
 | 10,000 选项的 enum 超时 | 巨大的 enum | 检索 top-k，约束到那些选项 |
 | 树形输出在 Outlines 中失败 | FSM 会展平递归 | 使用 XGrammar 或 llguidance |
 | JSON 合法，形状错误 | JSON mode 没有 schema | 始终发送完整 schema |
 | API 返回 400 | 严格模式规则被打破 | 修好 `required`、多余字段、`$ref` |
 | 类型对，值是编造的 | 幻觉出来的值 | Schema 抓不到它。检查取值 |
-| 可选字段被漏掉 | 字段不是 required | 把它设为 required，允许 `null` |
+| 可选字段被漏掉 | 字段不在 `required` 中 | 把它设为 required，允许 `null` |
 
 ## 缩写
 type: glossary
