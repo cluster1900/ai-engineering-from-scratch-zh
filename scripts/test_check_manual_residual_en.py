@@ -446,6 +446,108 @@ class FenceTests(unittest.TestCase):
                 self.assertFalse(kinds & {"RULE", "RULE_LABEL", "TAKEAWAY"}, rel)
 
 
+class R11TighteningTests(unittest.TestCase):
+    """#141 r11: probes from review r10 (desync/*.md), inlined verbatim."""
+
+    S = "We restart the server every night because it leaks memory and nobody knows why it happens."
+    HEAD = "# 标题\n\n中文段落。\n\n"
+
+    def _kinds(self, text):
+        hits, _ = _scan("3-1-intro.md", text)
+        return [(ln, k) for ln, k, _t in hits]
+
+    # 1. fences exactly as site/build-manuals.js parseDocument()
+    def test_d1_inner_fence_info_line_does_not_close(self):
+        text = self.HEAD + "```bash\necho hi\n```text\necho\n```\n\n" + self.S + "\n\n```bash\nx\n```\n"
+        self.assertEqual(self._kinds(text), [(11, "PROSE")])
+
+    def test_d2_indented_backticks_are_paragraph_text(self):
+        text = self.HEAD + "  ```\n\n" + self.S + "\n\n  ```\n\n中文。\n"
+        self.assertEqual(self._kinds(text), [(7, "PROSE")])
+
+    def test_d6_space_before_info_is_rule(self):
+        text = self.HEAD + "``` rule\nlabel: 中文\nsource: x\n---\n" + self.S + "\n```\n"
+        self.assertEqual(self._kinds(text), [(9, "RULE")])
+
+    def test_d5_bad_info_and_unclosed_fence_fail_closed(self):
+        text = self.HEAD + "```Rule\nlabel: 中文\nsource: x\n---\n" + self.S + "\n```\n"
+        self.assertEqual(self._kinds(text), [(5, "FENCE_BAD_INFO")])
+        self.assertEqual(self._kinds(self.HEAD + "```bash\necho hi\n"), [(5, "FENCE_UNCLOSED")])
+
+    def test_fence_with_extra_words_is_not_a_fence(self):
+        text = self.HEAD + "```bash extra\n" + self.S + "\n"
+        kinds = {k for _ln, k in self._kinds(text)}
+        self.assertEqual(kinds, {"PROSE"})
+
+    def test_indented_backticks_inside_fence_do_not_close(self):
+        text = self.HEAD + "```bash\n  ```\n" + self.S + "\n```\n"
+        # Builder: line 7 is code. Only the frozen main checker (which toggles
+        # on any ``` line) reports it, via the union; this gate's own scan
+        # does not (it would report PROSE).
+        self.assertEqual(self._kinds(text), [(7, "MAIN_PROSE")])
+
+    def test_real_fences_still_skip_code(self):
+        text = self.HEAD + "```bash\n" + self.S + "\n```\n\n```text \n" + self.S + "\n```  \n"
+        self.assertEqual(self._kinds(text), [])
+
+    # 2. Title Case sentence
+    def test_e_title_sentence_with_period_fails(self):
+        text = self.HEAD + "Operators Should Restart the Server When the Memory Usage Grows Past the Limit.\n"
+        self.assertEqual(self._kinds(text), [(5, "PROSE")])
+
+    def test_title_case_over_cap_fails(self):
+        words = "Operators Should Restart the Server When the Memory Usage Grows Past the Limit Every Night Again"
+        self.assertGreater(len(words.split()), chk.TITLE_MAX_WORDS)
+        self.assertTrue(chk.is_untranslated_sentence(words))
+        self.assertTrue(chk.is_untranslated_sentence("论文 " + words + " 说明了这一点。"))
+
+    def test_titles_at_cap_without_period_kept(self):
+        t15 = "Operators Should Restart the Server When the Memory Usage Grows Past the Limit Again Tonight"
+        self.assertEqual(len(t15.split()), chk.TITLE_MAX_WORDS)
+        self.assertFalse(chk.is_untranslated_sentence("论文 " + t15 + " 说明了这一点。"))
+        # not Title Case (a lowercase content word): rule e does not apply
+        self.assertFalse(chk.is_untranslated_sentence(
+            "SGLang Router and Model Gateway for multi-node deployments."))
+        for end in (".", "!", "?", ".)", ".”"):
+            with self.subTest(end=end):
+                self.assertTrue(chk.is_untranslated_sentence(
+                    "Is the Reward Model All You Need for Reasoning" + end))
+
+    # 3. per-paragraph cap on exempt quote / link words
+    def test_e_quote_chain_fails(self):
+        text = (self.HEAD + "他说“We restart the server every night because it leaks memory.”然后"
+                "“Nobody on the team knows why the process keeps growing after each deploy.”最后"
+                "“So we added a cron job that kills it at three in the morning.”\n")
+        self.assertEqual(self._kinds(text), [(5, "PROSE")])
+
+    def test_e_link_chain_fails(self):
+        text = (self.HEAD + "见 [we restart the server every night](https://a.example/1)、"
+                "[because it leaks memory and nobody](https://a.example/2)、"
+                "[knows why it keeps growing after deploys](https://a.example/3)。\n")
+        self.assertEqual(self._kinds(text), [(5, "PROSE")])
+
+    def test_over_cap_still_drops_tips_and_bare_urls(self):
+        title = "A Survey of Large Language Models for Code Generation"   # 9 words
+        over = ("见 [" + title + "](https://a.example/1) 和 [" + title + "](https://a.example/2)")
+        self.assertFalse(chk.is_untranslated_sentence(over + "。"))   # 18 > 15: judged, titles kept
+        tip = "{{note we restart the server every night because it leaks memory}}"
+        url = "https://a.example/we,restart,the,server,every,night,because,it,leaks,memory"
+        self.assertTrue(chk.is_untranslated_sentence("见 " + tip.strip("{}") + "。"))
+        self.assertTrue(chk.is_untranslated_sentence("见 " + url.replace("https://a.example/", "") + "。"))
+        self.assertFalse(chk.is_untranslated_sentence(over + " " + tip + "。"))
+        self.assertFalse(chk.is_untranslated_sentence(over + " " + url + " 。"))
+
+    def test_exempt_totals_at_cap_kept(self):
+        def words(n):
+            return " ".join((["we", "restart", "the", "server"] * 10)[:n])
+        quotes = "日志写着 \"" + words(15) + "\" 和 \"" + words(15) + "\"。"
+        self.assertFalse(chk.is_untranslated_sentence(quotes))          # 30 == cap
+        self.assertTrue(chk.is_untranslated_sentence(quotes.replace("和", "和 \"we\"")))  # 31
+        links = "见 [" + words(8) + "](https://a.example/1)、[" + words(7) + "](https://a.example/2)。"
+        self.assertFalse(chk.is_untranslated_sentence(links))           # 15 == cap
+        self.assertTrue(chk.is_untranslated_sentence(links.replace("、", "、[we](https://a.example/3)、")))  # 16
+
+
 class LengthCapAndLimitTests(unittest.TestCase):
     """B3 r9: exempt spans have a length cap; the rest are pinned known limits."""
 

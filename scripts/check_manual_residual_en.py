@@ -26,6 +26,11 @@ How a text is judged (``is_untranslated_sentence``):
    outside the quotes is a verbatim citation (log line, spec MUST text,
    article title) and is removed if it has at most QUOTE_MAX_WORDS (25)
    words; a longer quotation, or a text that is only a quotation, is judged.
+   Per text the exemptions are capped: when the exempt quotation and link
+   words add up to more than EXEMPT_TOTAL_MAX_WORDS (30), or the exempt
+   external link words alone to more than LINK_TOTAL_MAX_WORDS (15), nothing
+   is exempt and every quote / link text is judged (a chain of short quotes
+   or links is an English paragraph).
 3. Split the rest into English runs at every CJK ideograph / kana / hangul.
    So English inside a Chinese sentence is judged run by run.
 4. Count words in each run. Tokens are split at whitespace and at
@@ -46,7 +51,11 @@ How a text is judged (``is_untranslated_sentence``):
         stops a long title from outvoting an appended sentence).
    d. (one function word) it has >= 7 words and at least 5, and >= 75%, of
       its content words after the first are all-lowercase.
-   Before a-c, a paper title is kept: every content word after the first is
+   e. (Title Case) it has no all-lowercase content word after the first and
+      either ends in ``.`` ``!`` ``?`` (optionally followed by closing
+      quotes / brackets) or has more than TITLE_MAX_WORDS (15) words: a
+      sentence written in Title Case, not a title.
+   Before a-c (and after e), a paper title is kept: every content word after the first is
    Capitalised and most function words after the first are lower case
    ("A Survey of Large Language Models for Code Generation in the Wild").
    Anything below these bounds is kept as necessary English.
@@ -56,7 +65,16 @@ paragraphs (consecutive non-blank lines, joined, reported at the first line),
 including ``>`` blockquotes and ``<!-- -->`` lines (site/build-manuals.js does
 not strip comments from sections; it escapes and shows them). A paragraph
 starting with ``Sources:`` is the citation block the site builder parses and
-is skipped.
+is skipped (Wu, 2026-11-05 10:14 SGT: Sources stays English and out of the
+gate; the builder does not render that paragraph).
+
+Fences are found exactly as site/build-manuals.js parseDocument() finds
+them: a column-0 line matching ``^```\s*([A-Za-z0-9_-]*)\s*$`` opens, and
+inside a fence only a column-0 ``^```\s*$`` line closes. ```` ```text ````
+inside a fence is fence body; an indented ```` ``` ```` or ```` ```bash x ````
+is paragraph text and judged. An opener whose info is not ``[a-z0-9-]+``
+(``Rule``) is reported as FENCE_BAD_INFO and an unclosed fence as
+FENCE_UNCLOSED: the site build fails on both.
 
 Fenced blocks the site renders as prose are judged too (#141 r10):
   ``rule``      -- the ``label:`` value (RULE_LABEL, with continuation lines)
@@ -120,6 +138,13 @@ TIP_SPAN = re.compile(r"\{\{(.+?)\}\}")
 QUOTED = re.compile(r'"[^"\n]+"|“[^”\n]+”|「[^」\n]+」|『[^』\n]+』')
 SOURCES_PARA = re.compile(r"^Sources[:：]\s")
 IMAGE = re.compile(r"!\[([^\]]*)\]\(([^)]+)\)")
+# Fences exactly as site/build-manuals.js parseDocument() sees them: an
+# opener is a column-0 line matching FENCE_OPEN, and only a column-0 bare
+# ``` line closes it. Indented ``` lines, ```text inside a fence, or
+# "```bash extra" are not fence lines (#141 r11).
+FENCE_OPEN = re.compile(r"^```\s*([A-Za-z0-9_-]*)\s*$")
+FENCE_CLOSE = re.compile(r"^```\s*$")
+FENCE_INFO_OK = re.compile(r"^[a-z0-9-]+$")
 FENCE_KEY = re.compile(r"^([a-z][a-z-]*):\s*(.*)$")
 FENCE_CONT = re.compile(r"^\s{2,}\S")
 FENCE_RULE_SEP = re.compile(r"^---\s*$")
@@ -132,6 +157,15 @@ LONG_RUN_WORDS = 7
 # the five manuals is 24 words, the longest external link text 10 words.
 QUOTE_MAX_WORDS = 25
 LINK_TEXT_MAX_WORDS = 12
+# Per judged text (paragraph, cell, item, heading): when the exempt quotation
+# and external link words add up past these totals, nothing is exempt and all
+# of it is judged. Real maxima: 24 exempt words in one text, 11 words of
+# external link text in one text (#141 r11).
+EXEMPT_TOTAL_MAX_WORDS = 30
+LINK_TOTAL_MAX_WORDS = 15
+# A Title Case run longer than this, or ending in . ! ?, is not a title
+# (real maximum: 13 words, none ends in a period).
+TITLE_MAX_WORDS = 15
 
 FUNCTION_WORDS = frozenset("""
 a an the this that these those
@@ -194,19 +228,34 @@ def normalize(text: str) -> str:
     return ZERO_WIDTH.sub("", unicodedata.normalize("NFKC", html.unescape(text)))
 
 
-def _link_sub(m: re.Match) -> str:
+def _exempt_link_words(m: re.Match) -> int | None:
+    """Word count of an exempt external link text, None when not exempt."""
     target = m.group(2).strip()
-    if re.match(r"(?:https?|ftp)://", target, re.I) and (
-        len(run_words(m.group(1))) <= LINK_TEXT_MAX_WORDS
-    ):
+    n = len(run_words(m.group(1)))
+    if re.match(r"(?:https?|ftp)://", target, re.I) and n <= LINK_TEXT_MAX_WORDS:
+        return n
+    return None
+
+
+def _link_sub(m: re.Match) -> str:
+    if _exempt_link_words(m) is not None:
         return " "  # title of an external work: necessary English
     return " " + m.group(1) + " "
 
 
+def _exempt_quote_words(m: re.Match) -> int | None:
+    n = len(run_words(m.group(0)[1:-1]))
+    return n if n <= QUOTE_MAX_WORDS else None
+
+
 def _quote_sub(m: re.Match) -> str:
-    if len(run_words(m.group(0)[1:-1])) <= QUOTE_MAX_WORDS:
+    if _exempt_quote_words(m) is not None:
         return " "  # verbatim citation
     return " " + m.group(0) + " "
+
+
+def _keep_link_text(m: re.Match) -> str:
+    return " " + m.group(1) + " "
 
 
 def strip_necessary(text: str) -> str:
@@ -216,6 +265,8 @@ def strip_necessary(text: str) -> str:
     # Image alt text is shown to readers (and screen readers) whatever the
     # image URL is: keep the alt, drop the target, then judge it.
     t = IMAGE.sub(lambda m: " " + m.group(1) + " ", t)
+    link_words = sum(n for n in map(_exempt_link_words, LINK.finditer(t)) if n is not None)
+    base = t
     t = LINK.sub(_link_sub, t)
     t = BARE_URL.sub(" ", t)
     # Tip citations are removed from rendered HTML by site/build-manuals.js
@@ -225,8 +276,16 @@ def strip_necessary(text: str) -> str:
     # line, spec MUST text, article title): keep it. Without Chinese outside
     # the quotes the text is judged as is.
     unquoted = QUOTED.sub(_quote_sub, t)
+    quote_words = 0
     if has_cjk(unquoted):
+        quote_words = sum(n for n in map(_exempt_quote_words, QUOTED.finditer(t)) if n is not None)
         t = unquoted
+    if link_words > LINK_TOTAL_MAX_WORDS or link_words + quote_words > EXEMPT_TOTAL_MAX_WORDS:
+        # A chain of short quotes / links is a paragraph of English: no
+        # exemption, judge every word.
+        t = LINK.sub(_keep_link_text, base)
+        t = BARE_URL.sub(" ", t)
+        t = TIP_SPAN.sub(" ", t)
     return t
 
 
@@ -248,13 +307,18 @@ def run_words(run: str) -> list[str]:
 TITLE_WINDOW = 8
 
 
-def is_sentence_run(words: list[str]) -> bool:
+def is_sentence_run(words: list[str], ends_sentence: bool = False) -> bool:
     n = len(words)
     if n < MIN_WORDS:
         return False
     fw = sum(1 for w in words if w.lower() in FUNCTION_WORDS)
     if fw < MIN_FUNC_WORDS:
         return _few_function_words_sentence(words, fw)
+    if _is_title_case(words):
+        # e. A Title Case run that ends like a sentence, or is longer than any
+        # title, is a sentence written in Title Case (#141 r11).
+        if ends_sentence or n > TITLE_MAX_WORDS:
+            return True
     if _is_paper_title(words):
         return False
     if fw * 2 >= n:
@@ -277,6 +341,12 @@ def _few_function_words_sentence(words: list[str], fw: int) -> bool:
     content = [w for w in words[1:] if w.lower() not in FUNCTION_WORDS]
     lower = sum(1 for w in content if w.islower())
     return lower * 4 >= len(content) * 3 and lower >= LONG_RUN_WORDS - 2
+
+
+def _is_title_case(words: list[str]) -> bool:
+    """No all-lowercase content word after the first word."""
+    content = [w for w in words[1:] if w.lower() not in FUNCTION_WORDS]
+    return len(content) >= 2 and not any(w.islower() for w in content)
 
 
 def _is_paper_title(words: list[str]) -> bool:
@@ -309,9 +379,13 @@ def english_runs(text: str) -> list[str]:
     return [r for r in RUN_BREAK.split(strip_necessary(text)) if r.strip()]
 
 
+SENTENCE_END = re.compile(r"[.!?][\s)\]\"'”’」』*_]*$")
+
+
 def is_untranslated_sentence(text: str) -> bool:
     """True when *text* contains a whole untranslated English sentence."""
-    return any(is_sentence_run(run_words(r)) for r in english_runs(text))
+    return any(is_sentence_run(run_words(r), bool(SENTENCE_END.search(r.strip())))
+               for r in english_runs(text))
 
 
 # Backwards-compatible name used by review harnesses.
@@ -518,19 +592,27 @@ def scan_file(path: Path) -> tuple[list[tuple[int, str, str]], int]:
 
     fence_info: str | None = None
     fence_body: list[tuple[int, str]] = []
+    fence_line = 0
     for i, line in enumerate(lines):
         lineno = i + 1
         stripped = line.strip()
-        if stripped.startswith("```"):
-            flush()
-            if fence_info is None:
-                fence_info, fence_body = stripped[3:].strip(), []
-            else:
+        if fence_info is not None:
+            if FENCE_CLOSE.match(line):
                 scan_fence(fence_info, fence_body)
                 fence_info = None
+            else:
+                fence_body.append((lineno, line))
             continue
-        if fence_info is not None:
-            fence_body.append((lineno, line))
+        fm = FENCE_OPEN.match(line)
+        if fm:
+            flush()
+            fence_info, fence_body, fence_line = fm.group(1), [], lineno
+            if fence_info and not FENCE_INFO_OK.match(fence_info):
+                # site/build-manuals.js: "every code fence needs a language tag"
+                # (a bare ``` opener fails the same build check; its body is
+                # skipped here as code)
+                hits.append((lineno, "FENCE_BAD_INFO", line.strip()))
+                covered.add(lineno)
             continue
         if not stripped:
             flush()
@@ -582,6 +664,10 @@ def scan_file(path: Path) -> tuple[list[tuple[int, str, str]], int]:
         else:
             flush()
     flush()
+    if fence_info is not None:
+        # The site build fails on an unclosed fence; so does this gate.
+        hits.append((fence_line, "FENCE_UNCLOSED", "```" + fence_info))
+        covered.add(fence_line)
     return _union_with_main(path, hits, covered), explained
 
 
