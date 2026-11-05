@@ -804,7 +804,12 @@
   "Independent practice": "独立实战演练",
   "This original practice is not affiliated with, endorsed by, sponsored by, or authorized by the certification provider. Results are course percentages, not official certification scores.": "本套原创练习题与任何认证厂商无关，未获得其授权或背书。测试结果为本课程掌握度百分比，非官方认证标准分。",
   "Practice stays in your browser.": "实操答题记录完整保留在你的浏览器本地。",
-  "Lesson - AI Engineering from Scratch": "课程学习 · 从零构建 AI 工程"
+  "Lesson - AI Engineering from Scratch": "课程学习 · 从零构建 AI 工程",
+  "Change theme": "切换主题",
+  "Theme": "主题",
+  "System": "跟随系统",
+  "Light": "浅色",
+  "Dark": "深色"
 };
   var dictionaries = { zh: DEFAULT_ZH };
   var pending = {};
@@ -1012,7 +1017,8 @@
     TRANSLATIONS_BASE: TRANSLATIONS_BASE,
     ATTRS: ATTRS,
     SKIP_SELECTOR: SKIP_SELECTOR,
-    ARTICLE_ALLOW_SELECTOR: ARTICLE_ALLOW_SELECTOR
+    ARTICLE_ALLOW_SELECTOR: ARTICLE_ALLOW_SELECTOR,
+    DEFAULT_ZH: DEFAULT_ZH
   };
   if (typeof module === 'object' && module.exports) module.exports = api;
   root.AIFSUiI18n = api;

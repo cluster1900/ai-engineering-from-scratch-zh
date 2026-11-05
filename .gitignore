@@ -55,10 +55,13 @@ mlruns/
 *.bin
 *.h5
 .gstack/
+.lesson-screen/
 
 .link-cache.json
 .claude/*
 !.claude/skills/
+!.claude/skills/lesson-screen/
+!.claude/skills/lesson-screen/**
 /scripts/
 .agents
 .agents/*
