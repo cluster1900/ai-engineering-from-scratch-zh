@@ -128,10 +128,10 @@ note: Cut from normalized_result. The pseudocode and every later facet are cut.
 每一个函数操作都接受一个 `procedure` 字符串。读它的规则：
 
 ```rule
-label: names before addresses
+label: 名称优先于地址
 source: native §Exact CLI selectors
 ---
-When a selector matches an exact symbol name in the database, the name wins over a bare hexadecimal address.
+当选择器与数据库中的某个符号名完全匹配时，名称优先于单纯的十六进制地址。
 ```
 
 带 `0x` 前缀或地址空间前缀的字符串是地址。任何其他字符串先当作符号名来试。一个匹配多个函数的名字以 `ambiguous` 失败，并带上入口地址列表。一个什么都不匹配的名字以 `not_found` 失败，[第 4.6 节](#s-analyze-function-and-pseudocode) 把它显示成 MCP 错误 `invalid_request`。

@@ -89,10 +89,10 @@ agent 必须把 `PushNotificationConfig.authentication` 中的凭据放进请求
 ## 交付至少尝试一次 {#s-push-notification-configs-delivery-is-attempted-at-least-once}
 
 ```rule
-label: delivery
+label: 投递
 source: spec §4.3.3
 ---
-An agent must try to deliver to each configured webhook at least once.
+agent 必须尝试向每个已配置的 webhook 至少投递一次。
 ```
 
 至少一次意味着一条通知可能到达两次，所以接收方也有责任。它必须以 HTTP 2xx 状态回应以确认收到。它应以幂等的方式处理通知，因为可能会有重复。它必须检查任务 id 是否对应它预期的某个任务 {{spec §4.3.3}}。

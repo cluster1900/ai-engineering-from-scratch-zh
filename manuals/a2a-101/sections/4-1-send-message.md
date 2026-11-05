@@ -18,10 +18,10 @@
 除非 `returnImmediately` 为 `true`，否则发送会阻塞：
 
 ```rule
-label: the blocking default
+label: 默认阻塞
 source: spec §3.2.2
 ---
-The operation must wait to return until the task reaches a terminal state or an interrupted state. The terminal states are `TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED`, and `TASK_STATE_REJECTED`. The interrupted states are `TASK_STATE_INPUT_REQUIRED` and `TASK_STATE_AUTH_REQUIRED`.
+该操作必须等到任务进入终止状态或中断状态后才返回。终止状态是 `TASK_STATE_COMPLETED`、`TASK_STATE_FAILED`、`TASK_STATE_CANCELED` 和 `TASK_STATE_REJECTED`。中断状态是 `TASK_STATE_INPUT_REQUIRED` 和 `TASK_STATE_AUTH_REQUIRED`。
 ```
 
 在 `03-blocking-task.http` 中，一个没有 `configuration` 的 `SendMessage` 得到处于 `TASK_STATE_COMPLETED` 的任务 `3d8f7801`，带有全部 artifact {{spec §3.2.2}}。客户端从未看到 `TASK_STATE_SUBMITTED` 或 `TASK_STATE_WORKING`。规范没有设定时间限制，超时的客户端永远不会得知任务 id {{spec §3.4.2}}。

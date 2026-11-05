@@ -12,20 +12,24 @@ Rule (Wu, 2026-11-05 09:22 SGT, bot-hub#109: 「修复一下 CI 吧，但是没�
 
 How a text is judged (``is_untranslated_sentence``):
 
-1. Normalise: NFKC (fullwidth letters become ASCII) and drop zero-width
-   characters (U+200B/200C/200D/2060/FEFF, soft hyphen).
+1. Normalise: decode HTML entities (``&nbsp;`` etc.), NFKC (fullwidth
+   letters become ASCII) and drop zero-width characters
+   (U+200B/200C/200D/2060/FEFF, soft hyphen).
 2. Remove things that are English by nature: inline code spans, bare URLs,
    link targets, and the text of links to external ``http(s)://`` pages
-   (titles of external works). Text of internal links (#anchors, repo paths)
-   stays and is judged. ``{{...}}`` tip citations are removed: the site build
+   (titles of external works) of at most LINK_TEXT_MAX_WORDS (12) words;
+   longer external link text is judged. Text of internal links (#anchors,
+   repo paths) stays and is judged. Image alt text is always judged (the
+   image URL is dropped). ``{{...}}`` tip citations are removed: the site build
    strips them from the page with the same regex, so no reader sees them.
    A quotation ("..." “...” 「...」) inside a sentence that still has Chinese
    outside the quotes is a verbatim citation (log line, spec MUST text,
-   article title) and is removed; a text that is only a quotation is judged.
+   article title) and is removed if it has at most QUOTE_MAX_WORDS (25)
+   words; a longer quotation, or a text that is only a quotation, is judged.
 3. Split the rest into English runs at every CJK ideograph / kana / hangul.
    So English inside a Chinese sentence is judged run by run.
 4. Count words in each run. Tokens are split at whitespace and at
-   ``, ; : ! ? ( ) [ ] < > " |`` (NFKC turns "，" into "," without a space). A word is a token made only of ASCII letters
+   ``, ; : ! ? ( ) [ ] < > " | 「 」 『 』`` (NFKC turns "，" into "," without a space). A word is a token made only of ASCII letters
    (optionally with an apostrophe); a hyphen chain with 3+ parts counts each
    alphabetic part as a word (``we-restart-the-server``). Tokens with digits,
    dots, slashes, underscores, camelCase joints etc. are identifiers, not
@@ -40,17 +44,30 @@ How a text is judged (``is_untranslated_sentence``):
         arXiv do not vote), all-lowercase words outnumber Capitalised words
         (paper / product titles are Title Case, sentences are not; the window
         stops a long title from outvoting an appended sentence).
+   d. (one function word) it has >= 7 words and at least 5, and >= 75%, of
+      its content words after the first are all-lowercase.
+   Before a-c, a paper title is kept: every content word after the first is
+   Capitalised and most function words after the first are lower case
+   ("A Survey of Large Language Models for Code Generation in the Wild").
    Anything below these bounds is kept as necessary English.
 
 Elements judged: headings, each table cell, each list item, and prose
 paragraphs (consecutive non-blank lines, joined, reported at the first line),
 including ``>`` blockquotes and ``<!-- -->`` lines (site/build-manuals.js does
-not strip comments from sections; it escapes and shows them). Only fenced
-blocks are skipped. A paragraph starting with ``Sources:`` is the citation
-block the site builder parses and is skipped.
+not strip comments from sections; it escapes and shows them). A paragraph
+starting with ``Sources:`` is the citation block the site builder parses and
+is skipped.
 
-Out of scope (same as main): ``title:``/``caption:``/``claim:``/``note:``
-lines inside fenced ``figure`` / ``listing`` blocks are not scanned.
+Fenced blocks the site renders as prose are judged too (#141 r10):
+  ``rule``      -- the ``label:`` value (RULE_LABEL, with continuation lines)
+                   and the body after ``---`` joined (RULE); without ``---``
+                   the whole block is the body; ``source:`` is a citation key
+                   and is not judged (site/build-manuals.js splitHeader).
+  ``takeaways`` -- each ``- item`` with its continuation lines (TAKEAWAY).
+Other fenced blocks (code, ``figure``, ``listing``, ...) are skipped.
+
+Out of scope (same as main, tracked in bot-hub#124): ``title:``/``caption:``/
+``claim:``/``note:`` lines inside fenced ``figure`` / ``listing`` blocks.
 
 As a safety net the frozen main checker (check_manual_residual_en_main_89cbf1a.py)
 still runs. Every main hit is re-judged with the rule above on its FULL,
@@ -59,9 +76,12 @@ is an exact reviewed text (MAIN_ONLY_ALLOWED_TEXTS + MAIN_ONLY_ALLOWED_FULL_CELL
 or a whitelisted Sources title, or the rule says it is necessary English.
 Exemptions are exact-text equality only; no substring / prefix / regex.
 
-Known limits (documented, tested): an English sentence of 4 words or fewer,
-or a Title Case run below bound a/b, is kept; non-Latin homoglyphs
-(Cyrillic letters) are not folded.
+Known limits (documented, tested in LengthCapAndLimitTests): kept are an
+English sentence of 4 words or fewer; a Title Case run below bound a/b; a
+sentence with no function word; a quotation of <= 25 words or external link
+text of <= 12 words inside a Chinese sentence; a sentence split by a CJK word
+or a kana every <= 4 words (each run is judged alone); words joined by
+``_``/``.``/``/`` (identifiers); non-Latin homoglyphs (Cyrillic letters).
 
 Canonical path: scripts/check_manual_residual_en.py (do not duplicate under
 manuals/_shared/). Wired as the Residual English gate in
@@ -70,6 +90,7 @@ manuals/_shared/). Wired as the Residual English gate in
 from __future__ import annotations
 
 import argparse
+import html
 import re
 import sys
 import unicodedata
@@ -90,7 +111,7 @@ TABLE_ROW = re.compile(r"^\|(.+)\|\s*$")
 TABLE_SEP = re.compile(r"^\|[\s:|-]+\|\s*$")
 LIST_ITEM = re.compile(r"^(\s*[-*]|\s*\d+\.)\s+(.+)$")
 # NFKC turns "，" into "," with no space after it, so split on punctuation too.
-TOKEN_SPLIT = re.compile(r"[\s,;:!?()\[\]<>\"“”‘’|]+")
+TOKEN_SPLIT = re.compile(r"[\s,;:!?()\[\]<>\"“”‘’|「」『』]+")
 TOKEN_EDGE = "\"'()[]{}<>,.:;!?*_~|“”‘’…—–=#"
 PLAIN_WORD = re.compile(r"[A-Za-z]+(?:['’][A-Za-z]+)?")
 HYPHEN_CHAIN = re.compile(r"[A-Za-z0-9.]+(?:-[A-Za-z0-9.]+){2,}")
@@ -98,10 +119,19 @@ ALPHA_PART = re.compile(r"[A-Za-z]+")
 TIP_SPAN = re.compile(r"\{\{(.+?)\}\}")
 QUOTED = re.compile(r'"[^"\n]+"|“[^”\n]+”|「[^」\n]+」|『[^』\n]+』')
 SOURCES_PARA = re.compile(r"^Sources[:：]\s")
+IMAGE = re.compile(r"!\[([^\]]*)\]\(([^)]+)\)")
+FENCE_KEY = re.compile(r"^([a-z][a-z-]*):\s*(.*)$")
+FENCE_CONT = re.compile(r"^\s{2,}\S")
+FENCE_RULE_SEP = re.compile(r"^---\s*$")
+FENCE_ITEM = re.compile(r"^[-*]\s+(.*)$")
 
 MIN_WORDS = 5
 MIN_FUNC_WORDS = 2
 LONG_RUN_WORDS = 7
+# Exempt spans are exempt only up to a length: the longest real quotation in
+# the five manuals is 24 words, the longest external link text 10 words.
+QUOTE_MAX_WORDS = 25
+LINK_TEXT_MAX_WORDS = 12
 
 FUNCTION_WORDS = frozenset("""
 a an the this that these those
@@ -160,20 +190,32 @@ def has_cjk(s: str) -> bool:
 
 
 def normalize(text: str) -> str:
-    return ZERO_WIDTH.sub("", unicodedata.normalize("NFKC", text))
+    # html.unescape: "&nbsp;" / "&#32;" render as spaces, so they split words.
+    return ZERO_WIDTH.sub("", unicodedata.normalize("NFKC", html.unescape(text)))
 
 
 def _link_sub(m: re.Match) -> str:
     target = m.group(2).strip()
-    if re.match(r"(?:https?|ftp)://", target, re.I):
+    if re.match(r"(?:https?|ftp)://", target, re.I) and (
+        len(run_words(m.group(1))) <= LINK_TEXT_MAX_WORDS
+    ):
         return " "  # title of an external work: necessary English
     return " " + m.group(1) + " "
+
+
+def _quote_sub(m: re.Match) -> str:
+    if len(run_words(m.group(0)[1:-1])) <= QUOTE_MAX_WORDS:
+        return " "  # verbatim citation
+    return " " + m.group(0) + " "
 
 
 def strip_necessary(text: str) -> str:
     """Remove spans that are English by nature (step 2 of the rule)."""
     t = normalize(text)
     t = INLINE_CODE.sub(" ", t)
+    # Image alt text is shown to readers (and screen readers) whatever the
+    # image URL is: keep the alt, drop the target, then judge it.
+    t = IMAGE.sub(lambda m: " " + m.group(1) + " ", t)
     t = LINK.sub(_link_sub, t)
     t = BARE_URL.sub(" ", t)
     # Tip citations are removed from rendered HTML by site/build-manuals.js
@@ -182,7 +224,7 @@ def strip_necessary(text: str) -> str:
     # A quotation embedded in a Chinese sentence is a verbatim citation (log
     # line, spec MUST text, article title): keep it. Without Chinese outside
     # the quotes the text is judged as is.
-    unquoted = QUOTED.sub(" ", t)
+    unquoted = QUOTED.sub(_quote_sub, t)
     if has_cjk(unquoted):
         t = unquoted
     return t
@@ -212,6 +254,8 @@ def is_sentence_run(words: list[str]) -> bool:
         return False
     fw = sum(1 for w in words if w.lower() in FUNCTION_WORDS)
     if fw < MIN_FUNC_WORDS:
+        return _few_function_words_sentence(words, fw)
+    if _is_paper_title(words):
         return False
     if fw * 2 >= n:
         return True
@@ -223,6 +267,30 @@ def is_sentence_run(words: list[str]) -> bool:
         if _not_title_case(words[i:i + TITLE_WINDOW]):
             return True
     return False
+
+
+def _few_function_words_sentence(words: list[str], fw: int) -> bool:
+    """A long lower-case run with a single function word is a sentence too
+    ("Engineers restart servers nightly because processes leak memory")."""
+    if fw < 1 or len(words) < LONG_RUN_WORDS:
+        return False
+    content = [w for w in words[1:] if w.lower() not in FUNCTION_WORDS]
+    lower = sum(1 for w in content if w.islower())
+    return lower * 4 >= len(content) * 3 and lower >= LONG_RUN_WORDS - 2
+
+
+def _is_paper_title(words: list[str]) -> bool:
+    """Title Case as papers write it: every content word after the first is
+    capitalised and most function words after the first are lower case
+    ("A Survey of Large Language Models for Code Generation in the Wild").
+    A sentence with Every Word Capitalised is not a title by this test."""
+    rest = words[1:]
+    content = [w for w in rest if w.lower() not in FUNCTION_WORDS]
+    if len(content) < 2 or any(w.islower() for w in content):
+        return False
+    func = [w for w in rest if w.lower() in FUNCTION_WORDS]
+    low = sum(1 for w in func if w.islower())
+    return low > len(func) - low
 
 
 def _not_title_case(words: list[str]) -> bool:
@@ -404,15 +472,65 @@ def scan_file(path: Path) -> tuple[list[tuple[int, str, str]], int]:
                 covered.update(ln for ln, _t in para)
             para = []
 
-    in_fence = False
+    def judge(lineno: int, kind: str, text: str) -> None:
+        if text and is_untranslated_sentence(text):
+            hits.append((lineno, kind, text[:120]))
+            covered.add(lineno)
+
+    def scan_fence(info: str, body: list[tuple[int, str]]) -> None:
+        # Mirrors fenceBlock() in site/build-manuals.js for the two prose
+        # fences. figure / listing title, claim, caption, note are out of
+        # scope (bot-hub#124); code fences are code.
+        if info == "rule":
+            sep = next((k for k, (_ln, t) in enumerate(body) if FENCE_RULE_SEP.match(t)), None)
+            head, rest = (body[:sep], body[sep + 1:]) if sep is not None else ([], body)
+            key = None
+            values: dict[str, list[tuple[int, str]]] = {}
+            for ln, t in head:
+                if not t.strip():
+                    continue
+                km = FENCE_KEY.match(t)
+                if km:
+                    key = km.group(1)
+                    values.setdefault(key, []).append((ln, km.group(2).strip()))
+                elif key is not None and FENCE_CONT.match(t):
+                    values[key].append((ln, t.strip()))
+                else:  # not a header line: judge it like the body
+                    judge(ln, "RULE", t.strip())
+            for key, parts in values.items():
+                if key != "source":  # source is a citation key into research/
+                    judge(parts[0][0], "RULE_" + key.upper(), " ".join(t for _l, t in parts))
+            text = [(ln, t.strip()) for ln, t in rest if t.strip()]
+            if text:
+                judge(text[0][0], "RULE", " ".join(t for _l, t in text))
+        elif info == "takeaways":
+            items: list[list] = []
+            for ln, t in body:
+                if not t.strip():
+                    continue
+                im = FENCE_ITEM.match(t)
+                if im or not items:
+                    items.append([ln, (im.group(1) if im else t).strip()])
+                else:
+                    items[-1][1] += " " + t.strip()
+            for ln, t in items:
+                judge(ln, "TAKEAWAY", t)
+
+    fence_info: str | None = None
+    fence_body: list[tuple[int, str]] = []
     for i, line in enumerate(lines):
         lineno = i + 1
         stripped = line.strip()
         if stripped.startswith("```"):
             flush()
-            in_fence = not in_fence
+            if fence_info is None:
+                fence_info, fence_body = stripped[3:].strip(), []
+            else:
+                scan_fence(fence_info, fence_body)
+                fence_info = None
             continue
-        if in_fence:
+        if fence_info is not None:
+            fence_body.append((lineno, line))
             continue
         if not stripped:
             flush()
@@ -494,6 +612,10 @@ def main() -> int:
         explained += file_explained
         for lineno, kind, text in file_hits:
             all_hits.append((str(rel), lineno, kind, text))
+
+    if files == 0:
+        print(f"no markdown files under {root}", file=sys.stderr)
+        return 2
 
     by_kind: dict[str, int] = {}
     by_file: dict[str, int] = {}

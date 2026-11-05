@@ -77,10 +77,10 @@ note: Cut to the provider binding and the server identity. The capabilities, can
 `selection_source: "request"` 表示 agent 选择了 Ghidra。配置摘要是该目标每一份 Ghidra 记录都带着的那个。文档用一句话陈述 open 调用的界限：
 
 ```rule
-label: what open_binary does not do
+label: open_binary 不做的事
 source: mcp §Ghidra first-query deadlines and recovery
 ---
-`open_binary` picks the target and binds the provider. It does not prove that Ghidra has finished the import of the target.
+`open_binary` 选定目标并绑定 provider。它并不能证明 Ghidra 已经完成对目标的导入。
 ```
 
 ## 第一次由 Ghidra 支撑的调用 {#s-open-binary-and-the-headless-bridge-the-first-ghidra-backed-call}

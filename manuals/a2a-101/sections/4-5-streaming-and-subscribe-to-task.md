@@ -41,10 +41,10 @@ data: {"jsonrpc": "2.0", "id": 1, "result": {"artifactUpdate": {… "append": tr
 每个实现都必须按创建事件的顺序交付事件 {{spec §3.5.2}}，并且必须把每个事件发送给该任务的每个打开的流 {{spec §3.5.2}}。这些流中没有一个拥有该任务：
 
 ```rule
-label: the stream is not the task
+label: 流不等于任务
 source: spec §3.5.2
 ---
-The lifecycle of a task does not depend on the lifecycle of any one stream.
+任务的生命周期不依赖于任何一条流的生命周期。
 ```
 
 1.0 版没有结束标记，因为它从 `TaskStatusUpdateEvent` 中移除了布尔值 `final` {{docs whats-new-v1}}。任务流必须在任务到达终止状态时关闭 {{spec §3.1.2}}，`SubscribeToTask` 流也是如此 {{spec §3.1.6}}。在一个 `message` 帧之后，流立即关闭 {{spec §3.1.2}}。

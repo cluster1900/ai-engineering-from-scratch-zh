@@ -160,19 +160,19 @@ caption: Read top down. The verification record cites four claims, each claim ci
 rea 仓库有一个供自己使用的更宽验证器。rea 文档的 readiness 页描述 `npm run verify:readiness`，一次带名为 `verify-reconstruction-closure` 阶段的九阶段符合性运行，并说明它是什么：
 
 ```rule
-label: the readiness verifier is not a tool
+label: readiness 验证器不是工具
 source: readiness Reconstruction readiness conformance
 ---
-The report evaluator belongs to the verifier of the repository. It is not a public REA tool.
+这个报告评估器属于仓库自己的验证器，不是公开的 REA 工具。
 ```
 
 其聚合规则是要抄进你自己 harness 的那条：
 
 ```rule
-label: nothing weaker than pass adds up to pass
+label: 弱于 pass 的结果都不算 pass
 source: readiness Required stages
 ---
-A stage result of fail, unknown, unsupported, truncated, or skipped never adds up to pass.
+阶段结果为 fail、unknown、unsupported、truncated 或 skipped 时，永远不会累计成 pass。
 ```
 
 ```takeaways

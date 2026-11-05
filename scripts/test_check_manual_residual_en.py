@@ -1,4 +1,4 @@
-"""Unit tests for scripts/check_manual_residual_en.py (relaxed rule, #141 r9).
+"""Unit tests for scripts/check_manual_residual_en.py (relaxed rule, #141 r10).
 
 The rule (see the checker docstring): necessary English is kept; only whole
 untranslated English sentences / paragraphs are reported. Every boundary is
@@ -126,6 +126,9 @@ KEEP_CASES = [
     "报错原文是 `the server restarts every night because it leaks memory`。",
     # bare URL
     "https://docs.sglang.ai/advanced_features/server_arguments.html#the-server-is-on-a-node",
+    # paper titles in Title Case with lower-case function words (r9 FP)
+    "A Survey of Large Language Models for Code Generation in the Wild",
+    "Is the Reward Model All You Need for Reasoning in the Age of Agents",
 ]
 
 # ---------------------------------------------------------------------------
@@ -167,6 +170,16 @@ BLOCK_CASES = [
     "We re\u200bstart the ser\u200cver every night be\u200dcause it leaks\ufeff memory.",
     "We\u00a0restart\u00a0the\u00a0server\u00a0every\u00a0night\u00a0because\u00a0it\u00a0leaks.",
     "WE RESTART THE SERVER EVERY NIGHT BECAUSE IT LEAKS MEMORY",
+    # one function word, long lower-case run (r9 B3)
+    "Engineers restart servers nightly because processes leak memory constantly.",
+    # HTML entities render as spaces
+    "We&nbsp;restart&nbsp;the&nbsp;server&nbsp;every&nbsp;night&nbsp;because&nbsp;it&nbsp;leaks.",
+    # image alt text is shown whatever the image URL is
+    "![We restart the server every night because it leaks memory](https://x.org/a.png)",
+    "![We restart the server every night because it leaks memory](figs/a.png)",
+    # a quotation or external link text over the length cap is judged
+    "原文如下：「This chapter explains how the router picks a replica. It reads the load from every worker and then it sends the request to the one with the lowest queue.」",
+    "见[This chapter explains how the router picks a replica and why that choice matters](https://example.com/a)。",
 ]
 
 
@@ -213,8 +226,20 @@ def _srccell(s):
     return "r-5-sources.md", f"| a | b |\n|---|---|\n| {s} | x |\n"
 
 
+def _rule_body(s):
+    return "3-1-intro.md", f"```rule\nlabel: 规则\nsource: spec §3.1\n---\n{s}\n```\n"
+
+
+def _rule_label(s):
+    return "3-1-intro.md", f"```rule\nlabel: {s}\nsource: spec §3.1\n---\n中文规则。\n```\n"
+
+
+def _takeaway(s):
+    return "3-1-intro.md", f"```takeaways\n- 中文要点。\n- {s}\n```\n"
+
+
 CONTEXTS = (_body, _list, _ordered, _cell, _cell2, _heading, _quote,
-            _srclist, _srccell)
+            _srclist, _srccell, _rule_body, _rule_label, _takeaway)
 
 
 def _load_main_oracle():
@@ -354,6 +379,121 @@ class ElementTests(unittest.TestCase):
     def test_known_limit_homoglyphs_not_folded(self):
         # Cyrillic е/о are not ASCII letters, so these tokens are not words.
         self.assertFalse(chk.is_untranslated_sentence("Wе rеstart thе sеrvеr еvеry night bеcausе it lеaks"))
+
+
+class FenceTests(unittest.TestCase):
+    """rule / takeaways fences render as prose (site/build-manuals.js:620-621)."""
+
+    RULE = ("```rule\nlabel: the end of a task\nsource: spec §3.1.1\n---\n"
+            "A task in a terminal state takes no more messages. The terminal "
+            "states are `TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, "
+            "`TASK_STATE_CANCELED`, and `TASK_STATE_REJECTED`.\n```\n")
+
+    def _kinds(self, text):
+        hits, _ = _scan("3-1-intro.md", text)
+        return [(ln, k) for ln, k, _t in hits]
+
+    def test_pre_r10_rule_block_fails_body_and_label(self):
+        # verbatim from 614330a2 manuals/a2a-101/sections/1-1-what-a2a-standardizes.md:43
+        self.assertEqual(self._kinds(self.RULE), [(2, "RULE_LABEL"), (5, "RULE")])
+
+    def test_translated_rule_is_silent(self):
+        text = ("```rule\nlabel: 任务的终点\nsource: spec §3.1.1\n---\n"
+                "处于终止状态的任务不再接受消息。终止状态是 `TASK_STATE_COMPLETED` 和 "
+                "`TASK_STATE_REJECTED`。\n```\n")
+        self.assertEqual(self._kinds(text), [])
+
+    def test_rule_body_over_lines_is_one_text(self):
+        text = "```rule\nlabel: 规则\nsource: x\n---\nWe restart the\nserver every night\nbecause it leaks.\n```\n"
+        self.assertEqual(self._kinds(text), [(5, "RULE")])
+
+    def test_rule_source_key_is_a_citation_not_prose(self):
+        text = "```rule\nlabel: 规则\nsource: mcp §We restart the server every night because it leaks\n---\n中文。\n```\n"
+        self.assertEqual(self._kinds(text), [])
+
+    def test_rule_without_separator_is_judged(self):
+        self.assertEqual(self._kinds("```rule\n" + EN + "\n```\n"), [(2, "RULE")])
+
+    def test_rule_label_continuation_and_unknown_header_line(self):
+        text = "```rule\nlabel: the server restarts\n  every night because it leaks\nsource: x\n---\n中文。\n```\n"
+        self.assertEqual(self._kinds(text), [(2, "RULE_LABEL")])
+        text = "```rule\nlabel: 规则\n" + EN + "\n---\n中文。\n```\n"
+        self.assertEqual(self._kinds(text), [(3, "RULE")])
+
+    def test_takeaway_items_and_continuations(self):
+        text = "```takeaways\n- 中文要点。\n- We restart the server\n  every night because it leaks.\n- 另一个要点。\n```\n"
+        self.assertEqual(self._kinds(text), [(3, "TAKEAWAY")])
+
+    def test_text_after_rule_fence_is_judged(self):
+        self.assertEqual(self._kinds(self.RULE + "\n" + EN + "\n"),
+                         [(2, "RULE_LABEL"), (5, "RULE"), (8, "PROSE")])
+
+    def test_figure_and_listing_keys_out_of_scope(self):
+        # Deferred to bot-hub#124: figure/listing title, claim, caption, note.
+        text = ("```figure\nid: a-b\nkind: flow\ntitle: " + EN + "\nclaim: " + EN +
+                ".\ncaption: " + EN + "\n```\n\n```listing\ntitle: " + EN +
+                "\nsource: x\nlang: text\nnote: " + EN + "\n---\ncode\n```\n")
+        self.assertEqual(self._kinds(text), [])
+
+    def test_every_rule_and_takeaways_block_in_manuals_is_scanned(self):
+        # All 17 rule blocks and every takeaways block are translated (r10).
+        for man in ("a2a-101", "miles-101", "reverse-engineering-101", "sglang-101", "vllm-101"):
+            for path in sorted((REPO_ROOT / "manuals" / man).rglob("*.md")):
+                rel = PurePosixPath(path.relative_to(REPO_ROOT).as_posix())
+                if chk.is_excluded(rel):
+                    continue
+                kinds = {k for _ln, k, _t in chk.scan_file(path)[0]}
+                self.assertFalse(kinds & {"RULE", "RULE_LABEL", "TAKEAWAY"}, rel)
+
+
+class LengthCapAndLimitTests(unittest.TestCase):
+    """B3 r9: exempt spans have a length cap; the rest are pinned known limits."""
+
+    @staticmethod
+    def _words(n):
+        base = ("we restart the server every night because it leaks memory and "
+                "then we check the logs for the next run of the job on the node "
+                "with the most free cache today").split()
+        return " ".join(base[:n])
+
+    def test_quote_cap(self):
+        self.assertEqual(chk.QUOTE_MAX_WORDS, 25)
+        self.assertFalse(chk.is_untranslated_sentence("日志写着 \"" + self._words(25) + "\"。"))
+        self.assertTrue(chk.is_untranslated_sentence("日志写着 \"" + self._words(26) + "\"。"))
+        self.assertTrue(chk.is_untranslated_sentence("日志写着「" + self._words(26) + "」。"))
+
+    def test_external_link_text_cap(self):
+        self.assertEqual(chk.LINK_TEXT_MAX_WORDS, 12)
+        self.assertFalse(chk.is_untranslated_sentence("见[" + self._words(12) + "](https://example.com/a)。"))
+        self.assertTrue(chk.is_untranslated_sentence("见[" + self._words(13) + "](https://example.com/a)。"))
+
+    def test_few_function_words_bound(self):
+        # 7 words, 1 function word, lower case: blocked; 6 words: kept
+        self.assertTrue(chk.is_untranslated_sentence("engineers restart servers because processes leak memory"))
+        self.assertFalse(chk.is_untranslated_sentence("engineers restart servers because processes leak"))
+        # needs at least 5 lower-case content words after the first word
+        self.assertFalse(chk.is_untranslated_sentence("engineers restart Servers because processes leak memory"))
+        # Title Case noun phrase with one function word stays a title
+        self.assertFalse(chk.is_untranslated_sentence("Prefill Decode Benchmark Results And Summary Table"))
+
+    def test_paper_title_exemption_needs_lowercase_function_words(self):
+        self.assertFalse(chk.is_untranslated_sentence("A Survey of Large Language Models for Code Generation in the Wild"))
+        self.assertTrue(chk.is_untranslated_sentence("A Survey Of Large Language Models For Code Generation In The Wild"))
+        self.assertTrue(chk.is_untranslated_sentence("A survey of large language models for code generation in the wild"))
+
+    def test_known_limits_documented_in_pr_body(self):
+        # Each of these is kept on purpose or by design; the PR body lists them.
+        for text in (
+            "日志写着 \"" + self._words(14) + "\"。",            # quote <= 25 words
+            "见[" + self._words(10) + "](https://example.com/a)。",  # ext link <= 12 words
+            "Operators restart production servers nightly; leaking processes exhaust memory quickly.",  # 0 function words
+            "We restart the 服务器 every night because 它 leaks memory and then 我们 check the logs.",  # sprinkle
+            "We restart ノ the server every night ノ because it leaks memory.",  # kana split
+            "We_restart the_server every_night because_it leaks_memory and_then dies.",  # identifier joins
+            "Restart the server nightly.",  # <= 4 words
+        ):
+            with self.subTest(text=text[:40]):
+                self.assertFalse(chk.is_untranslated_sentence(text))
 
 
 class MainDemoAndHistoryTests(unittest.TestCase):
@@ -540,6 +680,17 @@ class UnionWithMainTests(unittest.TestCase):
             self.assertTrue(self.oracle.scan_file(p, False, False))
             self.assertEqual(chk._union_with_main(p, [], set()), [])
 
+    def test_main_link_text_short_prefix_is_not_a_match(self):
+        # Below 120 chars main's text is complete: only exact equality may
+        # match, so a longer external link that merely starts with it is not
+        # the link main reported.
+        short = "we restart the server every night"
+        line = "见[" + short + " because it leaks](https://example.com/a)和[" + short + "](#s-ops)。"
+        self.assertEqual(chk._main_link_text(line, short), (short, False))
+        self.assertIsNone(chk._main_link_text("见[" + short + " because](https://e.com/a)。", short))
+        long = "x" * 130
+        self.assertEqual(chk._main_link_text("[" + long + "](https://e.com/a)", long[:120]), (long, True))
+
     def test_main_link_text_hit_external_is_kept_internal_is_judged(self):
         with tempfile.TemporaryDirectory() as tmp:
             p = Path(tmp) / "x.md"
@@ -590,6 +741,22 @@ class CliFailClosedTests(unittest.TestCase):
             self.assertNotEqual(proc.returncode, 0, proc.stdout)
             self.assertNotIn("FAIL_hits=0", proc.stdout)
             self.assertIn("UnicodeDecodeError", proc.stderr)
+
+    def test_missing_manual_exits_two(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "manuals").mkdir()
+            proc = self._run(self.SCRIPT, root)
+            self.assertEqual(proc.returncode, 2, proc.stdout + proc.stderr)
+            self.assertIn("missing", proc.stderr)
+
+    def test_manual_without_markdown_exits_two(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "manuals" / "a2a-101").mkdir(parents=True)
+            proc = self._run(self.SCRIPT, root)
+            self.assertEqual(proc.returncode, 2, proc.stdout + proc.stderr)
+            self.assertNotIn("FAIL_hits=0", proc.stdout)
 
     def test_missing_main_baseline_exits_nonzero(self):
         with tempfile.TemporaryDirectory() as tmp:

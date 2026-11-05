@@ -100,10 +100,10 @@ caption: Read the three lanes left to right, then the decisions row. Each lane i
 - **真正的操作员渠道。** 通过经过认证的渠道把每次批准交给一个人，并记录是谁批准的。
 
 ```rule
-label: read the card before the call
+label: 调用前先读卡片
 source: spec §3.3.4
 ---
-A client should read the Agent Card to confirm that a capability is supported before it calls an operation that needs an optional capability.
+客户端在调用需要某项可选能力的操作之前，应当先读取 Agent Card，确认该能力受支持。
 ```
 
 ```takeaways

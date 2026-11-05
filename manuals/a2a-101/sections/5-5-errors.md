@@ -21,10 +21,10 @@ caption: Left, GetTask over JSON-RPC from the error capture. Right, the same loo
 每个错误都带有一个代码、一条消息和可选的 `details`，每个详情在 `@type` 中给出它的类型 {{spec §3.3.2}}。对于 A2A 错误，起决定作用的详情是一个 `google.rpc.ErrorInfo`：
 
 ```rule
-label: the detail that names the error
+label: 指明错误的 detail
 source: spec §11.6
 ---
-For an A2A error, an implementation must put a `google.rpc.ErrorInfo` object in the `details` array.
+对于 A2A 错误，实现必须在 `details` 数组中放入一个 `google.rpc.ErrorInfo` 对象。
 ```
 
 它的 `reason` 是去掉 `Error` 后缀的大写蛇形错误名，例如 `TASK_NOT_FOUND`，它的 `domain` 是 `a2a-protocol.org` {{spec §11.6}}。gRPC 绑定带有同样的 MUST {{spec §10.6}}，JSON-RPC 只是 SHOULD {{spec §9.5}}。`metadata` 是自由格式的：kit 会填写它，参考 SDK 则让它为空，kit 的 README 列出了这一点。
