@@ -16,10 +16,10 @@
 第 4.6.1 节把这个数组放在 `AgentCard` 本身上 {{spec §4.6.1}}，迁移指南读取的是 `agentCard.extensions` {{docs whats-new-v1}}。proto 把它放在 `capabilities` 下，所以要读取 `capabilities.extensions`。
 
 ```listing
-title: two optional extensions on the §4.6.1 sample card
+title: §4.6.1 示例 card 上的两个可选扩展
 source: research/sources/specification.md
 lang: json
-note: The sample card, cut to its capabilities. The same sample sends protocolVersion 0.3 and has a trailing comma ([conflict D24](#s-ref-sources)).
+note: 示例 card，删节到它的 capabilities。同一示例发送 protocolVersion 0.3，并带有尾随逗号（[冲突 D24](#s-ref-sources)）。
 ---
   "capabilities": {
     "streaming": false,
@@ -46,10 +46,10 @@ note: The sample card, cut to its capabilities. The same sample sends protocolVe
 `Message.extensions` 列出消息中存在的或为消息添加了内容的扩展的 URI {{proto Message}}。负载放在 `metadata` 中，以同一个 URI 为键。规范只通过示例展示了这种以 URI 为键的方式 {{spec §4.6.2}}。`Artifact.extensions` 的用法相同 {{proto Artifact}}。
 
 ```listing
-title: the §4.6.1 request: the header names the extension, and metadata carries its data
+title: §4.6.1 的请求：请求头点名扩展，metadata 携带它的数据
 source: research/sources/specification.md
 lang: http
-note: The HTTP sample under the card in §4.6.1. It omits the REQUIRED messageId ([conflict D23](#s-ref-sources)).
+note: §4.6.1 中 card 下方的 HTTP 示例。它省略了 REQUIRED 的 messageId（[冲突 D23](#s-ref-sources)）。
 ---
 POST /message:send HTTP/1.1
 Host: agent.example.com
@@ -77,9 +77,9 @@ A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.
 ```figure
 id: fig-extension-activation
 kind: sequence
-title: activating an extension, and the error when a required one is missing
-claim: The card lists the extension, the request names it in `A2A-Extensions` and keys its data by the URI, and a missing required extension answers -32008.
-caption: Read top to bottom. Steps 1 to 4 follow the §4.6.1 sample card and request, and the activation steps of the extensions guide. Steps 5 and 6 show the §3.3.4 rule for a card that marks an extension required, which the sample does not. The kit declares no extension, so no capture is shown. URIs are shortened to their last two path segments.
+title: 激活一个扩展，以及缺少必需扩展时的错误
+claim: card 列出该扩展，请求在 `A2A-Extensions` 中点名它，并以该 URI 为键存放它的数据；缺少必需扩展时回答 -32008.
+caption: 从上到下读。第 1 到第 4 步遵循 §4.6.1 的示例 card 和请求，以及扩展指南中的激活步骤。第 5、6 步展示 §3.3.4 对把扩展标为 required 的 card 的规则，示例并没有这样做。kit 没有声明任何扩展，所以不展示 capture。URI 缩短到最后两个路径段。
 ```
 
 ## 必需的扩展与版本 {#s-extensions-required-extensions-and-versions}

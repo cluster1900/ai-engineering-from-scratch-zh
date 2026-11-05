@@ -9,10 +9,10 @@
 当 `inspect-binary-layout` 在 macOS 上遇到 Mach-O 文件时，CLI 把它的信封打印到 stdout 并以 1 退出：
 
 ```listing
-title: capability_unavailable from the CLI
+title: 来自 CLI 的 capability_unavailable
 source: capture/out/04-inspect-binary-layout.json
 lang: json
-note: Nothing is cut. The exit status 1 is in [the command record](manuals/reverse-engineering-101/capture/out/00-commands.txt).
+note: 没有裁剪。退出状态 1 在[命令记录](manuals/reverse-engineering-101/capture/out/00-commands.txt)里。
 ---
 {
   "code": "capability_unavailable",
@@ -33,10 +33,10 @@ note: Nothing is cut. The exit status 1 is in [the command record](manuals/rever
 经 MCP，同一投影作为文本旅行。一次失败的 `tools/call` 返回 `isError: true`，并把 `{ "error":... }` 对象作为 JSON 放在 `content[0].text` 里，没有 `structuredContent`，因为广告的输出模式只描述成功 {{mcp Tool results}}。捕获套件把那段文本解码到 `decoded_text`，放在原始回复旁边：
 
 ```listing
-title: invalid_request for a procedure that does not exist
+title: 对一个不存在的过程的 invalid_request
 source: capture/out/10-mcp-13-analyze-function-missing.json
 lang: json
-note: The request and the raw response are cut, and so are most fields of details.diagnostics. The raw response holds the same object as one JSON string. The cut diagnostics hold the Ghidra run id, the bridge endpoint, the launch output, and the remote failure message.
+note: 请求与原始回复已裁，`details.diagnostics` 的大部分字段也已裁。原始回复把同一对象放在一个 JSON 字符串里。裁掉的诊断持有 Ghidra run id、桥端点、启动输出与远端失败消息。
 ---
   "decoded_text": {
     "error": {
@@ -78,10 +78,10 @@ note: The request and the raw response are cut, and so are most fields of detail
 CLI 拒绝了 rea 6.5.0 写的一个包，在把任何记录读进会话之前：
 
 ```listing
-title: evidence_integrity_mismatch for an older bundle
+title: 对更旧包的 evidence_integrity_mismatch
 source: capture/out/13-evidence-import-rea-6.5.0.json
 lang: json
-note: Cut to the head of the envelope. The remediation repeats the message, and the details are cut.
+note: 裁到信封的开头。remediation 重复该消息，details 已裁。
 ---
 {
   "error": "Analysis failed",
@@ -103,10 +103,10 @@ note: Cut to the head of the envelope. The remediation repeats the message, and 
 `rea capabilities` 用一个 `availability` 对象列出每一个 provider。捕获主机上三个 provider 缺席，它们的代码点名原因而不让命令失败：
 
 ```listing
-title: two unavailable providers
+title: 两个不可用的 provider
 source: capture/out/02-capabilities.json
 lang: json
-note: The availability objects of hopper and ida. The diagnostics that follow each one are cut, and so is the kuna object, which has the same code as ida.
+note: hopper 与 ida 的可用性对象。跟在每一个后面的诊断已裁，kuna 对象也已裁，它的代码与 ida 相同。
 ---
       "availability": {
         "status": "unavailable",

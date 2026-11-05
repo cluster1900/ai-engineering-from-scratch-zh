@@ -26,9 +26,9 @@ KV bytes per token = layers x KV heads x head size x 2 x bytes per value
 ```figure
 id: fig-2-1
 kind: structure
-title: the bytes for one token
-claim: Qwen3-8B holds 144 KiB of KV cache for every token, and Qwen3-30B-A3B holds 96 KiB, because it has fewer KV heads.
-caption: Multiply the five numbers in each row. The last factor is two bytes for BF16. From the model configs on the Hugging Face Hub.
+title: 一个 token 的字节数
+claim: Qwen3-8B 每个 token 的 KV cache 是 144 KiB，Qwen3-30B-A3B 是 96 KiB，因为它的 KV 头更少.
+caption: 把每一行的五个数相乘。最后一个因子是 BF16 的 2 字节。来自 Hugging Face Hub 上的模型配置。
 ```
 
 ## 把字节换算成用户数 {#s-count-the-memory-before-you-pick-a-gpu-turn-bytes-into-users}
@@ -46,10 +46,10 @@ users that fit = KV pool in tokens / (prompt tokens + output tokens per user)
 每次启动后读两行日志。在我们的 DGX Spark 上，使用 `Qwen/Qwen3-30B-A3B-Instruct-2507` 和 `--gpu-memory-utilization 0.75`，日志显示：
 
 ```listing
-title: the memory lines from a GB10 start
+title: 一次 GB10 启动里的显存行
 source: capture/gpu/out-gb10/server-load-vllm.log
 lang: text
-note: The weights took 56.93 GiB, and 31.32 GiB was left for the KV cache.
+note: 权重占了 56.93 GiB，留给 KV cache 的是 31.32 GiB。
 ---
 (EngineCore pid=143) INFO 10-21 10:58:45 [model_runner.py:407] Model loading took 56.93 GiB memory and 330.542793 seconds
 (EngineCore pid=143) INFO 10-21 10:59:46 [gpu_worker.py:692] Available KV cache memory: 31.32 GiB
@@ -62,10 +62,10 @@ note: The weights took 56.93 GiB, and 31.32 GiB was left for the KV cache.
 下一行给出以 token 计的池大小，以及在满上下文长度下能容纳的用户数：
 
 ```listing
-title: the pool line from the L4 comparison run
+title: L4 对比运行里的池大小行
 source: capture/gpu/out-l4/server-h2h-vllm.log
 lang: text
-note: 24,096 tokens at 144 KiB each is 3.31 GiB of KV cache.
+note: 24,096 个 token，每个 144 KiB，合计 3.31 GiB 的 KV cache。
 ---
 INFO 10-17 20:13:17 [kv_cache_utils.py:2464] GPU KV cache size: 24,096 tokens, Maximum concurrency for 8,192 tokens per request: 2.94x
 ```
@@ -75,9 +75,9 @@ INFO 10-17 20:13:17 [kv_cache_utils.py:2464] GPU KV cache size: 24,096 tokens, M
 ```figure
 id: fig-2-1b
 kind: comparison
-title: the pool decides the users
-claim: The same 24,096-token pool fits 2.94 users at the full context length, but 37 users who each hold 640 tokens.
-caption: Each blue block is one user. The dashed part is pool that no full-length user fills. From capture/gpu/out-l4/server-h2h-vllm.log.
+title: 池决定能容纳多少用户
+claim: 同一个 24,096 token 的池，在满上下文长度下能容纳 2.94 个用户，而每人持有 640 个 token 时能容纳 37 个用户.
+caption: 每个蓝色 block 是一个用户。虚线部分是满长度用户填不满的那一段池。 From capture/gpu/out-l4/server-h2h-vllm.log.
 ```
 
 ## 决定要改什么 {#s-count-the-memory-before-you-pick-a-gpu-decide-what-to-change}

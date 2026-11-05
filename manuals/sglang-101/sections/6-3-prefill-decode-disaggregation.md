@@ -21,9 +21,9 @@ SGLang 文档给出拆分的两个理由 {{docs}}。Prefill batch 会打断 deco
 ```figure
 id: fig-6-3
 kind: sequence
-title: one disaggregated request
-claim: The decode server reserves KV slots and publishes their addresses, then the prefill server writes the KV pages straight into decode memory.
-caption: Read top to bottom. Solid arrows are requests, teal arrows are memory writes, and the dotted arrow is the token stream to the client. From the gateway PD router, the prefill and decode schedulers, and the Mooncake connection code at v0.5.22.
+title: 一次拆开的请求
+claim: decode 服务器预订 KV 槽并公布地址，然后 prefill 服务器把 KV 页直接写入 decode 内存.
+caption: 从上往下读。实线箭头是请求，青色箭头是内存写入，点线箭头是到客户端的 token 流。 From the gateway PD router, the prefill and decode schedulers, and the Mooncake connection code at v0.5.22.
 ```
 
 1. Decode 服务器创建一个接收端，经 bootstrap 服务器找到 prefill rank，并为提示预订 KV 槽。
@@ -38,9 +38,9 @@ Bootstrap 服务器跑在 prefill 主机上。其默认端口是 8998 {{code}}�
 ```figure
 id: fig-6-3b
 kind: state
-title: the KVPoll states of one transfer
-claim: Every transfer moves forward through bootstrapping, waiting, and transferring to success, and any stage can end in failure.
-caption: Read left to right. The numbers are the values of the KVPoll class. Amber arrows are state changes, and rose arrows are failures. From the base connection code at v0.5.22.
+title: 一次传输的 KVPoll 状态
+claim: 每次传输都向前经过 Bootstrapping、WaitingForInput 和 Transferring 到达 Success，任一阶段都可以以 Failed 结束.
+caption: 从左到右读。数字是 KVPoll 类的取值。琥珀色箭头是状态变化，玫瑰色箭头是失败。 From the base connection code at v0.5.22.
 ```
 
 ## 要紧的设置 {#s-prefill-decode-disaggregation-settings-that-matter}
@@ -86,10 +86,10 @@ Novita AI 在 H200 上的 GLM-4.7 发现了另一种延迟 {{field Novita 2026-0
 我们把 Qwen3-8B 拆成第一块 L4 上的一台 prefill 服务器与第二块上的一台 decode 服务器。我们的两块卡没有 RDMA，所以用了 `--disaggregation-transfer-backend mooncake_tcp`。第二块卡还跑着另一团队的 pod，所以 decode 池持有 2,925 个 token，对上 prefill 上的 24,094。然后我们经路由器跑了[第 5.1 节](#s-sglang-benchmark-serving) 的开环 sweep。
 
 ```listing
-title: the KV transfer queue fills and the session dies
+title: KV 传输队列装满，会话死掉
 source: capture/gpu/incidents/l4-pd-mooncake-tcp-queue.txt
 lang: text
-note: Lines from the prefill and decode logs and from the benchmark result at 8 requests per second. Timestamps are cut.
+note: 来自 prefill 与 decode 日志，以及每秒 8 条请求时的基准结果。时间戳已截去。
 ---
 … Decode batch, #running-req: 2, #token: 1206, token usage: 0.41, pre-allocated usage: 0.00, #prealloc-req: 19, #transfer-req: 0, #retracted-req: 0
 … TCP lane queue-full rejection count: 4096
@@ -109,10 +109,10 @@ Decode 一次只能跑两个请求，另外 19 个在等 decode 内存。Prefill
 然后我们反过来跑拆分。Decode 有完整的 24,094 token 池，prefill 有带 2,925 的共享卡。从 1 到 8 个用户，每个请求都带回文本。在 16 个用户时，8,192 个生成 token 里只有 2,048 个作为文本回来。在 32 个用户时，每个请求都空着回来，套件停下了 sweep。
 
 ```listing
-title: the swapped split as it failed
+title: 对调角色之后失败的那次拆分
 source: capture/gpu/out-l4/bench-pd-swap.txt
 lang: text
-note: Benchmark summary lines at 8, 16, and 32 users. Compare the generated tokens with the retokenized ones.
+note: 8、16 和 32 个用户时的基准摘要行。把生成的 token 和重新分词后的比一比。
 ---
 c8: Successful requests: 32 
 c8: Total generated tokens: 4096 

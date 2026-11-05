@@ -23,10 +23,10 @@ vLLM 用一个级别同时设定 compile 和 CUDA graphs，从 `-O0` 到 `-O3`�
 启动日志给出了每个部分的时间。在我们的 DGX Spark 上用 `Qwen3-30B-A3B` 时，两次 graph 捕获和 compile 在约八分钟的启动中占了约 96 秒：
 
 ```listing
-title: graph capture and compile time at startup
+title: 启动时的 graph 捕获和 compile 耗时
 source: capture/gpu/out-gb10/server-load-vllm.log
 lang: text
-note: The first two lines are the two capture passes. The last line gives the whole engine start and the compile share.
+note: 前两行是两次捕获。最后一行给出整个 engine 启动，以及 compile 所占的份额。
 ---
 (EngineCore pid=143) INFO 10-21 10:59:45 [model_runner.py:1087] Graph capturing finished in 39 secs, took 1.17 GiB
 (EngineCore pid=143) INFO 10-21 11:00:51 [model_runner.py:1087] Graph capturing finished in 38 secs, took 0.31 GiB
@@ -42,9 +42,9 @@ note: The first two lines are the two capture passes. The last line gives the wh
 ```figure
 id: fig-4-3
 kind: chart
-title: eager mode against the default
-claim: On our L4, eager mode was 1.2 to 2.3 percent slower per token at every concurrency.
-caption: Bands span the lowest and highest of three runs. The two lines sit close because an 8B decode step waits on memory, not on kernel launches. From capture/gpu/summary/l4.json.
+title: eager 模式对比默认设置
+claim: 在我们的 L4 上，eager 模式在每种并发下每 token 慢 1.2% 到 2.3%.
+caption: 色带覆盖三次运行的最低值和最高值。两条线靠得很近，因为 8B 的一次 decode step 等的是显存，不是 kernel 启动。 From capture/gpu/summary/l4.json.
 ```
 
 | 用户数，L4 满频会话 | 中位 TPOT，默认 / eager | 中位 SM 时钟，默认 / eager |

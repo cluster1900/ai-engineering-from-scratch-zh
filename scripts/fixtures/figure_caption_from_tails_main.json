@@ -1,0 +1,592 @@
+[
+  {
+    "rel": "manuals/a2a-101/sections/2-1-agentcard-fields.md",
+    "id": "fig-agent-card-fields",
+    "main_tail": "From capture/out/01-agent-cards.http."
+  },
+  {
+    "rel": "manuals/a2a-101/sections/3-2-part.md",
+    "id": "fig-four-parts",
+    "main_tail": "From capture/out/06-input-required.http and capture/out/11-errors.http."
+  },
+  {
+    "rel": "manuals/a2a-101/sections/3-5-context-id.md",
+    "id": "fig-context-and-tasks",
+    "main_tail": "From capture/out/06-input-required.http and capture/out/13-history.http."
+  },
+  {
+    "rel": "manuals/a2a-101/sections/4-1-send-message.md",
+    "id": "fig-blocking-and-return",
+    "main_tail": "From capture/out/03-blocking-task.http and 04-polling.http."
+  },
+  {
+    "rel": "manuals/a2a-101/sections/4-2-input-required-and-auth-required.md",
+    "id": "fig-input-required",
+    "main_tail": "From capture/out/06-input-required.http."
+  },
+  {
+    "rel": "manuals/a2a-101/sections/4-2-input-required-and-auth-required.md",
+    "id": "fig-auth-required",
+    "main_tail": "From capture/out/07-auth-required.http."
+  },
+  {
+    "rel": "manuals/a2a-101/sections/4-3-get-task-and-list-tasks.md",
+    "id": "fig-history-and-pages",
+    "main_tail": "From capture/out/13-history.http, 04-polling.http, and 12-list-tasks.http."
+  },
+  {
+    "rel": "manuals/a2a-101/sections/4-4-cancel-task-and-terminal-states.md",
+    "id": "fig-task-endings",
+    "main_tail": "From capture/out/03-blocking-task.http, 09-failed.http, 10-cancel.http, and 08-rejected.http."
+  },
+  {
+    "rel": "manuals/a2a-101/sections/4-5-streaming-and-subscribe-to-task.md",
+    "id": "fig-stream-resubscribe",
+    "main_tail": "From capture/out/14-resubscribe.http, ids shortened to 8 characters."
+  },
+  {
+    "rel": "manuals/a2a-101/sections/4-6-push-notification-configs.md",
+    "id": "fig-push-webhook",
+    "main_tail": "From capture/out/15-push.http, ids shortened to 8 characters."
+  },
+  {
+    "rel": "manuals/a2a-101/sections/5-3-grpc.md",
+    "id": "fig-grpc-call",
+    "main_tail": "From research/sources/a2a.proto."
+  },
+  {
+    "rel": "manuals/a2a-101/sections/6-1-security-schemes-and-in-task-authorization.md",
+    "id": "fig-credential-path",
+    "main_tail": "From capture/out/01-agent-cards.http, 18-extended-card.http, and 07-auth-required.http."
+  },
+  {
+    "rel": "manuals/a2a-101/sections/6-3-security-requirements.md",
+    "id": "fig-trust-boundaries",
+    "main_tail": "From capture/out/15-push.http, 06-input-required.http, 11-errors.http, and 17-signed-card.txt."
+  },
+  {
+    "rel": "manuals/a2a-101/sections/7-1-a-client.md",
+    "id": "fig-planner-run",
+    "main_tail": "From capture/out/19-planner.log and 19-planner.http."
+  },
+  {
+    "rel": "manuals/a2a-101/sections/7-2-a-server.md",
+    "id": "fig-server-parts",
+    "main_tail": "From capture/a2a_ref.py."
+  },
+  {
+    "rel": "manuals/a2a-101/sections/7-2-a-server.md",
+    "id": "fig-a2a-and-tools",
+    "main_tail": "From capture/agents.py and capture/out/01-agent-cards.http."
+  },
+  {
+    "rel": "manuals/sglang-101/front.md",
+    "id": "fig-0-1",
+    "main_tail": "From capture/out/cache-experiment.txt, server-default.log, and the out-of-memory run in section 3.2."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/1-3-what-the-server-does-with-your-request.md",
+    "id": "fig-1-1",
+    "main_tail": "From capture/out/bench-random-c1.txt."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/1-3-what-the-server-does-with-your-request.md",
+    "id": "fig-1-2",
+    "main_tail": "From the v0.5.22 source and capture/out/server-default.log."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/1-3-what-the-server-does-with-your-request.md",
+    "id": "fig-1-3",
+    "main_tail": "From capture/gpu/out-l4/generate.txt and capture/gpu/out-l4/server-default.log."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/2-3-admission-and-retraction.md",
+    "id": "fig-2-3",
+    "main_tail": "From capture/out/server-small-pool.log and small-pool-bench-long-output-c16.txt."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/3-1-kv-bytes-per-token-and-the-kv-pool.md",
+    "id": "fig-3-1",
+    "main_tail": "From capture/out/server-default.log."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/3-2-mem-fraction-static-and-startup-sizing.md",
+    "id": "fig-3-2",
+    "main_tail": "From capture/out/oom-exploratory.log and capture/out/server-default.log."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/3-2-mem-fraction-static-and-startup-sizing.md",
+    "id": "fig-3-2c",
+    "main_tail": "From capture/gpu/summary/gb10.json."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/3-3-radixcache.md",
+    "id": "fig-3-3",
+    "main_tail": "From capture/out/bench-shared-prefix.txt and capture/out/no-radix-cache-bench-shared-prefix.txt."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/3-3-radixcache.md",
+    "id": "fig-3-3c",
+    "main_tail": "From capture/gpu/summary/l4.json."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/3-4-prefix-friendly-prompts.md",
+    "id": "fig-3-4",
+    "main_tail": "From capture/out/cache-experiment.txt."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/3-5-eviction-policies-and-hicache.md",
+    "id": "fig-3-5c",
+    "main_tail": "From capture/gpu/summary/l4.json."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/4-1-forwardmode-and-cuda-graphs.md",
+    "id": "fig-4-1",
+    "main_tail": "From the v0.5.22 decode CUDA graph runner."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/4-2-attention-backend.md",
+    "id": "fig-4-3",
+    "main_tail": "From get_default_attn_backend at v0.5.22."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/4-3-quantization.md",
+    "id": "fig-4-4",
+    "main_tail": "From _verify_quantization and the GPTQ Marlin override at v0.5.22."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/4-3-quantization.md",
+    "id": "fig-4-3b",
+    "main_tail": "From capture/gpu/summary/gb10.json."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/4-3-quantization.md",
+    "id": "fig-4-3c",
+    "main_tail": "From capture/gpu/summary/l4.json."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/4-4-speculative-decoding.md",
+    "id": "fig-4-6",
+    "main_tail": "From EAGLEWorkerV2.forward_batch_generation at v0.5.22."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/4-4-speculative-decoding.md",
+    "id": "fig-4-4b",
+    "main_tail": "From capture/gpu/summary/gb10.json."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/4-4-speculative-decoding.md",
+    "id": "fig-4-4c",
+    "main_tail": "From capture/gpu/summary/l4.json."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/4-5-structured-outputs-with-xgrammar.md",
+    "id": "fig-4-8",
+    "main_tail": "From GrammarManager and ModelRunner._preprocess_logits at v0.5.22."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/4-6-deterministic-inference-and-logprobs.md",
+    "id": "fig-4-9",
+    "main_tail": "From the batch-invariant operator overrides at v0.5.22."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/5-1-sglang-benchmark-serving.md",
+    "id": "fig-5-1b",
+    "main_tail": "From capture/out/bench-random-c8.txt and the benchmark module at v0.5.22."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/5-1-sglang-benchmark-serving.md",
+    "id": "fig-5-1",
+    "main_tail": "From capture/out/bench-random-c1.txt, c8.txt, and c32.txt."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/5-1-sglang-benchmark-serving.md",
+    "id": "fig-5-1c",
+    "main_tail": "From capture/gpu/summary/gb10.json."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/5-1-sglang-benchmark-serving.md",
+    "id": "fig-5-1e",
+    "main_tail": "From the per-request records in capture/gpu/summary/gb10.json, the load sweep at a cap of 16."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/5-1-sglang-benchmark-serving.md",
+    "id": "fig-5-1h",
+    "main_tail": "From capture/gpu/summary/l4.json."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/5-1-sglang-benchmark-serving.md",
+    "id": "fig-5-1d",
+    "main_tail": "From capture/gpu/summary/gb10.json, the rate sweep."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/5-1-sglang-benchmark-serving.md",
+    "id": "fig-5-1g",
+    "main_tail": "From capture/gpu/summary/l4.json, the rate sweep."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/5-1-sglang-benchmark-serving.md",
+    "id": "fig-5-1f",
+    "main_tail": "From capture/gpu/summary/l4.json and capture/gpu/summary/l4-throttled.json."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/5-2-the-metrics-endpoint.md",
+    "id": "fig-5-2",
+    "main_tail": "From capture/out/metrics.txt after the default experiments."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/5-3-reading-other-peoples-benchmarks.md",
+    "id": "fig-5-3",
+    "main_tail": "From the field reports cited in this section."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/5-3-reading-other-peoples-benchmarks.md",
+    "id": "fig-5-3b",
+    "main_tail": "From the field reports cited in this section."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/5-3-reading-other-peoples-benchmarks.md",
+    "id": "fig-5-3c",
+    "main_tail": "From capture/gpu/summary/l4.json."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/5-3-reading-other-peoples-benchmarks.md",
+    "id": "fig-5-3d",
+    "main_tail": "From capture/gpu/summary/l4.json."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/5-3-reading-other-peoples-benchmarks.md",
+    "id": "fig-5-3e",
+    "main_tail": "From capture/gpu/summary/l4.json."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/6-1-tp-size-dp-size-and-attn-dp-size.md",
+    "id": "fig-6-1",
+    "main_tail": "From the group construction code at v0.5.22."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/6-1-tp-size-dp-size-and-attn-dp-size.md",
+    "id": "fig-6-1b",
+    "main_tail": "From the data parallel controller and serving hook code at v0.5.22."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/6-1-tp-size-dp-size-and-attn-dp-size.md",
+    "id": "fig-6-1c",
+    "main_tail": "From capture/gpu/summary/l4.json."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/6-2-moe-serving-deepep-and-eplb.md",
+    "id": "fig-6-2",
+    "main_tail": "From the MoE layer code and the expert parallelism docs at v0.5.22."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/6-2-moe-serving-deepep-and-eplb.md",
+    "id": "fig-6-2c",
+    "main_tail": "From capture/gpu/summary/gb10.json."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/6-3-prefill-decode-disaggregation.md",
+    "id": "fig-6-3",
+    "main_tail": "From the gateway PD router, the prefill and decode schedulers, and the Mooncake connection code at v0.5.22."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/6-3-prefill-decode-disaggregation.md",
+    "id": "fig-6-3b",
+    "main_tail": "From the base connection code at v0.5.22."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/7-1-operating-sglang.md",
+    "id": "fig-7-1",
+    "main_tail": "From capture/out/shutdown-exploratory.log, capture/out/server-default.log, and the shutdown code at v0.5.22."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/7-2-sglang-as-an-rl-rollout-engine.md",
+    "id": "fig-7-2b",
+    "main_tail": "From train.py and inference_controller.py in Miles at v0.1.2."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/7-2-sglang-as-an-rl-rollout-engine.md",
+    "id": "fig-7-2",
+    "main_tail": "From weight_update/session.py and protocols/broadcast.py in Miles at v0.1.2 and the endpoints in http_server.py at v0.5.22."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/7-2-sglang-as-an-rl-rollout-engine.md",
+    "id": "fig-7-2c",
+    "main_tail": "From capture/gpu/summary/miles-gb10.json."
+  },
+  {
+    "rel": "manuals/sglang-101/sections/7-2-sglang-as-an-rl-rollout-engine.md",
+    "id": "fig-7-2d",
+    "main_tail": "From capture/gpu/summary/miles-gb10.json."
+  },
+  {
+    "rel": "manuals/vllm-101/sections/1-1-install-vllm-and-serve-your-first-model.md",
+    "id": "fig-1-2",
+    "main_tail": "From capture/gpu/out-gb10/server-load-vllm.log."
+  },
+  {
+    "rel": "manuals/vllm-101/sections/1-3-understand-what-happens-to-your-request.md",
+    "id": "fig-1-3",
+    "main_tail": "From the vLLM source at v0.31.0."
+  },
+  {
+    "rel": "manuals/vllm-101/sections/1-3-understand-what-happens-to-your-request.md",
+    "id": "fig-1-3b",
+    "main_tail": "From capture/gpu/summary/gb10.json."
+  },
+  {
+    "rel": "manuals/vllm-101/sections/2-1-count-the-memory-before-you-pick-a-gpu.md",
+    "id": "fig-2-1b",
+    "main_tail": "From capture/gpu/out-l4/server-h2h-vllm.log."
+  },
+  {
+    "rel": "manuals/vllm-101/sections/2-2-fix-out-of-memory-at-startup.md",
+    "id": "fig-2-2",
+    "main_tail": "From the vLLM source at v0.31.0 and our runs on the L4."
+  },
+  {
+    "rel": "manuals/vllm-101/sections/2-3-size-memory-on-a-dgx-spark.md",
+    "id": "fig-2-3",
+    "main_tail": "From capture/gpu/out-gb10/server-load-vllm.log."
+  },
+  {
+    "rel": "manuals/vllm-101/sections/2-4-fit-more-users-with-an-fp8-kv-cache.md",
+    "id": "fig-2-4",
+    "main_tail": "From the model config of Qwen/Qwen3-8B."
+  },
+  {
+    "rel": "manuals/vllm-101/sections/2-5-fit-a-bigger-model-with-fp8-weights.md",
+    "id": "fig-2-5",
+    "main_tail": "From capture/gpu/summary/l4.json."
+  },
+  {
+    "rel": "manuals/vllm-101/sections/3-1-tune-chat-for-many-users.md",
+    "id": "fig-3-1",
+    "main_tail": "From capture/gpu/summary/l4.json."
+  },
+  {
+    "rel": "manuals/vllm-101/sections/3-2-make-repeated-prompts-hit-the-prefix-cache.md",
+    "id": "fig-3-2b",
+    "main_tail": "From capture/gpu/summary/l4.json."
+  },
+  {
+    "rel": "manuals/vllm-101/sections/3-2-make-repeated-prompts-hit-the-prefix-cache.md",
+    "id": "fig-3-2",
+    "main_tail": "From the vLLM source at v0.31.0."
+  },
+  {
+    "rel": "manuals/vllm-101/sections/3-3-keep-long-prompts-from-stalling-short-ones.md",
+    "id": "fig-3-3",
+    "main_tail": "From capture/gpu/summary/gb10.json."
+  },
+  {
+    "rel": "manuals/vllm-101/sections/4-1-speed-up-decode-with-eagle3.md",
+    "id": "fig-4-1",
+    "main_tail": "From capture/gpu/summary/l4.json."
+  },
+  {
+    "rel": "manuals/vllm-101/sections/4-2-use-n-gram-speculation-for-copy-heavy-work.md",
+    "id": "fig-4-2",
+    "main_tail": "From capture/gpu/summary/l4-gpu1.json."
+  },
+  {
+    "rel": "manuals/vllm-101/sections/4-3-keep-cuda-graphs-and-compile-on.md",
+    "id": "fig-4-3",
+    "main_tail": "From capture/gpu/summary/l4.json."
+  },
+  {
+    "rel": "manuals/vllm-101/sections/5-1-benchmark-your-server-in-15-minutes.md",
+    "id": "fig-5-1",
+    "main_tail": "From capture/gpu/summary/l4.json."
+  },
+  {
+    "rel": "manuals/vllm-101/sections/5-3-decide-between-vllm-and-sglang.md",
+    "id": "fig-5-3",
+    "main_tail": "From capture/gpu/summary/l4.json."
+  },
+  {
+    "rel": "manuals/vllm-101/sections/5-3-decide-between-vllm-and-sglang.md",
+    "id": "fig-5-3b",
+    "main_tail": "From capture/gpu/summary/gb10.json."
+  },
+  {
+    "rel": "manuals/vllm-101/sections/6-1-choose-tensor-pipeline-or-data-parallelism.md",
+    "id": "fig-6-1",
+    "main_tail": "From the vLLM documentation at v0.31.0."
+  },
+  {
+    "rel": "manuals/vllm-101/sections/6-3-split-prefill-and-decode.md",
+    "id": "fig-6-3",
+    "main_tail": "From the vLLM documentation at v0.31.0."
+  },
+  {
+    "rel": "manuals/vllm-101/sections/7-1-troubleshoot-by-symptom.md",
+    "id": "fig-7-1",
+    "main_tail": "From our runs, the vLLM issues, and the vLLM documentation."
+  },
+  {
+    "rel": "manuals/vllm-101/sections/8-1-why-vllm-runs-three-kinds-of-process.md",
+    "id": "fig-8-1",
+    "main_tail": "From the vLLM design documents at v0.31.0."
+  },
+  {
+    "rel": "manuals/vllm-101/sections/8-2-why-one-token-budget-replaces-a-prefill-phase.md",
+    "id": "fig-8-2",
+    "main_tail": "From the vLLM source at v0.31.0."
+  },
+  {
+    "rel": "manuals/vllm-101/sections/8-3-how-the-block-pool-manages-kv-memory.md",
+    "id": "fig-8-3",
+    "main_tail": "From the vLLM source at v0.31.0."
+  },
+  {
+    "rel": "manuals/vllm-101/sections/8-7-how-speculative-decoding-checks-drafts.md",
+    "id": "fig-8-7",
+    "main_tail": "From manuals/sglang-101/capture/gpu/out-l4/eagle3-generate.txt."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/1-2-rea-function-end-to-end.md",
+    "id": "fig-1-3",
+    "main_tail": "From capture/out/06-function-percent-change.json, with the field list from src/domain/evidence.ts at the tag."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/2-2-rea-doctor-and-the-ghidra-provider.md",
+    "id": "fig-2-2",
+    "main_tail": "From capture/out/01-doctor-ghidra.json and 00-commands.txt, with the order from src/ghidra/GhidraInstallation.ts at the tag."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/2-3-rea-capabilities.md",
+    "id": "fig-2-3",
+    "main_tail": "From capture/out/02-capabilities.json, with the schema from src/contracts/toolOutputSchemaPrimitives.ts at the tag."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/3-1-inspect-artifact.md",
+    "id": "fig-3-1",
+    "main_tail": "From capture/out/03-inspect-artifact.json."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/3-2-inspect-binary-layout-and-the-load-image.md",
+    "id": "fig-3-2",
+    "main_tail": "From capture/out/04-inspect-binary-layout.json and 04-inspect-macho.json."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/3-2-inspect-binary-layout-and-the-load-image.md",
+    "id": "fig-3-3",
+    "main_tail": "From capture/out/04-inspect-macho.json."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/3-3-address-to-file-offset.md",
+    "id": "fig-3-4",
+    "main_tail": "From capture/out/04-inspect-macho.json, 08-address-to-file-offset.json, and the fixture bytes."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/3-4-analyze-overview.md",
+    "id": "fig-3-5",
+    "main_tail": "From capture/out/05-analyze-arm64-O1.json and 05-analyze-x86_64-O1.json."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/4-1-open-binary-and-the-headless-bridge.md",
+    "id": "fig-4-1",
+    "main_tail": "From capture/out/10-mcp-server.log and 10-mcp-session.txt."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/4-1-open-binary-and-the-headless-bridge.md",
+    "id": "fig-4-2",
+    "main_tail": "From src/ghidra/GhidraLauncher.ts and src/ghidra/GhidraClient.ts at rea 6.7.0, and capture/out/05-analyze-arm64-O1.json for the document name."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/4-2-list-procedures-and-function-bodies.md",
+    "id": "fig-4-3",
+    "main_tail": "From capture/out/10-mcp-05-list-procedures.json and the five dossiers."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/4-3-procedure-assembly.md",
+    "id": "fig-4-4",
+    "main_tail": "From capture/out/06-function-grade.json."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/4-4-xrefs-and-the-jump-table.md",
+    "id": "fig-4-6",
+    "main_tail": "From the four analyze_function dossiers and capture/fixtures/ledger-arm64-O1."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/4-4-xrefs-and-the-jump-table.md",
+    "id": "fig-4-5",
+    "main_tail": "From phases/13-tools-and-protocols/33-disassembly-and-control-flow/code/fixtures and capture/out/06-function-grade.json."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/4-5-list-strings.md",
+    "id": "fig-4-7",
+    "main_tail": "From capture/out/10-mcp-08-list-strings.json and 04-inspect-macho.json."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/4-6-analyze-function-and-pseudocode.md",
+    "id": "fig-4-8",
+    "main_tail": "From capture/out/06-function-grade.json."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/4-6-analyze-function-and-pseudocode.md",
+    "id": "fig-4-9",
+    "main_tail": "From capture/fixtures/ledger.c and capture/out/10-mcp-09-analyze-function-percent-change-O1.json."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/5-2-residual-unknowns-and-coverage.md",
+    "id": "fig-5-3",
+    "main_tail": "From capture/out/10-mcp-09-analyze-function-percent-change-O1.json, 10-mcp-14-export-evidence-bundle-O1.json, and 14-compare-bundles.json."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/5-4-evidence-bundles-export-and-import.md",
+    "id": "fig-5-5",
+    "main_tail": "From capture/out/10-mcp-14-export-evidence-bundle-O1.json, 11-bundles.txt, 11-inspect-evidence-bundle-O1.json, 12-evidence-export.txt, 13-evidence-import.json, and 10-mcp-23-import-evidence-bundle-O1.json."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/5-5-compare-and-compare-functions.md",
+    "id": "fig-5-6",
+    "main_tail": "From capture/out/10-mcp-20-compare-functions-percent-change.json and 10-mcp-21-compare-functions-total.json."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/6-1-analyze-javascript-application.md",
+    "id": "fig-6-1",
+    "main_tail": "From capture/out/15-js-app-graph.json."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/6-2-inspect-wasm-artifact.md",
+    "id": "fig-6-2",
+    "main_tail": "From capture/out/16-inspect-wasm-artifact.json and 10-mcp-24-inspect-wasm-artifact.json."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/7-1-verify-reconstruction.md",
+    "id": "fig-7-1",
+    "main_tail": "From capture/out/10-mcp-22-verify-reconstruction.json."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/7-2-a-proof-harness-outside-rea.md",
+    "id": "fig-7-2",
+    "main_tail": "From capture/out/17-harness-execute-plausible.json, 17-harness-execute-equal.json, and 17-harness-bytes.json."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/7-2-a-proof-harness-outside-rea.md",
+    "id": "fig-7-3",
+    "main_tail": "From capture/out/17-harness-bytes.json."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/8-1-the-rea-mcp-server.md",
+    "id": "fig-8-1",
+    "main_tail": "From capture/out/10-mcp-session.txt and 10-mcp-server.log."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/8-1-the-rea-mcp-server.md",
+    "id": "fig-8-2",
+    "main_tail": "From capture/out/10-mcp-session.txt and the rea MCP contracts page at the tag."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/8-2-an-agent-investigation.md",
+    "id": "fig-8-3",
+    "main_tail": "From capture/out/10-mcp-05 to 10-mcp-12."
+  },
+  {
+    "rel": "manuals/reverse-engineering-101/sections/8-2-an-agent-investigation.md",
+    "id": "fig-8-4",
+    "main_tail": "From capture/out/10-mcp-05 to 10-mcp-12."
+  }
+]

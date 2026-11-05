@@ -9,10 +9,10 @@
 ## 一条命令，一份记录 {#s-inspect-artifact-one-command-one-record}
 
 ```listing
-title: the command and its exit
+title: 命令及其退出
 source: capture/out/00-commands.txt
 lang: text
-note: Two lines from the command index. The time in parentheses changes on every run and is cut.
+note: 命令索引里的两行。括号里的时间每次运行都会变，已裁。
 ---
 $ rea inspect-artifact fixtures/ledger-arm64-O1 --format json
 [exit 0] (…) -> 03-inspect-artifact.json
@@ -23,10 +23,10 @@ $ rea inspect-artifact fixtures/ledger-arm64-O1 --format json
 **Artifact graph：** rea 为一份文件及其内部文件构建的清单。节点是一份不同的内容，以其 SHA-256 标识。occurrence 是该内容出现的一个位置，带逻辑路径。边把容器连到成员。
 
 ```listing
-title: the head of the record
+title: 记录的开头
 source: capture/out/03-inspect-artifact.json
 lang: json
-note: The substeps array and everything after it are cut. The capture kit masks local_path.
+note: `substeps` 数组及其后的一切已裁。捕获套件掩去 `local_path`。
 ---
 {
   "evidence_id": "ev_0e878985…",
@@ -60,10 +60,10 @@ SHA-256 是 `00-fixtures.txt` 为该文件列出的那个，之后关于该文�
 记录有一个子步骤 `inventory_artifact`，带 `status: "completed"`，并在内部嵌套自己的 Evidence 记录。它的 manifest 统计该图。
 
 ```listing
-title: the manifest, the node, and the occurrence
+title: manifest、节点与 occurrence
 source: capture/out/03-inspect-artifact.json
 lang: json
-note: Cut from the inventory substep to the manifest counts, the one node, and the one occurrence.
+note: 从 inventory 子步骤裁到 manifest 计数、那一个节点与那一个 occurrence。
 ---
 "manifest": {
   "manifest_id": "agm_8e2e5c4c…",
@@ -107,10 +107,10 @@ note: Cut from the inventory substep to the manifest counts, the one node, and t
 ## 分支与下一步探测 {#s-inspect-artifact-branches-and-the-next-probe}
 
 ```listing
-title: what the inspection did not do
+title: 这次检查没有做的事
 source: capture/out/03-inspect-artifact.json
 lang: json
-note: The hypotheses and contradictions arrays are empty and are cut with the coverage block.
+note: `hypotheses` 与 `contradictions` 数组是空的，连同 coverage 块一起裁掉。
 ---
 "unexplored_branches": [
   {
@@ -140,9 +140,9 @@ rea 为它列出的每一个下一步探测构建一条未探索分支，原因�
 ```figure
 id: fig-3-1
 kind: tree
-title: the inspect-artifact record for ledger-arm64-O1
-claim: One cheap read gives a hashed subject, a one-node inventory, and an explicit branch that names open_binary as the next probe.
-caption: Read from the top. The teal box is the record, the green boxes are what it saw, and the amber box is what it left for a later tool. From capture/out/03-inspect-artifact.json.
+title: ledger-arm64-O1 的 inspect-artifact 记录
+claim: 一次便宜的读取给出哈希过的 subject、一个节点的清单，以及一条明确分支，把 `open_binary` 点名为下一步探测.
+caption: 从顶部读起。青色框是记录，绿色框是它看到的，琥珀色框是留给后面工具的。 From capture/out/03-inspect-artifact.json.
 ```
 
 ## 这份记录不是什么 {#s-inspect-artifact-what-the-record-is-not}

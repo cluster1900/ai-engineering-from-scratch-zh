@@ -9,9 +9,9 @@ planner 向 `test-runner` 请求一个不存在的任务 id，在每种 JSON 绑
 ```figure
 id: fig-task-not-found
 kind: comparison
-title: TaskNotFoundError in two JSON bindings
-claim: The same TaskNotFoundError arrives as HTTP 200 with code -32001 in JSON-RPC and as HTTP 404 in HTTP+JSON, carrying the same ErrorInfo.
-caption: Left, GetTask over JSON-RPC from the error capture. Right, the same lookup over HTTP+JSON from the HTTP+JSON capture. The box at the bottom is the detail both replies carry. Ids shortened to 8 characters.
+title: 两种 JSON 绑定中的 TaskNotFoundError
+claim: 同一个 TaskNotFoundError 在 JSON-RPC 中以 HTTP 200 和代码 -32001 到达，在 HTTP+JSON 中以 HTTP 404 到达，并携带同一份 ErrorInfo.
+caption: 左侧是错误 capture 中通过 JSON-RPC 的 GetTask。右侧是 HTTP+JSON capture 中的同一次查找。底部方框是两个回复都携带的 detail。id 缩短为 8 个字符。
 ```
 
 ## 指明错误的详情 {#s-errors-the-detail-that-names-the-error}
@@ -36,10 +36,10 @@ JSON-RPC 错误是一个带有 HTTP `200` 的普通响应。它的 `error` 成�
 验证错误带有另一种详情类型，即一个指明字段的 `google.rpc.BadRequest`：
 
 ```listing
-title: a message without messageId, refused with a BadRequest detail
+title: 没有 messageId 的消息，以 BadRequest detail 拒绝
 source: capture/out/11-errors.http
 lang: http
-note: The request is cut to the start of its message, which has no messageId.
+note: 请求删节到消息的开头，这条消息没有 messageId。
 ---
     "message": {
       "role": "ROLE_USER",
@@ -71,10 +71,10 @@ Content-Type: application/json
 HTTP+JSON 错误使用 HTTP 状态和一个 JSON 形式的 `google.rpc.Status` {{spec §11.6}}。它的 `error` 对象在 `code` 中重复状态，在 `status` 中给出 gRPC 状态名，并加上 `message` 和 `details`：
 
 ```listing
-title: a cancel of a completed task over HTTP+JSON
+title: 通过 HTTP+JSON 取消一个已完成的任务
 source: capture/out/16-rest-binding.http
 lang: http
-note: The request headers and body are cut. Over JSON-RPC this error is code -32002, as in 10-cancel.http.
+note: 请求头和正文已删节。在 JSON-RPC 中这个错误的代码是 -32002，见 10-cancel.http。
 ---
 POST /a2a/rest/tasks/bbfb9ea5-50ea-4441-b991-2a8ba0d6f3f3:cancel HTTP/1.1
 …

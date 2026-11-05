@@ -15,10 +15,10 @@ JSON-RPC 请求是一个有四个成员的 JSON 对象 {{spec §9.3}}。`jsonrpc
 回复重复请求的 `id`，并在 `result` 中存放响应消息 {{spec §9.4.1}}。对于 `SendMessage`，该消息是一个带有一个 `task` 或一个 `message` 的 `SendMessageResponse` {{proto SendMessageResponse}}：
 
 ```listing
-title: a question and its direct answer over JSON-RPC
+title: 通过 JSON-RPC 提出的问题及其直接回答
 source: capture/out/02-message-reply.http
 lang: http
-note: The Host and A2A-Version headers and the parts of both messages are cut. [Send message](#s-send-message) explains when the result is a message and when it is a task.
+note: Host 和 A2A-Version 请求头，以及两条消息的 part 已删节。[SendMessage](#s-send-message)说明 result 何时是消息、何时是任务。
 ---
 POST /a2a/jsonrpc HTTP/1.1
 Content-Type: application/json
@@ -57,10 +57,10 @@ Content-Type: application/json
 `SendStreamingMessage` 和 `SubscribeToTask` 以 `Content-Type: text/event-stream` 回答，而不是一个 JSON 正文 {{spec §9.4.2}}。每个 `data:` 行都是一个完整的 JSON-RPC 响应：与请求相同的 `id`，以及 `result` 中的一个 `StreamResponse` {{spec §9.4.2}} {{proto StreamResponse}}。所以同一个解析器既能读单个回复，也能读每一帧。
 
 ```listing
-title: the first two frames of a stream, each a full JSON-RPC response
+title: 一条流的前两帧，每一帧都是完整的 JSON-RPC 响应
 source: capture/out/05-streaming.http
 lang: sse
-note: The request and the inside of each frame are cut. The file holds all nine frames, and 05-streaming.events.json prints them in full.
+note: 请求和每一帧的内部已删节。文件中有全部九帧，05-streaming.events.json 把它们完整印出。
 ---
 HTTP/1.1 200 OK
 Content-Type: text/event-stream

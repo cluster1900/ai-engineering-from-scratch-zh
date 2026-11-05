@@ -30,9 +30,9 @@
 ```figure
 id: fig-2-2
 kind: flow
-title: one turn of the scheduler loop
-claim: Each turn ingests requests, orders the queue by policy, admits what fits the budget, and runs either one prefill batch or one decode step.
-caption: Read top to bottom. Amber boxes are scheduler phases, the green box is the KV budget check, the plum boxes are GPU work. Function names are from the scheduler at v0.5.22.
+title: 调度器循环的一轮
+claim: 每一轮收进请求，按策略给队列排序，准入塞得进预算的那些，然后要么跑一个 prefill batch，要么跑一步 decode.
+caption: 从上往下读。琥珀色框是调度器阶段，绿色框是 KV 预算检查，梅红色框是 GPU 上的活。函数名来自 v0.5.22 的 scheduler。
 ```
 
 ## 两行日志 {#s-the-scheduler-loop-and-schedule-policy-the-two-log-lines}
@@ -40,10 +40,10 @@ caption: Read top to bottom. Amber boxes are scheduler phases, the green box is 
 调度器每个 prefill batch 打一行，每 40 步 decode 打一行 decode（`--decode-log-interval` 的默认）{{code}}。这些行是服务器写出的最有用的文本。下面是我们并发 8 基准里连续的三行。
 
 ```listing
-title: eight requests, two prefill batches, one decode batch
+title: 八条请求，两个 prefill batch，一个 decode batch
 source: capture/out/server-default.log
 lang: text
-note: Three consecutive lines from the concurrency 8 benchmark.
+note: 并发 8 那次基准里连续的三行。
 ---
 [2026-10-16 13:59:07] Prefill batch, #new-seq: 1, #new-token: 511, #cached-token: 1, token usage: 0.00, #running-req: 0, #queue-req: 7, #pending-token: 0, cuda graph: False, input throughput (token/s): 155.03
 [2026-10-16 13:59:09] Prefill batch, #new-seq: 7, #new-token: 3553, #cached-token: 2, token usage: 0.02, #running-req: 1, #queue-req: 0, #pending-token: 0, cuda graph: False, input throughput (token/s): 1914.13
@@ -121,10 +121,10 @@ v0.5.22 的默认是 `fcfs` {{code}}。选项分成两组。
 GB10 跟得上这个工作负载，在那里混合 chunk 确实有帮助。我们在 2026-10-21 用同样的扫描跑了它，对照同一天的新默认运行。默认服务器的 pool 是 251,910 个 token，混合 chunk 服务器是 236,751 个。每次运行的中位时钟都至少 2,405 MHz。
 
 ```listing
-title: the GB10 pool with the mixed chunk
+title: 开了 mixed chunk 的 GB10 pool
 source: capture/gpu/out-gb10/server-mixed-chunk.log
 lang: text
-note: The pool at startup of the server with --enable-mixed-chunk.
+note: 带 --enable-mixed-chunk 的服务器在启动时的 pool。
 ---
 [2026-10-21 06:26:47] KV Cache is allocated. dtype: torch.bfloat16, #tokens: 236751, K size: 10.84 GB, V size: 10.84 GB
 ```
@@ -142,10 +142,10 @@ note: The pool at startup of the server with --enable-mixed-chunk.
 在我们两块卡上用这个工作负载，这个旗标是一种折损，卡决定了你能不能拿到它。当 prefill 跟得上时，搭乘 prefill batch 的 decode token 不用再等，每条新 prompt 多等一点。当 prefill 跟不上时，像在 L4 上，队列决定节奏，旗标几乎不变。
 
 ```listing
-title: a larger chunk that did not start
+title: 没能启动的更大 chunk
 source: capture/gpu/incidents/l4-chunk-8192-prefill-graph-oom.txt
 lang: text
-note: SGLang 0.5.22 on the L4 with --chunked-prefill-size 8192. The last error names PyTorch, and the cause is two lines above it.
+note: L4 上的 SGLang 0.5.22，带 --chunked-prefill-size 8192。最后一条错误点名 PyTorch，原因在它上面两行。
 ---
 [2026-10-18 07:27:15] Memory pool end. avail mem=2.90 GB
 Capturing prefill shape (num_tokens=8192 avail_mem=2.33 GB)

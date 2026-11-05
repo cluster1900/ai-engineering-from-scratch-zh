@@ -76,10 +76,10 @@ Qwen3 是推理模型。它先在 `<think>` 标签之间写出思考过程，然
 启动日志很长。其中六行告诉你大部分需要知道的东西。下面的 listing 取自我们的 DGX Spark，那里部署的是更大的 Qwen3-30B-A3B。你的日志行形式相同，只是数字更小。
 
 ```listing
-title: the startup lines to read, from a DGX Spark
+title: 要读的启动行，来自 DGX Spark
 source: capture/gpu/out-gb10/server-load-vllm.log
 lang: text
-note: Six lines cut from the start of the log. The banner, the full engine config, and the route list are cut.
+note: 从日志开头取出的六行。横幅、完整的 engine config 和路由列表已略去。
 ---
 (APIServer pid=1) INFO 10-21 10:53:02 [api_utils.py:347]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.31.0
 (EngineCore pid=143) INFO 10-21 10:53:14 [gpu_worker.py:479] Using V2 Model Runner
@@ -103,9 +103,9 @@ note: Six lines cut from the start of the log. The banner, the full engine confi
 ```figure
 id: fig-1-2
 kind: structure
-title: the six startup lines to read
-claim: Six startup lines show the version, the runner, the attention backend, the weight memory, the free KV memory, and the pool size.
-caption: Read each row from left to right: the log line, our value on the DGX Spark, and what it decides. From capture/gpu/out-gb10/server-load-vllm.log.
+title: 要读的六行启动日志
+claim: 六行启动日志给出版本、model runner、attention backend、权重显存、可用 KV cache 显存和池大小.
+caption: 从左到右读每一行：日志行、我们在 DGX Spark 上的值，以及它决定的事。 From capture/gpu/out-gb10/server-load-vllm.log.
 ```
 
 ## 发送第一个请求 {#s-install-vllm-and-serve-your-first-model-send-the-first-request}

@@ -19,9 +19,9 @@
 ```figure
 id: fig-6-1
 kind: layers
-title: one TP group of eight GPUs, split three ways
-claim: With --tp-size 8, --attn-dp-size 4, and --ep-size 8, the same eight GPUs form one TP group, four attention groups, and one expert group.
-caption: Read each row as one layer type. Each square is one GPU. Attention groups are contiguous rank ranges, and an expert group equal to the TP group reuses it. From the group construction code at v0.5.22.
+title: 八块 GPU 的一个 TP 组，三种切法
+claim: --tp-size 8、--attn-dp-size 4 和 --ep-size 8 下，同样八块 GPU 组成一个 TP 组、四个注意力组和一个专家组.
+caption: 每一行是一种层。每个方块是一块 GPU。注意力组是连续的 rank 区间，等于 TP 组的专家组直接复用它。 From the group construction code at v0.5.22.
 ```
 
 这些标志每一个的默认都是 1 {{code}}。所以一条普通的 `sglang serve` 用一块 GPU、一个调度器与一份模型。
@@ -33,9 +33,9 @@ caption: Read each row as one layer type. Each square is one GPU. Attention grou
 ```figure
 id: fig-6-1b
 kind: tree
-title: two data parallel copies behind one controller
-claim: Round robin sends alternate requests to two worlds that share no KV cache, so a repeated prefix can miss in the other world.
-caption: Read top to bottom. The controller is the default round_robin method. Each world is a TP group of four GPUs with its own cache. From the data parallel controller and serving hook code at v0.5.22.
+title: 一个控制器后面的两份数据并行副本
+claim: 轮询把请求交替送到两份不共享 KV cache 的 world，所以重复前缀可能在另一份 world 里未命中.
+caption: 从上往下读。控制器是默认的 round_robin 方法。每个 world 是四块 GPU 的一个 TP 组，各自有缓存。 From the data parallel controller and serving hook code at v0.5.22.
 ```
 
 **注意力数据并行：** 在同一个 TP 组里，注意力层跑数据并行，而前馈或专家层仍跨全部 GPU 拆分。每个注意力组有自己的调度器、自己的请求与自己的 KV 缓存。`--attn-dp-size 4` 配 `--tp-size 8` 给出四个各两块 GPU 的注意力组。
@@ -102,10 +102,10 @@ SGLang 团队在 v0.4 加入该模式时给出了这个理由 {{team 2024-12}}�
 我们在一台机器上有两块 NVIDIA L4，第二块还跑着另一团队的两个小 pod。每个 pod 占 1,746 MiB。我们用 `--tp-size 2` 启动 `Qwen/Qwen3-8B`，服务器在 NCCL 启动两秒后停下。
 
 ```listing
-title: tensor parallelism refuses an unevenly loaded pair
+title: 张量并行拒绝一对负载不均的卡
 source: capture/gpu/incidents/l4-tp-unbalanced-memory.txt
 lang: text
-note: The scheduler exception from the server log, with the other lines cut.
+note: 服务器日志里的 scheduler 异常，其余行已截去。
 ---
 RuntimeError: The memory capacity is unbalanced. Some GPUs may be occupied by other processes. pre_model_load_memory=18.28375244140625, local_gpu_memory=21.70391845703125, local_gpu_memory * 0.9=19.533526611328124
 ```
@@ -119,10 +119,10 @@ RuntimeError: The memory capacity is unbalanced. Some GPUs may be occupied by ot
 我们预期两份副本大约能服务一份的两倍。它们服务得比一份还少。我们用[第 4.3 节](#s-quantization) 的闭环 sweep，每个点三个种子。每个请求有 512 个输入 token 与 128 个输出 token。第一次跑用一块 L4，第二次在两块上用 `--dp-size 2`。
 
 ```listing
-title: two copies, two very different pools
+title: 两份副本，两个差很多的 pool
 source: capture/gpu/out-l4/server-dp2.log
 lang: text
-note: Startup lines, and four decode lines logged at 64 running requests on 2026-10-17 at 07:26. Timestamps are cut.
+note: 启动行，以及 2026-10-17 07:26、64 条请求在跑时记下的四条 decode 行。时间戳已截去。
 ---
 … DP0] Load weight end. elapsed=3.61 s, type=Qwen3ForCausalLM, avail mem=6.59 GB, mem usage=15.28 GB.
 … DP1] Load weight end. elapsed=3.73 s, type=Qwen3ForCausalLM, avail mem=3.17 GB, mem usage=15.28 GB.
@@ -141,9 +141,9 @@ note: Startup lines, and four decode lines logged at 64 running requests on 2026
 ```figure
 id: fig-6-1c
 kind: chart
-title: Two copies of the model served less than one
-claim: One L4 reached 270 tokens per second, and the shared pair with --dp-size 2 peaked at 64 and fell to 42 as its clock fell.
-caption: Output throughput against max concurrency, three seeds per point. Plum is one L4 and rose is --dp-size 2 on two L4s with the shared second card. From capture/gpu/summary/l4.json.
+title: 两份模型副本服务得比一份还少
+claim: 一块 L4 达到每秒 270 个 token，共享的那一对在 --dp-size 2 下峰值每秒 64 个 token，并随着时钟下降落到 42.
+caption: 输出吞吐对上最大并发，每个点三个种子。梅红色是一块 L4，玫瑰色是两块 L4 上的 --dp-size 2，第二块卡是共享的。 From capture/gpu/summary/l4.json.
 ```
 
 **我们测到**尾部也有代价。在并发 64 时，三个种子的中位 p99 TTFT 在一块 L4 上是 33.4 秒，两份副本是 391 秒。单卡跑在 2026-10-16，那一对在 2026-10-17。在 32 与 64 个用户时，那一对跑在 765 与 675 MHz，低于我们的时钟下限。单卡跑在 1,320 与 1,080 MHz，所以那部分损失是时钟。
@@ -155,10 +155,10 @@ caption: Output throughput against max concurrency, three seeds per point. Plum 
 然后我们测了可能有帮助的两种设置之一。`--load-balance-method total_tokens` 把每个请求发给持有最少 token 的那份副本。
 
 ```listing
-title: the same uneven pair, routed by tokens
+title: 同一对不均的卡，按 token 路由
 source: capture/gpu/out-l4/server-dp2-tokens.log
 lang: text
-note: The two pools at startup. The second card was still shared, so its copy had an eighth of the pool.
+note: 启动时的两个 pool。第二块卡仍是共享的，所以它那份副本的 pool 只有八分之一。
 ---
 [2026-10-19 00:24:05 DP0] KV Cache is allocated. dtype: torch.bfloat16, #tokens: 24094, K size: 1.65 GB, V size: 1.65 GB
 [2026-10-19 00:24:06 DP1] KV Cache is allocated. dtype: torch.bfloat16, #tokens: 2925, K size: 0.20 GB, V size: 0.20 GB

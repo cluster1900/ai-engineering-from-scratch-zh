@@ -28,9 +28,9 @@
 ```figure
 id: fig-4-9
 kind: comparison
-title: one row reduced in two batches
-claim: A default kernel splits the same row differently in two batches, and a batch-invariant kernel uses one split for every batch.
-caption: Read each column top to bottom. The row is one request, and the tiles are partial sums. From the batch-invariant operator overrides at v0.5.22.
+title: 一行在两个 batch 里做归约
+claim: 默认内核在两个 batch 里把同一行切得不一样，批不变内核对每个 batch 用同一种切法.
+caption: 每一列从上往下读。这一行是一条请求，小块是部分和。 From the batch-invariant operator overrides at v0.5.22.
 ```
 
 第五点对服务器最要紧。用 `flashinfer` 时，确定性模式关掉前缀缓存。每个重复前缀再付一整次 prefill。[第 3.3 节](#s-radixcache) 解释那个缓存省了什么。
@@ -44,10 +44,10 @@ caption: Read each column top to bottom. The row is one request, and the tiles a
 在我们的测试里，top-p 没有改返回值。测试在温度 1、top-p 0.9 下用 `return_logprob`。我们在 2026-10-23 在 L4 节点第二块 GPU 上跑，`Qwen/Qwen3-0.6B` 用 BF16。我们发了 16 条各 48 token 的 prompt。我们把每个返回的 logprob 与 float32 Transformers 对整词表的一遍比较。
 
 ```listing
-title: returned logprob minus the full-vocabulary reference
+title: 返回的 logprob 减去全词表参照
 source: capture/gpu/out-l4/logprobs-top-p.txt
 lang: text
-note: The two SGLang rows. The vLLM rows are cut. ORIGINAL_LOGPROB is short for SGLANG_RETURN_ORIGINAL_LOGPROB.
+note: 两行 SGLang。vLLM 行已截去。ORIGINAL_LOGPROB 是 SGLANG_RETURN_ORIGINAL_LOGPROB 的简称。
 ---
 engine and mode                                  returned minus reference, median   median absolute
 …
@@ -64,10 +64,10 @@ SGLang return_logprob, ORIGINAL_LOGPROB=1        0.0000                         
 我们的捕获跑在 MLX 运行时上，MLX 对采样的处理不同。`--mlx-enable-sampling` 的帮助文本说明了变化。
 
 ```listing
-title: the MLX sampling flag in sglang serve --help
+title: sglang serve --help 里的 MLX 采样旗标
 source: capture/out/serve-help.txt
 lang: text
-note: Cut from the flag list. Three lines about the overlap scheduler are cut.
+note: 从旗标列表截出。关于 overlap 调度器的三行已截去。
 ---
   --mlx-enable-sampling
                         MLX backend only: sample decode tokens (temperature /
@@ -109,10 +109,10 @@ python3 -m sglang.test.test_deterministic --n-start 1 --n-trials 50 --test-mode 
 开着旗标时，全部十条请求写了同一段文本。启动日志展示了上面列表里的那些切换：
 
 ```listing
-title: what deterministic mode switched on the GB10
+title: 确定性模式在 GB10 上打开了什么
 source: capture/gpu/out-gb10/server-deterministic.log
 lang: text
-note: Three lines from the startup log. Timestamps and the end of the second line are cut.
+note: 启动日志里的三行。时间戳和第二行的末尾已截去。
 ---
 … Sampling backend is set to pytorch for deterministic inference.
 … Attention backend not specified. Falling back to 'flashinfer' for deterministic inference. You can explicitly set --attention-backend to one of ['ascend', 'fa3', 'fa4', 'flashinfer', 'intel_xpu', 'tri…
@@ -130,10 +130,10 @@ note: Three lines from the startup log. Timestamps and the end of the second lin
 那次检查还展示了后端变化。开着旗标、不设 `--attention-backend` 时，SGLang 在 L4（SM 8.9）上选了 `fa3`。同一块 GPU 上的默认服务器用 `flashinfer`。
 
 ```listing
-title: the attention backend that deterministic mode chose on the L4
+title: 确定性模式在 L4 上选的 attention 后端
 source: capture/gpu/out-l4/livecheck-2026-10-23.txt
 lang: text
-note: One line from the startup log, and the note under it.
+note: 启动日志里的一行，以及它下面的注释。
 ---
 Attention backend not specified. Falling back to 'fa3' for deterministic inference
 The server ran on fa3 on SM 8.9 with no error. The default server on this GPU uses flashinfer.
@@ -146,10 +146,10 @@ The server ran on fa3 on SM 8.9 with no error. The default server on this GPU us
 我们数了两次运行之间有多少 greedy 输出变了。prompt 是一段大约 170 token 的共享 system prompt 之后的 ShareGPT 问题，128 个输出 token，thinking 关着。这是在我们 L4 节点第二块 GPU 上用 `Qwen/Qwen3-0.6B`，主人共享它，没有锁时钟。时钟改速度，不改 greedy token。
 
 ```listing
-title: outputs that differ at a concurrency of 1, out of 32
+title: 并发为 1 时不一样的输出，32 条里
 source: capture/gpu/out-l4/greedy-output-cache-batch-dtype.txt
 lang: text
-note: The number in brackets is the median position of the first token that differs. The vLLM column comes from the same probe on vLLM 0.31.0.
+note: 括号里的数是第一个不同 token 的中位位置。vLLM 列来自 vLLM 0.31.0 上的同一探针。
 ---
 comparison                     SGLang 0.6B   vLLM 0.6B
 flushed repeat against fresh   0 of 32       0 of 32

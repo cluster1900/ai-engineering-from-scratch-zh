@@ -32,9 +32,9 @@ EAGLE3 会保持异步调度开启。[异步调度页](#s-leave-async-scheduling
 ```figure
 id: fig-4-1
 kind: chart
-title: EAGLE3 output by draft depth
-claim: With the clock locked, a draft depth of 3 gave the highest output at 32 users, and depths 3 and 5 tied at one user.
-caption: Each bar is the median of two seeds. The run with no speculation at one user is left out, because its clock fell to 210 MHz. From capture/gpu/summary/l4.json.
+title: 按 draft 深度看的 EAGLE3 输出
+claim: 时钟锁定时，draft 深度 3 在 32 个用户下输出最高，一个用户时深度 3 和 5 打平.
+caption: 每根柱是两个种子的中位数。一个用户、不做投机解码的那次运行没有画上，因为它的时钟降到了 210 MHz。 From capture/gpu/summary/l4.json.
 ```
 
 | 用户数，L4 锁频会话 | 配置 | 中位 TPOT | 输出 tok/s | 中位 SM 时钟 |
@@ -71,10 +71,10 @@ caption: Each bar is the median of two seeds. The run with no speculation at one
 2026-10-23，我们测量了接受长度随回答中位置的变化。我们在 L4 节点的第二块 GPU 上用 `Qwen/Qwen3-8B-FP8` 加 EAGLE3 draft，3 个投机 token。8 个 prompt 各自在开启 thinking、贪心解码、一个用户的条件下运行，最多 4,096 token。
 
 ```listing
-title: mean acceptance length by position in the answer
+title: 按回答中的位置看的平均接受长度
 source: capture/gpu/out-l4/eagle3-acceptance-by-position.txt
 lang: text
-note: The range across prompts, with the number of prompts that reached each segment in brackets. The SGLang column comes from the same prompts on SGLang 0.5.22.
+note: 各 prompt 之间的范围，括号里是到达该段的 prompt 个数。SGLang 这一列来自 SGLang 0.5.22 上的相同 prompt。
 ---
 segment of the output   SGLang                 vLLM
 0 to 256                2.05 to 2.64 (8)       2.14 to 2.51 (8)
@@ -89,10 +89,10 @@ segment of the output   SGLang                 vLLM
 2026-10-23 的第二次测试在节点的第一块 GPU 上用 BF16 的 `Qwen/Qwen3-8B`。它跑了 8 个用户，回答最长 2,048 token，不用 ignore-eos。回答长度中位数是 1,800 到 2,000 token。vLLM 根据每次运行前后的计数器给出了接受情况：
 
 ```listing
-title: EAGLE3 acceptance on answers of about 2,000 tokens, 8 users
+title: 约 2,000 个 token 的回答上的 EAGLE3 接受情况，8 个用户
 source: capture/gpu/out-l4/eagle3-long-outputs.txt
 lang: text
-note: The table of the file. The comparison with short outputs is cut.
+note: 文件里的那张表。和短输出的对比已略去。
 ---
 engine          dataset    mean acceptance length   accepted per draft position 1 / 2 / 3
 SGLang EAGLE3   GSM8K      2.68

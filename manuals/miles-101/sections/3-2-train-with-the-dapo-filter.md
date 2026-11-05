@@ -50,9 +50,9 @@ rollout 在它的 `perf N` 行里为过滤器写出三个数：
 ```figure
 id: fig-3-2
 kind: chart
-title: The filter costs one or two extra batches of prompts
-claim: A step that dropped 16 groups or fewer needed one batch of 48 prompts, and a step that dropped more needed two.
-caption: Rollout seconds per step with the pause time taken out, 12 steps with seed 1.
+title: 过滤器要多花一两批 prompt
+claim: 丢掉 16 组或更少的步只需要一批 48 个 prompt，丢掉更多的步需要两批.
+caption: 扣掉暂停时间之后，每步的 rollout 秒数，种子 1 的 12 步。
 ```
 
 有三步丢掉的组不超过 16 个，所以一批 48 个 prompt 就够了。它们的 rollout 中位数是 88.7 s，是无过滤器时 58.0 s 的 1.5 倍。其余九步需要第二批，中位数是 164.4 s，是原来的 2.8 倍。
@@ -66,9 +66,9 @@ caption: Rollout seconds per step with the pause time taken out, 12 steps with s
 ```figure
 id: fig-3-2b
 kind: chart
-title: The reward before the filter read higher
-claim: Over 12 steps on one seed, the reward counted before the filter was higher in 8 of the 12 steps.
-caption: Mean reward per step over every finished answer, 12 steps with seed 1.
+title: 过滤前读到的奖励更高
+claim: 在一个种子的 12 步里，过滤前统计的奖励有 8 步更高.
+caption: 每个已完成回答上的每步平均奖励，种子 1 的 12 步。
 ```
 
 12 步的平均值，有过滤器时是 0.686，没有时是 0.657。我们五次基线运行的 12 步平均值是 0.638 到 0.660，所以 0.686 高于所有基线。前四步的平均值也更高，0.672 对 0.625，而那时过滤器还不太可能明显改变模型。

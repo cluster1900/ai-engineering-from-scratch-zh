@@ -9,9 +9,9 @@ kit 中的三个 agent 来自同[一个文件](manuals/a2a-101/capture/a2a_ref.p
 ```figure
 id: fig-server-parts
 kind: structure
-title: the parts of a server, in the order a request meets them
-claim: A request passes authentication, the version check, and the capability check before Agent.send stores a task, and every event then leaves through one broadcast.
-caption: Read the left column top to bottom. Each box is a method of the kit's server. Rose boxes on the right are the errors each check returns, with their JSON-RPC codes from the error capture. From capture/a2a_ref.py.
+title: 服务器的各个部分，按请求遇到它们的顺序
+claim: 请求先经过认证、版本检查和 capability 检查，然后 Agent.send 才存储任务，此后每个事件都经同一次广播离开.
+caption: 左列从上到下读。每个方框是 kit 服务器的一个方法。右侧的玫瑰色方框是每项检查返回的错误，并标有错误 capture 中的 JSON-RPC 代码。 From capture/a2a_ref.py.
 ```
 
 ## card 与每种绑定一个处理器 {#s-a-server-the-card-and-one-handler-per-binding}
@@ -21,10 +21,10 @@ caption: Read the left column top to bottom. Each box is a method of the kit's s
 **绑定处理器：** 每种绑定一个入口点，它解析请求、运行检查，并调用相同的 agent 方法。kit 有位于 `/a2a/jsonrpc` 的 `Handler.jsonrpc` 和位于 `/a2a/rest/` 下的 `Handler.rest`，没有 gRPC，正如 [gRPC](#s-grpc) 一节所解释的。SDK 有 `create_jsonrpc_routes`、`create_rest_routes` 和 `GrpcHandler` {{sdk src/a2a/server/routes/jsonrpc_routes.py}} {{sdk src/a2a/server/routes/rest_routes.py}} {{sdk src/a2a/server/request_handlers/grpc_handler.py}}。三者都调用同一个 `DefaultRequestHandler`，也就是 `DefaultRequestHandlerV2` {{sdk src/a2a/server/request_handlers/__init__.py}}。
 
 ```listing
-title: the JSON-RPC handler, from the token to the first two methods
+title: JSON-RPC 处理器，从 token 到前两个方法
 source: capture/a2a_ref.py
 lang: python
-note: The head of the jsonrpc method and its error branch. The other nine method branches are cut.
+note: jsonrpc 方法的开头及其错误分支。其余九个方法分支已删节。
 ---
     def jsonrpc(self, raw):
         request_id = None
@@ -73,9 +73,9 @@ note: The head of the jsonrpc method and its error branch. The other nine method
 ```figure
 id: fig-a2a-and-tools
 kind: layers
-title: A2A between agents, tools inside each one
-claim: The planner sees only each agent's card and endpoint, while each agent calls its own logic and tools below a line that A2A never crosses.
-caption: Read top to bottom. Above the dashed line is what the planner sees over A2A. Below it is what each agent runs on its own, which the kit simulates in Python. From capture/agents.py and capture/out/01-agent-cards.http.
+title: agent 之间是 A2A，每个 agent 内部是工具
+claim: planner 只看得到每个 agent 的 card 和端点，而每个 agent 在一条 A2A 从不跨越的界线之下调用自己的逻辑和工具.
+caption: 从上到下读。虚线以上是 planner 通过 A2A 看到的内容。虚线以下是每个 agent 自己运行的部分，kit 用 Python 模拟了它们。 From capture/agents.py and capture/out/01-agent-cards.http.
 ```
 
 **任务存储：** 每个任务的记录，由 `GetTask`、`ListTasks` 和每条后续消息读取。kit 的 `Agent.tasks` 是一个没有所有者的字典，deployer 的 bearer 令牌是它唯一的保护。SDK 的 `TaskStore` 有 `save`、`get`、`list` 和 `delete`，每个都会收到 `ServerCallContext` {{sdk src/a2a/server/tasks/task_store.py}}。`InMemoryTaskStore` 按所有者为任务设键，默认的 `OwnerResolver` 返回 `context.user.user_name` {{sdk src/a2a/server/owner_resolver.py}} {{sdk src/a2a/server/tasks/inmemory_task_store.py}}。这样另一个调用者的任务就是 `TaskNotFoundError`，但每个没有用户名的调用者共享同一个范围。服务器必须在每个 A2A 操作请求上检查授权 {{spec §13.1}}，所以集成者要添加中间件，[安全方案](#s-security-schemes-and-in-task-authorization)一节针对每个 SDK 展示了这一点。

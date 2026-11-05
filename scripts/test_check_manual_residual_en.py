@@ -7,6 +7,8 @@ pinned from both sides: KEEP cases must stay silent, BLOCK cases must fail.
 from __future__ import annotations
 
 import hashlib
+import json
+import re
 import importlib.util
 import subprocess
 import sys
@@ -340,6 +342,7 @@ class ElementTests(unittest.TestCase):
         for text in (
             "```\n" + EN + "\n```\n",
             "```bash\n# " + EN + "\n```\n",
+            # no "---": the whole listing is the code body, same split as rule
             "```listing\ntitle: x\nnote: " + EN + "\n```\n",
         ):
             with self.subTest(text=text[:30]):
@@ -382,7 +385,12 @@ class ElementTests(unittest.TestCase):
 
 
 class FenceTests(unittest.TestCase):
-    """rule / takeaways fences render as prose (site/build-manuals.js:620-621)."""
+    """rule / takeaways / figure / listing fences render as prose.
+
+    site/build-manuals.js fenceBlock: rule and takeaways are prose; figure
+    title/claim/caption and listing title/note are prose (bot-hub#124).
+    id/kind/source/lang and the listing code body are not judged.
+    """
 
     RULE = ("```rule\nlabel: the end of a task\nsource: spec §3.1.1\n---\n"
             "A task in a terminal state takes no more messages. The terminal "
@@ -428,11 +436,139 @@ class FenceTests(unittest.TestCase):
         self.assertEqual(self._kinds(self.RULE + "\n" + EN + "\n"),
                          [(2, "RULE_LABEL"), (5, "RULE"), (8, "PROSE")])
 
-    def test_figure_and_listing_keys_out_of_scope(self):
-        # Deferred to bot-hub#124: figure/listing title, claim, caption, note.
-        text = ("```figure\nid: a-b\nkind: flow\ntitle: " + EN + "\nclaim: " + EN +
-                ".\ncaption: " + EN + "\n```\n\n```listing\ntitle: " + EN +
-                "\nsource: x\nlang: text\nnote: " + EN + "\n---\ncode\n```\n")
+    def test_english_figure_and_listing_keys_are_reported(self):
+        # id/kind/source/lang and the code body are English sentences too, and
+        # must not add hits. title/claim/caption/note/listing title must.
+        text = (
+            "```figure\n"
+            f"id: {EN}\n"
+            f"kind: {EN}\n"
+            f"title: {EN}\n"
+            f"claim: {EN}.\n"
+            f"caption: {EN}\n"
+            "```\n"
+            "\n"
+            "```listing\n"
+            f"title: {EN}\n"
+            f"source: {EN}\n"
+            f"lang: {EN}\n"
+            f"note: {EN}\n"
+            "---\n"
+            f"{EN}\n"
+            "```\n"
+        )
+        self.assertEqual(self._kinds(text), [
+            (4, "FIGURE_TITLE"),
+            (5, "FIGURE_CLAIM"),
+            (6, "FIGURE_CAPTION"),
+            (10, "LISTING_TITLE"),
+            (13, "LISTING_NOTE"),
+        ])
+
+    def test_figure_caption_continuation_is_one_hit_at_the_first_line(self):
+        # Neither physical line is a sentence; the joined caption is.
+        first, cont = "we restart the", "server every night"
+        self.assertFalse(chk.is_untranslated_sentence(first))
+        self.assertFalse(chk.is_untranslated_sentence(cont))
+        self.assertTrue(chk.is_untranslated_sentence(first + " " + cont))
+        text = (
+            "```figure\n"
+            "id: fig-x\n"
+            "kind: flow\n"
+            "title: 中文标题\n"
+            "claim: 中文主张\n"
+            "caption: " + first + "\n"
+            "  " + cont + "\n"
+            "```\n"
+        )
+        self.assertEqual(self._kinds(text), [(6, "FIGURE_CAPTION")])
+
+    def test_chinese_figure_with_necessary_english_is_silent(self):
+        title = "test-runner 的 A2A 栈"
+        claim = "A2A 规定 card、绑定和 Task，虚线以下属于宿主。"
+        caption = "从上往下读 Task 与 A2A，路径来自 test-runner 的 card。"
+        for sample in (title, claim, caption):
+            self.assertFalse(chk.is_untranslated_sentence(sample), sample)
+        text = (
+            "```figure\n"
+            "id: fig-spec-layers\n"
+            "kind: layers\n"
+            f"title: {title}\n"
+            f"claim: {claim}\n"
+            f"caption: {caption}\n"
+            "```\n"
+        )
+        self.assertEqual(self._kinds(text), [])
+
+    def test_figure_title_alone_is_figure_title(self):
+        # Kills a mutant that forgets to scan figure fences.
+        text = (
+            "```figure\n"
+            "id: fig-x\n"
+            "kind: flow\n"
+            f"title: {EN}\n"
+            "claim: 中文主张\n"
+            "caption: 中文说明\n"
+            "```\n"
+        )
+        self.assertEqual(self._kinds(text), [(4, "FIGURE_TITLE")])
+
+    def test_listing_note_alone_is_listing_note(self):
+        # Kills a mutant that scans listing title but forgets note.
+        text = (
+            "```listing\n"
+            "title: 中文标题\n"
+            "source: capture/log.txt\n"
+            "lang: text\n"
+            f"note: {EN}\n"
+            "---\n"
+            "code\n"
+            "```\n"
+        )
+        self.assertEqual(self._kinds(text), [(5, "LISTING_NOTE")])
+
+    def test_listing_code_body_is_not_judged(self):
+        # Kills a mutant that scans the listing body after "---".
+        text = (
+            "```listing\n"
+            "title: 中文标题\n"
+            "source: capture/log.txt\n"
+            "lang: text\n"
+            "note: 中文说明\n"
+            "---\n"
+            f"{EN}\n"
+            f"note: {EN}\n"
+            "```\n"
+        )
+        self.assertEqual(self._kinds(text), [])
+
+    def test_id_kind_source_lang_are_not_judged(self):
+        # Kills a mutant that judges id/kind/source/lang when title/note are Chinese.
+        self.assertTrue(chk.is_untranslated_sentence(EN))
+        text = (
+            "```figure\n"
+            f"id: {EN}\n"
+            f"kind: {EN}\n"
+            "title: 中文标题里的 Task 与 A2A\n"
+            "claim: test-runner 的中文主张\n"
+            "caption: 中文说明\n"
+            "```\n"
+            "\n"
+            "```listing\n"
+            "title: 中文列表标题\n"
+            f"source: {EN}\n"
+            f"lang: {EN}\n"
+            "note: 中文注释里的 test-runner\n"
+            "---\n"
+            "ok\n"
+            "```\n"
+        )
+        self.assertEqual(self._kinds(text), [])
+
+    def test_prose_inside_bash_fence_is_still_ignored(self):
+        # Kills a mutant that searches the file for English instead of parsing
+        # figure/listing head keys only.
+        text = "```bash\n" + EN + "\ntitle: " + EN + "\nnote: " + EN + "\n```\n"
         self.assertEqual(self._kinds(text), [])
 
     def test_every_rule_and_takeaways_block_in_manuals_is_scanned(self):
@@ -444,6 +580,24 @@ class FenceTests(unittest.TestCase):
                     continue
                 kinds = {k for _ln, k, _t in chk.scan_file(path)[0]}
                 self.assertFalse(kinds & {"RULE", "RULE_LABEL", "TAKEAWAY"}, rel)
+
+    def test_every_figure_and_listing_field_in_manuals_is_translated(self):
+        # bot-hub#124 translations done; synthetic FenceTests with EN still
+        # kill a mutant that skips figure/listing scanning.
+        manuals = sorted(
+            p.parent.name for p in (REPO_ROOT / "manuals").glob("*/manual.json")
+        )
+        self.assertGreaterEqual(len(manuals), 5)
+        for man in manuals:
+            for path in sorted((REPO_ROOT / "manuals" / man).rglob("*.md")):
+                rel = PurePosixPath(path.relative_to(REPO_ROOT).as_posix())
+                if chk.is_excluded(rel):
+                    continue
+                kinds = {
+                    k for _ln, k, _t in chk.scan_file(path)[0]
+                    if k.startswith("FIGURE_") or k.startswith("LISTING_")
+                }
+                self.assertFalse(kinds, rel)
 
 
 class R11TighteningTests(unittest.TestCase):
@@ -728,7 +882,12 @@ class UnionWithMainTests(unittest.TestCase):
                 if chk.is_excluded(rel):
                     continue
                 new_hits, _ = chk.scan_file(path)
-                new_total += len(new_hits)
+                # Figure/listing fields are scanned but not translated yet
+                # (bot-hub#124). Prose, rules, and takeaways stay clean.
+                new_total += sum(
+                    1 for _ln, k, _t in new_hits
+                    if not (k.startswith("FIGURE_") or k.startswith("LISTING_"))
+                )
                 for ln, _k, text in self.oracle.scan_file(path, False, False):
                     main_only.add((rel.as_posix(), ln, text))
         self.assertEqual(new_total, 0)
@@ -874,6 +1033,238 @@ class CliFailClosedTests(unittest.TestCase):
             self.assertNotEqual(proc.returncode, 0, proc.stdout)
             self.assertNotIn("FAIL_hits=0", proc.stdout)
             self.assertIn(ORACLE_PATH.name, proc.stderr)
+
+
+def _figure(caption: str, title: str = "中文标题", claim: str = "中文主张") -> str:
+    return (
+        "```figure\n"
+        "id: fig-x\n"
+        "kind: flow\n"
+        f"title: {title}\n"
+        f"claim: {claim}\n"
+        f"caption: {caption}\n"
+        "```\n"
+    )
+
+
+class ReaderCaptionFromTailTests(unittest.TestCase):
+    """#124 B1: figure captions keep an English ``From …`` provenance tail.
+
+    site/build-manuals.js readerCaption() strips that tail in the reader.
+    The gate must strip the same tail before it judges FIGURE_CAPTION, and
+    the on-disk tail must stay English so the reader never sees ``capture/``.
+    """
+
+    def test_reader_caption_matches_the_site_reader(self):
+        # The four cases in site/test_manuals.js, plus both guards.
+        self.assertEqual(
+            chk.reader_caption(
+                "Read top to bottom. Grey layers are outside SGLang. "
+                "From the v0.5.22 source and capture/out/server-default.log."
+            ),
+            "Read top to bottom. Grey layers are outside SGLang.",
+        )
+        self.assertEqual(
+            chk.reader_caption(
+                "From step 2 on, the left box is the request. From capture/out/a.txt."
+            ),
+            "From step 2 on, the left box is the request.",
+        )
+        self.assertEqual(chk.reader_caption("Read left to right."), "Read left to right.")
+        kept = "Read it. From the second request onward, the cache serves the prefix."
+        self.assertEqual(chk.reader_caption(kept), kept)
+        # Period-then-capital inside the tail: a sentence, even with "source".
+        sentence = "From the source. The next sentence starts here."
+        self.assertEqual(chk.reader_caption(sentence), sentence)
+        # No path-like token: keep the tail (the guard above is not this one).
+        prose = "From the second request onward, the cache serves the prefix."
+        self.assertEqual(chk.reader_caption(prose), prose)
+
+    def test_chinese_caption_with_from_tail_is_silent(self):
+        # A. The backtick path the machine writes, and a From-tail that is
+        # itself an untranslated sentence (it would hit if the tail were kept).
+        backtick = "中文说明。 From `capture/out/x.http`."
+        hits, _ = _scan("3-1-intro.md", _figure(backtick))
+        self.assertEqual(
+            [(ln, k) for ln, k, _t in hits if k == "FIGURE_CAPTION"],
+            [],
+        )
+        prose_tail = (
+            "中文说明。 From capture/out/x.http and the shutdown code at v0.5.22."
+        )
+        self.assertTrue(chk.is_untranslated_sentence(prose_tail))
+        self.assertFalse(chk.is_untranslated_sentence(chk.reader_caption(prose_tail)))
+        self.assertNotIn("capture/", chk.reader_caption(prose_tail))
+        hits, _ = _scan("3-1-intro.md", _figure(prose_tail))
+        self.assertEqual(
+            [(ln, k) for ln, k, _t in hits if k == "FIGURE_CAPTION"],
+            [],
+        )
+
+    def test_english_prose_caption_still_hits(self):
+        # B. Stripping a tail must not exempt the caption body.
+        hits, _ = _scan("3-1-intro.md", _figure(EN))
+        self.assertEqual([(ln, k) for ln, k, _t in hits], [(6, "FIGURE_CAPTION")])
+        mixed = EN + ". From capture/out/x.http and the shutdown code at v0.5.22."
+        self.assertNotEqual(chk.reader_caption(mixed), mixed.strip())
+        self.assertTrue(chk.is_untranslated_sentence(chk.reader_caption(mixed)))
+        hits, _ = _scan("3-1-intro.md", _figure(mixed))
+        self.assertEqual([(ln, k) for ln, k, _t in hits], [(6, "FIGURE_CAPTION")])
+
+    def test_every_real_figure_reader_caption_hides_capture_paths(self):
+        # C. Every non-excluded figure caption, after the readerCaption mirror.
+        figs = chk.figure_captions(REPO_ROOT)
+        self.assertGreaterEqual(len(figs), 50)
+        stripped = [
+            (rel, fig_id) for rel, fig_id, caption in figs
+            if chk.reader_caption(caption) != caption.strip()
+        ]
+        self.assertGreaterEqual(len(stripped), 50)
+        leaks = chk.figure_caption_capture_leaks(REPO_ROOT)
+        self.assertEqual(
+            leaks, [],
+            "reader caption still contains capture/: "
+            + "; ".join(f"{rel} {fig_id}" for rel, fig_id in leaks),
+        )
+        # On-disk captions do not use a Chinese trailing provenance tail.
+        chinese = [
+            f"{rel} {fig_id}"
+            for rel, fig_id, caption in figs
+            if "来自 capture/" in caption or "来自 `capture/" in caption
+        ]
+        self.assertEqual(chinese, [])
+
+    def test_chinese_from_tail_mutation_still_leaks_and_real_tree_does_not(self):
+        # D. Rewriting one real English From-tail into Chinese documents the
+        # bug: readerCaption only strips "From", so capture/ stays visible.
+        # A temp tree that uses that form fails the every-figure check.
+        real = next(
+            (
+                (rel, fig_id, caption)
+                for rel, fig_id, caption in chk.figure_captions(REPO_ROOT)
+                if " From capture/" in caption or " From `capture/" in caption
+            ),
+            None,
+        )
+        self.assertIsNotNone(real)
+        rel, fig_id, caption = real
+        shown = chk.reader_caption(caption)
+        self.assertNotIn("capture/", shown, f"{rel} {fig_id}")
+        self.assertNotEqual(shown, caption.strip(), f"{rel} {fig_id}")
+        mutant = shown + "来自 capture/out/demo.http。"
+        self.assertIn("capture/", chk.reader_caption(mutant), f"{rel} {fig_id}")
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "section.md").write_text(
+                _figure("中文说明。来自 capture/out/demo.http。"),
+                encoding="utf-8",
+            )
+            leaks = chk.figure_caption_capture_leaks(root)
+            self.assertEqual(leaks, [("section.md", "fig-x")])
+        self.assertEqual(chk.figure_caption_capture_leaks(REPO_ROOT), [])
+
+    @staticmethod
+    def _last_sentence(text: str) -> str:
+        parts = [p for p in re.split(r"(?<=[。！？.!?])\s*", text.strip()) if p.strip()]
+        return parts[-1].strip() if parts else ""
+
+    @staticmethod
+    def _from_tail(caption: str) -> str | None:
+        body = chk.reader_caption(caption)
+        if body == caption.strip():
+            return None
+        m = re.search(r"(?:^|\s)(From (?!step\b)\S[\s\S]*)$", caption.strip())
+        return m.group(1).strip() if m else None
+
+    @staticmethod
+    def _main_from_tails() -> dict[tuple[str, str], str]:
+        """Stripable From-tails from origin/main, with a committed baseline fallback.
+
+        Prefer live ``git show origin/main`` (after an optional fetch) so the
+        check tracks main; if that is unavailable in CI, load
+        scripts/fixtures/figure_caption_from_tails_main.json.
+        """
+        baseline_path = (
+            Path(__file__).resolve().parent / "fixtures" / "figure_caption_from_tails_main.json"
+        )
+        # Try to make origin/main available (no-op when already fetched).
+        subprocess.run(
+            ["git", "fetch", "--no-tags", "--depth=1", "origin", "main"],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            check=False,
+        )
+        live: dict[tuple[str, str], str] = {}
+        head_rels = sorted({rel for rel, _fid, _c in chk.figure_captions(REPO_ROOT)})
+        for rel in head_rels:
+            proc = subprocess.run(
+                ["git", "show", f"origin/main:{rel}"],
+                cwd=REPO_ROOT,
+                capture_output=True,
+                check=False,
+            )
+            if proc.returncode != 0:
+                live = {}
+                break
+            for fig_id, caption in chk.figure_captions_in_text(proc.stdout.decode("utf-8")):
+                tail = ReaderCaptionFromTailTests._from_tail(caption)
+                if tail is not None:
+                    live[(rel, fig_id)] = tail
+        if live:
+            return live
+        data = json.loads(baseline_path.read_text(encoding="utf-8"))
+        return {(row["rel"], row["id"]): row["main_tail"] for row in data}
+
+    def test_stripable_from_tails_match_main_and_reader_has_no_lai_sentence(self):
+        # E. For every main-stripable figure: head's stripped From-tail matches
+        # main byte-for-byte; reader_caption(head) does not end with a sentence
+        # that starts with 「来自」; no capture/ leak. Uses live origin/main or
+        # the committed baseline so CI cannot skip this check (#149 r2).
+        main_tails = self._main_from_tails()
+        self.assertGreaterEqual(len(main_tails), 100)
+        head = {(rel, fig_id): caption for rel, fig_id, caption in chk.figure_captions(REPO_ROOT)}
+        for (rel, fig_id), main_tail in sorted(main_tails.items()):
+            self.assertIn((rel, fig_id), head, f"missing on head: {rel} {fig_id}")
+            caption = head[(rel, fig_id)]
+            shown = chk.reader_caption(caption)
+            self.assertNotEqual(shown, caption.strip(), f"{rel} {fig_id}")
+            self.assertEqual(self._from_tail(caption), main_tail, f"{rel} {fig_id}")
+            self.assertNotIn("capture/", shown, f"{rel} {fig_id}")
+            self.assertFalse(
+                self._last_sentence(shown).startswith("来自"),
+                f"{rel} {fig_id} reader ends with 来自-sentence: {self._last_sentence(shown)!r}",
+            )
+
+    def test_duplicate_chinese_lai_before_from_mutation_is_caught(self):
+        # Mutation for #149 r2: Chinese 「来自 …。」 left in front of an English
+        # From-tail survives capture/-only checks but fails the 来自-sentence rule.
+        real = next(
+            (
+                (rel, fig_id, caption)
+                for rel, fig_id, caption in chk.figure_captions(REPO_ROOT)
+                if self._from_tail(caption) is not None
+                and "capture/" not in chk.reader_caption(caption)
+            ),
+            None,
+        )
+        self.assertIsNotNone(real)
+        rel, fig_id, caption = real
+        shown = chk.reader_caption(caption)
+        self.assertFalse(self._last_sentence(shown).startswith("来自"), f"{rel} {fig_id}")
+        mutant = shown + "来自 某来源说明。" + " " + self._from_tail(caption)
+        mutant_shown = chk.reader_caption(mutant)
+        self.assertTrue(
+            self._last_sentence(mutant_shown).startswith("来自"),
+            f"mutant should leave a 来自-sentence visible: {mutant_shown!r}",
+        )
+        # Real tree must not contain that adjacent duplicate form.
+        dup = [
+            f"{r} {i}"
+            for r, i, c in chk.figure_captions(REPO_ROOT)
+            if re.search(r"(?<=[。！？])来自[^。！？]*。[ \t]*From (?!step\b)", c)
+        ]
+        self.assertEqual(dup, [])
 
 
 if __name__ == "__main__":

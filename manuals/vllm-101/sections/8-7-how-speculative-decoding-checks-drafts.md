@@ -15,9 +15,9 @@
 ```figure
 id: fig-8-7
 kind: sequence
-title: one verify pass
-claim: One target pass keeps the drafts up to the first rejection and adds one token, so one real request got about 1.8 tokens per pass.
-caption: The top half shows the rule by position. The bottom half is a real Qwen3-8B request on our L4, served by SGLang with EAGLE3, the same rule vLLM uses. Green tokens came from verify passes. From manuals/sglang-101/capture/gpu/out-l4/eagle3-generate.txt.
+title: 一次验证
+claim: 一次目标模型验证保留第一次拒绝之前的草稿，并再补一个 token，所以一次真实请求每次大约得到 1.8 个 token.
+caption: 上半部分按位置展示这条规则。下半部分是我们 L4 上的一次真实 Qwen3-8B 请求，由 SGLang 用 EAGLE3 提供服务，规则与 vLLM 相同。绿色 token 来自各次验证。 From manuals/sglang-101/capture/gpu/out-l4/eagle3-generate.txt.
 ```
 
 ## 提议器 {#s-how-speculative-decoding-checks-drafts-the-proposers}

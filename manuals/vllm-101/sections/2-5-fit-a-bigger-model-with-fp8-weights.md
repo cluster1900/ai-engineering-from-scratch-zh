@@ -35,9 +35,9 @@ Ada 之前的 GPU，例如 A100，不支持 FP8 运算。在这些 GPU 上，vLL
 ```figure
 id: fig-2-5
 kind: chart
-title: FP8 weights against BF16 at 32 users
-claim: With the clock locked and the same KV pool, FP8 weights gave 284.7 against 208.8 output tokens per second at 32 users.
-caption: Each bar is the median of two seeds. The BF16 run had a median clock of 881 MHz and the FP8 run 900 MHz. From capture/gpu/summary/l4.json.
+title: 32 个用户时 FP8 权重对比 BF16
+claim: 时钟锁定且 KV 池相同时，32 个用户下每秒输出 token 是 FP8 的 284.7 对 BF16 的 208.8.
+caption: 每根柱是两个种子的中位数。BF16 运行的时钟中位数是 881 MHz，FP8 运行是 900 MHz。 From capture/gpu/summary/l4.json.
 ```
 
 | 用户数，L4 锁频会话 | TPOT 中位数，BF16 / FP8 | 输出 tok/s，BF16 / FP8 | SM 时钟中位数，BF16 / FP8 |
@@ -84,10 +84,10 @@ vllm serve Qwen/Qwen3-14B-AWQ --max-model-len 8192
 2026-10-23，我们在 L4 上运行了前 500 道 GSM8K 题目，8-shot、贪心解码，对比 `Qwen/Qwen3-8B` 与 `Qwen/Qwen3-8B-FP8`：
 
 ```listing
-title: GSM8K accuracy, 500 questions, 8-shot, Qwen3-8B on vLLM 0.31.0
+title: GSM8K 准确率，500 题，8-shot，Qwen3-8B，vLLM 0.31.0
 source: capture/gpu/out-l4/gsm8k-fp8-accuracy.txt
 lang: text
-note: The vLLM rows. The SGLang rows of the same file are cut.
+note: vLLM 的几行。同一文件里 SGLang 的几行已略去。
 ---
 engine   config                     correct   accuracy   Wilson 95% interval
 …

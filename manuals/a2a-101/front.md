@@ -73,10 +73,10 @@ python3 capture/run.py --check
 先打开 `capture/out/02-message-reply.http`：向 `code-reviewer` 提一个问题并得到直接回答，没有任务。然后打开 `capture/out/05-streaming.http`，其中一个发给 `test-runner` 的请求打开了一个包含九行 `data:` 的流：
 
 ```listing
-title: the start of a stream
+title: 一条流的开头
 source: capture/out/05-streaming.http
 lang: http
-note: The request body and the rest of the first frame are cut. Frames 2 to 9 follow it in the file.
+note: 请求体和第一帧的其余部分已删节。第 2 到第 9 帧在文件中紧随其后。
 ---
 POST /a2a/jsonrpc HTTP/1.1
 Host: localhost:41241
@@ -111,9 +111,9 @@ data: {"jsonrpc": "2.0", "id": 1, "result": {"task": {"id": "728ba084-97eb-422b-
 ```figure
 id: fig-reading-a-sequence
 kind: sequence
-title: reading a sequence figure in this manual
-claim: Each of the seven arrow styles marks one kind of exchange, and the label on each arrow is a real name from a run of the kit.
-caption: Read each numbered row from the tail of the arrow to its head. The note under a label gives the style and its meaning. The rows come from 03-blocking-task.http, 05-streaming.http, 15-push.http, 19-planner.log, and 11-errors.http, and the task store is the kit's own store inside test-runner.
+title: 阅读本手册中的时序图
+claim: 七种箭头样式各自标出一种交换，每支箭头上的标签都是 kit 某次运行中的真实名称.
+caption: 每一编号行都从箭头的尾读到头。标签下方的说明给出样式及其含义。这些行来自 03-blocking-task.http、05-streaming.http、15-push.http、19-planner.log 和 11-errors.http，任务存储是 test-runner 内部 kit 自己的存储。
 ```
 
 Sources: spec §3.6, §3.7 (research/sources/specification.md); proto TaskState (research/sources/a2a.proto); docs life-of-a-task (research/sources/docs.md); sdk src/a2a/server/tasks/task_manager.py; manual.json; research/sources/README.md; research/brief-spec.md §12.2; research/brief-docs.md; research/sources/specification-main.md (main at 679ab3a); capture/README.md, capture/run.py, capture/agents.py, capture/a2a_ref.py, capture/planner.py; capture/out/02-message-reply.http, 03-blocking-task.http, 05-streaming.http, 11-errors.http, 15-push.http, 19-planner.log

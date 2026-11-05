@@ -11,10 +11,10 @@
 捕获套件在[第 5.5 节](#s-compare-and-compare-functions) 的两份比较记录上构建了四条主张：`percent_change` 的伪代码与汇编，以及 `total` 的伪代码与汇编。
 
 ```listing
-title: the specification the capture sent
+title: 捕获送出的规格
 source: capture/out/10-mcp-22-verify-reconstruction.json
 lang: json
-note: The second and third claims are cut. The response follows the request in the same file.
+note: 第二条与第三条主张已裁。回复跟在同一文件的请求之后。
 ---
 {
   "request": {
@@ -60,10 +60,10 @@ note: The second and third claims are cut. The response follows the request in t
 响应是一份像其他每一个结果一样的 Evidence 记录，带着 `subject: null`、provider `rea-reconstruction-verifier` 版本 `1`、谓词 `rea.reconstruction-verification`、`confidence: "derived"`，以及 `authority: "analyst-inference"`。`parameters` 持有规范的 SHA-256 与主张 id，所以当一条主张改变时记录的 id 也会改变。
 
 ```listing
-title: the verification record, head and summary
+title: 验证记录，开头与摘要
 source: capture/out/10-mcp-22-verify-reconstruction.json
 lang: json
-note: The analysis_profile, the per-claim items, the probes, and the evidence links are cut.
+note: `analysis_profile`、逐条主张、探针与证据链接已裁。
 ---
       "structuredContent": {
         "evidence_id": "ev_ccbaea4b…",
@@ -106,10 +106,10 @@ note: The analysis_profile, the per-claim items, the probes, and the evidence li
 对一条 `structural-function` 主张，观察到的状态是比较记录里具名维度的 `status`。
 
 ```listing
-title: the total-assembly claim
+title: total 汇编主张
 source: capture/out/10-mcp-22-verify-reconstruction.json
 lang: json
-note: The evidence_links array and 28 of the 30 limitation strings are cut. The Residual unknown line is the one this claim adds to the limitations of the comparison record.
+note: `evidence_links` 数组以及 30 条 limitation 字符串里的 28 条已裁。Residual unknown 这一行是本主张加到比较记录 limitation 上的那一条。
 ---
                 "claim_id": "total-assembly",
                 "kind": "structural-function",
@@ -144,9 +144,9 @@ note: The evidence_links array and 28 of the 30 limitation strings are cut. The 
 ```figure
 id: fig-7-1
 kind: tree
-title: four claims over two comparison records
-claim: Each claim takes its status from one dimension of one comparison record, and the total claims also carry the unknown that compare_functions recorded.
-caption: Read top down. The verification record cites four claims, each claim cites one comparison record, and each comparison record cites a left and a right dossier. Amber claims passed and dashed rose claims failed. Ids are cut to their first eight hex digits. From capture/out/10-mcp-22-verify-reconstruction.json.
+title: 两份比较记录上的四条主张
+claim: 每条主张的状态来自一份比较记录的一个维度，total 主张还带着 `compare_functions` 记下的未知.
+caption: 从上往下读。验证记录引用四条主张，每条主张引用一份比较记录，每份比较记录引用左、右 dossier。琥珀色主张通过，虚线玫瑰色主张失败。id 裁到前八位十六进制。 From capture/out/10-mcp-22-verify-reconstruction.json.
 ```
 
 ## 一次通过不证明什么 {#s-verify-reconstruction-what-a-pass-does-not-prove}

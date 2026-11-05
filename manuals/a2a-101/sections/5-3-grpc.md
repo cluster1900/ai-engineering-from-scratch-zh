@@ -13,10 +13,10 @@ planner 读取三张 card，只发现 `JSONRPC` 和 `HTTP+JSON` 接口，所以 
 有两个 rpc 返回 `stream StreamResponse`：`SendStreamingMessage` 和 `SubscribeToTask` {{proto A2AService}} {{spec §10.7}}。其他九个是一元调用，没有一个接受客户端流。每个 rpc 也带有定义其 HTTP+JSON 路由的 `google.api.http` 注解，如 [HTTP+JSON](#s-http-json) 一节所示：
 
 ```listing
-title: the streaming send, as the proto defines it
+title: proto 所定义的流式发送
 source: research/sources/a2a.proto
 lang: text
-note: The rpc with its HTTP annotation, complete. The additional_bindings block is the tenant route.
+note: 这个 rpc 及其 HTTP 注解，完整保留。additional_bindings 块是 tenant 路由。
 ---
   // Sends a streaming message to an agent, allowing for real-time interaction and status updates.
   // Streaming version of `SendMessage`
@@ -45,9 +45,9 @@ card 以 `protocolBinding` 设为 `GRPC` 来指明这种绑定 {{proto AgentInte
 ```figure
 id: fig-grpc-call
 kind: sequence
-title: one SendStreamingMessage call over gRPC
-claim: One rpc sends the request with its metadata, the server streams StreamResponse messages until the task ends, and the rpc status closes the stream.
-caption: Read top to bottom. The client sends one SendMessageRequest with a2a-version in its metadata, and each reply is one StreamResponse payload. Names are the proto's, because the kit has no gRPC capture, so no values are shown. From research/sources/a2a.proto.
+title: 一次通过 gRPC 的 SendStreamingMessage 调用
+claim: 一个 rpc 连同 metadata 发送请求，服务器持续流出 StreamResponse 消息直到任务结束，rpc 状态关闭这条流.
+caption: 从上到下读。客户端发送一个带 metadata 中 a2a-version 的 SendMessageRequest，每条回复是一个 StreamResponse 负载。名称采用 proto 的写法，因为 kit 没有 gRPC capture，所以不展示值。 From research/sources/a2a.proto.
 ```
 
 ## SDK 支持 {#s-grpc-sdk-support}

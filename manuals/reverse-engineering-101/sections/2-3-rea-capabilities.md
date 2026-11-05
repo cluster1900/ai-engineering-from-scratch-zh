@@ -11,10 +11,10 @@
 `capabilities` 与 `providers` 一起注册，帮助把 `capabilities` 描述为 provider 能力与副作用列表。两者都打印会话状态，也就是 `binary_session` 经 MCP 返回的同一对象。没有打开目标时它以 `open: false` 开始：
 
 ```listing
-title: the head of the status record
+title: 状态记录的开头
 source: capture/out/02-capabilities.json
 lang: json
-note: Cut to the first group of the first provider block and the first fields of the ghidra candidate. The other three groups of that block, the other three target-free blocks, and the other three candidates are cut.
+note: 裁到第一个 provider 块的第一组，以及 ghidra 候选开头的字段。该块的其余三组、另外三个不带目标的块，以及另外三个候选已裁。
 ---
 {
   "open": false,
@@ -72,9 +72,9 @@ note: Cut to the first group of the first provider block and the first fields of
 ```figure
 id: fig-2-3
 kind: structure
-title: one capability group, analyze_function under ghidra
-claim: A capability group answers four questions before any call: is the operation available, what does it start, what does it write, and what does it change.
-caption: Read the field, its value for the analyze_function group in the ghidra block, and the note. From capture/out/02-capabilities.json, with the schema from src/contracts/toolOutputSchemaPrimitives.ts at the tag.
+title: 一个 capability 组，ghidra 下的 analyze_function
+claim: 一个 capability 组在任何调用之前回答四个问题：操作是否可用、它启动什么、它写什么、它改什么.
+caption: 读字段、它在 ghidra 块里 analyze_function 组的值，以及说明。 From capture/out/02-capabilities.json, with the schema from src/contracts/toolOutputSchemaPrimitives.ts at the tag.
 ```
 
 ## 七种 effect {#s-rea-capabilities-the-seven-effects}
@@ -98,18 +98,18 @@ caption: Read the field, its value for the analyze_function group in the ghidra 
 ```figure
 id: fig-2-4
 kind: comparison
-title: declared effects by provider in the capture
-claim: Every Ghidra operation declares launches_process and may_write_filesystem, three also declare mutates_artifact, and no operation in the capture declares changes_permissions or requires_root.
-caption: Read one column per provider and one row per flag, and each cell counts the operations that declare the flag. Counted from the capabilities capture.
+title: 捕获里按 provider 声明的效果
+claim: 每一个 Ghidra 操作都声明 `launches_process` 与 `may_write_filesystem`，其中三个还声明 `mutates_artifact`，捕获里没有任何操作声明 `changes_permissions` 或 `requires_root`.
+caption: 每个 provider 一列，每个标志一行，格子里是声明该标志的操作数。计数来自 capabilities 捕获。
 ```
 
 ## 四个候选，一个绑定 {#s-rea-capabilities-four-candidates-one-bound}
 
 ```listing
-title: the three candidates that are not available
+title: 三个不可用的候选
 source: capture/out/02-capabilities.json
 lang: json
-note: Cut to the provider and availability of hopper, ida, and kuna. Their diagnostics, their target support, and their provider blocks are cut.
+note: 裁到 hopper、ida 与 kuna 的 provider 与可用性。它们的诊断、目标支持与 provider 块已裁。
 ---
     {
       "provider": {
@@ -165,10 +165,10 @@ note: Cut to the provider and availability of hopper, ida, and kuna. Their diagn
 记录以 `server_identity` 结束。它的 `catalog` 持有两样东西：计数，以及目录的三个 SHA-256 digest：
 
 ```listing
-title: the catalog in server_identity
+title: server_identity 里的 catalog
 source: capture/out/02-capabilities.json
 lang: json
-note: Cut to the catalog. The digests are cut to eight hex digits, and the other fields of server_identity are cut.
+note: 裁到 catalog。digest 裁到八位十六进制，`server_identity` 的其余字段已裁。
 ---
     "catalog": {
       "counts": {
@@ -187,10 +187,10 @@ note: Cut to the catalog. The digests are cut to eight hex digits, and the other
 目录没有按工具的条目。每个 MCP 工具的副作用在 `tools/list` 返回的 tool annotations 里：
 
 ```listing
-title: the tools/list entry for xrefs
+title: xrefs 的 tools/list 条目
 source: capture/out/10-mcp-02-tools-list.json
 lang: json
-note: Cut to the name, the title, and the annotations. The description and the two schemas are cut.
+note: 裁到 name、title 与 annotations。description 与两份 schema 已裁。
 ---
         {
           "name": "xrefs",

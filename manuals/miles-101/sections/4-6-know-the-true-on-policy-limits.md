@@ -22,10 +22,10 @@ FlashAttention 3 是为 Hopper GPU 构建的。引擎的检查接受计算能力
 我们的 GB10 是计算能力 12.1 的 Blackwell GPU。引擎在启动时停了下来：
 
 ```listing
-title: FlashAttention 3 refuses the GB10
+title: FlashAttention 3 拒绝这块 GB10
 source: capture/gpu/out-gb10/engine-died-503.log
 lang: text
-note: The first engine lines of the true on-policy run.
+note: 真正同策略运行开头的几行引擎日志。
 ---
 [2026-10-17 21:03:03] Enable deterministic inference because of legacy rl_on_policy_target.
 AssertionError: FlashAttention v3 Backend requires SM>=80 and SM<=90. Please use `--attention-backend flashinfer`.

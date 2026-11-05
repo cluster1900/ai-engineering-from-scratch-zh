@@ -76,16 +76,29 @@ is paragraph text and judged. An opener whose info is not ``[a-z0-9-]+``
 (``Rule``) is reported as FENCE_BAD_INFO and an unclosed fence as
 FENCE_UNCLOSED: the site build fails on both.
 
-Fenced blocks the site renders as prose are judged too (#141 r10):
+Fenced blocks the site renders as prose are judged too (#141 r10, bot-hub#124):
   ``rule``      -- the ``label:`` value (RULE_LABEL, with continuation lines)
                    and the body after ``---`` joined (RULE); without ``---``
                    the whole block is the body; ``source:`` is a citation key
                    and is not judged (site/build-manuals.js splitHeader).
   ``takeaways`` -- each ``- item`` with its continuation lines (TAKEAWAY).
-Other fenced blocks (code, ``figure``, ``listing``, ...) are skipped.
-
-Out of scope (same as main, tracked in bot-hub#124): ``title:``/``caption:``/
-``claim:``/``note:`` lines inside fenced ``figure`` / ``listing`` blocks.
+  ``figure``    -- ``title:`` (FIGURE_TITLE), ``claim:`` (FIGURE_CLAIM), and
+                   ``caption:`` (FIGURE_CAPTION). Keys are parsed like
+                   site/build-manuals.js keyValues and the rule head: a
+                   ``key:`` line (FENCE_KEY) plus continuation lines
+                   (FENCE_CONT, 2+ leading spaces), joined and reported at
+                   the key's first line. ``id:`` and ``kind:`` are not judged.
+                   A caption is judged only after ``reader_caption`` drops a
+                   trailing machine-provenance ``From …`` tail (#124 B1).
+  ``listing``   -- the head before ``---`` only, split on FENCE_RULE_SEP
+                   (``^---\s*$``) the same way as ``rule``. ``title:``
+                   (LISTING_TITLE) and ``note:`` (LISTING_NOTE) are judged.
+                   ``source:`` and ``lang:`` are not judged. The code body
+                   after ``---`` is not judged; without ``---`` the whole
+                   block is that body.
+Other fenced blocks (code, and empty palette / parts / index fences) are
+skipped. A paragraph starting with ``Sources:`` is still the citation block
+and is skipped.
 
 As a safety net the frozen main checker (check_manual_residual_en_main_89cbf1a.py)
 still runs. Every main hit is re-judged with the rule above on its FULL,
@@ -524,6 +537,117 @@ def _union_with_main(path, hits, covered):
     return hits
 
 
+# Machine provenance; readerCaption strips the same English "From …" tail;
+# keep English so the reader never sees capture paths (#124 B1).
+# ``\b`` is ASCII, as in site/build-manuals.js readerCaption() (no /u flag).
+_READER_FROM_TAIL = re.compile(r"(?:^|\s)From (?!step\b)\S[\s\S]*$", re.ASCII)
+_READER_TAIL_SENTENCE = re.compile(r"\.\s+[A-Z]")
+_READER_TAIL_PATHISH = re.compile(
+    r"/|\.(?:txt|json|jsonl|log|md|py|ts|proto|http|yaml)\b"
+    r"|\bsource\b|\bcapture|\bcode\b|\bdocs?\b|\breports?\b|\bissues?\b"
+    r"|\bfiles?\b|\bv\d|\btag\b|\brunner\b",
+    re.IGNORECASE | re.ASCII,
+)
+
+
+def reader_caption(text: str) -> str:
+    """Drop a trailing machine-provenance tail from a figure caption.
+
+    Machine provenance; readerCaption strips the same English ``From …`` tail;
+    keep English so the reader never sees capture paths (#124 B1).
+    """
+    stripped = str(text).strip()
+    match = _READER_FROM_TAIL.search(stripped)
+    if match is None:
+        return stripped
+    tail = stripped[match.start():].strip()
+    # A period-then-capital inside the tail is a real sentence, not a path.
+    if _READER_TAIL_SENTENCE.search(re.sub(r"\.$", "", tail)):
+        return stripped
+    if _READER_TAIL_PATHISH.search(tail) is None:
+        return stripped
+    return stripped[:match.start()].strip()
+
+
+def _fence_key_values(body: list[str]) -> dict[str, str]:
+    """Join figure/listing head keys the same way ``scan_file`` does."""
+    key = None
+    values: dict[str, list[str]] = {}
+    for line in body:
+        if not line.strip():
+            continue
+        found = FENCE_KEY.match(line)
+        if found:
+            key = found.group(1)
+            values.setdefault(key, []).append(found.group(2).strip())
+        elif key is not None and FENCE_CONT.match(line):
+            values[key].append(line.strip())
+    return {name: " ".join(parts) for name, parts in values.items()}
+
+
+def figure_captions_in_text(text: str) -> list[tuple[str, str]]:
+    """``(figure id, caption)`` for each closed `` ```figure `` fence in *text*."""
+    lines = text.splitlines()
+    found: list[tuple[str, str]] = []
+    index = 0
+    while index < len(lines):
+        opened = FENCE_OPEN.match(lines[index])
+        if not opened:
+            index += 1
+            continue
+        info = opened.group(1)
+        index += 1
+        body: list[str] = []
+        while index < len(lines) and not FENCE_CLOSE.match(lines[index]):
+            body.append(lines[index])
+            index += 1
+        closed = index < len(lines) and bool(FENCE_CLOSE.match(lines[index]))
+        if closed:
+            index += 1
+        if info != "figure" or not closed:
+            continue
+        keys = _fence_key_values(body)
+        found.append((keys.get("id", ""), keys.get("caption", "")))
+    return found
+
+
+def _markdown_under(root: Path):
+    """Yield ``(rel, path)`` for markdown the caption check walks.
+
+    A repo root (``manuals/*/manual.json``) scans those manual trees and
+    skips ``is_excluded`` paths. Any other directory scans every ``*.md``
+    under it, so a temp tree of one file works.
+    """
+    root = Path(root)
+    manuals = root / "manuals"
+    manifests = sorted(manuals.glob("*/manual.json")) if manuals.is_dir() else []
+    bases = [path.parent for path in manifests] if manifests else [root]
+    for base in bases:
+        for path in sorted(base.rglob("*.md")):
+            rel = PurePosixPath(path.relative_to(root).as_posix())
+            if is_excluded(rel):
+                continue
+            yield rel.as_posix(), path
+
+
+def figure_captions(root: Path) -> list[tuple[str, str, str]]:
+    """``(rel, figure id, caption)`` for every figure under *root*."""
+    rows: list[tuple[str, str, str]] = []
+    for rel, path in _markdown_under(root):
+        for fig_id, caption in figure_captions_in_text(path.read_text(encoding="utf-8")):
+            rows.append((rel, fig_id, caption))
+    return rows
+
+
+def figure_caption_capture_leaks(root: Path) -> list[tuple[str, str]]:
+    """``(rel, figure id)`` whose reader caption still contains ``capture/``."""
+    leaks: list[tuple[str, str]] = []
+    for rel, fig_id, caption in figure_captions(root):
+        if "capture/" in reader_caption(caption):
+            leaks.append((rel, fig_id))
+    return leaks
+
+
 def scan_file(path: Path) -> tuple[list[tuple[int, str, str]], int]:
     hits: list[tuple[int, str, str]] = []
     covered: set[int] = set()
@@ -547,17 +671,23 @@ def scan_file(path: Path) -> tuple[list[tuple[int, str, str]], int]:
             para = []
 
     def judge(lineno: int, kind: str, text: str) -> None:
+        # Machine provenance; readerCaption strips the same English From tail
+        # before the reader sees a figure caption (#124 B1).
+        if kind == "FIGURE_CAPTION":
+            text = reader_caption(text)
         if text and is_untranslated_sentence(text):
             hits.append((lineno, kind, text[:120]))
             covered.add(lineno)
 
     def scan_fence(info: str, body: list[tuple[int, str]]) -> None:
-        # Mirrors fenceBlock() in site/build-manuals.js for the two prose
-        # fences. figure / listing title, claim, caption, note are out of
-        # scope (bot-hub#124); code fences are code.
-        if info == "rule":
-            sep = next((k for k, (_ln, t) in enumerate(body) if FENCE_RULE_SEP.match(t)), None)
-            head, rest = (body[:sep], body[sep + 1:]) if sep is not None else ([], body)
+        # Mirrors fenceBlock() / keyValues() in site/build-manuals.js.
+        # rule, takeaways, figure title/claim/caption, and listing title/note
+        # are prose. id/kind/source/lang and the listing code body are not
+        # judged. Sources paragraphs are skipped by flush(). Other fences
+        # are code.
+        def head_keys(
+            head: list[tuple[int, str]], stray_kind: str | None,
+        ) -> dict[str, list[tuple[int, str]]]:
             key = None
             values: dict[str, list[tuple[int, str]]] = {}
             for ln, t in head:
@@ -569,14 +699,39 @@ def scan_file(path: Path) -> tuple[list[tuple[int, str, str]], int]:
                     values.setdefault(key, []).append((ln, km.group(2).strip()))
                 elif key is not None and FENCE_CONT.match(t):
                     values[key].append((ln, t.strip()))
-                else:  # not a header line: judge it like the body
-                    judge(ln, "RULE", t.strip())
-            for key, parts in values.items():
+                elif stray_kind is not None:  # not a header line: judge it like the body
+                    judge(ln, stray_kind, t.strip())
+            return values
+
+        def judge_keys(values: dict[str, list[tuple[int, str]]], selected: dict[str, str]) -> None:
+            for key, kind in selected.items():
+                parts = values.get(key)
+                if parts:
+                    judge(parts[0][0], kind, " ".join(t for _ln, t in parts))
+
+        if info == "rule":
+            sep = next((k for k, (_ln, t) in enumerate(body) if FENCE_RULE_SEP.match(t)), None)
+            head, rest = (body[:sep], body[sep + 1:]) if sep is not None else ([], body)
+            for key, parts in head_keys(head, "RULE").items():
                 if key != "source":  # source is a citation key into research/
                     judge(parts[0][0], "RULE_" + key.upper(), " ".join(t for _l, t in parts))
             text = [(ln, t.strip()) for ln, t in rest if t.strip()]
             if text:
                 judge(text[0][0], "RULE", " ".join(t for _l, t in text))
+        elif info == "figure":
+            judge_keys(head_keys(body, None), {
+                "title": "FIGURE_TITLE",
+                "claim": "FIGURE_CLAIM",
+                "caption": "FIGURE_CAPTION",
+            })
+        elif info == "listing":
+            sep = next((k for k, (_ln, t) in enumerate(body) if FENCE_RULE_SEP.match(t)), None)
+            # Same split as rule: no "---" means the whole block is body.
+            head = body[:sep] if sep is not None else []
+            judge_keys(head_keys(head, None), {
+                "title": "LISTING_TITLE",
+                "note": "LISTING_NOTE",
+            })
         elif info == "takeaways":
             items: list[list] = []
             for ln, t in body:

@@ -39,9 +39,9 @@
 ```figure
 id: fig-2-2
 kind: chart
-title: Keeping the engine loaded saves one or two seconds
-claim: On the steps that were clean in both runs, the engine kept loaded saved 0.6 to 1.8 s of each rollout.
-caption: Each pair of bars is one step of the same-day pair, with nearly the same answer length in both runs.
+title: 让引擎保持加载能省下一两秒
+claim: 在两次运行都干净的步上，让引擎保持加载使每次 rollout 省下 0.6 到 1.8 s.
+caption: 每一对柱是同一天那组对比里的一步，两次运行的回答长度几乎相同。
 ```
 
 **我们测量到**第 0、1、8 步有小幅提升：69.4 对 68.0 s，58.5 对 56.7 s，55.8 对 55.2 s。提升为 1% 到 3%。两次运行中没有任何训练阶段躲过暂停，所以训练阶段没有干净的对比。它在全部 12 步上的中位数分别是 240.3 和 239.1 s，其中包含了暂停。

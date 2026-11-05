@@ -27,9 +27,9 @@ SGLang 在两个地方路由请求，默认不同。
 ```figure
 id: fig-6-4
 kind: decision
-title: how cache_aware picks a server
-claim: The gateway checks load balance first, then sends a request to the server with the longest match only when more than 30 percent of its text matches.
-caption: Read top to bottom. Amber boxes are tests, blue boxes are outcomes, and both outcomes insert the request text into the tree. Defaults from the gateway command line at v0.5.22.
+title: cache_aware 如何选服务器
+claim: 网关先检查负载是否平衡，只有文本匹配超过 30% 时，才把请求送到匹配最长的那台服务器.
+caption: 从上往下读。琥珀色框是检查，蓝色框是结果，两种结果都把请求文本插进树。默认值来自 v0.5.22 的网关命令行。
 ```
 
 对每条请求，`select_worker` 做三件事 {{code}}：

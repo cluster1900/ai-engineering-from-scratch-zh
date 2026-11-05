@@ -19,10 +19,10 @@
 **查询 id：** `query_` 后跟持有四样东西的规范 JSON 的 SHA-256：目标、绑定、操作与参数。目标是无路径身份，`sha256`、`kind`、`format` 与 `architecture`。`raw-binary` 目标还带着其 `entry_point`。绑定是 provider 及其分析配置。对抓取来说，那是以 `01b5d08b` 开头的摘要、`executable`、`mach-o`、`arm64`、Ghidra `12.1.4`，以及下面的配置。
 
 ```listing
-title: the Ghidra analysis profile that every cache key carries
+title: 每个缓存键都带着的 Ghidra analysis profile
 source: capture/out/05-analyze-arm64-O1.json
 lang: json
-note: The profile as the binary_overview record carries it. Twenty of the twenty-five parameters are cut.
+note: profile 如 `binary_overview` 记录所携带的那样。二十五个参数里的二十个已裁。
 ---
 "upstream_analysis_profile": {
   "provider": {
@@ -68,9 +68,9 @@ Ghidra 适配器把除变更操作与 `list_documents` 之外的每一个操作�
 ```figure
 id: fig-5-4
 kind: decision
-title: one analyze_function call through the snapshot cache
-claim: A cacheable call becomes a query id over target, binding, operation, and parameters, and a mutating call turns the cache off before it reaches Ghidra.
-caption: Read top to bottom. The dashed reply is a replay, and the solid call is a provider run. The dashed amber arrow is the state change that a mutating call makes before its dispatch. Values are from the function capture and the session capture.
+title: 一次穿过快照缓存的 analyze_function 调用
+claim: 可缓存的调用变成覆盖目标、绑定、操作与参数的查询 id，变更调用在到达 Ghidra 之前关掉缓存.
+caption: 从上到下读。虚线回复是一次重放，实线调用是一次 provider 运行。虚线琥珀色箭头是变更调用在分发之前做的状态改变。值来自函数抓取与会话抓取。
 ```
 
 ## 保存与加载 {#s-snapshots-and-the-answer-cache-save-and-load}
@@ -88,10 +88,10 @@ caption: Read top to bottom. The dashed reply is a replay, and the solid call is
 有些 Ghidra 操作写入会话数据库，例如重命名函数或添加注释的 `annotate_native_function`。它们每一个都在其 `effects` 里列出 `mutates_artifact`，并带着点名后果的限制。
 
 ```listing
-title: a mutating operation as binary_session describes it
+title: binary_session 所描述的一次变更操作
 source: capture/out/10-mcp-04-binary-session.json
 lang: json
-note: Two of the three limitations are cut.
+note: 三条 limitation 里的两条已裁。
 ---
 {
   "operations": [

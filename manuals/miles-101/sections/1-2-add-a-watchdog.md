@@ -13,10 +13,10 @@
 下面这次训练使用了这块 GPU 无法运行的设置。rollout 引擎在启动阶段停止了。训练器没有停止，并且在 63 分钟里一直向引擎发送请求：
 
 ```listing
-title: an engine that died, and a run that did not notice
+title: 引擎已经挂掉，而这次运行没有察觉
 source: capture/gpu/out-gb10/engine-died-503.log
 lang: text
-note: The first three lines are the engine failure. The last two are the first and the last error from the trainer side, 63 minutes apart.
+note: 前三行是引擎失败。后两行是训练器一侧的第一条和最后一条错误，相隔 63 分钟。
 ---
 [2026-10-17 21:03:03] Enable deterministic inference because of legacy rl_on_policy_target.
 AssertionError: FlashAttention v3 Backend requires SM>=80 and SM<=90. Please use `--attention-backend flashinfer`.
@@ -26,10 +26,10 @@ AssertionError: FlashAttention v3 Backend requires SM>=80 and SM<=90. Please use
 ```
 
 ```listing
-title: how many errors the run wrote
+title: 这次运行写下了多少条错误
 source: capture/gpu/out-gb10/engine-died-count.txt
 lang: text
-note: One grep over the full log of that run.
+note: 对那次运行的完整日志做的一次 grep。
 ---
 $ grep -c "503 Service Unavailable" true-on-policy-fa3.log
 200533
@@ -44,9 +44,9 @@ $ grep -c "503 Service Unavailable" true-on-policy-fa3.log
 ```figure
 id: fig-1-2
 kind: timeline
-title: A dead engine does not stop the job
-claim: Without a watchdog, a dead engine left the job running for 63 minutes with an idle GPU.
-caption: The top track is our failed run. The bottom track is the watchdog test on a container that writes the same error.
+title: 引擎挂掉并不会停掉这次训练
+claim: 没有 watchdog 时，引擎挂掉后训练又继续跑了 63 分钟，GPU 一直空闲.
+caption: 上方轨道是我们失败的运行。下方轨道是 watchdog 在一个写出同样错误的容器上做的测试。
 ```
 
 ## 为什么 watchdog 要等十次检查 {#s-add-a-watchdog-why-the-watchdog-waits-for-ten-checks}
@@ -58,10 +58,10 @@ caption: The top track is our failed run. The bottom track is the watchdog test 
 只看数量无法区分这两次训练，但看时间可以。watchdog 每 30 s 统计一次最近 60 s 内的错误。只有在连续设定次数的检查中这个数都超过 100 时，它才停掉训练。
 
 ```listing
-title: the watchdog rule replayed on a healthy run
+title: 在一次健康运行上重放 watchdog 规则
 source: capture/gpu/out-gb10/503-bursts.txt
 lang: text
-note: The real error times of the 16-answer run, for each of the 30 start times of the checks. The last column is a dead engine that never stops writing the error.
+note: 16 个回答那次运行的真实错误时间，对应检查的 30 个起始时刻。最后一列是一个不停写出该错误的挂掉引擎。
 ---
 $ python3 watchdog_replay.py out-gb10/e2-n16-503-per-second.txt
 healthy run: 22357 errors from 2026-10-22 07:16:29, checks every 30 s over the last 60 s, limit 100
@@ -139,10 +139,10 @@ sh ~/miles-lab/watchdog.sh miles-plain 100 10
 在两个故意打印该错误的容器上测试它。它们不需要 GPU。第一个每秒打印十行错误，永不停止，就像挂掉的引擎：
 
 ```listing
-title: the watchdog stops a container that never stops printing the error
+title: watchdog 停掉一个不停打印该错误的容器
 source: capture/gpu/out-gb10/watchdog-test.txt
 lang: text
-note: The container prints ten error lines each second.
+note: 这个容器每秒打印十行错误。
 ---
 $ sh capture/gpu/watchdog.sh wd-dead 100
 2026-10-22T15:41:09Z wd-dead: more than 100 errors from the rollout engine in each of 6 checks, last 578 in 60 s, stopping the run

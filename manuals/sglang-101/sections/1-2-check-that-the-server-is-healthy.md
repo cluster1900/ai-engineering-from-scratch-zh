@@ -17,10 +17,10 @@ until curl -sf -o /dev/null http://127.0.0.1:30000/health; do sleep 2; done
 我们的 capture kit 也这么做，每 2 秒一次。服务器日志显示答案从 503 变成 200：
 
 ```listing
-title: /health during the start of our L4 server
+title: 我们 L4 服务器启动期间的 /health
 source: capture/gpu/out-l4/server-default.log
 lang: text
-note: Lines 36 to 43 of the log. The /model_info request and the first two prefill lines are cut.
+note: 日志第 36 到 43 行。/model_info 请求和前两行 prefill 已截去。
 ---
 [2026-10-17 14:43:37] INFO:     127.0.0.1:58250 - "GET /health HTTP/1.1" 503 Service Unavailable
 …
@@ -48,10 +48,10 @@ SGLang 有三个健康端点 {{code}}。按你问的问题选一个：
 启动日志里有三行告诉你服务器能装多少。每次启动都读它们，因为是 SGLang 替你算的：
 
 ```listing
-title: the sizing lines of our L4 server
+title: 我们 L4 服务器上划定容量的几行
 source: capture/gpu/out-l4/server-default.log
 lang: text
-note: Three lines from the startup log. The lines between them are cut.
+note: 启动日志里的三行。中间的行已截去。
 ---
 [2026-10-17 14:42:45] KV Cache is allocated. dtype: torch.bfloat16, #tokens: 22939, K size: 1.58 GB, V size: 1.58 GB
 …
@@ -87,10 +87,10 @@ curl -s http://127.0.0.1:30000/metrics | grep -E '^sglang:(num_running_reqs|num_
 ```
 
 ```listing
-title: four metrics after our L4 runs
+title: 我们几次 L4 跑完之后的四个指标
 source: capture/gpu/out-l4/metrics.txt
 lang: text
-note: Four lines from /metrics, read after the benchmark runs of the default server.
+note: /metrics 里的四行，读于默认服务器的基准跑之后。
 ---
 sglang:num_running_reqs{engine_type="unified",model_name="Qwen/Qwen3-8B",moe_ep_rank="0",pp_rank="0",tp_rank="0"} 0.0
 sglang:num_queue_reqs{engine_type="unified",model_name="Qwen/Qwen3-8B",moe_ep_rank="0",pp_rank="0",tp_rank="0"} 0.0

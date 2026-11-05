@@ -19,9 +19,9 @@ Speculative decoding 用猜测填它。**Draft model：** 一个小模型，或�
 ```figure
 id: fig-4-6
 kind: sequence
-title: one EAGLE step with steps 3, topk 1, and 4 draft tokens
-claim: One EAGLE step drafts a chain of tokens, verifies them in one target forward, and commits the accepted prefix plus one bonus token.
-caption: Read top to bottom. The numbers follow the default (3, 1, 4) for most models at v0.5.22. Green tokens are accepted and the rose token is rejected. From EAGLEWorkerV2.forward_batch_generation at v0.5.22.
+title: 一步 EAGLE，steps 3、topk 1、4 个 draft token
+claim: 一步 EAGLE 起草一串 token，用一次目标前向验证它们，并提交接受的前缀再加一个奖励 token.
+caption: 从上往下读。数字跟的是 v0.5.22 对多数模型的默认 (3, 1, 4)。绿色 token 被接受，玫瑰色 token 被拒绝。 From EAGLEWorkerV2.forward_batch_generation at v0.5.22.
 ```
 
 1. **Draft.** draft 模型跑 `--speculative-num-steps` 次。`--speculative-eagle-topk` 大于 1 时，每一步为每个节点保留几个候选，并长成一棵树。树构建器保留最好的 `--speculative-num-draft-tokens` 个节点，并建树掩码。
@@ -67,9 +67,9 @@ v0.5.22 的 EAGLE、NGRAM、DFLASH 和 DSPARK 处理程序在你没设 `--max-ru
 ```figure
 id: fig-4-7
 kind: comparison
-title: the same feature at two batch sizes
-claim: Speculation doubled single-request speed and cut throughput at concurrency 20 on the same GPU and model.
-caption: Output tok/s for Llama-3.1-8B with and without EAGLE-3 on one A6000, as reported in issue 5274 on 2025-04-11. The bars use one scale.
+title: 同一项功能，两种 batch 大小
+claim: 在同一块 GPU、同一个模型上，推测把单请求速度提高了一倍，并在并发 20 时削掉了吞吐.
+caption: 一块 A6000 上 Llama-3.1-8B 有无 EAGLE-3 的输出 tok/s，issue 5274 在 2025-04-11 报告。这些柱用同一刻度。
 ```
 
 ## 我们在 GB10 上测到的 {#s-speculative-decoding-what-we-measured-on-a-gb10}
@@ -79,10 +79,10 @@ caption: Output tok/s for Llama-3.1-8B with and without EAGLE-3 on one A6000, as
 第一次启动失败了。draft config 说 2,048 个位置，目标说 262,144。上下文长度检查抛出 `ValueError`，并以 `To allow overriding this maximum, set the env var SGLANG_ALLOW_OVERWRITE_LONGER_CONTEXT_LEN=1` 结束 {{code}}。这对的 cookbook 命令设了那个变量，所以我们也设了。
 
 ```listing
-title: the draft context length check with the override set
+title: 设了覆盖之后的 draft 上下文长度检查
 source: capture/gpu/out-gb10/server-eagle3.log
 lang: text
-note: Three lines from the startup log. Timestamps are cut.
+note: 启动日志里的三行。时间戳已截去。
 ---
 … Warning: Target model's context_length (262144) is greater than the derived context_length (2048). This may lead to incorrect model outputs or CUDA errors. Note that the derived context_length may differ from max_position_embeddings in the model's config.
 … Overriding the draft model's max_position_embeddings to 262144.
@@ -94,10 +94,10 @@ note: Three lines from the startup log. Timestamps are cut.
 我们预期在 24 GB L4 上会有同样的拒绝。我们用 draft `Tengyunw/qwen3_8b_eagle3`、不设变量启动了 `Qwen/Qwen3-8B`，服务器启动了。那个 draft 声明 40,960 个位置，与目标相同，所以检查没什么可拒的。变量属于一份 draft config，不属于 EAGLE-3。在设它之前，比较两份 config 里的 `max_position_embeddings`。
 
 ```listing
-title: an EAGLE-3 start on a 24 GB L4
+title: 24 GB L4 上的一次 EAGLE-3 启动
 source: capture/gpu/out-l4/server-eagle3-no-env.log
 lang: text
-note: Four lines from the startup log. Timestamps are cut.
+note: 启动日志里的四行。时间戳已截去。
 ---
 … Load weight end. elapsed=3.89 s, type=Qwen3ForCausalLM, avail mem=6.41 GB, mem usage=15.28 GB.
 … Load weight end. elapsed=0.67 s, type=LlamaForCausalLMEagle3, avail mem=4.50 GB, mem usage=1.90 GB.
@@ -121,9 +121,9 @@ note: Four lines from the startup log. Timestamps are cut.
 ```figure
 id: fig-4-4b
 kind: chart
-title: on a mixture-of-experts model the EAGLE-3 gain holds as the batch grows
-claim: On the GB10, EAGLE-3 cut the median time per token by 1.60 times at concurrency 1 and by 1.89 times at 32.
-caption: The line is baseline median TPOT divided by EAGLE-3 median TPOT, at each concurrency. The dashed rose line marks no gain. The footnote gives the acceptance length range. From capture/gpu/summary/gb10.json.
+title: 在混合专家模型上，EAGLE-3 的增益随 batch 变大仍然在
+claim: 在 GB10 上，基线中位 TPOT 除以 EAGLE-3 中位 TPOT，并发 1 是 1.60，并发 32 是 1.89.
+caption: 这条线是每一档并发上基线中位 TPOT 除以 EAGLE-3 中位 TPOT。玫瑰色虚线表示没有增益。脚注给出 acceptance length 的范围。 From capture/gpu/summary/gb10.json.
 ```
 
 这个结果与上面的 A6000 报告相反，模型解释了它。稠密模型每一步读全部权重，更大的批已经用掉多余算力。混合专家模型只读这一步的 token 选中的那些专家。verify 遍用它已经为那一步读过的专家权重，为每条请求打分四个位置。那是我们的读法，量在一个模型和一块 GPU 上。
@@ -135,10 +135,10 @@ caption: The line is baseline median TPOT divided by EAGLE-3 median TPOT, at eac
 我们在一块 L4 上用稠密 `Qwen/Qwen3-8B` 和 `Tengyunw/qwen3_8b_eagle3` draft 跑了同一扫描。默认服务器跑在 2026-10-16，EAGLE-3 服务器跑在 2026-10-17，两者中位时钟都是 1,080 MHz 或更高。这次我们设了变量，像扫描对每台 EAGLE-3 服务器做的那样。
 
 ```listing
-title: the pool of an EAGLE-3 server on the L4
+title: L4 上 EAGLE-3 服务器的 pool
 source: capture/gpu/out-l4/server-load-eagle3.log
 lang: text
-note: Startup lines from the server log of the sweep. Timestamps are cut.
+note: 这次 sweep 的服务器日志里的启动行。时间戳已截去。
 ---
 … KV Cache is allocated. dtype: torch.bfloat16, #tokens: 9951, K size: 0.68 GB, V size: 0.68 GB
 … max_total_num_tokens=9951, chunked_prefill_size=4096, max_prefill_tokens=16384, max_running_requests=48, context_len=40960, available_gpu_mem=1.23 GB
@@ -158,9 +158,9 @@ note: Startup lines from the server log of the sweep. Timestamps are cut.
 ```figure
 id: fig-4-4c
 kind: chart
-title: On a 24 GB card each token got faster, but the server did not
-claim: On the L4, EAGLE-3 gave 2.37 times the output throughput at concurrency 1 and 1.00 times at 32.
-caption: Violet is default TPOT divided by EAGLE-3 TPOT. Teal is EAGLE-3 output throughput divided by the default. The dashed rose line marks no gain. From capture/gpu/summary/l4.json.
+title: 在 24 GB 卡上每个 token 变快了，整台服务器的吞吐没有
+claim: 在 L4 上，EAGLE-3 在并发 1 给出 2.37 倍输出吞吐，在并发 32 给出 1.00 倍.
+caption: 紫罗兰色是默认 TPOT 除以 EAGLE-3 TPOT。青色是 EAGLE-3 输出吞吐除以默认。玫瑰色虚线表示没有增益。 From capture/gpu/summary/l4.json.
 ```
 
 pool 解释了差别。pool 里有 15 条请求时，其余的在等槽。在并发 32 时，有 EAGLE-3 的中位首 token 时间是 8,040 ms，没有是 2,970 ms。在 KV pool 是上限的卡上，draft 花掉批需要的那份内存。
@@ -183,10 +183,10 @@ pool 解释了差别。pool 里有 15 条请求时，其余的在等槽。在并
 在 2026-10-23，我们在四个数据集上跑了同一 L4 扫描：random 集、ShareGPT、GSM8K 问题和代码 prompt。时钟锁在 900 MHz，每次运行前 flush 缓存，每个点两个种子。
 
 ```listing
-title: speculation on four datasets, Qwen3-8B on SGLang 0.5.22, our L4 at 900 MHz
+title: 四个数据集上的推测，SGLang 0.5.22 上的 Qwen3-8B，我们的 L4 在 900 MHz
 source: capture/gpu/out-l4/spec-real-prompts.txt
 lang: text
-note: The time per token at 8 users and the output at 32 users. The acceptance lines and the notes are cut.
+note: 8 个用户时的每 token 时间，以及 32 个用户时的输出。acceptance 行和注释已截去。
 ---
 median TPOT at 8 users: default / EAGLE3 / NGRAM
 random     67.6 to 68.2 / 33.8 to 39.4 / 68.2 to 71.4 ms
@@ -211,10 +211,10 @@ NGRAM 只在 GSM8K 和代码上有帮助，在 8 用户时大约 1.1 到 1.2 倍
 我们在更短的答案上测了 Test-Time Speculation 的主张。在 2026-10-23，我们用 EAGLE-3 draft、3 步、top-k 1 和 4 个 draft token 跑了 `Qwen/Qwen3-8B-FP8`。这是在我们 L4 节点第二块 GPU 上，主人共享它，没有锁时钟。8 条 prompt 各开着 thinking、greedy、单独跑，最多 4,096 个 token。我们在答案到 256、512、1,024、2,048 和 4,096 个 token 后读 `spec_verify_ct`。
 
 ```listing
-title: mean acceptance length by position in the answer
+title: 按答案中位置的平均 acceptance length
 source: capture/gpu/out-l4/eagle3-acceptance-by-position.txt
 lang: text
-note: The range across prompts, with the number of prompts that reached each segment in brackets. The vLLM column comes from the same prompts on vLLM 0.31.0.
+note: 各 prompt 之间的范围，括号里是到达每一段的 prompt 数。vLLM 列来自 vLLM 0.31.0 上的同样 prompt。
 ---
 segment of the output   SGLang                 vLLM
 0 to 256                2.05 to 2.64 (8)       2.14 to 2.51 (8)
@@ -229,10 +229,10 @@ segment of the output   SGLang                 vLLM
 第二次测试在 8 用户下用 BF16 的 `Qwen/Qwen3-8B`，答案最多 2,048 个 token，没有 ignore-eos。中位答案是 1,800 到 2,000 个 token。
 
 ```listing
-title: EAGLE3 acceptance on answers of about 2,000 tokens, 8 users
+title: 大约 2,000 token 的答案上的 EAGLE3 acceptance，8 个用户
 source: capture/gpu/out-l4/eagle3-long-outputs.txt
 lang: text
-note: The table of the file. The comparison with short outputs is cut.
+note: 文件里的表。与短输出的比较已截去。
 ---
 engine          dataset    mean acceptance length   accepted per draft position 1 / 2 / 3
 SGLang EAGLE3   GSM8K      2.68

@@ -25,10 +25,10 @@ rea 不为你规划一次调查。维护者在路线图里写下了分工（[rea
 捕获在同一文件上用了两种适配器：
 
 ```listing
-title: four one-shot commands and their exit status
+title: 四条 one-shot 命令及其退出状态
 source: capture/out/00-commands.txt
 lang: text
-note: Cut to the first four commands. The time of each command is cut, because it changes with every recording, and the other commands are cut.
+note: 裁到前四条命令。每条命令的时间已裁，因为每次录制都会变，其余命令已裁。
 ---
 $ rea doctor --provider ghidra --format json --filter-output healthy,environment_healthy,scope,scope_checks
 [exit 0] (… s) -> 01-doctor-ghidra.json
@@ -49,9 +49,9 @@ $ rea inspect-binary-layout fixtures/ledger-x86_64-O1.o --format json
 ```figure
 id: fig-1-1
 kind: layers
-title: what rea standardizes and what it leaves to Ghidra
-claim: rea owns the adapters, the session, and the Evidence record, and Ghidra owns import, analysis, and decompilation, with one JSON line per question between them.
-caption: Read each stack from the top down. The counts come from the capabilities and overview captures, and the file names from the fixture list. The class names come from the architecture diagram of rea at the tag.
+title: rea 标准化什么，又把什么留给 Ghidra
+claim: rea 拥有适配器、会话与 Evidence 记录，Ghidra 拥有导入、分析与反编译，两者之间每个问题一行 JSON.
+caption: 每个栈从上往下读。计数来自 capabilities 与 overview 捕获，文件名来自 fixture 列表，类名来自钉住标签上 rea 的架构图。
 ```
 
 ## rea 留给 Ghidra 的 {#s-rea-providers-and-evidence-what-rea-leaves-to-ghidra}

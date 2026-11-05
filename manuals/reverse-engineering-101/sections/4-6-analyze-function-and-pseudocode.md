@@ -11,10 +11,10 @@
 `rea function` 是 `analyze_function` 的 CLI 名。对 `_grade` 的 CLI 运行与同一会话里的 MCP 调用产生了同一个 `evidence_id`，`ev_41e8ca1c` 再加 56 位数字。该 id 是记录语义内容的哈希，文件路径与显示名被排除在外。[第 5.1 节](#s-the-evidence-record) 读记录的每一个字段。本节读其 `normalized_result`，它有十六个 facet。
 
 ```listing
-title: the pseudocode, the blocks, and the signature facts of _grade
+title: _grade 的伪代码、块与签名事实
 source: capture/out/06-function-grade.json
 lang: json
-note: Cut from normalized_result. The procedure, assembly, reference, and value-flow facets are cut, and so are the parameter entries of native_api.
+note: 从 `normalized_result` 裁出。procedure、assembly、reference 与 value-flow 这些 facet 已裁，`native_api` 的参数条目也已裁。
 ---
 "pseudocode": "\nundefined4 _grade(int param_1)\n\n{\n  uint uVar1;\n  \n  uVar1 = param_1 / 10 - 6;\n  if (uVar1 < 5) {\n    return *(undefined4 *)(&DAT_1000007d0 + (ulong)uVar1 * 4);\n  }\n  return 0;\n}\n\n",
 …
@@ -93,9 +93,9 @@ undefined4 _grade(int param_1)
 ```figure
 id: fig-4-8
 kind: structure
-title: the sixteen facets of the _grade dossier
-claim: One record holds the identity, the text, the edges, the blocks, the signature facts, and the value flow of one function, each with its own limits.
-caption: Read top to bottom. The left column is the facet name, the middle column is its value for _grade, the right column says what the facet holds. From capture/out/06-function-grade.json.
+title: _grade dossier 的十六个侧面
+claim: 一份记录持有一个函数的身份、文本、边、块、签名事实与值流，每一项有自己的限制.
+caption: 从上到下读。左列是侧面名，中列是它对 `_grade` 的值，右列说明该侧面持有什么。 From capture/out/06-function-grade.json.
 ```
 
 ## procedure_pseudo_code：仅文本 {#s-analyze-function-and-pseudocode-procedure-pseudo-code-the-text-alone}
@@ -103,10 +103,10 @@ caption: Read top to bottom. The left column is the facet name, the middle colum
 `rea decompile` 是 `procedure_pseudo_code` 的 CLI 名。它只返回文本，别的什么都不返回。
 
 ```listing
-title: the pseudocode of _total
+title: _total 的伪代码
 source: capture/out/07-decompile-total.json
 lang: json
-note: Cut to the operation, the start of the text, and the two decompiler limitations of the seven.
+note: 裁到操作、文本的开头，以及七条 limitation 里反编译器的那两条。
 ---
 "operation": "procedure_pseudo_code",
 "parameters": {
@@ -155,10 +155,10 @@ int _total(int *param_1,uint param_2)
 **反编译器产物：** 一行伪代码，是反编译器为表达机器码所需要的，而没有任何源码行产生它。`native_api` 限制点名三种：寄存器变量、编译器生成的块，以及指针算术。抓取里的三份记录展示文本与指令之间三种空隙。
 
 ```listing
-title: _percent_change, text and instructions
+title: _percent_change，文本与指令
 source: capture/out/10-mcp-09-analyze-function-percent-change-O1.json
 lang: json
-note: The pseudocode string and the complete assembly array of the dossier.
+note: dossier 的伪代码字符串与完整的 assembly 数组。
 ---
 "pseudocode": "\nulong _percent_change(ulong param_1,int param_2)\n\n{\n  uint uVar1;\n  int iVar2;\n  \n  iVar2 = (int)param_1;\n  if (iVar2 != 0) {\n    uVar1 = 0;\n    if (iVar2 != 0) {\n      uVar1 = ((param_2 - iVar2) * 100) / iVar2;\n    }\n    param_1 = (ulong)uVar1;\n  }\n  return param_1;\n}\n\n",
 "assembly": [
@@ -178,9 +178,9 @@ note: The pseudocode string and the complete assembly array of the dossier.
 ```figure
 id: fig-4-9
 kind: comparison
-title: percent_change as written and as decompiled
-claim: Four source lines became fourteen lines of pseudocode, and the three marked lines describe only the registers.
-caption: Read the source first, then the pseudocode. The rose marks name the return width, the repeated test, and the return of the whole register. From capture/fixtures/ledger.c and capture/out/10-mcp-09-analyze-function-percent-change-O1.json.
+title: 写出的 percent_change 与反编译出的
+claim: 四行源码变成十四行伪代码，标出的三行只描述寄存器.
+caption: 先读源码，再读伪代码。玫瑰色标记点名返回宽度、重复的测试，以及整个寄存器的返回。 From capture/fixtures/ledger.c and capture/out/10-mcp-09-analyze-function-percent-change-O1.json.
 ```
 
 `_grade` 展示第二种空隙。反编译文本把表保留为 `*(undefined4 *)(&DAT_1000007d0 + (ulong)uVar1 * 4)`。地址是对的，元素大小是对的，那五个值却不在那里。[第 3.3 节](#s-address-to-file-offset) 把 `0x1000007d0` 变成文件偏移 2000，那里的 20 字节是 `1, 2, 3, 4, 4`。返回类型是 `undefined4`，四个字节意义未知。文本不完整，你从字节把它补全。
@@ -188,10 +188,10 @@ caption: Read the source first, then the pseudocode. The rose marks name the ret
 `grade` 的 x86-64 构建展示第三种。其伪代码有一行 `uVar1 = -(param_1 >> 0x1f) ^ (uint)((ulong)((long)param_1 * 0x66666667) >> 0x3f);`，作为默认返回值。
 
 ```listing
-title: grade on x86-64, the default value as an expression
+title: x86-64 上的 grade，默认值写成表达式
 source: capture/out/07-decompile-grade-x86_64-O1.json
 lang: json
-note: The start of the pseudocode string, cut after the line that writes the default value.
+note: 伪代码字符串的开头，在写下默认值的那一行之后裁断。
 ---
 "value": "\nuint grade(int param_1)\n\n{\n  uint uVar1;\n  uint uVar2;\n  \n  uVar2 = param_1 / 10 - 6;\n  uVar1 = -(param_1 >> 0x1f) ^ (uint)((ulong)((long)param_1 * 0x66666667) >> 0x3f);\n…
 ```
@@ -205,10 +205,10 @@ note: The start of the pseudocode string, cut after the line that writes the def
 ## 一个不存在的名字 {#s-analyze-function-and-pseudocode-a-name-that-does-not-exist}
 
 ```listing
-title: analyze_function for a procedure that is not there
+title: 对一个不存在的过程的 analyze_function
 source: capture/out/10-mcp-13-analyze-function-missing.json
 lang: json
-note: The request arguments, the error flag, and the decoded error. The text content is the same JSON on one line. The `diagnostics` object in `details` is cut. It holds the run id, the temporary paths, the process id, the Ghidra output, and `remote_code: "not_found"`.
+note: 请求参数、错误标志与解码后的错误。文本内容是同一份 JSON，放在一行里。`details` 里的 `diagnostics` 对象已裁。它持有 run id、临时路径、进程 id、Ghidra 输出，以及 `remote_code: "not_found"`。
 ---
 "name": "analyze_function",
 "arguments": {
@@ -244,10 +244,10 @@ note: The request arguments, the error flag, and the decoded error. The text con
 桥先把 `_nothing` 当作符号名来试，再当作地址，并以 `not_found` 失败。错误里的 `diagnostics` 对象显示桥发送的远程码 `not_found`。客户端把远程码 `invalid_request`、`not_found` 与 `ambiguous` 映射到 `AnalysisInputError`。那个错误投影到码 `invalid_request`。错误以带 `isError: true` 且没有结果的文本到达 MCP 客户端。服务器日志显示时间花在哪里。
 
 ```listing
-title: the failed call in the server log
+title: 服务器日志里的失败调用
 source: capture/out/10-mcp-server.log
 lang: jsonl
-note: Lines 10 and 11. The first is the bridge layer, the second is the server layer. The time and durationMs values change on every run and are cut.
+note: 第 10 与 11 行。第一行是桥层，第二行是服务器层。time 与 `durationMs` 的值每次运行都会变，已裁。
 ---
 {"level":40,"time":…,"application":"rea","mode":"mcp","layer":"ghidra-bridge","method":"analyze_function","status":"error","msg":"Ghidra bridge request completed"}
 {"level":40,"time":…,"application":"rea","mode":"mcp","layer":"server","tool":"analyze_function","durationMs":…,"status":"error","msg":"MCP tool execution completed"}

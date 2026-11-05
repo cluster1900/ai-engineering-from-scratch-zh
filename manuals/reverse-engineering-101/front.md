@@ -76,10 +76,10 @@ rea doctor --provider ghidra --format json
 在捕获用的 Mac 上，报告开头像这样：
 
 ```listing
-title: the doctor verdict for the Ghidra scope
+title: Ghidra 作用域的 doctor 裁决
 source: capture/out/01-doctor-ghidra.json
 lang: json
-note: Cut to the two verdicts and the scope. The nine checks are cut, and section 2.2 reads them.
+note: 裁到两条裁决与作用域。九项检查已裁，由第 2.2 节来读。
 ---
 {
   "healthy": true,
@@ -106,10 +106,10 @@ rea function ledger-arm64-O1 _percent_change --provider ghidra --format json
 换一个 clang 会给出别的字节，随之给出别的 SHA-256 和别的 `evidence_id`，所以你的记录在这些字段上会与捕获不同。捕获把它的运行记成这样：
 
 ```listing
-title: the first question
+title: 第一个问题
 source: capture/out/00-commands.txt
 lang: text
-note: The time is cut, because it changes with every recording and stays between 7 and 9 s.
+note: 时间已裁，因为每次录制都会变，并保持在 7 到 9 秒。
 ---
 $ rea function fixtures/ledger-arm64-O1 _percent_change --provider ghidra --format json
 [exit 0] (… s) -> 06-function-percent-change.json
@@ -136,9 +136,9 @@ $ rea function fixtures/ledger-arm64-O1 _percent_change --provider ghidra --form
 ```figure
 id: fig-0-1
 kind: sequence
-title: reading a sequence figure in this manual
-claim: Each of the eight arrow styles marks one kind of exchange, and every label except the model call is a real name or message from the recorded session.
-caption: Read each numbered row from the tail of the arrow to its head, and the note under each label names the style. Rows 1 to 8 come from the MCP session captures and the server log. Row 9 is the model call the kit does not record.
+title: 如何读本手册里的序列图
+claim: 八种箭头样式各标一种交换，除模型调用外每个标签都是已录制会话里的真实名字或消息.
+caption: 按编号逐行从箭头尾读到箭头头，标签下的说明点出样式。第 1 到 8 行来自 MCP 会话捕获与服务器日志。第 9 行是套件没有记录的模型调用。
 ```
 
 第 9 行的模型调用属于 agent，[第 8 部分](#p-8) 用它自己的 lifeline 画出。

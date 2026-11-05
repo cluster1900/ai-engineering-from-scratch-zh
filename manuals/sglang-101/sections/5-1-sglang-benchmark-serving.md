@@ -11,10 +11,10 @@
 服务器是一个进程，模型是抓取 Mac 上的 `mlx-community/Qwen3-0.6B-4bit`。本节每一次跑都对着这一台服务器说话。
 
 ```listing
-title: the server under test
+title: 被测的服务器
 source: capture/out/server-default.command.txt
 lang: text
-note: The full command, as the capture kit started it.
+note: 完整命令，capture kit 就是这样启动它的。
 ---
 SGLANG_USE_MLX=1 sglang serve --model-path mlx-community/Qwen3-0.6B-4bit --disable-cuda-graph --host 127.0.0.1 --port 30000 --enable-cache-report --enable-metrics --mem-fraction-static 0.4
 ```
@@ -49,10 +49,10 @@ python -m sglang.benchmark.serving --backend sglang --port 30000 \
 ## 一块一块读报告 {#s-sglang-benchmark-serving-read-the-report-block-by-block}
 
 ```listing
-title: the report at a concurrency cap of 8
+title: 并发上限为 8 时的报告
 source: capture/out/bench-random-c8.txt
 lang: text
-note: Cut from the full output. The argument dump, the progress bar, and the P90 and P95 rows are cut.
+note: 从完整输出截出。参数转储、进度条，以及 P90 和 P95 行已截去。
 ---
 ============ Serving Benchmark Result ============
 Backend:                                 sglang
@@ -95,9 +95,9 @@ Max ITL (ms):                            1948.37
 ```figure
 id: fig-5-1b
 kind: structure
-title: what each line of the report is computed from
-claim: Concurrency and peak concurrent requests come from request timestamps after the run, so neither line repeats the cap you set.
-caption: Read each row left to right, from the report line to the formula in calculate_metrics to our value at a cap of 8. Olive boxes are client measurements. From capture/out/bench-random-c8.txt and the benchmark module at v0.5.22.
+title: 报告每一行是从什么算出来的
+claim: 并发和峰值并发请求来自跑完之后的请求时间戳，所以这两行都不是你设的那个上限.
+caption: 每一行从左到右读，从报告行到 calculate_metrics 里的公式，再到上限 8 时我们的值。橄榄色框是客户端测量。 From capture/out/bench-random-c8.txt and the benchmark module at v0.5.22.
 ```
 
 ## Sweep 与拐点 {#s-sglang-benchmark-serving-the-sweep-and-the-knee}
@@ -115,9 +115,9 @@ caption: Read each row left to right, from the report line to the formula in cal
 ```figure
 id: fig-5-1
 kind: comparison
-title: throughput stops at a cap of 8, latency does not
-claim: Raising the cap from 8 to 32 added no throughput and made the median first token five times slower.
-caption: Left, output tokens per second at each cap. Right, median TTFT at the same caps on a shared scale. Olive bars are client measurements, and rose marks the run past the knee. From capture/out/bench-random-c1.txt, c8.txt, and c32.txt.
+title: 吞吐在上限 8 停住，延迟没有
+claim: 把上限从 8 提到 32 没有增加吞吐，并把中位首 token 放慢到 5 倍.
+caption: 左图是每一档上限的每秒输出 token。右图是同样上限上的中位 TTFT，共用刻度。橄榄色柱是客户端测量，玫瑰色标出过了拐点的那次跑。 From capture/out/bench-random-c1.txt, c8.txt, and c32.txt.
 ```
 
 拐点是吞吐停止上升之后的那个上限。在这台机器上它在 8 或以下。过了拐点，服务器没有空闲算力可给。新请求只是等同一批 decode 步里的一份。调度器在[第 2.2 节](#s-the-scheduler-loop-and-schedule-policy) 里仍会接纳它们，因为这台 Mac 上它的接纳上限是 `max_running_requests=4096`。
@@ -129,10 +129,10 @@ caption: Left, output tokens per second at each cap. Right, median TTFT at the s
 GPU 上的一次跑告诉我们假东西。GPU 套件在 NVIDIA GB10 上用 Qwen3-30B-A3B 启动默认服务器，每个上限跑一次。
 
 ```listing
-title: the server under test on the GB10
+title: GB10 上被测的服务器
 source: capture/gpu/out-gb10/server-default.command.txt
 lang: text
-note: The full command, as the GPU kit started it.
+note: 完整命令，GPU kit 就是这样启动它的。
 ---
 sglang serve --model-path Qwen/Qwen3-30B-A3B-Instruct-2507 --host 127.0.0.1 --port 30000 --enable-cache-report --enable-metrics --mem-fraction-static 0.7
 ```
@@ -151,10 +151,10 @@ sglang serve --model-path Qwen/Qwen3-30B-A3B-Instruct-2507 --host 127.0.0.1 --po
 后来我们在套件跑的服务器日志里找到了假结果的原因。套件把每一次带种子 7 的跑发给同一台服务器，且从未清掉前缀缓存。用一个种子时，客户端在每一次跑里发同样的前几条提示 {{code}}。所以每一次跑都在缓存里找到前一次跑的提示：
 
 ```listing
-title: a run that found its prompts in the cache
+title: 一次在缓存里找到 prompt 的跑
 source: capture/gpu/out-gb10/server-default.log
 lang: text
-note: Three prefill lines from the kit run at a cap of 32. The first two admit 29 requests that need one new token each. The third is the first prompt that was new to the cache. The ends of the lines are cut.
+note: kit 在上限 32 那次跑里的三行 prefill。前两行准入 29 条请求，每条只要一个新 token。第三行是缓存里第一条新 prompt。行尾已截去。
 ---
 [2026-10-17 14:23:00] Prefill batch, #new-seq: 14, #new-token: 14, #cached-token: 6879, token usage: 0.07, …
 [2026-10-17 14:23:00] Prefill batch, #new-seq: 15, #new-token: 15, #cached-token: 7634, token usage: 0.07, …
@@ -166,9 +166,9 @@ note: Three prefill lines from the kit run at a cap of 32. The first two admit 2
 ```figure
 id: fig-5-1c
 kind: chart
-title: output throughput against concurrency on a GB10
-claim: Three seeds per point agree closely, so each line is a measurement and the gaps between the lines are real.
-caption: Read each line from left to right, one server configuration per line. The band is the lowest and the highest of three seeds. Qwen3-30B-A3B, 512 tokens in and 128 out. From capture/gpu/summary/gb10.json.
+title: GB10 上输出吞吐对上并发
+claim: 每个点的三个种子彼此很近，所以每条线都是一次测量，线与线之间的空隙是真的.
+caption: 每条线从左到右读，一条线一种服务器配置。色带是三个种子的最低和最高。Qwen3-30B-A3B，512 token 进、128 token 出。 From capture/gpu/summary/gb10.json.
 ```
 
 图里最宽的带是上限 8 时的 EAGLE-3，从 86.93 到 107.23 tok/s。其他每一条带都在其中位大约 10% 以内。有了那份散布，1.9 倍的差距是真的。在上限 64 时，FP8 给出 440.86 tok/s，BF16 给出 235.38 tok/s。没有 CUDA graph 的那次跑压在默认线上，[第 4.1 节](#s-forwardmode-and-cuda-graphs) 解释了为什么。
@@ -180,9 +180,9 @@ caption: Read each line from left to right, one server configuration per line. T
 ```figure
 id: fig-5-1e
 kind: chart
-title: TTFT quantiles of three runs at a cap of 16
-claim: About half of the requests waited several times longer than the other half, so the median describes neither group.
-caption: Each line is drawn from 51 quantiles of the pooled requests, from the fastest to the slowest. The rose line marks P90. The time axis is logarithmic. From the per-request records in capture/gpu/summary/gb10.json, the load sweep at a cap of 16.
+title: 上限 16 时三次跑的 TTFT 分位
+claim: 大约一半请求的等待是另一半的好几倍，所以中位数哪一组都描述不了.
+caption: 每条线取自汇合请求的 51 个分位，从最快到最慢。玫瑰色线标出 P90。时间轴是对数的。 From the per-request records in capture/gpu/summary/gb10.json, the load sweep at a cap of 16.
 ```
 
 **我们在 GB10 上测到**两群。对 BF16，最快一半请求的第一个 token 从 186.3 到 211.8 ms。从第 68 百分位起，请求等了 1,639.8 到 1,743.4 ms。中位是 237.6 ms，P90 是 1,721.5 ms，多 7.2 倍。FP8 有同样的两群：快的一半是 122.7 到 139.5 ms，慢的一半是 589.9 到 1,162.2 ms。
@@ -196,10 +196,10 @@ EAGLE-3 有最慢的中位，579.3 ms，以及最短的尾部，P90 是 1,007.4 
 我们在 L4 上测了这种解读，不是在 GB10 上。在 2026-10-23 我们跑了 Qwen3-8B 的负载 sweep，每一次跑前冲洗，并锁在 900 MHz。我们把它与同一次会话里没有冲洗的一次跑比较：
 
 ```listing
-title: median TTFT with and without a flush, Qwen3-8B on our L4 at 900 MHz
+title: 有冲洗和没有冲洗的中位 TTFT，我们 L4 上 900 MHz 的 Qwen3-8B
 source: capture/gpu/out-l4/load-flushed-vs-unflushed.txt
 lang: text
-note: The median TTFT rows. The share of requests that met the target and the P99 ITL lines are cut.
+note: 中位 TTFT 那些行。达标请求的份额和 P99 ITL 行已截去。
 ---
 median TTFT, flushed against unflushed
 users   vLLM                                   SGLang
@@ -216,10 +216,10 @@ users   vLLM                                   SGLang
 一种解读在你改掉它归咎的那个变量之前都是假设。我们在一块 L4 上用上限 16 与 64 条提示跑 Qwen3-8B，每个点三个种子。只有 `--random-range-ratio` 变了，从 1.0 到 0.5 到 0.0。
 
 ```listing
-title: one wave on the L4 with fixed lengths
+title: L4 上固定长度的一波
 source: capture/gpu/out-l4/server-waves-default.log
 lang: text
-note: Five consecutive lines from a run at a ratio of 1.0. Timestamps are kept, because the timing is the point.
+note: 比例 1.0 那次跑里连续的五行。时间戳留着，因为要看的就是这段时间。
 ---
 [2026-10-17 15:54:33] Prefill batch, #new-seq: 8, #new-token: 4096, #cached-token: 1, token usage: 0.34, #running-req: 1, #queue-req: 0, #pending-token: 513, cuda graph: True, input throughput (token/s): 3509.80
 [2026-10-17 15:54:34] Prefill batch, #new-seq: 8, #new-token: 3583, #cached-token: 0, token usage: 0.34, #running-req: 8, #queue-req: 0, #pending-token: 0, cuda graph: True, input throughput (token/s): 3503.78
@@ -233,9 +233,9 @@ note: Five consecutive lines from a run at a ratio of 1.0. Timestamps are kept, 
 ```figure
 id: fig-5-1h
 kind: chart
-title: Fixed lengths trade a slow first token for smooth decoding
-claim: With fixed lengths the median TTFT was 1,996 ms and P99 ITL 82 ms, and with mixed lengths they were 291 ms and 300 ms.
-caption: Solid lines are median TTFT and dashed lines are P99 inter-token latency, three seeds per point, on a log scale. Plum is BF16 and green is FP8 with an FP8 KV cache. From capture/gpu/summary/l4.json.
+title: 固定长度用更慢的首 token 换更平稳的 decode
+claim: 固定长度时中位 TTFT 是 1,996 ms、P99 ITL 是 82 ms，混合长度时是 291 ms 和 300 ms.
+caption: 实线是中位 TTFT，虚线是 P99 token 间隔延迟，每个点三个种子，对数刻度。梅红色是 BF16，绿色是带 FP8 KV cache 的 FP8。 From capture/gpu/summary/l4.json.
 ```
 
 | 比例 | BF16 中位 TTFT | BF16 P99 ITL | FP8 中位 TTFT | FP8 P99 ITL |
@@ -261,10 +261,10 @@ GB10 配 Qwen3-30B-A3B、每个点三个种子时给出同样的形状。固定�
 为了看速度效应的大小，我们用同一个种子把一种负载连跑四次。我们用 `Qwen/Qwen3-0.6B`，上限 16 时 64 条提示，512 进、128 出。这是在我们 L4 节点的第二块 GPU 上，其所有者共享它，且没有锁时钟。所以信任比率，不要信任时间。
 
 ```listing
-title: median TTFT in ms, the same load four times in a row
+title: 中位 TTFT，单位 ms，同样的负载连跑四次
 source: capture/gpu/out-l4/prefix-cache-flush.txt
 lang: text
-note: The SGLang row of the summary. The vLLM row is cut.
+note: 摘要里的 SGLang 行。vLLM 行已截去。
 ---
 engine        fresh   repeat, not flushed   repeat after a flush   repeat, not flushed
 SGLang 0.6B   394     82.5                  289                    77
@@ -303,9 +303,9 @@ BF16 goodput 在上限 4 时最高。从上限 8 起，中位请求每个 token 
 ```figure
 id: fig-5-1d
 kind: chart
-title: requests served and requests served within the target, against offered load
-claim: FP8 served 1.03 requests per second within the target at 1 offered, and BF16 served almost no request within the target at any rate.
-caption: Dashed lines are requests completed per second. Solid lines are requests that met the target, with the range of three seeds as a band. Green is FP8 with an FP8 KV cache, plum is BF16. From capture/gpu/summary/gb10.json, the rate sweep.
+title: 完成的请求和达标的请求，对上供给负载
+claim: 供给为 1 时，FP8 每秒完成 1.03 条达标请求，BF16 在任一速率下几乎没有达标请求.
+caption: 虚线是每秒完成的请求。实线是达标的请求，色带是三个种子的范围。绿色是带 FP8 KV cache 的 FP8，梅红色是 BF16。 From capture/gpu/summary/gb10.json, the rate sweep.
 ```
 
 **我们在 GB10 上测到**这一点。在每秒 0.5 个请求时，BF16 已经有 177.5 ms 的中位每个 token 时间。到达重叠：在每秒 0.52 个请求、各 128 个 token、每个 token 177.5 ms 时，大约 12 条请求共享每一个 decode 步。只有每秒 0.07 个请求达到目标。FP8 到每秒 1 个时每一条请求都达到目标，然后在 2 时降到 0.17。
@@ -317,9 +317,9 @@ caption: Dashed lines are requests completed per second. Solid lines are request
 ```figure
 id: fig-5-1g
 kind: chart
-title: the same open loop on a 24 GB L4
-claim: On the L4, FP8 served 3.18 requests per second within the target at 4 offered, and BF16 served none within the target from 4 offered.
-caption: Dashed lines are requests completed per second. Solid lines are requests that met the target, with the range of three seeds as a band. Green is FP8 with an FP8 KV cache, plum is BF16. From capture/gpu/summary/l4.json, the rate sweep.
+title: 24 GB L4 上的同一条开环
+claim: 在 L4 上，供给为 4 时 FP8 每秒完成 3.18 条达标请求，从供给 4 起 BF16 没有达标请求.
+caption: 虚线是每秒完成的请求。实线是达标的请求，色带是三个种子的范围。绿色是带 FP8 KV cache 的 FP8，梅红色是 BF16。 From capture/gpu/summary/l4.json, the rate sweep.
 ```
 
 **我们在更小的卡上测到**不同的形状。两个服务器到每秒 1 个时每一条请求都达到目标。BF16 在 offer 2 时在目标内保持 0.88，从 4 起一个都没有。FP8 在 offer 4 时在目标内保持 3.18，是最好 BF16 点的三倍。FP8 服务器还有 142,369 个 token 的池，对上 BF16 的 24,094。从 offer 4 起，BF16 池是上限。
@@ -337,10 +337,10 @@ caption: Dashed lines are requests completed per second. Solid lines are request
 我们的 sweep 表来自温度 0 下的 `sglang.benchmark.serving`，那是它的默认。另一个客户端可以从同一台服务器读出不同的数字。我们在 2026-10-23 对着一台带 `Qwen/Qwen3-0.6B` 的 vLLM 0.31.0 服务器跑了三个客户端。它们是带 `--backend vllm` 的这个客户端、`vllm bench serve`，以及它的 Rust 版本。GPU 是我们节点上共享的第二块 L4。它的时钟被节流，但对每一次跑都停在 420 到 495 MHz。
 
 ```listing
-title: median TTFT in ms from three clients, two rounds each
+title: 三个客户端的中位 TTFT，单位 ms，各两轮
 source: capture/gpu/out-l4/bench-client-bias.txt
 lang: text
-note: The rows at temperature 0 from the TTFT table. The rows at temperature 0.7 and the throughput table are cut.
+note: TTFT 表里温度 0 的行。温度 0.7 的行和吞吐表已截去。
 ---
 users   temperature   SGLang client    vllm bench       vllm bench, Rust
 1       0             154, 164         149, 150         144, 144
@@ -362,10 +362,10 @@ users   temperature   SGLang client    vllm bench       vllm bench, Rust
 我们在 NVIDIA L4 上的第一次 sweep 报告说 CUDA graph 什么都没做。上限 1 时中位每个 token 时间带 graph 是 103.4 ms，不带也是 103.4 ms。那个上限上的三个种子给出从 10.0 到 14.9 tok/s，散布是中位的一半。然后我们在 sweep 期间读了 `nvidia-smi`。
 
 ```listing
-title: the L4 during the first sweep
+title: 第一次 sweep 期间的 L4
 source: capture/gpu/incidents/l4-thermal-throttle.txt
 lang: text
-note: The header row and the row of the GPU that ran the sweep.
+note: 表头行，以及跑这次 sweep 的那块 GPU 的行。
 ---
 index, temperature.gpu, power.draw [W], power.limit [W], clocks.current.sm [MHz], clocks.max.sm [MHz], clocks_event_reasons.active, clocks_event_reasons.sw_thermal_slowdown, clocks_event_reasons.hw_thermal_slowdown, clocks_event_reasons.sw_power_cap, utilization.gpu [%]
 0, 87, 58.36 W, 72.00 W, 360 MHz, 2040 MHz, 0x0000000000000020, Active, Not Active, Not Active, 100 %
@@ -380,9 +380,9 @@ GPU 在 87 C，软件热降速是 Active，其 SM 时钟是 2040 里的 360 MHz�
 ```figure
 id: fig-5-1f
 kind: chart
-title: the same server on the same L4, measured hot and measured with a cool-down
-claim: The hot sweep reported up to 28 percent less throughput than the cooled sweep, with the same command on the same card.
-caption: Blue is the sweep with a cool-down to 72 C and the clock recorded, and rose is the first sweep with no telemetry. Bands are the range of three seeds. Qwen3-8B, 512 tokens in and 128 out. From capture/gpu/summary/l4.json and capture/gpu/summary/l4-throttled.json.
+title: 同一台服务器、同一块 L4，一次热着测，一次冷却后测
+claim: 热的 sweep 报告的吞吐比冷却后的 sweep 最多低 28%，同一条命令、同一块卡.
+caption: 蓝色是冷却到 72 C 并记下时钟的 sweep，玫瑰色是没有遥测的第一次 sweep。色带是三个种子的范围。Qwen3-8B，512 token 进、128 token 出。 From capture/gpu/summary/l4.json and capture/gpu/summary/l4-throttled.json.
 ```
 
 **我们在 L4 上测到**差异。在上限 32 时，冷却后的 sweep 给出 270.11 tok/s，热的 sweep 给出 194.16 tok/s。在上限 1 时，中位每个 token 时间是 60.16 ms 对上 103.38 ms。

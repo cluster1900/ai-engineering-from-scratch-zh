@@ -22,9 +22,9 @@
 ```figure
 id: fig-2-1
 kind: chart
-title: 1.7B fits for short steps, and 4B does not
-claim: The estimated trainer state of a 4B model is about half the machine, and both 4B runs reached the Ray limit.
-caption: Blue bars are estimates at 16 bytes for each parameter. Rose bars are the node memory that Ray read when it stopped each 4B run.
+title: 短步能放下 1.7B，放不下 4B
+claim: 4B 模型估算的训练器状态大约是整台机器的一半，而两次 4B 运行都达到了 Ray 的上限.
+caption: 蓝色柱是按每个参数 16 字节做的估算。玫瑰色柱是 Ray 停掉每次 4B 运行时读到的节点内存。
 ```
 
 ## 4B 发生了什么 {#s-pick-a-model-size-what-happened-with-4b}

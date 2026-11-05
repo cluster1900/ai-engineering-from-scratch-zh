@@ -17,10 +17,10 @@ kit 向 `test-runner` 发送一个只有 `Host` 和 `Content-Type` 请求头的 
 版本的形式是 `Major.Minor`，例如 `1.0`，请求、响应和 Agent Card 不应带有补丁号 {{spec §3.6}}。客户端必须在每个请求中发送 `A2A-Version` 请求头 {{spec §3.6.1}}，1.0 客户端发送 `1.0`。服务器有两项职责：以该版本的语义处理请求，并在接口不支持该版本时返回 `VersionNotSupportedError` {{spec §3.6.2}}。空值的情况有固定的含义：agent 必须把空值读作 0.3 版 {{spec §3.6.2}}。所以忘了请求头的客户端，会从仍提供 0.3 的 agent 那里得到 0.3 的语义，从不提供 0.3 的 agent 那里得到这个错误：
 
 ```listing
-title: no A2A-Version header, read as 0.3 and refused
+title: 没有 A2A-Version 请求头，被读作 0.3 并拒绝
 source: capture/out/11-errors.http
 lang: http
-note: The request body and the error details are cut down. The request carries only Host and Content-Type, and the kit speaks only 1.0.
+note: 请求体和错误详情已删节。请求只带 Host 和 Content-Type，而 kit 只接受 1.0。
 ---
 POST /a2a/jsonrpc HTTP/1.1
 Host: localhost:41241

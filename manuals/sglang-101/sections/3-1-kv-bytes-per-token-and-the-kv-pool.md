@@ -21,10 +21,10 @@
 那个 2 计的是 key 和 value。**Grouped-query attention：** 几个 query head 共享一个 key 和 value head，所以现代模型的 KV head 远少于 attention head。SGLang 启动时就算这个数 {{code}}。在我们的 Mac 上，MLX 后端把它打在日志的前几行。
 
 ```listing
-title: the KV pool, sized at startup
+title: 启动时划定的 KV pool
 source: capture/out/server-default.log
 lang: text
-note: Two lines from the startup log of the default kit configuration.
+note: 默认 kit 配置的启动日志里的两行。
 ---
 [2026-10-16 13:58:03] Auto-sized attention KV pool: sys_available=48.49 GB, mlx_limit=51.8 GB, mlx_used=0.31 GB, kv_budget=19.39 GB, bytes_per_slot=114688, pool_size=181574
 …
@@ -49,9 +49,9 @@ note: Two lines from the startup log of the default kit configuration.
 ```figure
 id: fig-3-1
 kind: structure
-title: what one token costs in Qwen3-0.6B
-claim: One token of Qwen3-0.6B costs 114,688 bytes, the product of five numbers from the model config.
-caption: Read left to right. Each box is one factor of the bytes_per_slot value in the startup log. From capture/out/server-default.log.
+title: Qwen3-0.6B 里一个 token 的代价
+claim: Qwen3-0.6B 的一个 token 要 114,688 字节，是模型配置里五个数的乘积.
+caption: 从左到右读。每个框是启动日志里 bytes_per_slot 的一个因子。 From capture/out/server-default.log.
 ```
 
 ## 两张表，一个 pool {#s-kv-bytes-per-token-and-the-kv-pool-two-tables-one-pool}
@@ -67,9 +67,9 @@ SGLang 把 KV cache 放在固定大小槽位的 pool 里，每个 token 一个�
 ```figure
 id: fig-3-1b
 kind: structure
-title: request rows point into one slot pool
-claim: Two requests that share a system prompt point their first rows at the same KV slots, so the prefix exists once in memory.
-caption: Read top to bottom. Each row is a ReqToTokenPool entry, and the strip below is the KV pool. Mechanism from the v0.5.22 code, sizes illustrative.
+title: 请求行指向同一个槽 pool
+claim: 两条共享 system prompt 的请求把各自的第一行指到同一批 KV 槽，所以这段前缀在内存里只存在一份.
+caption: 从上往下读。每一行是一条 ReqToTokenPool 记录，下面的条是 KV pool。机制来自 v0.5.22 代码，尺寸是示意。
 ```
 
 ## 缓存就是 pool {#s-kv-bytes-per-token-and-the-kv-pool-the-cache-is-the-pool}

@@ -9,10 +9,10 @@
 dossier 有一个空的 `callees` 数组，并在 840 行之后有一条关于它的限制。Callees 只持有已解析的目标。记录说这个集合是完整的：`relationship_coverage.status` 是 `complete`，且 `unresolved_calls` 为空。Complete 表示 Ghidra 返回了每一次已解析的调用引用。它并不表示 Ghidra 找到了程序在运行时能做的每一次调用。
 
 ```listing
-title: an empty list and the limitation that qualifies it
+title: 一个空列表，以及限定它的那条 limitation
 source: capture/out/10-mcp-09-analyze-function-percent-change-O1.json
 lang: json
-note: Line 1052 and line 1894 of the file. Everything between them is cut.
+note: 文件的第 1052 行与第 1894 行。两者之间的一切已裁。
 ---
 "callees": [],
 …
@@ -30,10 +30,10 @@ provider 注意事项留在 `limitations` 里，不会让覆盖变成部分。�
 dossier 有一部分用数字声明其覆盖。值流报告它是否被截断，以及省略了多少操作、输入与边。`inspect-evidence-bundle` 为包里的每一份 dossier 重复那些数字。
 
 ```listing
-title: the coverage numbers of one dossier in the bundle summary
+title: 包摘要里一份 dossier 的覆盖数字
 source: capture/out/11-inspect-evidence-bundle-O1.json
 lang: json
-note: One of the eight records. The fields before native_dossier are cut.
+note: 八份记录里的一份。`native_dossier` 之前的字段已裁。
 ---
 "native_dossier": {
   "available": true,
@@ -56,9 +56,9 @@ note: One of the eight records. The fields before native_dossier are cut.
 ```figure
 id: fig-5-3
 kind: comparison
-title: three empty lists and what each one proves
-claim: An empty callees array with complete coverage, a zero unknown count, and a one-sided bundle record each prove that nothing was observed, never that nothing exists.
-caption: Read each column top to bottom, from the captured value to the record's own words to what you can say. From capture/out/10-mcp-09-analyze-function-percent-change-O1.json, 10-mcp-14-export-evidence-bundle-O1.json, and 14-compare-bundles.json.
+title: 三个空列表，以及每一个证明什么
+claim: 带完整覆盖的空 `callees` 数组、为零的未知计数，以及单侧的包记录，各自证明的是没有观察到任何东西，绝不是什么都不存在.
+caption: 每列从上到下读，从抓到的值到记录自己的话，再到你能说的话。 From capture/out/10-mcp-09-analyze-function-percent-change-O1.json, 10-mcp-14-export-evidence-bundle-O1.json, and 14-compare-bundles.json.
 ```
 
 ## ResidualUnknown 记录 {#s-residual-unknowns-and-coverage-the-residualunknown-record}
@@ -99,9 +99,9 @@ id 让问题成为身份。`createResidualUnknown` 折叠问题里的空白，�
 ```figure
 id: fig-5-2
 kind: structure
-title: a ResidualUnknown and its revision chain
-claim: An unknown keeps its id across revisions, each revision names the digest of the one before, and each change writes its own Evidence record.
-caption: Read left to right. Revision 1 is the unknown that registerFunctionComparisonTool.ts records for the _total comparison in the comparison capture. The right column shows the fields that an update_unknown call changes.
+title: 一个 ResidualUnknown 及其修订链
+claim: 未知事项跨修订保持它的 id，每一修订点名前一修订的 digest，每一次变更写出自己的 Evidence 记录.
+caption: 从左到右读。修订 1 是 `registerFunctionComparisonTool.ts` 为比较抓取里的 `_total` 比较记下的那个未知事项。右列是一次 `update_unknown` 调用会改的字段。
 ```
 
 ## rea 自己打开的未知事项 {#s-residual-unknowns-and-coverage-unknowns-that-rea-opens-itself}

@@ -17,10 +17,10 @@ grep "attention backend" server.log
 在我们的 DGX Spark 上，用 `Qwen3-30B-A3B` 和默认设置时，这一行是：
 
 ```listing
-title: the attention backend line on our DGX Spark
+title: 我们 DGX Spark 上的 attention backend 行
 source: capture/gpu/out-gb10/server-load-vllm.log
 lang: text
-note: The list holds only the backends that can run with this model and these settings, in the order vLLM tries them.
+note: 列表里只有能用这个模型和这些设置运行的 backend，顺序就是 vLLM 尝试的顺序。
 ---
 (EngineCore pid=143) INFO 10-21 10:53:17 [cuda.py:526] Using FLASH_ATTN attention backend out of potential backends: ['FLASH_ATTN', 'FLASHINFER', 'TRITON_ATTN', 'FLEX_ATTENTION'].
 ```

@@ -9,10 +9,10 @@
 ## 命令 {#s-rea-function-end-to-end-the-command}
 
 ```listing
-title: the recorded command
+title: 已录制的命令
 source: capture/out/00-commands.txt
 lang: text
-note: The time is cut, because it changes with every recording and stays between 7 and 9 s, as [the kit notes](manuals/reverse-engineering-101/capture/README.md) record.
+note: 时间已裁，因为每次录制都会变，并保持在 7 到 9 秒，正如[捕获说明](manuals/reverse-engineering-101/capture/README.md)所记。
 ---
 $ rea function fixtures/ledger-arm64-O1 _percent_change --provider ghidra --format json
 [exit 0] (… s) -> 06-function-percent-change.json
@@ -23,9 +23,9 @@ $ rea function fixtures/ledger-arm64-O1 _percent_change --provider ghidra --form
 ```figure
 id: fig-1-2
 kind: sequence
-title: one rea function run, step by step
-claim: One command opens the file, binds Ghidra, launches a headless JVM on a private copy, asks one question on a socket, and returns one Evidence record.
-caption: Read top to bottom, one numbered row per step. Rows 1 and 12 come from the command record, and the names and the digest from the function capture. The file copy name comes from the overview capture. The deadlines come from the source at the tag.
+title: 一次 rea function 运行，逐步展开
+claim: 一条命令打开文件、绑定 Ghidra、在私有副本上启动 headless JVM、经套接字问一个问题，并返回一份 Evidence 记录.
+caption: 从上到下读，每步一行编号。第 1 行与第 12 行来自命令记录，名字与 digest 来自函数捕获，副本文件名来自 overview 捕获，截止时间来自钉住标签上的源码。
 ```
 
 ## 从命令到桥 {#s-rea-function-end-to-end-from-the-command-to-the-bridge}
@@ -42,10 +42,10 @@ caption: Read top to bottom, one numbered row per step. Rows 1 and 12 come from 
 ## 逐字段读记录 {#s-rea-function-end-to-end-the-record-field-by-field}
 
 ```listing
-title: the head of the record
+title: 记录的开头
 source: capture/out/06-function-percent-change.json
 lang: json
-note: Cut after the provider. The analysis profile and the results follow in the next listings.
+note: 在 provider 之后裁断。analysis profile 与结果见后面的 listing。
 ---
 {
   "evidence_id": "ev_b492c85e…",
@@ -69,10 +69,10 @@ note: Cut after the provider. The analysis profile and the results follow in the
 `evidence_id` 对语义内容做哈希，并排除 `subject.name` 与 `subject.local_path`，所以同一字节在另一路径下得到同一 id。`provider` 点名引擎及其版本。下一个字段把答案绑到引擎设置：
 
 ```listing
-title: the analysis profile
+title: 分析 profile
 source: capture/out/06-function-percent-change.json
 lang: json
-note: Cut to five of the 25 parameters and the digest.
+note: 裁到 25 个参数里的五个，以及 digest。
 ---
   "analysis_profile": {
     "provider": {
@@ -108,9 +108,9 @@ note: Cut to five of the 25 parameters and the digest.
 ```figure
 id: fig-1-3
 kind: structure
-title: the 16 fields of one Evidence record
-claim: Every field of the record is either identity, provenance, the answer, or a limit on the answer, and the id covers all of them except the display names.
-caption: Read the field, its value in this record, and the note. From capture/out/06-function-percent-change.json, with the field list from src/domain/evidence.ts at the tag.
+title: 一份 Evidence 记录的 16 个字段
+claim: 记录的每个字段要么是身份、出处、答案，要么是对答案的限制，id 覆盖除显示名以外的全部.
+caption: 读字段、它在本记录里的值，以及说明。 From capture/out/06-function-percent-change.json, with the field list from src/domain/evidence.ts at the tag.
 ```
 
 ## normalized_result 里面 {#s-rea-function-end-to-end-inside-normalized-result}
@@ -118,10 +118,10 @@ caption: Read the field, its value in this record, and the note. From capture/ou
 **Procedure：** 函数身份。`_percent_change` 在 `0x100000500`，其体是从 `0x100000500` 到 `0x100000517`（含）的一个区间，24 字节，`contains_entry` 为 true。FunctionManager 签名读作 `undefined _percent_change()`，因为 Ghidra 的符号不带类型。`native_api` 下反编译器的视图读作 `ulong _percent_change(ulong param_1,int param_2)`，每个参数带 `confidence: "low"`。你的源码写的是 `int percent_change(int before, int after)`。两者都是观察，正如 limitation 所说："Types and calling conventions are Ghidra decompiler observations, not source declarations."
 
 ```listing
-title: the six instructions
+title: 六条指令
 source: capture/out/06-function-percent-change.json
 lang: json
-note: Nothing is cut from the assembly array.
+note: assembly 数组没有裁剪。
 ---
     "assembly": [
       "0x100000500: cbz w0, 0x100000514",
@@ -136,10 +136,10 @@ note: Nothing is cut from the assembly array.
 六条各四字节的指令凑成 24 字节。`cbz w0` 是你的 `if (before == 0) return 0;`，`before` 在 `w0`，`mov w9, #0x64` 是 100。伪代码讲得更长：
 
 ```listing
-title: the pseudocode, with its newlines expanded
+title: 伪代码，换行已展开
 source: capture/out/06-function-percent-change.json
 lang: text
-note: The pseudocode field is one JSON string. This listing shows it line by line, and every line is a substring of that string.
+note: pseudocode 字段是一个 JSON 字符串。本 listing 逐行展示它，每一行都是该字符串的子串。
 ---
 ulong _percent_change(ulong param_1,int param_2)
 {

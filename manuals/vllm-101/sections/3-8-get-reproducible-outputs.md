@@ -44,10 +44,10 @@ VLLM_BATCH_INVARIANT=1 vllm serve Qwen/Qwen3-8B 2>&1 | tee server.log
 时钟会改变运行的速度，但不会改变 greedy 的 token。每个计数仍然只是一块 GPU 上的一次会话。
 
 ```listing
-title: outputs that differ at one user, out of 32
+title: 一个用户时，32 个输出里不相同的那些
 source: capture/gpu/out-l4/greedy-output-cache-batch-dtype.txt
 lang: text
-note: The table for concurrency 1. The number in brackets is the median position of the first token that differs. The SGLang column comes from the same probe on SGLang 0.5.22.
+note: 并发为 1 的那张表。括号里的数字是第一个不同 token 所在位置的中位数。SGLang 这一列来自 SGLang 0.5.22 上的同一次探测。
 ---
 comparison                     SGLang 0.6B   vLLM 0.6B
 flushed repeat against fresh   0 of 32       0 of 32
@@ -82,10 +82,10 @@ cache on against cache off     25 of 32 (26) 21 of 32 (48)
 2026-10-23 我们在 L4 上测量了这个代价，时钟锁定在 900 MHz。运行顺序是默认、batch-invariant、再默认，每次两个 seed，每次运行前重置 cache。
 
 ```listing
-title: the batch-invariant mode against the default, Qwen3-0.6B on vLLM 0.31.0
+title: batch-invariant 模式对比默认，Qwen3-0.6B，vLLM 0.31.0
 source: capture/gpu/out-l4/batch-invariant-cost.txt
 lang: text
-note: The Qwen3-0.6B rows, where every run had a median clock of 900 MHz. The setup lines before them and the Qwen3-8B rows after them are cut.
+note: Qwen3-0.6B 的几行，每次运行的时钟中位数都是 900 MHz。它们前面的设置行和后面的 Qwen3-8B 行已略去。
 ---
 …
 users   median TPOT default / batch-invariant   output tok/s default / batch-invariant

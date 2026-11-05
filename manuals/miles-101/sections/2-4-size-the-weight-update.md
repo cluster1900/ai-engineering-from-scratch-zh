@@ -28,9 +28,9 @@
 ```figure
 id: fig-2-4
 kind: chart
-title: A larger model costs more to offload than to update
-claim: From 0.6B to 1.7B, the weight update grew 1.4 times, and the trainer offload grew 2.6 times.
-caption: Mean seconds of steps 2 and 3, after two warm-up steps, for each model.
+title: 更大的模型，卸载比更新更贵
+claim: 从 0.6B 到 1.7B，权重更新变为原来的 1.4 倍，训练器卸载变为原来的 2.6 倍.
+caption: 每个模型在两步预热之后，第 2 步和第 3 步的平均秒数。
 ```
 
 ## 与一步的时间比较 {#s-size-the-weight-update-compare-it-with-the-step}

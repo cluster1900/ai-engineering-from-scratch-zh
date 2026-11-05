@@ -13,10 +13,10 @@ planner 通过 `test-runner` 的第二个接口，即绑定为 `HTTP+JSON` 的 `
 对于 subscribe，proto 写的是 `get: "/tasks/{id=*}:subscribe"` {{proto A2AService}}，而 §5.3 和 §11.3.2 写的是 `POST /tasks/{id}:subscribe` {{spec §5.3}} {{spec §11.3.2}}（[冲突 D1](#s-ref-sources)）。参考 SDK 的服务器两个动词都接受，它的客户端发送 `POST` {{sdk src/a2a/server/routes/rest_routes.py}} {{sdk src/a2a/client/transports/rest.py}}。Java 和 .NET 服务器只接受 `POST` {{sdk-java reference/rest/src/main/java/org/a2aproject/sdk/server/rest/quarkus/A2AServerRoutes.java at v1.4.0.Final}} {{sdk-dotnet src/A2A.AspNetCore/A2AEndpointRouteBuilderExtensions.cs at v1.0.0-preview2}}。所以服务器要两者都接受，客户端要发送 `POST`。
 
 ```listing
-title: SendMessage over HTTP+JSON, with no envelope
+title: 通过 HTTP+JSON 的 SendMessage，没有信封
 source: capture/out/16-rest-binding.http
 lang: http
-note: Host and the rest of both bodies are cut. Over JSON-RPC the same reply sits under result, in 03-blocking-task.http.
+note: Host 和两个正文的其余部分已删节。在 JSON-RPC 中，同一条回复位于 result 之下，见 03-blocking-task.http。
 ---
 POST /a2a/rest/message:send HTTP/1.1
 A2A-Version: 1.0
@@ -44,9 +44,9 @@ Content-Type: application/a2a+json
 ```figure
 id: fig-two-json-bindings
 kind: comparison
-title: SendMessage and GetTask in two JSON bindings
-claim: JSON-RPC posts every operation to one URL and names it in the body, HTTP+JSON names it with a verb and a path, and gRPC calls an rpc.
-caption: Each row is one operation, headed by its rpc line from a2a.proto. Bold marks where each binding names the operation, and italic type names stand for the message that fills that place. Left, the blocking-task and polling captures. Right, the HTTP+JSON capture. Ids shortened to 8 characters.
+title: 两种 JSON 绑定中的 SendMessage 和 GetTask
+claim: JSON-RPC 把每个操作 POST 到同一个 URL，并在正文中写出它的名称；HTTP+JSON 用动词和路径命名它；gRPC 则调用一个 rpc.
+caption: 每一行是一个操作，以 a2a.proto 中的 rpc 行开头。粗体标出每种绑定命名该操作的位置，斜体类型名代表填入该位置的 message。左侧是 blocking-task 和轮询这两份 capture。右侧是 HTTP+JSON 的 capture。id 缩短为 8 个字符。
 ```
 
 请求和响应应使用 `application/a2a+json` {{spec §11.1}}，kit 在每个正文上都发送它。参考 SDK 以 `application/json` 发送错误 {{sdk src/a2a/utils/error_handlers.py}}，Java 和 Go 服务器以这种方式发送每个正文 {{sdk-java transport/rest/src/main/java/org/a2aproject/sdk/transport/rest/handler/RestHandler.java at v1.4.0.Final}} {{sdk-go a2asrv/rest.go at v2.6.0}}。所以要发送 `application/a2a+json`，读取时两种类型都接受。

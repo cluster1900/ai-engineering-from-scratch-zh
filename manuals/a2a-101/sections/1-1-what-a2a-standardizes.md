@@ -23,9 +23,9 @@
 ```figure
 id: fig-spec-layers
 kind: layers
-title: the A2A stack for test-runner
-claim: A2A defines the card, the bindings, the operations, and the objects, while test-runner's server parts and agent logic below the dashed line belong to its owner.
-caption: Read from the planner down. Above the dashed line sit the three layers of spec §1.3 with test-runner's real paths from the captured agent cards. Below it are the kit's own parts, and dashed boxes mark what a production agent adds.
+title: test-runner 的 A2A 栈
+claim: A2A 规定 card、绑定、操作和对象，而虚线以下 test-runner 的服务器部件和 agent 逻辑属于它的所有者.
+caption: 从 planner 往下读。虚线以上是 spec §1.3 的三层，以及已捕获的 agent card 中 test-runner 的真实路径。虚线以下是 kit 自己的部件，虚线框标出生产环境的 agent 会增加的部分。
 ```
 
 ## 核心规则 {#s-what-a2a-standardizes-the-core-rules}
@@ -64,9 +64,9 @@ A2A 没有定义注册中心：规范没有为精选注册中心规定标准 API
 ```figure
 id: fig-guarantees
 kind: comparison
-title: what A2A guarantees and what the host builds
-claim: A2A fixes the messages, states, and events between agents, while trust, discovery, retention, and exactly-once effects stay with the host.
-caption: Read across each row, one row per step. The left box is what the specification guarantees, and the grey box beside it is what you build. No capture: the rows come from spec §1, §3.3.1, §3.4.1, §3.7, §4.3.3, §7, §8.2, and §13.1.
+title: A2A 保证什么，宿主构建什么
+claim: A2A 把 agent 之间的消息、状态和事件固定下来，而信任、发现、保留期限和恰好一次的效果仍由宿主负责.
+caption: 逐行横读，每一步一行。左框是规范所保证的，旁边的灰色框是你要构建的。没有 capture：这些行来自 spec §1、§3.3.1、§3.4.1、§3.7、§4.3.3、§7、§8.2 和 §13.1。
 ```
 
 规范还在十处会影响你代码的地方自相矛盾，下表列出了它们，[来源参考](#s-ref-sources)给出了结论。

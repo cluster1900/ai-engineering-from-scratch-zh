@@ -13,10 +13,10 @@
 在改动任何东西之前，先在日志中搜索 `OutOfMemoryError`。Ray 内存停止点名的是节点，而不是某块 GPU：
 
 ```listing
-title: Ray stops the trainer of a Qwen3-4B run
+title: Ray 停掉一次 Qwen3-4B 运行的训练器
 source: capture/gpu/out-gb10/ray-oom-4b.log
 lang: text
-note: The first line gives the share of node memory in use. The table lists the largest processes. The last line names the two settings that control the kill.
+note: 第一行给出节点内存的占用比例。表格列出占用最大的进程。最后一行写出控制这次停止的两个设置。
 ---
 (TrainerController pid=2656) ray.exceptions.OutOfMemoryError: 1 worker(s) were killed due to the node running low on memory. Memory on the node (IP: 172.17.0.3, ID: 08904870a17c5413c623abfc21db2e7fcfdc39d5be90e997b2391f37) was 115.86GB / 121.69GB (0.952127)
 (TrainerController pid=2656) Top 10 memory users: PID	MEM(GB)	COMMAND
@@ -37,9 +37,9 @@ To adjust the kill threshold, set the environment variable `RAY_memory_usage_thr
 ```figure
 id: fig-2-3
 kind: layers
-title: Ray reads one memory for the whole GB10
-claim: On a GB10, Ray reads one memory for the whole node, so its kill means the machine is close to full.
-caption: The memory Ray read when it stopped the first 4B run, drawn as one bar.
+title: Ray 把整台 GB10 读成一块内存
+claim: 在 GB10 上，Ray 把整个节点读成一块内存，所以它的停止意味着机器已接近占满.
+caption: Ray 停掉第一次 4B 运行时读到的内存，画成一根柱。
 ```
 
 ## 降低训练所需的内存 {#s-stop-ray-killing-the-job-lower-the-memory-the-run-needs}

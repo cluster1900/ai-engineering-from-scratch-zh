@@ -9,10 +9,10 @@
 ## 这次调用 {#s-list-strings-the-call}
 
 ```listing
-title: list_strings and three of its items
+title: list_strings 及其三个条目
 source: capture/out/10-mcp-08-list-strings.json
 lang: json
-note: The request arguments, three items cut from the 39, and the two string limitations of the seven.
+note: 请求参数、从 39 个里裁出的三个条目，以及七条 limitation 里关于字符串的两条。
 ---
 "name": "list_strings",
 "arguments": {}
@@ -86,9 +86,9 @@ source: ghidra §Admitted inventory semantics
 ```figure
 id: fig-4-7
 kind: structure
-title: the 39 strings of ledger-arm64-O1 by load command
-claim: Ten of the 39 strings are the program's text, and the other 29 are names and paths that the loader and the linker keep in the file.
-caption: Read top to bottom by address. Each row names the load command, the address range, the count, and one example. From capture/out/10-mcp-08-list-strings.json and 04-inspect-macho.json.
+title: ledger-arm64-O1 的 39 个字符串，按加载命令
+claim: 39 个字符串里有十个是程序的文本，其余 29 个是加载器与链接器留在文件里的名字和路径.
+caption: 按地址从上到下读。每一行点名加载命令、地址范围、计数，以及一个例子。 From capture/out/10-mcp-08-list-strings.json and 04-inspect-macho.json.
 ```
 
 ## 一个函数引用的字符串 {#s-list-strings-strings-a-function-refers-to}

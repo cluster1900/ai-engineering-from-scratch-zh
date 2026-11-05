@@ -37,9 +37,9 @@ vllm serve Qwen/Qwen3-8B \
 ```figure
 id: fig-4-2
 kind: chart
-title: the time per token with n-gram speculation
-claim: On our L4, n-gram speculation cut the median time per token to about a third for one user and to 37 percent for four users.
-caption: Each bar is the median of two runs. Lower is faster. From capture/gpu/summary/l4-gpu1.json.
+title: 使用 n-gram 投机解码时的每 token 时间
+claim: 在我们的 L4 上，n-gram 投机解码把每 token 时间的中位数，一个用户时降到约三分之一，四个用户时降到 37%.
+caption: 每根柱是两次运行的中位数。越低越快。 From capture/gpu/summary/l4-gpu1.json.
 ```
 
 | 用户数，L4 共享 GPU 会话 | 中位 TPOT，无 / n-gram | 输出 tok/s，无 / n-gram | P99 ITL，无 / n-gram | 中位 SM 时钟，无 / n-gram |

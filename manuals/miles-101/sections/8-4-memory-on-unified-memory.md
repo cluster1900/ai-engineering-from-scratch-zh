@@ -21,9 +21,9 @@
 ```figure
 id: fig-8-4
 kind: timeline
-title: The engine and the trainer take turns on one memory
-claim: Only one side holds the GPU memory at a time, and the timed hand-offs take about 2 s of each step.
-caption: Phase medians of 48 steps of a run made before we added the heat guard, drawn to scale.
+title: 引擎和训练器轮流占用同一块内存
+claim: 同一时刻只有一边持有 GPU 内存，计时的交接大约占每一步的 2 s.
+caption: 加上温度保护之前一次运行的 48 步，各阶段中位数，按比例画出。
 ```
 
 ## 普通机器和 GB10 上的卸载 {#s-memory-on-unified-memory-offload-on-a-normal-machine-and-on-a-gb10}

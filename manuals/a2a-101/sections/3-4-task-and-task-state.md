@@ -15,9 +15,9 @@
 ```figure
 id: fig-task-object-model
 kind: structure
-title: the object model of one task
-claim: A task carries its own id, its context, one current status, its artifacts, and its history, and every message and artifact inside it is made of parts.
-caption: Read the task table from the top, in the order the blocking run filled it. The boxes on the right expand its last two rows, and the chips below show the four kinds of part. Values come from the blocking-task capture, ids shortened to 8 characters. The raw and url examples come from the input-required and error captures.
+title: 一个任务的对象模型
+claim: 一个任务携带自己的 id、它的 context、一份当前 status、它的 artifact 和 history，其中每条消息和每个 artifact 都由 part 组成.
+caption: 任务表从上往下读，顺序是阻塞运行填入它的顺序。右侧方框展开最后两行，下方的小标签展示四种 part。值来自 blocking-task 这份 capture，id 缩短为 8 个字符。raw 和 url 的例子来自 input-required 和错误这两份 capture。
 ```
 
 ## TaskStatus {#s-task-and-task-state-taskstatus}
@@ -68,9 +68,9 @@ caption: Read the task table from the top, in the order the blocking run filled 
 ```figure
 id: fig-task-states
 kind: state
-title: the nine task states and the transitions the kit makes
-claim: The kit's captures show nine transitions between task states, and none of them leaves a double-bordered terminal state.
-caption: Boxes are TaskState values with the TASK_STATE_ prefix dropped. Dashed arrows are the transitions the kit's agents make, in capture order, labelled with the capture that shows each one. Read them as one implementation's behavior, never as the protocol's rules. Blocking captures return only the final state, so their earlier transitions come from the history they return and from the kit's agent code.
+title: 九个任务状态，以及 kit 做出的转换
+claim: kit 的 capture 展示了任务状态之间的九次转换，没有一次离开双线边框的终止状态.
+caption: 方框是去掉 TASK_STATE_ 前缀的 TaskState 值。虚线箭头是 kit 的 agent 做出的转换，按 capture 顺序排列，并标上展示该转换的 capture。把它们读成一个实现的行为，而不是协议的规则。阻塞 capture 只返回最终状态，所以更早的转换来自它们返回的 history，以及 kit 的 agent 代码。
 ```
 
 deployer 在没有客户端消息的情况下离开 `TASK_STATE_AUTH_REQUIRED`，这是规范允许的 {{spec §7.6.1}}，并直接从 `TASK_STATE_SUBMITTED` 拒绝。参考 SDK 也不强制任何转换表 {{sdk src/a2a/server/agent_execution/active_task.py}}，所以要接受从非终止状态出发的任何转换。

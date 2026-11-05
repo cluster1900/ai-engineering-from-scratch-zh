@@ -17,10 +17,10 @@
 我们的 capture 模型两种都没有。启动日志这么说。
 
 ```listing
-title: a model with only full-attention layers
+title: 只有 full-attention 层的模型
 source: capture/out/server-default.log
 lang: text
-note: Two lines from the startup log of the default configuration.
+note: 默认配置的启动日志里的两行。
 ---
 [2026-10-16 13:58:06] Tree cache initialized: source=default impl=UnifiedRadixCache hybrid_swa=False hybrid_ssm=False hicache_attached=False
 …
@@ -40,9 +40,9 @@ note: Two lines from the startup log of the default configuration.
 ```figure
 id: fig-3-6
 kind: tree
-title: a Mamba prefix resumes only at a snapshot
-claim: A new request that matches 1,800 tokens of a Mamba model resumes from the last snapshot at 1,792 tokens, and prefills 8 tokens.
-caption: Read from the root down. Snapshots every 256 decode tokens follow the --mamba-track-interval default. The token counts are an example, not a capture.
+title: Mamba 前缀只在快照处恢复
+claim: 一条新请求匹配 Mamba 模型的 1,800 个 token 时，从 1,792 token 处的最后一份快照恢复，并 prefill 8 个 token.
+caption: 从根往下读。每 256 个 decode token 一份快照，跟的是 --mamba-track-interval 的默认。token 数是例子，不是一次 capture。
 ```
 
 ## 会出什么问题，在 issue 里 {#s-hybrid-models-and-the-cache-what-goes-wrong-in-the-issues}

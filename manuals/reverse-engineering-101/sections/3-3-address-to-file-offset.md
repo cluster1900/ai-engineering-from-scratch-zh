@@ -9,10 +9,10 @@
 ## 命令 {#s-address-to-file-offset-the-command}
 
 ```listing
-title: the command and its exit
+title: 命令及其退出
 source: capture/out/00-commands.txt
 lang: text
-note: Two lines from the command index. The time in parentheses changes on every run and is cut.
+note: 命令索引里的两行。括号里的时间每次运行都会变，已裁。
 ---
 $ rea address-to-file-offset fixtures/ledger-arm64-O1 0x100000518 --provider ghidra --format json
 [exit 0] (…) -> 08-address-to-file-offset.json
@@ -21,10 +21,10 @@ $ rea address-to-file-offset fixtures/ledger-arm64-O1 0x100000518 --provider ghi
 在捕获用的 Mac 上，这次调用花了 7 到 9 秒。每一个需要 Ghidra 的 one-shot CLI 调用都会把目标导入全新的 headless 项目。[第 4.1 节](#s-open-binary-and-the-headless-bridge) 详细展示那份代价，同一问题在已打开的 MCP 会话里不到 100 ms。
 
 ```listing
-title: the answer and the rule behind it
+title: 答案及其背后的规则
 source: capture/out/08-address-to-file-offset.json
 lang: json
-note: Cut from the record. The subject, provider, and analysis_profile blocks and five of the six limitations are cut.
+note: 从记录裁出。`subject`、`provider` 与 `analysis_profile` 块，以及六条 limitation 里的五条已裁。
 ---
 "operation": "address_to_file_offset",
 "parameters": {
@@ -67,9 +67,9 @@ section 给出第二次核对。`__text` 的 `address` 是 `0x100000500`，`file
 ```figure
 id: fig-3-4
 kind: structure
-title: from 0x100000518 to file offset 1304
-claim: The segment rule, the section rule, and Ghidra's source mapping give the same byte, 1304, and that byte starts the first instruction of _grade.
-caption: Read each row left to right. Green boxes are load command facts, grey boxes are your arithmetic, the violet box is Ghidra's answer. From capture/out/04-inspect-macho.json, 08-address-to-file-offset.json, and the fixture bytes.
+title: 从 0x100000518 到文件偏移 1304
+claim: 段规则、节规则与 Ghidra 的源映射给出同一个字节 1304，该字节是 `_grade` 第一条指令的起点.
+caption: 每行从左到右读。绿色框是加载命令事实，灰色框是你的算术，紫色框是 Ghidra 的答案。 From capture/out/04-inspect-macho.json, 08-address-to-file-offset.json, and the fixture bytes.
 ```
 
 ELF 规则形状相同。对可加载段是 `offset = address - p_vaddr + p_offset`，对 section 是 `sh_offset`。[第 32 课](phases/13-tools-and-protocols/32-program-anatomy-elf-from-scratch) 在 `ledger-x86_64-O1.o` 上做那种算术。可重定位目标没有程序头表，所以没有段把它放到内存里。当[第 3.4 节](#s-analyze-overview) 显示该目标的 `.text` 在 `0x100000` 时，那个数是 Ghidra 选的放置，不是文件里的事实。

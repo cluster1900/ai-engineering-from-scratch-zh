@@ -15,9 +15,9 @@ planner 请 `test-runner` 在 commit `9f3c2e1` 上运行单元测试。一个测
 ```figure
 id: fig-task-endings
 kind: comparison
-title: four ways a task ends
-claim: The agent chose three of these endings and the client one, and once a task ends, the server refuses any further message or cancel.
-caption: Each card is one task from the kit: who chose the ending, the final status message, and the artifacts left behind. The bottom rows show what the canceled task answers afterwards. Ids are shortened to 8 characters. From capture/out/03-blocking-task.http, 09-failed.http, 10-cancel.http, and 08-rejected.http.
+title: 任务结束的四种方式
+claim: 这四种结局中三种由 agent 选择，一种由客户端选择；任务一旦结束，服务器就拒绝之后的任何消息或取消.
+caption: 每一块对应 kit 中的一个任务：谁选择了这个结局、最终的状态消息，以及留下的 artifact。底部几行展示被取消的任务之后如何回答。id 缩短为 8 个字符。 From capture/out/03-blocking-task.http, 09-failed.http, 10-cancel.http, and 08-rejected.http.
 ```
 
 ## agent 的三种结局 {#s-cancel-task-and-terminal-states-the-agent-s-three-endings}
@@ -25,10 +25,10 @@ caption: Each card is one task from the kit: who chose the ending, the final sta
 任务 `3d8f7801` 在 `9f3c2e1` 上运行了测试套件。十二个测试中有一个失败，任务仍然以 `TASK_STATE_COMPLETED` 结束：
 
 ```listing
-title: a completed task that reports a failing test
+title: 一个报告测试失败的已完成任务
 source: capture/out/03-blocking-task.http
 lang: json
-note: Cut to the state, the status message, and the start of the summary.json data part.
+note: 删节到 state、状态消息，以及 summary.json 这个 data part 的开头。
 ---
     "task": {
       "id": "3d8f7801-f421-4e4e-aa2d-8b6da17d9281",

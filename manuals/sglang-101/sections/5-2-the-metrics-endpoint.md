@@ -19,10 +19,10 @@
 下面的快照是在服务器空闲时拍的，在所有默认实验之后。
 
 ```listing
-title: gauges at idle
+title: 空闲时的 gauge
 source: capture/out/metrics.txt
 lang: text
-note: Labels are cut. The full lines carry engine_type, model_name, and rank labels.
+note: 标签已截去。完整行带着 engine_type、model_name 和 rank 标签。
 ---
 sglang:num_running_reqs{…} 0.0
 sglang:num_queue_reqs{…} 0.0
@@ -39,10 +39,10 @@ sglang:num_retracted_reqs{…} 0.0
 调度器从一个日志间隔的 prefill token 计算该 gauge。值是命中 token 除以命中 token 加计算 token。下面的计数器从服务器启动起累加同样的两个量。
 
 ```listing
-title: the counters behind the hit rate
+title: 命中率背后的 counter
 source: capture/out/metrics.txt
 lang: text
-note: Labels are cut except mode. The HELP line is shown in full.
+note: 除 mode 外标签已截去。HELP 行完整保留。
 ---
 # HELP sglang:prefill_effective_tokens_total Effective prefill tokens with retracted-request re-counts excluded, updated on each log interval. mode: device_hit, host_hit, storage_hit, input. Windowed prefix cache hit rate = rate(sum of *_hit) / rate(sum of all modes); per-tier rate uses a single *_hit mode in the numerator.
 sglang:prefill_effective_tokens_total{…mode="input"…} 104057.0
@@ -58,9 +58,9 @@ HELP 文本说重新计数的 token 被排除。在代码里，这只对 `input`
 ```figure
 id: fig-5-2
 kind: comparison
-title: one server, two cache hit rates
-claim: The gauge reported the last prefill interval at 0.942, while the counters over the whole run gave 0.636.
-caption: Left, the gauge and the interval it remembers. Right, the two counters and their ratio. Green is cached tokens, plum is computed prefill tokens. From capture/out/metrics.txt after the default experiments.
+title: 一台服务器，两种缓存命中率
+claim: gauge 把最近一个 prefill 区间报成 0.942，而整次跑的 counter 给出 0.636.
+caption: 左图是 gauge 和它记住的区间。右图是两个 counter 和它们的比。绿色是缓存的 token，梅红色是算过的 prefill token。 From capture/out/metrics.txt after the default experiments.
 ```
 
 计数器的 HELP 文本给出窗口速率公式。用 PromQL 读起来像这样：
@@ -95,10 +95,10 @@ histogram_quantile(0.99,
 **我们测过**同一快照里的两个直方图。队列时间直方图在 266 个请求上总和 251.7 s，均值 0.95 s。流式 TTFT 直方图在 261 个请求上总和 612.7 s，均值 2.35 s。两个序列统计不同的请求，所以它们的比值是估计，不是测得的份额。它暗示排队是这台 Mac 上首 token 时间的很大一部分。要精确份额，比较同一批请求的队列时间与 TTFT。
 
 ```listing
-title: queue time against first-token time
+title: 排队时间对上首 token 时间
 source: capture/out/metrics.txt
 lang: text
-note: Labels are cut except is_streaming.
+note: 除 is_streaming 外标签已截去。
 ---
 sglang:queue_time_seconds_sum{…} 251.74525608913973
 sglang:queue_time_seconds_count{…} 266.0

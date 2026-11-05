@@ -13,10 +13,10 @@ CLI 命令是 `rea analyze-javascript-application PATH`。普通的 `rea analyze
 四个资源限制是可选的。`max_heap_mb` 默认 1024 MiB，`analysis_timeout_ms` 默认 300,000 ms。`max_semantic_nodes` 默认 100,000，`max_semantic_nodes_per_file` 是 20,000。经 MCP，你也可以把 `detail` 设为 `complete` 或 `summary`。解析器是 `@babel/parser`。它带着打开的 `errorRecovery` 跑，并且不附着注释。
 
 ```listing
-title: the head of the analyze_javascript_application record
+title: analyze_javascript_application 记录的开头
 source: capture/out/15-js-app.json
 lang: json
-note: The kit kept the record without graph and semantic_graph, with --filter-output. The result fields follow.
+note: 捕获套件用 `--filter-output` 保留了不含 `graph` 与 `semantic_graph` 的记录。结果字段在后面。
 ---
 {
   "evidence_id": "ev_14bd1d1e…",
@@ -46,10 +46,10 @@ note: The kit kept the record without graph and semantic_graph, with --filter-ou
 这是一份像第 5 部分那些一样的 Evidence 记录，与 Ghidra dossier 有三点不同。provider 是 rea 自己，`rea-javascript-application` 版本 `1`。置信度是 `derived`，因为 rea 从语法计算出关系，权威是 `shipped-artifact`，因为磁盘上的六个文件是源。主体是目录，以其清单的 SHA-256 `bb9f726c…` 为摘要。`normalized_result` 有十一个字段：`input_path`、`format`、`root_artifact_sha256`、`inventory_manifest_id`、`inventory_graph_sha256`、`integrity_contradictions`、`graph`、`summary`、`statistics`、`limitations` 与 `semantic_graph`。第十二个字段 `source_selection` 只在请求点名 `source_paths` 时出现。
 
 ```listing
-title: the summary and the statistics of ledger-desk
+title: ledger-desk 的摘要与统计
 source: capture/out/15-js-app.json
 lang: json
-note: The utility-process and native-addon counts, all zero, are cut.
+note: utility-process 与 native-addon 的计数都是零，已裁。
 ---
 "summary": {
   "browser_windows": 1,
@@ -89,10 +89,10 @@ note: The utility-process and native-addon counts, all zero, are cut.
 六个文件里有四个是 JavaScript，访问了 424 个 AST 节点，没有文件解析失败。`skipped_javascript_files` 是 0，所以没有 JavaScript 文件因大小或资源限制被留下。当该计数大于 0 时，图不完整，且计数告诉你差了多少文件。`modules` 计数 bundler 模块，而这个应用没有 bundle。命令跑时，rea 向 stderr 写了十九个进度事件，从清点到记录的最终哈希。事件也展示文件之间的拆分。rea 只为元数据读 `index.html` 与 `package.json`，并解析四个 JavaScript 文件。
 
 ```listing
-title: five of the nineteen progress events
+title: 十九个进度事件里的五个
 source: capture/out/00-commands.txt
 lang: text
-note: Events 1, 3, 4, 5, and 19 of the first analyze-javascript-application call. The other fourteen are cut.
+note: 第一次 analyze-javascript-application 调用的事件 1、3、4、5 与 19。其余十四个已裁。
 ---
 [stderr] {"rea_progress":{"phase":"analyze_javascript_application","completed":0,"total":1,"message":"Inventorying and parsing application artifacts","sequence":1}}
 …
@@ -137,10 +137,10 @@ note: Events 1, 3, 4, 5, and 19 of the first analyze-javascript-application call
 每一条边说出它如何获得。一条 AST 事实有权威 `ast-static-analysis`、状态 `observed`、置信度 `exact`，以及一个源范围。一条关系有权威 `static-relationship-inference`、状态 `inferred`，以及默认的置信度 `high`。它始终带着限制 `Static syntax does not prove that this relationship executes at runtime.`。文档陈述 Electron 边的规则：`loads`、`exposes`、`invokes`、`handles` 与 `imports` 保持为静态推断 {{jsgraph Entities and relationships}}。
 
 ```listing
-title: one invokes edge, from preload.js to the handler in main.js
+title: 一条 invokes 边，从 preload.js 到 main.js 里的处理函数
 source: capture/out/15-js-app-graph.json
 lang: json
-note: The artifact reference, the extractor, the coverage, and the limitations of the edge are cut.
+note: 边的 artifact 引用、提取器、覆盖与 limitation 已裁。
 ---
 {
   "source_node_id": "jag_node_c239425e…",
@@ -180,9 +180,9 @@ note: The artifact reference, the extractor, the coverage, and the limitations o
 ```figure
 id: fig-6-1
 kind: tree
-title: the application graph of ledger-desk
-claim: The graph links the package entry point to three IPC handlers and one network endpoint, and each edge names whether it was observed or inferred.
-caption: Read from the top left. Olive boxes are the application's own code, the grey box is the network endpoint outside it, and the teal box is browser storage. Relation names sit on the arrows. The nine `javascript-expression` step nodes of the three bridge call paths are not drawn. From capture/out/15-js-app-graph.json.
+title: ledger-desk 的应用图
+claim: 图把包入口连到三个 IPC 处理函数与一个网络端点，每条边都点名它是观察到的还是推断出的.
+caption: 从左上读起。橄榄色框是应用自己的代码，灰色框是它外面的网络端点，青色框是浏览器存储。关系名写在箭头上。三条桥调用路径的九个 `javascript-expression` 步骤节点没有画出。 From capture/out/15-js-app-graph.json.
 ```
 
 ## 大记录上的视图 {#s-analyze-javascript-application-views-over-a-large-record}
@@ -194,10 +194,10 @@ caption: Read from the top left. Olive boxes are the application's own code, the
 每一个视图是它自己的一份 Evidence 记录，来自 provider `rea-analysis-view`。父 id 在 `parameters.parent_evidence_id` 与在 `evidence_links` 里，因此从视图到分析的链是显式的。
 
 ```listing
-title: the coverage block of the summary view
+title: 摘要视图的 coverage 块
 source: capture/out/15-js-app-view-summary.json
 lang: json
-note: The twelve semantic families, all partial, are cut.
+note: 十二个语义家族全部是 partial，已裁。
 ---
 "coverage": {
   "application": {
@@ -216,10 +216,10 @@ note: The twelve semantic families, all partial, are cut.
 应用图是完整的。语义图，也就是记录里的第二张图，不是。其覆盖状态是 `unknown`，其十二个家族每一个都是 `partial`，且仍有 118 个语义未知事项。视图在其 `unknowns` 里把该事实列为 `semantic_graph.coverage.status is unknown`。这是[残余未知事项](#s-residual-unknowns-and-coverage) 的规则的第二种形状。一张说自己是部分的图，比一张什么都不说的图更有用。
 
 ```listing
-title: the modules page, items and coverage
+title: 模块页，条目与覆盖
 source: capture/out/15-js-app-view-modules.json
 lang: json
-note: Thirteen of the fifteen items are cut.
+note: 十五个条目里的十三个已裁。
 ---
 "items": [
   {

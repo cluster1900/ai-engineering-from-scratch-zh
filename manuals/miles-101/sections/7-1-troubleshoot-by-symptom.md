@@ -9,9 +9,9 @@
 ```figure
 id: fig-7-1
 kind: decision
-title: Start from what you see
-claim: Each of the five symptoms we hit has one first check and one fix.
-caption: Five of the symptoms from our runs. The entries below also cover a run that hangs on a missing reward module. They add a check against healthy runs, one entry from the documentation, and five from issue reports.
+title: 从你看到的现象开始
+claim: 我们遇到的五种症状，每一种都有一项首先要做的检查和一个修复.
+caption: 来自我们运行的五种症状。下面的条目还覆盖一次因缺少奖励模块而挂起的运行。它们另外加入对照健康运行的一项检查、文档中的一条，以及 issue 报告中的五条。
 ```
 
 ## GPU 空闲而日志不断增长 {#s-troubleshoot-by-symptom-the-gpu-is-idle-and-the-log-keeps-growing}

@@ -20,10 +20,10 @@ Miles 为运行中的每个模型启动一个路由器，它没有自己的 GPU�
 我们的运行使用默认路由器。我们日志中的启动行显示了这一点：
 
 ```listing
-title: the router that our runs started
+title: 我们的运行所启动的路由器
 source: capture/gpu/out-gb10/router-launch.txt
 lang: text
-note: One line from the log of the e6a-base run.
+note: e6a-base 运行日志里的一行。
 ---
 sglang_router.launch_router --log-level warn --prometheus-port 20036 --request-timeout-secs 14400 --host 172.17.0.3 --port 20034
 ```

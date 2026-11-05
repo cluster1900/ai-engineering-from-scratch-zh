@@ -23,9 +23,9 @@
 ```figure
 id: fig-5-3
 kind: decision
-title: six questions to ask a published SGLang benchmark
-claim: A result that fails the version or workload question tells you nothing about your server, however large its number is.
-caption: Read top to bottom. Each question either passes to the next or ends in what the result can still tell you, in rose. From the field reports cited in this section.
+title: 问一份公开 SGLang 基准的六个问题
+claim: 过不了版本或负载那一问的结果，不管数字多大，都说明不了你的服务器.
+caption: 从上往下读。每个问题要么进到下一问，要么停在玫瑰色里，也就是这个结果还能告诉你什么。 From the field reports cited in this section.
 ```
 
 1. **SGLang 版本写明了吗？** 没有的话，结果描述的是未知构建。
@@ -55,9 +55,9 @@ caption: Read top to bottom. Each question either passes to the next or ends in 
 ```figure
 id: fig-5-3b
 kind: structure
-title: six findings and the mechanism behind each
-claim: Every independent result in this section traces to one mechanism you can test on your own server.
-caption: Read each row left to right, from the workload to the reported result to the SGLang mechanism. Olive is the client side, violet the kernels, green the cache. From the field reports cited in this section.
+title: 六条发现，以及每条背后的机制
+claim: 本节每一条独立结果都追到一个你可以在自己服务器上测的机制.
+caption: 每一行从左到右读，从负载到报告的结果，再到 SGLang 的机制。橄榄色是客户端一侧，紫罗兰色是内核，绿色是缓存。 From the field reports cited in this section.
 ```
 
 ## 在新硬件上很脆弱 {#s-reading-other-peoples-benchmarks-fragile-on-new-hardware}
@@ -93,20 +93,20 @@ caption: Read each row left to right, from the workload to the reported result t
 - **没有意外的不利条件。** vLLM 服务器得到 `--max-model-len 8192`，每一条请求都装得下，以及 `VLLM_USE_FLASHINFER_SAMPLER=0`，因为它的 FlashInfer 采样器在我们的安装里没有编译。基准是贪心的，所以采样器不改输出。
 
 ```listing
-title: two pools of the same size
+title: 两个同样大小的 pool
 source: capture/gpu/out-l4/server-h2h-sglang.log
 lang: text
-note: The SGLang pool at startup, and one decode line at a cap of 64.
+note: 启动时的 SGLang pool，以及上限 64 时的一条 decode 行。
 ---
 [2026-10-17 18:27:40] KV Cache is allocated. dtype: torch.bfloat16, #tokens: 24094, K size: 1.65 GB, V size: 1.65 GB
 [2026-10-17 20:12:04] Decode batch, #running-req: 37, #token: 22162, token usage: 0.92, cuda graph: True, gen throughput (token/s): 432.55, #queue-req: 27
 ```
 
 ```listing
-title: the vLLM pool, and vLLM at a cap of 64
+title: vLLM 的 pool，以及上限 64 时的 vLLM
 source: capture/gpu/out-l4/server-h2h-vllm.log
 lang: text
-note: The vLLM pool at startup, and one stats line at a cap of 64.
+note: 启动时的 vLLM pool，以及上限 64 时的一行 stats。
 ---
 INFO 10-17 20:13:17 [kv_cache_utils.py:2464] GPU KV cache size: 24,096 tokens, Maximum concurrency for 8,192 tokens per request: 2.94x
 INFO 10-17 22:35:43 [loggers.py:320] Engine 000: Avg prompt throughput: 460.3 tokens/s, Avg generation throughput: 323.6 tokens/s, Running: 40 reqs, Waiting: 11 reqs, GPU KV cache usage: 99.5%, Prefix cache hit rate: 8.7%
@@ -123,9 +123,9 @@ INFO 10-17 22:35:43 [loggers.py:320] Engine 000: Avg prompt throughput: 460.3 to
 ```figure
 id: fig-5-3c
 kind: chart
-title: Same throughput, two different choices at a full pool
-claim: At 64 users on the L4, vLLM gave the first token 1.7 times sooner and SGLang kept the P99 inter-token latency 12 times lower.
-caption: Solid lines are median TTFT and dashed lines are P99 inter-token latency, three seeds per point, on a log scale. Blue is SGLang and amber is vLLM. From capture/gpu/summary/l4.json.
+title: 吞吐一样，pool 装满时的两种不同选择
+claim: 在 L4 上 64 个用户时，vLLM 的首 token 时间是 SGLang 的 1/1.7，SGLang 的 P99 token 间隔延迟是 vLLM 的 1/12.
+caption: 实线是中位 TTFT，虚线是 P99 token 间隔延迟，每个点三个种子，对数刻度。蓝色是 SGLang，琥珀色是 vLLM。 From capture/gpu/summary/l4.json.
 ```
 
 **我们测到**吞吐上是平局。到 32 个用户，两个引擎彼此相差在 3% 以内，每个 token 时间相差在 6% 以内。在 64 个用户时中位每个 token 时间在 SGLang 上是 106 ms，在 vLLM 上是 129 ms。在池填满那一点之下，SGLang 更早给出第一个 token，8 个用户时是 170 对上 253 ms。
@@ -141,10 +141,10 @@ vLLM 服务器启动了更多请求，所以它们的第一个 token 更早到�
 然后我们在同一对上跑了[第 3.3 节](#s-radixcache) 的前缀 sweep，用同样的池与同样的冷却规则。每一次跑在 8 个用户时送出 4 组各 16 条、共 64 条提示。一组里的提示共享 0 到 4,096 个 token 的系统提示，然后有 128 token 的问题与 64 个输出 token。SGLang 用它的 radix 缓存。vLLM 服务器用它的前缀缓存，在 0.31.0 默认是开的。
 
 ```listing
-title: both caches hit
+title: 两边缓存都命中
 source: capture/gpu/out-l4/server-h2h-prefix-vllm.log
 lang: text
-note: The vLLM pool at startup, and one stats line at 4,096 shared tokens.
+note: 启动时的 vLLM pool，以及 4,096 个共享 token 时的一行 stats。
 ---
 INFO 10-17 23:37:11 [kv_cache_utils.py:2464] GPU KV cache size: 24,096 tokens, Maximum concurrency for 8,192 tokens per request: 2.94x
 INFO 10-18 00:43:16 [loggers.py:320] Engine 000: Avg prompt throughput: 231.0 tokens/s, Avg generation throughput: 93.6 tokens/s, Running: 8 reqs, Waiting: 0 reqs, GPU KV cache usage: 77.2%, Prefix cache hit rate: 87.2%
@@ -163,9 +163,9 @@ SGLang 日志用它自己的话展示同样的事。在一次 4,096 个共享 to
 ```figure
 id: fig-5-3d
 kind: chart
-title: Two prefix caches, one result
-claim: On the L4, both prefix caches kept the median TTFT under 500 ms at every shared length, and the cache-off run reached 14,706 ms.
-caption: Median TTFT against shared prompt length at 8 users, three seeds per point, on a log scale. Blue is SGLang with the radix cache, and amber is vLLM with prefix caching. Dashed rose is SGLang with the cache off, from the earlier run in section 3.3. From capture/gpu/summary/l4.json.
+title: 两种前缀缓存，一个结果
+claim: 在 L4 上，两种前缀缓存在每个共享长度都把中位 TTFT 保持在 500 ms 以下，关掉缓存的那次跑达到 14,706 ms.
+caption: 8 个用户时中位 TTFT 对上共享 prompt 长度，每个点三个种子，对数刻度。蓝色是带 radix cache 的 SGLang，琥珀色是开了前缀缓存的 vLLM。玫瑰色虚线是关掉缓存的 SGLang，来自第 3.3 节更早的那次跑。 From capture/gpu/summary/l4.json.
 ```
 
 **我们测到**吞吐上是平局，每一个共享长度相差在 2% 以内。两个引擎的中位 TTFT 都停在 354 与 488 ms 之间。在 0 与 256 个共享 token 时，SGLang 更早给出第一个 token，超出种子散布：354 对上 408 ms，以及 470 对上 488 ms。从 1,024 个 token 起，种子范围重叠。
@@ -177,10 +177,10 @@ vLLM 在尾部略领先。从 256 个共享 token 起它的 P99 TTFT 更低，1,
 然后我们用 `--no-enable-prefix-caching` 跑了 vLLM 服务器，用同样的池与同样的 sweep。它的日志显示缓存关着，每一个提示 token 都重新做了 prefill。
 
 ```listing
-title: vLLM with prefix caching off
+title: 关掉前缀缓存的 vLLM
 source: capture/gpu/out-l4/server-h2h-prefix-vllm-no-cache.log
 lang: text
-note: The pool at startup, and one stats line at 4,096 shared tokens. The prompt throughput is high because nothing is reused.
+note: 启动时的 pool，以及 4,096 个共享 token 时的一行 stats。prompt 吞吐高，是因为没有复用。
 ---
 INFO 10-21 06:20:24 [kv_cache_utils.py:2464] GPU KV cache size: 24,096 tokens, Maximum concurrency for 8,192 tokens per request: 2.94x
 INFO 10-21 08:07:49 [loggers.py:320] Engine 000: Avg prompt throughput: 1607.0 tokens/s, Avg generation throughput: 6.4 tokens/s, Running: 8 reqs, Waiting: 0 reqs, GPU KV cache usage: 76.7%
@@ -201,20 +201,20 @@ INFO 10-21 08:07:49 [loggers.py:320] Engine 000: Avg prompt throughput: 1607.0 t
 闭环只有在一条回来时才发新请求，所以引擎设定节奏。生产流量不等引擎。我们在同一对上跑了[第 5.1 节](#s-sglang-benchmark-serving) 的速率 sweep，用同样的池与同样的热量与时钟规则。请求以每秒 0.5 到 16 的泊松速率到达，带 512 个输入与 128 个输出 token。每一次跑至少送出 32 条提示，或 30 秒的到达。
 
 ```listing
-title: the same admission choice under a fixed rate
+title: 固定速率下的同一种准入选择
 source: capture/gpu/out-l4/server-h2h-rate-sglang.log
 lang: text
-note: The SGLang pool at startup, and one decode line with requests waiting.
+note: 启动时的 SGLang pool，以及有请求在等的一条 decode 行。
 ---
 [2026-10-18 00:43:57] KV Cache is allocated. dtype: torch.bfloat16, #tokens: 24094, K size: 1.65 GB, V size: 1.65 GB
 [2026-10-18 03:13:55] Decode batch, #running-req: 37, #token: 22424, token usage: 0.93, cuda graph: True, gen throughput (token/s): 370.33, #queue-req: 71
 ```
 
 ```listing
-title: vLLM admits more at the same rate
+title: 同样速率下 vLLM 准入得更多
 source: capture/gpu/out-l4/server-h2h-rate-vllm.log
 lang: text
-note: The vLLM pool at startup, and one stats line with requests waiting.
+note: 启动时的 vLLM pool，以及有请求在等的一行 stats。
 ---
 INFO 10-18 03:15:35 [kv_cache_utils.py:2464] GPU KV cache size: 24,096 tokens, Maximum concurrency for 8,192 tokens per request: 2.94x
 INFO 10-18 06:10:22 [loggers.py:320] Engine 000: Avg prompt throughput: 1326.7 tokens/s, Avg generation throughput: 158.4 tokens/s, Running: 43 reqs, Waiting: 30 reqs, GPU KV cache usage: 99.7%, Prefix cache hit rate: 0.6%
@@ -232,9 +232,9 @@ INFO 10-18 06:10:22 [loggers.py:320] Engine 000: Avg prompt throughput: 1326.7 t
 ```figure
 id: fig-5-3e
 kind: chart
-title: The same choice at a fixed arrival rate
-claim: At 4 requests per second on the L4, vLLM gave 11 percent more output and SGLang kept the P99 time per token 32 percent lower.
-caption: Solid lines are median TTFT and dashed lines are P99 time per output token, three seeds per point, on a log scale. Blue is SGLang and amber is vLLM. From capture/gpu/summary/l4.json.
+title: 固定到达速率下的同一种选择
+claim: 在 L4 上每秒 4 条请求时，vLLM 的输出多 11%，SGLang 的 P99 每 token 时间低 32%.
+caption: 实线是中位 TTFT，虚线是 P99 每输出 token 时间，每个点三个种子，对数刻度。蓝色是 SGLang，琥珀色是 vLLM。 From capture/gpu/summary/l4.json.
 ```
 
 **我们测到**到每秒 2 个请求是平局。两个引擎都跟上到达，所以吞吐相差在 1% 以内。SGLang 在每秒 0.5 与 1 时更早给出第一个 token，超出种子散布。中位是 284 对上 317 ms，以及 166 对上 180 ms。vLLM 有更短的每个 token 时间。每秒 1 时是 68 对上 74 ms，超出散布，每秒 2 时是 89 对上 100 ms。
@@ -252,10 +252,10 @@ Goodput 展示那对目标意味着什么。我们把目标设成到第一个 to
 最后一个工作负载是[第 5.1 节](#s-sglang-benchmark-serving) 里让请求成波浪到达的那个。每一次跑在上限 16 个用户时送出 64 条各 512 token 的提示、128 个输出 token。只有 `--random-range-ratio` 变了。在 1.0 时每一条提示长度相同，所以请求一起结束、它们的替换一起到达。在 0.5 与 0.0 时长度是混合的，所以请求一个接一个到达。
 
 ```listing
-title: vLLM in the middle of a wave
+title: 一波中间的 vLLM
 source: capture/gpu/out-l4/server-h2h-waves-vllm.log
 lang: text
-note: The vLLM pool at startup, and one stats line with 16 requests running.
+note: 启动时的 vLLM pool，以及 16 条请求在跑时的一行 stats。
 ---
 INFO 10-18 18:38:07 [kv_cache_utils.py:2464] GPU KV cache size: 24,096 tokens, Maximum concurrency for 8,192 tokens per request: 2.94x
 INFO 10-18 19:14:22 [loggers.py:320] Engine 000: Avg prompt throughput: 960.0 tokens/s, Avg generation throughput: 187.3 tokens/s, Running: 16 reqs, Waiting: 0 reqs, GPU KV cache usage: 22.6%, Prefix cache hit rate: 8.5%
@@ -276,10 +276,10 @@ INFO 10-18 19:14:22 [loggers.py:320] Engine 000: Avg prompt throughput: 960.0 to
 为了测那种解读，我们在 2026-10-21 用 `--enable-mixed-chunk` 又跑了 SGLang，用同样的 sweep 与同样的池。这个标志把在跑的 decode 放进 prefill batch，所以一条新提示不会停下那条流。日志展示一次 514 个 token 的 prefill，同一 batch 里有 15 条在跑的请求。
 
 ```listing
-title: SGLang with the mixed chunk in the middle of a wave
+title: 一波中间、开了 mixed chunk 的 SGLang
 source: capture/gpu/out-l4/server-waves-mixed-chunk.log
 lang: text
-note: The pool at startup, one decode step with 16 users, and one prefill that ran together with 15 decodes.
+note: 启动时的 pool，16 个用户的一步 decode，以及与 15 个 decode 一起跑的一次 prefill。
 ---
 [2026-10-21 08:34:19] KV Cache is allocated. dtype: torch.bfloat16, #tokens: 24094, K size: 1.65 GB, V size: 1.65 GB
 [2026-10-21 08:39:51] Decode batch, #running-req: 16, #token: 8889, token usage: 0.37, cuda graph: True, gen throughput (token/s): 231.46, #queue-req: 0

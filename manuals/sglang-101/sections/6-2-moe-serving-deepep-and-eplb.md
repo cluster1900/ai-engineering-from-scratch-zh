@@ -15,9 +15,9 @@ SGLang 把 MoE 前向切成各有一个所有者的阶段 {{docs}}。路由器�
 ```figure
 id: fig-6-2
 kind: flow
-title: one token through an MoE layer
-claim: Dispatch and combine move every token across GPUs twice per MoE layer, and the grouped matrix multiply in between is the only expert compute.
-caption: Read left to right. Indigo arrows are token traffic between GPUs. The labels name the SGLang stage and the flag that picks its implementation. From the MoE layer code and the expert parallelism docs at v0.5.22.
+title: 一个 token 穿过一个 MoE 层
+claim: 分发和合并在每个 MoE 层把每个 token 跨 GPU 搬两次，夹在中间的分组矩阵乘法是唯一的专家计算.
+caption: 从左到右读。靛蓝色箭头是 GPU 之间的 token 流量。标签点名 SGLang 阶段和挑选实现的旗标。 From the MoE layer code and the expert parallelism docs at v0.5.22.
 ```
 
 三个标志挑选实现 {{code}}：
@@ -80,9 +80,9 @@ Ant Group 在 H20 上把 TBO 调低了 {{field Ant-Group 2025-09}}。它只在 b
 ```figure
 id: fig-6-2c
 kind: chart
-title: time per output token against concurrency for an MoE model on a GB10
-claim: The time per output token grew 7.8 times while the batch grew 64 times, and each extra request can read other experts.
-caption: Read each line from left to right. Plum is BF16, green is FP8, and the band is the lowest and highest of three seeds. Qwen3-30B-A3B, 512 tokens in, 128 out. From capture/gpu/summary/gb10.json.
+title: GB10 上一个 MoE 模型的每输出 token 时间对上并发
+claim: batch 增大到 64 倍时，每输出 token 时间增大到 7.8 倍，多出来的每条请求都可能去读别的专家.
+caption: 每条线从左到右读。梅红色是 BF16，绿色是 FP8，色带是三个种子的最低和最高。Qwen3-30B-A3B，512 token 进、128 出。 From capture/gpu/summary/gb10.json.
 ```
 
 一个可能的原因是专家并集。在并发 1 时，每层在一次 decode 步读 8 个专家的权重。在 64 时，64 个 token 各自从 128 个专家里选 8 个。如果路由均匀，一步会在每层读到约 126 个专家中的 128 个。
@@ -112,9 +112,9 @@ SGLang 团队的 96-GPU 运行报告每个节点每秒 52.3k 输入与 22.3k 输
 ```figure
 id: fig-6-2b
 kind: comparison
-title: EP16 and EP32 at two batch sizes
-claim: Wider expert parallelism won at batch 8 and lost 13 percent at batch 32, because less of its traffic stayed on NVLink.
-caption: Read each column top to bottom. Numbers are decode tokens per second for DeepSeek-R1 on H20, from Ant Group on the LMSYS blog, 2025-09-26. This is their measurement.
+title: 两种 batch 大小下的 EP16 和 EP32
+claim: 更宽的专家并行在 batch 8 赢了，在 batch 32 输了 13%，因为它有更少的流量留在 NVLink 上.
+caption: 每一列从上往下读。数字是 H20 上 DeepSeek-R1 的每秒 decode token，来自蚂蚁集团在 LMSYS 博客上的文章，2025-09-26。这是他们的测量。
 ```
 
 ```takeaways

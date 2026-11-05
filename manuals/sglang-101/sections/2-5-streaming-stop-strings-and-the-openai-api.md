@@ -19,10 +19,10 @@
 我们的 capture kit 发一次原生请求，temperature 0，要 12 个输出 token。
 
 ```listing
-title: one native /generate response
+title: 一条原生 /generate 响应
 source: capture/out/generate.txt
 lang: json
-note: The output_ids list and the weight_versions list are cut.
+note: output_ids 列表和 weight_versions 列表已截去。
 ---
 {
   "text": " Paris, and the capital of Germany is Berlin. The capital",
@@ -70,10 +70,10 @@ note: The output_ids list and the weight_versions list are cut.
 ## OpenAI 响应告诉你什么 {#s-streaming-stop-strings-and-the-openai-api-what-the-openai-response-tells-you}
 
 ```listing
-title: the OpenAI chat response
+title: OpenAI chat 响应
 source: capture/out/generate.txt
 lang: json
-note: The id, the created time, and the metadata block are cut.
+note: id、created 时间和 metadata 块已截去。
 ---
   "choices": [
     {
@@ -114,9 +114,9 @@ SGLang 在调度器里、每一步之后、按固定顺序检查停止条件 {{c
 ```figure
 id: fig-2-5
 kind: sequence
-title: one streamed request with a stop string
-claim: The scheduler decides when a request stops, the detokenizer turns ids into text, and the output streamer holds back text that could start a stop string.
-caption: Read top to bottom. Blue lifelines are SGLang processes, the olive lifeline is the client, dotted indigo arrows are streamed chunks. Behaviour from schedule_batch.py, output_streamer.py, and detokenizer_manager.py at v0.5.22.
+title: 一条带 stop 字符串的流式请求
+claim: scheduler 决定请求何时停下，detokenizer 把 id 变成文本，output streamer 扣住可能是 stop 字符串开头的文本.
+caption: 从上往下读。蓝色生命线是 SGLang 进程，橄榄色生命线是客户端，靛蓝色点线箭头是流式块。行为来自 v0.5.22 的 schedule_batch.py、output_streamer.py 和 detokenizer_manager.py。
 ```
 
 ## 为什么流式文本会等 {#s-streaming-stop-strings-and-the-openai-api-why-streamed-text-waits}

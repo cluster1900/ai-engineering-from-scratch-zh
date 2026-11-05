@@ -23,9 +23,9 @@ SGLang 团队在 v0.4 发行帖里描述了这个问题。Batch 调度、内存�
 ```figure
 id: fig-2-4
 kind: timeline
-title: the same three decode steps without and with overlap
-claim: Without overlap the GPU waits for CPU bookkeeping after every step, and with overlap the CPU processes step N while the GPU already runs step N+1.
-caption: Read left to right in time. Plum bars are GPU forward passes, blue bars are CPU work, grey hatched bars are idle GPU. The shape is schematic, the loop order is from event_loop_overlap at v0.5.22.
+title: 同样的三步 decode，没有 overlap 和有 overlap
+claim: 没有 overlap 时 GPU 每一步之后都等 CPU 记账，有 overlap 时 CPU 处理第 N 步而 GPU 已经在跑第 N+1 步.
+caption: 沿时间从左到右读。梅红色条是 GPU 前向，蓝色条是 CPU 上的活，灰色斜线条是空闲的 GPU。形状是示意，循环顺序来自 v0.5.22 的 event_loop_overlap。
 ```
 
 ## 在 Mac 上怎么工作 {#s-the-overlap-scheduler-how-it-works-on-a-mac}
@@ -39,10 +39,10 @@ MLX 后端有自己的 overlap 循环，`event_loop_overlap_mlx` {{code}}。MLX 
 SGLang 文档的 Apple silicon 页把 `--disable-overlap-schedule` 列为 MLX 后端的关键参数之一。我们把它加进服务器命令，并跑了并发 8 基准。服务器答完了自己的 warm-up 和基准的 warm-up。然后调度器在真实运行的第一批上死了。
 
 ```listing
-title: the scheduler crash with --disable-overlap-schedule on MLX
+title: MLX 上带 --disable-overlap-schedule 的调度器崩溃
 source: capture/out/server-no-overlap.log
 lang: text
-note: The traceback is cut between the event loop and run_batch. File paths are from our checkout of v0.5.22.
+note: traceback 在 event loop 和 run_batch 之间已截去。文件路径来自我们检出的 v0.5.22。
 ---
 [2026-10-16 14:07:15] Prefill batch, #new-seq: 1, #new-token: 1, #cached-token: 511, token usage: 0.00, #running-req: 0, #queue-req: 0, #pending-token: 0, cuda graph: False, input throughput (token/s): 0.39
 [2026-10-16 14:07:16] Scheduler hit an exception: Traceback (most recent call last):
@@ -64,10 +64,10 @@ RuntimeError: Expected all tensors to be on the same device, but found at least 
 主进程随后关掉了一切。32 条基准请求全部失败：8 条在响应中被切断，24 条在服务器消失后连不上。
 
 ```listing
-title: the client side of the crash
+title: 崩溃的客户端一侧
 source: capture/out/no-overlap-bench-random-c8.txt
 lang: text
-note: The first characters of two of the 32 error lines, and the final line. Each error line holds a full traceback.
+note: 32 条错误行里两条的开头几个字符，以及最后一行。每条错误行都装着完整 traceback。
 ---
 Warmup completed with 1 sequences. Starting main benchmark run...
 …

@@ -66,10 +66,10 @@ trainer 经常把 vLLM 返回的 logprob 与它自己计算的 logprob 做比较
 2026-10-23 我们在 L4 节点的第二块 GPU 上检查了两种 logprob 模式。我们使用 BF16 的 `Qwen/Qwen3-0.6B`、16 个 48 token 的 prompt、temperature 1 和 top-p 0.9。在相同 token 上做一次 float32 的 Transformers 前向计算作为参考。那块 GPU 是共用的，没有锁定时钟，但时钟不会改变这些值。
 
 ```listing
-title: returned logprob minus the full-vocabulary reference
+title: 返回的 logprob 减去全词表参考值
 source: capture/gpu/out-l4/logprobs-top-p.txt
 lang: text
-note: The two vLLM rows. The SGLang rows are cut.
+note: vLLM 的两行。SGLang 的几行已略去。
 ---
 engine and mode                                  returned minus reference, median   median absolute
 vLLM --logprobs-mode raw_logprobs                0.0000                             0.005

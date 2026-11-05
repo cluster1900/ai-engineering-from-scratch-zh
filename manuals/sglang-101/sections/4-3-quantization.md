@@ -27,9 +27,9 @@ Cloudflare 用 BF16 KV cache 服务 Kimi K2.6，并一步步抬并发。在 32 �
 ```figure
 id: fig-4-4
 kind: flow
-title: how SGLang decides the weight format
-claim: The checkpoint names its own quantization method, and a --quantization flag only helps when it matches that method or a known upgrade.
-caption: Read each row left to right. The rose arrow ends in a startup error. The last row is the CUDA path at v0.5.22. From _verify_quantization and the GPTQ Marlin override at v0.5.22.
+title: SGLang 如何决定权重格式
+claim: 检查点自己点名量化方法，--quantization 旗标只在与该方法或一种已知升级相符时才有用.
+caption: 每一行从左到右读。玫瑰色箭头停在启动错误。最后一行是 v0.5.22 的 CUDA 路径。 From _verify_quantization and the GPTQ Marlin override at v0.5.22.
 ```
 
 旗标也可以挡住一次升级。不带旗标加载的 GPTQ 检查点被检测、在运行时转换，并由 Marlin 内核服务。升级代码只在你没传方法或传了 `gptq_marlin` 时接受那种转换。
@@ -49,10 +49,10 @@ Cloudflare 公布了它的检查。在 Kimi K2.6 上，BF16 对 FP8 KV 在 GSM8K
 我们在 2026-10-23 在自己的 L4 上跑了检查：前 500 道 GSM8K 题，8-shot 且 greedy，用 `Qwen/Qwen3-8B` 和 `Qwen/Qwen3-8B-FP8`。两个检查点都没有 KV scales，所以 FP8 KV 运行用了 scale 1.0。
 
 ```listing
-title: GSM8K accuracy, 500 questions, 8-shot, Qwen3-8B on SGLang 0.5.22
+title: GSM8K 准确率，500 题，8-shot，SGLang 0.5.22 上的 Qwen3-8B
 source: capture/gpu/out-l4/gsm8k-fp8-accuracy.txt
 lang: text
-note: The SGLang rows. The vLLM rows of the same file are cut.
+note: SGLang 的行。同一文件里的 vLLM 行已截去。
 ---
 engine   config                     correct   accuracy   Wilson 95% interval
 SGLang   BF16                       458/500   91.6%      88.8 to 93.7
@@ -85,9 +85,9 @@ grep -oE '"[^"]*(k|v)_scale"' model.safetensors.index.json | sort -u
 ```figure
 id: fig-4-5
 kind: comparison
-title: BF16 against FP8 KV cache on Kimi K2.6
-claim: The FP8 KV cache is a few percent slower at every load both caches can run, and keeps scaling after the BF16 cache runs out of memory.
-caption: Output tokens per second by concurrency, as Cloudflare reported them on 2026-08-03. Dashed bars are BF16 and solid bars are FP8. Rose marks the out-of-memory run. No SGLang version was published.
+title: Kimi K2.6 上的 BF16 对上 FP8 KV cache
+claim: 在两种缓存都跑得动的每一档负载上，FP8 KV cache 慢几个百分点，并在 BF16 缓存内存耗尽之后继续随负载上升.
+caption: 按并发的每秒输出 token，Cloudflare 在 2026-08-03 报告的数字。虚线柱是 BF16，实心柱是 FP8。玫瑰色标出内存不足的那次跑。没有公布 SGLang 版本。
 ```
 
 Cloudflare 也在 GLM 5.2 上测了 INT4 权重 {{field Cloudflare 2026-08}}。Decode 变快了，并发 1 时 60 到 92 tok/s，64 时 1,672 到 1,933 tok/s。Prefill 变慢了，从 FP8 大约 10,160 tok/s 到 INT4 大约 8,660。
@@ -99,10 +99,10 @@ Decode 受内存流量限制，所以更小的权重有帮助。Prefill 受计�
 我们在一块 NVIDIA GB10 上两次服务 `Qwen/Qwen3-30B-A3B-Instruct-2507`。第一台服务器加载 BF16 检查点。第二台加载 FP8 检查点 `Qwen/Qwen3-30B-A3B-Instruct-2507-FP8`，并带 `--kv-cache-dtype fp8_e4m3`。两者都用 `--mem-fraction-static 0.7`，我们没传 `--quantization` 旗标。
 
 ```listing
-title: the FP8 server detects its checkpoint and sizes its pool
+title: FP8 服务器认出检查点并划定 pool
 source: capture/gpu/out-gb10/server-fp8.log
 lang: text
-note: Four lines from the startup log. Timestamps are cut.
+note: 启动日志里的四行。时间戳已截去。
 ---
 … Detected fp8 checkpoint.
 … Using FP8 KV cache but no scaling factors provided. Defaulting to scaling factors of 1.0.
@@ -128,9 +128,9 @@ note: Four lines from the startup log. Timestamps are cut.
 ```figure
 id: fig-4-3b
 kind: chart
-title: FP8 moves the whole latency and throughput curve
-claim: On the GB10, FP8 weights and FP8 KV gave more tokens per second and less time per token at every concurrency from 1 to 64.
-caption: Each dot is one concurrency, from c1 to c64. The x axis is output tokens per second and the y axis is median TPOT. Plum is BF16 and green is FP8. From capture/gpu/summary/gb10.json.
+title: FP8 挪动整条延迟和吞吐曲线
+claim: 在 GB10 上，从并发 1 到 64 的每一档，FP8 权重加 FP8 KV 都给出更多的每秒 token，以及更少的每 token 时间.
+caption: 每个点是一档并发，从 c1 到 c64。横轴是每秒输出 token，纵轴是中位 TPOT。梅红色是 BF16，绿色是 FP8。 From capture/gpu/summary/gb10.json.
 ```
 
 这个结果不同于上面的 Cloudflare 结果。那里，FP8 cache 每 token 稍慢，靠容量赢。这里，权重也是 FP8。这台机器上的 decode 从带宽一般的内存读权重，所以一半字节几乎给了两倍速度。
@@ -140,20 +140,20 @@ caption: Each dot is one concurrency, from c1 to c64. The x axis is output token
 GB10 有 121.7 GiB 内存，所以它的 BF16 pool 从不短缺。我们想看另一种情形，于是在一块 NVIDIA L4 上用 `Qwen/Qwen3-8B` 和 `Qwen/Qwen3-8B-FP8` 跑了同一对。两台服务器都用 `--mem-fraction-static 0.85`。扫描在每次运行前等卡凉到 72°C。
 
 ```listing
-title: the BF16 server on the L4
+title: L4 上的 BF16 服务器
 source: capture/gpu/out-l4/server-load-default.log
 lang: text
-note: Two lines from the startup log. Timestamps are cut.
+note: 启动日志里的两行。时间戳已截去。
 ---
 … Load weight end. elapsed=3.92 s, type=Qwen3ForCausalLM, avail mem=6.59 GB, mem usage=15.28 GB.
 … KV Cache is allocated. dtype: torch.bfloat16, #tokens: 24094, K size: 1.65 GB, V size: 1.65 GB
 ```
 
 ```listing
-title: the FP8 server on the L4
+title: L4 上的 FP8 服务器
 source: capture/gpu/out-l4/server-load-fp8.log
 lang: text
-note: Two lines from the startup log. Timestamps are cut.
+note: 启动日志里的两行。时间戳已截去。
 ---
 … Load weight end. elapsed=2.54 s, type=Qwen3ForCausalLM, quant=fp8, fmt=e4m3, avail mem=13.06 GB, mem usage=8.81 GB.
 … KV Cache is allocated. dtype: torch.float8_e4m3fn, #tokens: 142369, K size: 4.89 GB, V size: 4.89 GB
@@ -171,9 +171,9 @@ note: Two lines from the startup log. Timestamps are cut.
 ```figure
 id: fig-4-3c
 kind: chart
-title: On a 24 GB card the BF16 pool fills
-claim: On one L4, BF16 throughput stopped at 270 tokens per second at concurrency 32, and FP8 kept climbing to 736 at 64.
-caption: Output throughput against max concurrency, three seeds per point. Plum is BF16 and green is FP8 weights with an FP8 KV cache. From capture/gpu/summary/l4.json.
+title: 在 24 GB 卡上 BF16 pool 会装满
+claim: 在一块 L4 上，BF16 吞吐在并发 32 停在每秒 270 个 token，FP8 继续升到 64 时的 736.
+caption: 输出吞吐对上最大并发，每个点三个种子。梅红色是 BF16，绿色是带 FP8 KV cache 的 FP8 权重。 From capture/gpu/summary/l4.json.
 ```
 
 扫描的调度器日志展示了并发 64 时的原因。BF16 服务器最多跑 38 条请求，token usage 在 0.99，队列里 26 条请求。FP8 服务器跑全部 64 条，token usage 0.29，队列空。BF16 吞吐从 32 到 64 下降，因为更多请求在等，每条等待的请求把它的等待加进 TTFT。
@@ -187,10 +187,10 @@ caption: Output throughput against max concurrency, three seeds per point. Plum 
 上面的 L4 测试给了 BF16 一份满的 pool。然后我们给两个构建同一份更小的预算 `--mem-fraction-static 0.74`，并跑了 [第 3.3 节](#s-radixcache) 的共享前缀扫描。每次运行在 8 用户下按 4 组各 16 条发 64 条 prompt，共享 system prompt 从 0 到 4,096 个 token。四组在 4,096 个 token 时大约需要缓存里 16,000 个前缀 token。
 
 ```listing
-title: two pools from one memory budget
+title: 同一份内存预算下的两个 pool
 source: capture/gpu/out-l4/server-small-pool-bf16-fp8.log
 lang: text
-note: The BF16 pool and the FP8 pool at the same memory fraction of 0.74.
+note: 同一内存分数 0.74 下的 BF16 pool 和 FP8 pool。
 ---
 [2026-10-18 19:35:26] KV Cache is allocated. dtype: torch.bfloat16, #tokens: 6559, K size: 0.45 GB, V size: 0.45 GB
 [2026-10-18 22:02:58] KV Cache is allocated. dtype: torch.float8_e4m3fn, #tokens: 107299, K size: 3.68 GB, V size: 3.68 GB
