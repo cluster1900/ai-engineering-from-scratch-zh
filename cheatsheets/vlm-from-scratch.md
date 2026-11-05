@@ -2,7 +2,7 @@
 id: vlm-from-scratch
 title: Build a VLM from Scratch
 code: BV
-subtitle: 补丁嵌入、ViT 编码器、MLP 投影器、交叉注意力解码器、InfoNCE 加 LM 预训练、R@K、EM 和 BLEU-4。
+subtitle: patch 嵌入、ViT 编码器、MLP 投影器、交叉注意力解码器、InfoNCE 加 LM 预训练、R@K、EM 和 BLEU-4。
 hue: 25
 sources: phases/19-capstone-projects/58-vision-encoder-patches, phases/19-capstone-projects/59-vit-transformer, phases/19-capstone-projects/60-projection-layer-modality-align, phases/19-capstone-projects/61-cross-attention-fusion, phases/19-capstone-projects/62-vision-language-pretraining, phases/19-capstone-projects/63-multimodal-eval
 source_hash: 70009b06f92fcb5f
@@ -107,7 +107,7 @@ from: phases/19-capstone-projects/62-vision-language-pretraining/code/main.py, p
 type: concepts
 from: phases/19-capstone-projects/58-vision-encoder-patches/docs/en.md, phases/19-capstone-projects/59-vit-transformer/docs/en.md, phases/19-capstone-projects/60-projection-layer-modality-align/docs/en.md, phases/19-capstone-projects/63-multimodal-eval/docs/en.md
 
-- **补丁**：224 / 16 得到 14x14 网格，196 个补丁，每个 768 个值。
+- **patch**：224 / 16 得到 14x14 网格，196 个 patch，每个 768 个值。
 - **注意力代价**：196 个 token 每层每头给出 38,416 个分数。
 - **投影**：ViT-Base/16 有 590,592 个参数。CLS 再加 768。
 - **头维度**：768 / 12 个头得到 64。
@@ -126,7 +126,7 @@ from: phases/19-capstone-projects/63-multimodal-eval/code/main.py
 | 构建评估套件 | `build_eval_suite(seed, n_samples, vocab_size, max_len)` |
 | 图像与文本召回 | `i2t, t2i = recall_at_k(sim, k)` |
 | VQA 准确率 | `vqa_exact_match(predictions, references)` |
-| 标题分数 | `bleu4(generated, references, smoothing=True)` |
+| 描述分数 | `bleu4(generated, references, smoothing=True)` |
 | 全部三项指标 | `evaluate(model, suite)` |
 | 在评估之间训练 | `contrast, lm, _ = model(imgs, ids)` |
 
@@ -136,7 +136,7 @@ from: phases/19-capstone-projects/58-vision-encoder-patches/code/main.py, phases
 
 | 设置 | 默认值 | 说明 |
 |---|---|---|
-| `image_size`，`patch_size` | 224 | 补丁 16，隐藏维度 768 |
+| `image_size`，`patch_size` | 224 | patch 16，隐藏维度 768 |
 | `depth`，`heads` | 12 | `mlp_ratio` 4.0，LayerNorm eps 1e-6 |
 | 对齐 `steps` | 200 | 32 对，lr 3e-4 |
 | `projection_hidden` | 1024 | `text_hidden` 512 |
@@ -151,7 +151,7 @@ from: phases/19-capstone-projects/58-vision-encoder-patches/code/main.py, phases
 
 | 症状 | 原因 | 修复 |
 |---|---|---|
-| `patch_size ... must divide image_size` | 网格不是整数 | 选一个能整除图像的补丁大小 |
+| `patch_size ... must divide image_size` | 网格不是整数 | 选一个能整除图像的patch 大小 |
 | `spatial mismatch` 来自 `PatchEmbed` | 输入尺寸与配置不同 | 缩放到 `image_size` |
 | `sinusoidal_2d dim must be divisible by 4` | 隐藏尺寸不是 4 的倍数 | 使用能被 4 整除的隐藏尺寸 |
 | `hidden ... not divisible by heads` | 头维度不是整数 | 选能整除 hidden 的头数 |
@@ -164,7 +164,7 @@ from: phases/19-capstone-projects/58-vision-encoder-patches/code/main.py, phases
 type: qa
 from: phases/19-capstone-projects/58-vision-encoder-patches/docs/en.md, phases/19-capstone-projects/59-vit-transformer/docs/en.md, phases/19-capstone-projects/60-projection-layer-modality-align/docs/en.md, phases/19-capstone-projects/61-cross-attention-fusion/docs/en.md, phases/19-capstone-projects/62-vision-language-pretraining/docs/en.md
 
-- **为什么用补丁，不用像素？** 150,528 个像素 token 让注意力无法承受。
+- **为什么用 patch，不用像素？** 150,528 个像素 token 让注意力无法承受。
 - **对齐时为什么冻结编码器？** 只有 1.3M 的投影器需要学习。
 - **为什么用后期融合？** 文本保持干净。图像 K, V 每张图只算一次。
 - **为什么要学习温度？** 太小会噪声大。太大会把 softmax 压平。

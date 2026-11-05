@@ -137,7 +137,7 @@ type: concepts
 from: phases/17-infrastructure-and-production/12-edge-inference/docs/en.md, phases/17-infrastructure-and-production/12-edge-inference/code/main.py, phases/04-computer-vision/15-real-time-edge/docs/en.md
 
 - **上限**：$\text{tok/s} = \frac{\text{bandwidth (GB/s)}}{\text{model size (GB)}}$。解码每个 token 都要读完所有权重。
-- **移动端**：3.5 GB 在 50 GB/s 下要 70 毫秒。上限约为 ~14 tok/s。
+- **移动端**：3.5 GB 在 50 GB/s 下要 70 毫秒。上限约为 14 tok/s。
 - **数据中心**：3 TB/s 的 HBM3 在 1.2 毫秒内读完 3.5 GB。上限是 830 tok/s。
 - **差距**：从数据中心到边缘，带宽相差 30-50x。
 - **手机上的上下文**：8 GB 内存里放 4 GB 的模型，再加 32K token 的 2 GB KV cache，就会 OOM。保持在 4K-8K。

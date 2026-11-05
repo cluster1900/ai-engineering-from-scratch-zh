@@ -110,7 +110,7 @@ from: phases/12-multimodal-ai/03-blip2-qformer-bridge/docs/en.md, phases/12-mult
 | 每隔 M 层插入一个门控块 | 4 | Flamingo，alpha 的初值是 0 |
 | 每张图的 LLaVA token 数 | 576 | 24x24 的网格，MLP 为 `1024 → 4096 → 4096` |
 | 每张图的 AnyRes token 数 | 2880 | 336x336 的图块，再加一张缩略图 |
-| Token 的甜点 | 576-1024 | 64 对 OCR 来说太少 |
+| Token 的最佳区间 | 576-1024 | 64 对 OCR 来说太少 |
 | 动态分辨率 | min 256、max 1280 | 长边的像素数 |
 
 ## 排障

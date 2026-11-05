@@ -38,7 +38,7 @@ from: phases/12-multimodal-ai/01-vision-transformer-patch-tokens/docs/en.md, pha
 - **Patch 向量**：$3P^2$ 个值。P = 16 时是 768。
 - **投影**：`nn.Conv2d(3, D, kernel_size=P, stride=P)` 等于先 unfold，再做线性层。
 - **序列**：patch，加上 1 个 CLS，再加上 register。224 上的 ViT-B/16 是 197。
-- **注意力开销**：$n^2$。196 个 token 得到 38,416 个分数。150,528 个像素得到 22.6 × 10^9。
+- **注意力开销**：$n^2$。196 个 token 得到 38,416 个分数。150,528 个像素得到 约 226 亿。
 - **头的维度**：`head_dim = hidden / num_heads`。768 / 12 = 64。
 - **块的参数量**：$12 D^2$ + 3k。D = 768 时大约 7.1M。12 个块是 85M。
 - **Patch 嵌入的参数量**：`3 * P * P * hidden + hidden`。ViT-Base/16 是 590,592。

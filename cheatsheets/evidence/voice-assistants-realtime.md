@@ -96,10 +96,10 @@ Abbreviations: L11 = phases/06-speech-and-audio/11-real-time-audio-processing, L
 - MultimodalAgent direct audio, no text in the middle: A22/d:44, A22/d:118
 - VoicePipelineAgent STT, LLM, TTS, text-level control: A22/d:45, A22/d:119
 
-## 问答 (qa, 6)
+## 问题 (qa, 6)
 - ~230 ms human turn latency, above 1500 ms broken: L11/d:12
 - pipeline for tools, Moshi not trained for tool calling: L15/d:134, L15/d:146
 - Whisper streaming is block-based, no flush: L14/d:126
 - 450-600ms premium, 800-1200ms common: A22/d:70
-- p50 first-audio-out under 800ms, false-cutoff under 3%: C03/d:116-117
+- p50 first-audio-out under 800ms, false-cutoff under 3%: C03/d:117-118
 - UPSTREAM cancel frames for barge-in: A22/d:57, A22/c:152

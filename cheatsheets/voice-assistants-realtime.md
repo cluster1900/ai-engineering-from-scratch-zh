@@ -39,7 +39,7 @@ from: phases/19-capstone-projects/03-realtime-voice-assistant/code/ts/src/orches
 2. **LISTENING**：每个静音帧给 `silenceRunMs` 加上 20 ms。
 3. **LISTENING**：静音达到 500 ms 时，`turnCompletionScore` 读取最后的部分转写。
 4. **WAITING**：分数达到 0.6 或以上就提交本轮，并设置 `turnCompleteMs`。
-5. **THINKING**：工具调用发出。到 300 ms 时代理说 "one second, let me check"。
+5. **THINKING**：工具调用发出。到 300 ms 时智能体说 "one second, let me check"。
 6. **THINKING**：工具在 420 ms 返回。第一个 LLM token 再过 140 ms 到来。
 7. **SPEAKING**：第一个音频输出在第一个 LLM token 之后 180 ms 到来。
 8. **Barge-in**：THINKING 或 SPEAKING 中的语音会取消 TTS 并重新启用 ASR。
@@ -179,11 +179,11 @@ from: phases/06-speech-and-audio/11-real-time-audio-processing/docs/en.md, phase
 - **MultimodalAgent**：LiveKit 类。音频进，音频出，中间没有文本。
 - **VoicePipelineAgent**：LiveKit 类。STT、LLM、TTS，带文本级控制。
 
-## 问答
+## 问题
 type: qa
 from: phases/06-speech-and-audio/11-real-time-audio-processing/docs/en.md, phases/06-speech-and-audio/14-voice-activity-detection-turn-taking/docs/en.md, phases/06-speech-and-audio/15-streaming-speech-to-speech-moshi-hibiki/docs/en.md, phases/14-agent-engineering/22-voice-agents-pipecat-livekit/docs/en.md, phases/19-capstone-projects/03-realtime-voice-assistant/docs/en.md
 
-- **人类轮次有多快？** 约 230 ms。高于 1500 ms 会感觉坏掉。
+- **人类轮次有多快？** 约 230 ms。高于 1500 ms 就会让人感觉系统出了故障。
 - **Pipeline 还是 Moshi？** 需要工具时用 pipeline。Moshi 没有针对工具调用训练。
 - **为什么 Whisper streaming 没有 flush？** 它是基于块的，总是等待 chunk。
 - **端到端的高端水平是多少？** 450 到 600 ms。800 到 1200 ms 很常见。
