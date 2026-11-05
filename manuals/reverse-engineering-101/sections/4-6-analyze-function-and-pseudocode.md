@@ -95,7 +95,7 @@ id: fig-4-8
 kind: structure
 title: _grade dossier 的十六个侧面
 claim: 一份记录持有一个函数的身份、文本、边、块、签名事实与值流，每一项有自己的限制.
-caption: 从上到下读。左列是侧面名，中列是它对 `_grade` 的值，右列说明该侧面持有什么。 From `capture/out/06-function-grade.json`。
+caption: 从上到下读。左列是侧面名，中列是它对 `_grade` 的值，右列说明该侧面持有什么。 From capture/out/06-function-grade.json.
 ```
 
 ## procedure_pseudo_code：仅文本 {#s-analyze-function-and-pseudocode-procedure-pseudo-code-the-text-alone}
@@ -180,7 +180,7 @@ id: fig-4-9
 kind: comparison
 title: 写出的 percent_change 与反编译出的
 claim: 四行源码变成十四行伪代码，标出的三行只描述寄存器.
-caption: 先读源码，再读伪代码。玫瑰色标记点名返回宽度、重复的测试，以及整个寄存器的返回。 From `capture/fixtures/ledger.c`, `capture/out/10-mcp-09-analyze-function-percent-change-O1.json`。
+caption: 先读源码，再读伪代码。玫瑰色标记点名返回宽度、重复的测试，以及整个寄存器的返回。 From capture/fixtures/ledger.c and capture/out/10-mcp-09-analyze-function-percent-change-O1.json.
 ```
 
 `_grade` 展示第二种空隙。反编译文本把表保留为 `*(undefined4 *)(&DAT_1000007d0 + (ulong)uVar1 * 4)`。地址是对的，元素大小是对的，那五个值却不在那里。[第 3.3 节](#s-address-to-file-offset) 把 `0x1000007d0` 变成文件偏移 2000，那里的 20 字节是 `1, 2, 3, 4, 4`。返回类型是 `undefined4`，四个字节意义未知。文本不完整，你从字节把它补全。

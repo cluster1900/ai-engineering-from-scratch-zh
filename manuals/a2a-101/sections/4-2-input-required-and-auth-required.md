@@ -48,7 +48,7 @@ id: fig-input-required
 kind: sequence
 title: 审查提出的问题及其回答
 claim: 问题作为暂停任务的状态消息到达，回答是一条携带相同任务 id 和 context id 的新消息.
-caption: 从上到下读。第 1 到第 3 步是第一次 `SendMessage` 及其回复，第 4 到第 9 步在同一个任务上回答这个问题。id 缩短为 8 个字符。来自 capture/out/06-input-required.http。
+caption: 从上到下读。第 1 到第 3 步是第一次 `SendMessage` 及其回复，第 4 到第 9 步在同一个任务上回答这个问题。id 缩短为 8 个字符。 From capture/out/06-input-required.http.
 ```
 
 ## 在 A2A 之外到达的授权 {#s-input-required-and-auth-required-authorization-that-arrives-outside-a2a}
@@ -98,7 +98,7 @@ id: fig-auth-required
 kind: sequence
 title: 一次等待操作员的部署
 claim: 部署在 `TASK_STATE_AUTH_REQUIRED` 中等待，流保持打开，操作员的批准在 A2A 之外传递，然后同一条流载回结果.
-caption: 从上到下读。第 2 到第 4 步和第 7 到第 9 步是同一条流的六帧。第 5、6 步是 A2A 之外的普通 HTTP。id 缩短为 8 个字符。来自 capture/out/07-auth-required.http。
+caption: 从上到下读。第 2 到第 4 步和第 7 到第 9 步是同一条流的六帧。第 5、6 步是 A2A 之外的普通 HTTP。id 缩短为 8 个字符。 From capture/out/07-auth-required.http.
 ```
 
 ## 流何时关闭 {#s-input-required-and-auth-required-when-the-stream-closes}

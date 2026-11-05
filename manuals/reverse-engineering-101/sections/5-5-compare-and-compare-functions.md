@@ -117,7 +117,7 @@ id: fig-5-6
 kind: comparison
 title: 对 -O1 与 -O2 构建上两个函数的 compare_functions
 claim: 编译器让 `_percent_change` 在七个维度上保持不变且引用为未知，在五个维度上改变了 `_total`，rea 只报告计数而不说为什么.
-caption: 每张表从上到下读。琥珀色行是已改变的维度，虚线行是未知。 From `capture/out/10-mcp-20-compare-functions-percent-change.json`, `10-mcp-21-compare-functions-total.json`。
+caption: 每张表从上到下读。琥珀色行是已改变的维度，虚线行是未知。 From capture/out/10-mcp-20-compare-functions-percent-change.json and 10-mcp-21-compare-functions-total.json.
 ```
 
 ## 汇编的限制 {#s-compare-and-compare-functions-the-assembly-limit}

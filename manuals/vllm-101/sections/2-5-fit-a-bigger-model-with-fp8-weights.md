@@ -37,7 +37,7 @@ id: fig-2-5
 kind: chart
 title: 32 个用户时 FP8 权重对比 BF16
 claim: 时钟锁定且 KV 池相同时，32 个用户下每秒输出 token 是 FP8 的 284.7 对 BF16 的 208.8.
-caption: 每根柱是两个种子的中位数。BF16 运行的时钟中位数是 881 MHz，FP8 运行是 900 MHz。来自 capture/gpu/summary/l4.json。
+caption: 每根柱是两个种子的中位数。BF16 运行的时钟中位数是 881 MHz，FP8 运行是 900 MHz。 From capture/gpu/summary/l4.json.
 ```
 
 | 用户数，L4 锁频会话 | TPOT 中位数，BF16 / FP8 | 输出 tok/s，BF16 / FP8 | SM 时钟中位数，BF16 / FP8 |

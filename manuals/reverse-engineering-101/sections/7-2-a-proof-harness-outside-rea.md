@@ -225,7 +225,7 @@ id: fig-7-2
 kind: flow
 title: 一次证明的两条腿
 claim: 第一腿在 92 个单元上跑原件与候选，第二腿比较 46 个掩去的字节、一条重定位记录与五个表条目.
-caption: 每列从上到下读。灰色框是 harness 与编译器，它们在 rea 之外运行，绿色框是 fixture 字节。青色是通过的检查，玫瑰色是失败的检查。 From `capture/out/17-harness-execute-plausible.json`, `17-harness-execute-equal.json`, `17-harness-bytes.json`。
+caption: 每列从上到下读。灰色框是 harness 与编译器，它们在 rea 之外运行，绿色框是 fixture 字节。青色是通过的检查，玫瑰色是失败的检查。 From capture/out/17-harness-execute-plausible.json, 17-harness-execute-equal.json, and 17-harness-bytes.json.
 ```
 
 ```figure
@@ -233,7 +233,7 @@ id: fig-7-3
 kind: decision
 title: 八个候选各自停在哪里
 claim: 三个候选停在大小检查，一个通过每一项字节检查并在它指向的表上失败，四个到达 pass.
-caption: 从上往下读。每个灰色框是第二腿的一项检查。它右边的虚线玫瑰色框是在那里失败的候选，带着报告打印的原因。底部的青色框通过了每一项检查。 From `capture/out/17-harness-bytes.json`。
+caption: 从上往下读。每个灰色框是第二腿的一项检查。它右边的虚线玫瑰色框是在那里失败的候选，带着报告打印的原因。底部的青色框通过了每一项检查。 From capture/out/17-harness-bytes.json.
 ```
 
 ## 2026 年测量补充了什么 {#s-a-proof-harness-outside-rea-what-the-2026-measurements-add}

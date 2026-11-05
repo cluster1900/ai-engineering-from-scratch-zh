@@ -102,7 +102,7 @@ id: fig-7-1
 kind: state
 title: 一台 SGLang 服务器停下的三种方式
 claim: 只有发给主进程的 SIGTERM 会排空正在跑的请求，强制退出或发给进程组的信号会停掉进行中的活.
-caption: 沿顶部从左到右读优雅退出那条路径，再往下读另外两条。数字与图例相符。来自 capture/out/shutdown-exploratory.log、capture/out/server-default.log，以及 v0.5.22 的关闭代码。
+caption: 沿顶部从左到右读优雅退出那条路径，再往下读另外两条。数字与图例相符。 From capture/out/shutdown-exploratory.log, capture/out/server-default.log, and the shutdown code at v0.5.22.
 ```
 
 **我们测过** Mac 上的两种情况。我们的抓取套件通过向整个进程组发 SIGTERM 停掉每一台服务器。调度器子进程也收到信号并先死：

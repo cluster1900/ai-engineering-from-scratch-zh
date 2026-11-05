@@ -58,7 +58,7 @@ id: fig-stream-resubscribe
 kind: sequence
 title: 一条流在四帧后断开，然后重新接上
 claim: 断开的流失去关闭期间发出的帧，SubscribeToTask 以一份已经包含这些内容的 Task 快照恢复.
-caption: 从上到下读。第 1 到第 5 步是第一条流，只有无人看到的写入才画到任务存储上。帧号按每条流分别计数。来自 capture/out/14-resubscribe.http，id 缩短为 8 个字符。
+caption: 从上到下读。第 1 到第 5 步是第一条流，只有无人看到的写入才画到任务存储上。帧号按每条流分别计数。 From capture/out/14-resubscribe.http, ids shortened to 8 characters.
 ```
 
 在第 4 帧之后，agent 把分块 03 和 04 追加到 `test-log.txt`，没有打开的连接承载它们的 `artifactUpdate` 事件，如[图](#fig-stream-resubscribe)所示。这些事件丢失了，而存储的任务持有这两个分块。

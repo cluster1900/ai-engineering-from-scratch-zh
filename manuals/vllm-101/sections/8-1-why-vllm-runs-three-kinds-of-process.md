@@ -31,7 +31,7 @@ id: fig-8-1
 kind: tree
 title: 四块 GPU 的六个进程
 claim: tensor parallel 大小为 4 的服务器运行六个进程：一个 API 服务器、一个 engine core 和四个 GPU worker.
-caption: 从上往下读。每个 worker 拥有一块 GPU。来自 vLLM 0.31.0 的设计文档。
+caption: 从上往下读。每个 worker 拥有一块 GPU。来自 vLLM 0.31.0 的设计文档。 From the vLLM design documents at v0.31.0.
 ```
 
 ## 为什么不用线程 {#s-why-vllm-runs-three-kinds-of-process-why-not-threads}

@@ -125,7 +125,7 @@ id: fig-3-5c
 kind: chart
 title: HiCache 留住了 GPU pool 逐出的 prompt
 claim: 在 L4 上有 32 条不同的 system prompt 时，HiCache 把中位 TTFT 从 5,449 ms 降到 817 ms.
-caption: 中位 TTFT 对上不同 system prompt 的条数，每个点三个种子，对数刻度。玫瑰色只有 GPU pool，绿色加上 host 层。来自 capture/gpu/summary/l4.json。
+caption: 中位 TTFT 对上不同 system prompt 的条数，每个点三个种子，对数刻度。玫瑰色只有 GPU pool，绿色加上 host 层。 From capture/gpu/summary/l4.json.
 ```
 
 | 组数 | 要保留的提示 token | 中位 TTFT，仅 GPU / HiCache | 输出 tok/s，仅 GPU / HiCache | 中位 SM 时钟，仅 GPU / HiCache |

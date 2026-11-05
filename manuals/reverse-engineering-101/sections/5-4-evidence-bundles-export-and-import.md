@@ -145,7 +145,7 @@ id: fig-5-5
 kind: flow
 title: 一个包，从 MCP 会话到四个读取器
 claim: 一份规范 JSON 文件离开会话，CLI 摘要、CLI 导出、CLI 导入与第二次 MCP 会话都在没有 Ghidra 的情况下读它.
-caption: 从左到右读。实线青色是一次持久写入，实线墨色是一次调用。 From `capture/out/10-mcp-14-export-evidence-bundle-O1.json`, `11-bundles.txt`, `11-inspect-evidence-bundle-O1.json`, `12-evidence-export.txt`, `13-evidence-import.json`, `10-mcp-23-import-evidence-bundle-O1.json`。
+caption: 从左到右读。实线青色是一次持久写入，实线墨色是一次调用。 From capture/out/10-mcp-14-export-evidence-bundle-O1.json, 11-bundles.txt, 11-inspect-evidence-bundle-O1.json, 12-evidence-export.txt, 13-evidence-import.json, and 10-mcp-23-import-evidence-bundle-O1.json.
 ```
 
 ## 来自更早版本的包 {#s-evidence-bundles-export-and-import-a-bundle-from-an-earlier-release}

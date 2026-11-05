@@ -47,7 +47,7 @@ id: fig-grpc-call
 kind: sequence
 title: 一次通过 gRPC 的 SendStreamingMessage 调用
 claim: 一个 rpc 连同 metadata 发送请求，服务器持续流出 StreamResponse 消息直到任务结束，rpc 状态关闭这条流.
-caption: 从上到下读。客户端发送一个带 metadata 中 a2a-version 的 SendMessageRequest，每条回复是一个 StreamResponse 负载。名称采用 proto 的写法，因为 kit 没有 gRPC capture，所以不展示值。来自 research/sources/a2a.proto。
+caption: 从上到下读。客户端发送一个带 metadata 中 a2a-version 的 SendMessageRequest，每条回复是一个 StreamResponse 负载。名称采用 proto 的写法，因为 kit 没有 gRPC capture，所以不展示值。 From research/sources/a2a.proto.
 ```
 
 ## SDK 支持 {#s-grpc-sdk-support}

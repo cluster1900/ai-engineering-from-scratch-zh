@@ -47,7 +47,7 @@ id: fig-7-2b
 kind: timeline
 title: 一步共置 RL 里的 GPU 内存
 claim: 在这种模式下 SGLang 和训练器从不同时占着 GPU，SGLang 只在新权重到达之后才拿回 KV cache.
-caption: 从左到右读，train.py 的每个阶段一列。填了色的格子表示这块内存在 GPU 上。来自 Miles v0.1.2 的 train.py 和 inference_controller.py。
+caption: 从左到右读，train.py 的每个阶段一列。填了色的格子表示这块内存在 GPU 上。来自 Miles v0.1.2 的 train.py 和 inference_controller.py。 From train.py and inference_controller.py in Miles at v0.1.2.
 ```
 
 ## 库存 SGLang 给训练器什么 {#s-sglang-as-an-rl-rollout-engine-what-stock-sglang-gives-the-trainer}
@@ -65,7 +65,7 @@ id: fig-7-2
 kind: sequence
 title: Miles 和 SGLang 之间的一次权重更新
 claim: 一次权重更新是一个会话：暂停、开始、送出每一个 bucket、用一次 repack 结束、设上版本，然后恢复.
-caption: 从上往下读。第 3 行和第 4 行对默认 NCCL broadcast 传输的每个 bucket 重复一次。来自 Miles v0.1.2 的 weight_update/session.py 和 protocols/broadcast.py，以及 v0.5.22 的 http_server.py 里的端点。
+caption: 从上往下读。第 3 行和第 4 行对默认 NCCL broadcast 传输的每个 bucket 重复一次。来自 Miles v0.1.2 的 weight_update/session.py 和 protocols/broadcast.py，以及 v0.5.22 的 http_server.py 里的端点。 From weight_update/session.py and protocols/broadcast.py in Miles at v0.1.2 and the endpoints in http_server.py at v0.5.22.
 ```
 
 ## 移动权重的四种方式 {#s-sglang-as-an-rl-rollout-engine-four-ways-to-move-the-weights}
@@ -126,7 +126,7 @@ id: fig-7-2c
 kind: chart
 title: GB10 上一步 GRPO，按阶段
 claim: 在一块 GB10 上，训练器各阶段的时间是 SGLang rollout 的 1.8 倍，权重更新不到 1 s.
-caption: 12 步里每个阶段的中位秒数。蓝色是 SGLang 生成，紫罗兰色是训练器，琥珀色是两者之间的权重更新和内存释放。来自 capture/gpu/summary/miles-gb10.json。
+caption: 12 步里每个阶段的中位秒数。蓝色是 SGLang 生成，紫罗兰色是训练器，琥珀色是两者之间的权重更新和内存释放。 From capture/gpu/summary/miles-gb10.json.
 ```
 
 在这个规模上，rollout 不是瓶颈。对一块 GPU 上的 0.6B 模型，更快的服务引擎最多大约能省下这一步的三分之一，35%。权重更新与内存释放，也就是本节大部分内容所关于的，花 2.4 秒。从各阶段中位相加，这一步大约花 165 秒。
@@ -156,7 +156,7 @@ id: fig-7-2d
 kind: chart
 title: GB10 上的 48 步 GRPO
 claim: 48 步里原始奖励的均值从 0.636 升到 0.758，被截断样本的份额从 0.33 降到 0.08.
-caption: 默认种子每一步的原始奖励，以及在 1,024 token 处被截断的样本份额。虚线是种子 2 和种子 3 的原始奖励。均值取前 8 步和后 8 步。来自 capture/gpu/summary/miles-gb10.json。
+caption: 默认种子每一步的原始奖励，以及在 1,024 token 处被截断的样本份额。虚线是种子 2 和种子 3 的原始奖励。均值取前 8 步和后 8 步。 From capture/gpu/summary/miles-gb10.json.
 ```
 
 从一步到下一步，奖励最多变了 0.207，从第 30 步的 0.801 到第 31 步的 0.594。从 8 步均值读趋势，不要从一步读。

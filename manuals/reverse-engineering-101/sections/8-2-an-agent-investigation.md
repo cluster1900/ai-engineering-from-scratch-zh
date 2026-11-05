@@ -155,7 +155,7 @@ id: fig-8-3
 kind: flow
 title: 从一个问题到一份账本
 claim: 四次工具调用产生四份 Evidence 记录，由它们建成的账本只回答到没人读过的两张表为止.
-caption: 从上往下读。梅色是 agent 的问题，靛蓝框是 MCP 调用，青色框是 Evidence 记录，其 id 裁到八位。琥珀色框是按种类分行的账本。 From `capture/out/10-mcp-05` 到 `10-mcp-12`。
+caption: 从上往下读。梅色是 agent 的问题，靛蓝框是 MCP 调用，青色框是 Evidence 记录，其 id 裁到八位。琥珀色框是按种类分行的账本。 From capture/out/10-mcp-05 to 10-mcp-12.
 ```
 
 ## 账本 {#s-an-agent-investigation-the-ledger}
@@ -184,7 +184,7 @@ id: fig-8-4
 kind: comparison
 title: 会话观察到什么，什么仍是未知
 claim: 五条主张靠已录制的 Evidence id 成立，四条保持未知，直到对 dossier 已经点名的地址跑 `read_bytes` 或 `analyze_function`.
-caption: 左边，每条观察到的主张，带着持有它的记录与字段。右边，虚线玫瑰色框是账本里仍打开的行，各自带着能关闭它的调用。 From `capture/out/10-mcp-05` 到 `10-mcp-12`。
+caption: 左边，每条观察到的主张，带着持有它的记录与字段。右边，虚线玫瑰色框是账本里仍打开的行，各自带着能关闭它的调用。 From capture/out/10-mcp-05 to 10-mcp-12.
 ```
 
 ## 目标文本是数据 {#s-an-agent-investigation-target-text-is-data}

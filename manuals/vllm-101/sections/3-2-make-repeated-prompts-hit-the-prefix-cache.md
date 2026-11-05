@@ -38,7 +38,7 @@ id: fig-3-2b
 kind: chart
 title: cache 开启和关闭
 claim: 在我们的 L4 上，prefix cache 开启时，每种共享长度下的首 token 都停在 400 ms 附近.
-caption: 读对数刻度时要小心：每条网格线大约是下面一条的三倍。色带覆盖三次运行。来自 capture/gpu/summary/l4.json。
+caption: 读对数刻度时要小心：每条网格线大约是下面一条的三倍。色带覆盖三次运行。 From capture/gpu/summary/l4.json.
 ```
 
 ## 把共享部分放在最前面 {#s-make-repeated-prompts-hit-the-prefix-cache-put-the-shared-part-first}
@@ -58,7 +58,7 @@ id: fig-3-2
 kind: structure
 title: 一次前缀命中
 claim: 新请求从 prompt 开头复用已缓存的 block，并在第一个不同的 block 处停止.
-caption: 先读上面一行，再读下面一行。虚线 block 会重新计算。来自 vLLM 0.31.0 的源码。
+caption: 先读上面一行，再读下面一行。虚线 block 会重新计算。来自 vLLM 0.31.0 的源码。 From the vLLM source at v0.31.0.
 ```
 
 ## 隔离租户 {#s-make-repeated-prompts-hit-the-prefix-cache-keep-tenants-apart}

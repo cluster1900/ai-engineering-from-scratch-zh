@@ -29,7 +29,7 @@ id: fig-4-4
 kind: flow
 title: SGLang 如何决定权重格式
 claim: 检查点自己点名量化方法，--quantization 旗标只在与该方法或一种已知升级相符时才有用.
-caption: 每一行从左到右读。玫瑰色箭头停在启动错误。最后一行是 v0.5.22 的 CUDA 路径。来自 v0.5.22 的 _verify_quantization 和 GPTQ Marlin 覆盖。
+caption: 每一行从左到右读。玫瑰色箭头停在启动错误。最后一行是 v0.5.22 的 CUDA 路径。来自 v0.5.22 的 _verify_quantization 和 GPTQ Marlin 覆盖。 From _verify_quantization and the GPTQ Marlin override at v0.5.22.
 ```
 
 旗标也可以挡住一次升级。不带旗标加载的 GPTQ 检查点被检测、在运行时转换，并由 Marlin 内核服务。升级代码只在你没传方法或传了 `gptq_marlin` 时接受那种转换。
@@ -130,7 +130,7 @@ id: fig-4-3b
 kind: chart
 title: FP8 挪动整条延迟和吞吐曲线
 claim: 在 GB10 上，从并发 1 到 64 的每一档，FP8 权重加 FP8 KV 都给出更多的每秒 token，以及更少的每 token 时间.
-caption: 每个点是一档并发，从 c1 到 c64。横轴是每秒输出 token，纵轴是中位 TPOT。梅红色是 BF16，绿色是 FP8。来自 capture/gpu/summary/gb10.json。
+caption: 每个点是一档并发，从 c1 到 c64。横轴是每秒输出 token，纵轴是中位 TPOT。梅红色是 BF16，绿色是 FP8。 From capture/gpu/summary/gb10.json.
 ```
 
 这个结果不同于上面的 Cloudflare 结果。那里，FP8 cache 每 token 稍慢，靠容量赢。这里，权重也是 FP8。这台机器上的 decode 从带宽一般的内存读权重，所以一半字节几乎给了两倍速度。
@@ -173,7 +173,7 @@ id: fig-4-3c
 kind: chart
 title: 在 24 GB 卡上 BF16 pool 会装满
 claim: 在一块 L4 上，BF16 吞吐在并发 32 停在每秒 270 个 token，FP8 继续升到 64 时的 736.
-caption: 输出吞吐对上最大并发，每个点三个种子。梅红色是 BF16，绿色是带 FP8 KV cache 的 FP8 权重。来自 capture/gpu/summary/l4.json。
+caption: 输出吞吐对上最大并发，每个点三个种子。梅红色是 BF16，绿色是带 FP8 KV cache 的 FP8 权重。 From capture/gpu/summary/l4.json.
 ```
 
 扫描的调度器日志展示了并发 64 时的原因。BF16 服务器最多跑 38 条请求，token usage 在 0.99，队列里 26 条请求。FP8 服务器跑全部 64 条，token usage 0.29，队列空。BF16 吞吐从 32 到 64 下降，因为更多请求在等，每条等待的请求把它的等待加进 TTFT。

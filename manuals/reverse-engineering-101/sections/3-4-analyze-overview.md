@@ -193,7 +193,7 @@ id: fig-3-5
 kind: comparison
 title: 并排的两份 overview
 claim: 同样四个函数在已链接的可执行文件里给出 13 个过程，在可重定位目标文件里给出 4 个，因为 stub、外部符号与入口点只在链接之后才存在.
-caption: 每列从上到下读。绿色框点名 Ghidra 文档，列表是每个块及其长度，紫色框是记录的 confidence。 From `capture/out/05-analyze-arm64-O1.json`, `05-analyze-x86_64-O1.json`。
+caption: 每列从上到下读。绿色框点名 Ghidra 文档，列表是每个块及其长度，紫色框是记录的 confidence。 From capture/out/05-analyze-arm64-O1.json and 05-analyze-x86_64-O1.json.
 ```
 
 ## 概览没说什么 {#s-analyze-overview-what-the-overview-does-not-say}

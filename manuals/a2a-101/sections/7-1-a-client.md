@@ -82,7 +82,7 @@ id: fig-planner-run
 kind: flow
 title: planner 的这次运行，一个决定接一个决定
 claim: planner 读取三张 card，依次委派三个 skill，回答一个问题，把一次批准交给操作员，并在每一步之前根据 data part 做决定.
-caption: 三条泳道从左到右读，然后读决定那一行。每条泳道是一次委派，从上到下，标出回复所带的状态。任务 id 缩短为 8 个字符。来自 capture/out/19-planner.log 和 19-planner.http。
+caption: 三条泳道从左到右读，然后读决定那一行。每条泳道是一次委派，从上到下，标出回复所带的状态。任务 id 缩短为 8 个字符。 From capture/out/19-planner.log and 19-planner.http.
 ```
 
 每个决定都读取一个数据 part，绝不读取自由文本：从 `summary.json` 读取 `passed` 和 `failed`，从 `review.json` 的每个发现中读取 `severity`。在 commit `9f3c2e1` 上有一个测试失败，planner 会在审查之前停止。

@@ -11,7 +11,7 @@ id: fig-server-parts
 kind: structure
 title: 服务器的各个部分，按请求遇到它们的顺序
 claim: 请求先经过认证、版本检查和 capability 检查，然后 Agent.send 才存储任务，此后每个事件都经同一次广播离开.
-caption: 左列从上到下读。每个方框是 kit 服务器的一个方法。右侧的玫瑰色方框是每项检查返回的错误，并标有错误 capture 中的 JSON-RPC 代码。来自 capture/a2a_ref.py。
+caption: 左列从上到下读。每个方框是 kit 服务器的一个方法。右侧的玫瑰色方框是每项检查返回的错误，并标有错误 capture 中的 JSON-RPC 代码。 From capture/a2a_ref.py.
 ```
 
 ## card 与每种绑定一个处理器 {#s-a-server-the-card-and-one-handler-per-binding}
@@ -75,7 +75,7 @@ id: fig-a2a-and-tools
 kind: layers
 title: agent 之间是 A2A，每个 agent 内部是工具
 claim: planner 只看得到每个 agent 的 card 和端点，而每个 agent 在一条 A2A 从不跨越的界线之下调用自己的逻辑和工具.
-caption: 从上到下读。虚线以上是 planner 通过 A2A 看到的内容。虚线以下是每个 agent 自己运行的部分，kit 用 Python 模拟了它们。来自 capture/agents.py 和 capture/out/01-agent-cards.http。
+caption: 从上到下读。虚线以上是 planner 通过 A2A 看到的内容。虚线以下是每个 agent 自己运行的部分，kit 用 Python 模拟了它们。 From capture/agents.py and capture/out/01-agent-cards.http.
 ```
 
 **任务存储：** 每个任务的记录，由 `GetTask`、`ListTasks` 和每条后续消息读取。kit 的 `Agent.tasks` 是一个没有所有者的字典，deployer 的 bearer 令牌是它唯一的保护。SDK 的 `TaskStore` 有 `save`、`get`、`list` 和 `delete`，每个都会收到 `ServerCallContext` {{sdk src/a2a/server/tasks/task_store.py}}。`InMemoryTaskStore` 按所有者为任务设键，默认的 `OwnerResolver` 返回 `context.user.user_name` {{sdk src/a2a/server/owner_resolver.py}} {{sdk src/a2a/server/tasks/inmemory_task_store.py}}。这样另一个调用者的任务就是 `TaskNotFoundError`，但每个没有用户名的调用者共享同一个范围。服务器必须在每个 A2A 操作请求上检查授权 {{spec §13.1}}，所以集成者要添加中间件，[安全方案](#s-security-schemes-and-in-task-authorization)一节针对每个 SDK 展示了这一点。

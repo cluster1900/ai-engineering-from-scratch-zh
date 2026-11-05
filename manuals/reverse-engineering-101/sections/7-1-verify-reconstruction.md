@@ -146,7 +146,7 @@ id: fig-7-1
 kind: tree
 title: 两份比较记录上的四条主张
 claim: 每条主张的状态来自一份比较记录的一个维度，total 主张还带着 `compare_functions` 记下的未知.
-caption: 从上往下读。验证记录引用四条主张，每条主张引用一份比较记录，每份比较记录引用左、右 dossier。琥珀色主张通过，虚线玫瑰色主张失败。id 裁到前八位十六进制。 From `capture/out/10-mcp-22-verify-reconstruction.json`。
+caption: 从上往下读。验证记录引用四条主张，每条主张引用一份比较记录，每份比较记录引用左、右 dossier。琥珀色主张通过，虚线玫瑰色主张失败。id 裁到前八位十六进制。 From capture/out/10-mcp-22-verify-reconstruction.json.
 ```
 
 ## 一次通过不证明什么 {#s-verify-reconstruction-what-a-pass-does-not-prove}

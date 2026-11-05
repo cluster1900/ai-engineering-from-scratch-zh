@@ -23,7 +23,7 @@ id: fig-8-3
 kind: structure
 title: block 池
 claim: KV cache 是一个由 16-token block 组成的池，请求按任意顺序领取，每个请求用一张 block table 做映射.
-caption: 彩色 block 属于同色的请求。虚线 block 是空闲的。来自 vLLM 0.31.0 的源码。
+caption: 彩色 block 属于同色的请求。虚线 block 是空闲的。来自 vLLM 0.31.0 的源码。 From the vLLM source at v0.31.0.
 ```
 
 ## 淘汰 {#s-how-the-block-pool-manages-kv-memory-eviction}

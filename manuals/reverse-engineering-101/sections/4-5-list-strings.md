@@ -88,7 +88,7 @@ id: fig-4-7
 kind: structure
 title: ledger-arm64-O1 的 39 个字符串，按加载命令
 claim: 39 个字符串里有十个是程序的文本，其余 29 个是加载器与链接器留在文件里的名字和路径.
-caption: 按地址从上到下读。每一行点名加载命令、地址范围、计数，以及一个例子。 From `capture/out/10-mcp-08-list-strings.json`, `04-inspect-macho.json`。
+caption: 按地址从上到下读。每一行点名加载命令、地址范围、计数，以及一个例子。 From capture/out/10-mcp-08-list-strings.json and 04-inspect-macho.json.
 ```
 
 ## 一个函数引用的字符串 {#s-list-strings-strings-a-function-refers-to}

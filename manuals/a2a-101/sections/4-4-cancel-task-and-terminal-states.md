@@ -17,7 +17,7 @@ id: fig-task-endings
 kind: comparison
 title: 任务结束的四种方式
 claim: 这四种结局中三种由 agent 选择，一种由客户端选择；任务一旦结束，服务器就拒绝之后的任何消息或取消.
-caption: 每一块对应 kit 中的一个任务：谁选择了这个结局、最终的状态消息，以及留下的 artifact。底部几行展示被取消的任务之后如何回答。id 缩短为 8 个字符。来自 capture/out/03-blocking-task.http、09-failed.http、10-cancel.http 和 08-rejected.http。
+caption: 每一块对应 kit 中的一个任务：谁选择了这个结局、最终的状态消息，以及留下的 artifact。底部几行展示被取消的任务之后如何回答。id 缩短为 8 个字符。 From capture/out/03-blocking-task.http, 09-failed.http, 10-cancel.http, and 08-rejected.http.
 ```
 
 ## agent 的三种结局 {#s-cancel-task-and-terminal-states-the-agent-s-three-endings}

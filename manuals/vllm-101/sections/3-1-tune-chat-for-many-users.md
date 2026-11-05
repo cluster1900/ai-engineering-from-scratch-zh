@@ -57,7 +57,7 @@ id: fig-3-1
 kind: chart
 title: 用户变多时，16 个序列的上限
 claim: 16 个序列的上限在 16 个用户以内与默认一致，到 32 个用户时把输出从每秒 275 个 token 降到 172 个.
-caption: 每个点是三个种子的中位数，色带覆盖这三个种子的范围。首 token 时间用对数刻度。来自 capture/gpu/summary/l4.json。
+caption: 每个点是三个种子的中位数，色带覆盖这三个种子的范围。首 token 时间用对数刻度。 From capture/gpu/summary/l4.json.
 ```
 
 | 用户数，L4 满频会话 | 配置 | 输出 tok/s | TTFT 中位数 | ITL 中位数 | P99 ITL | SM 时钟中位数 |

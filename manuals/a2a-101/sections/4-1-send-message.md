@@ -93,7 +93,7 @@ id: fig-blocking-and-return
 kind: timeline
 title: 一次阻塞调用，和一次立即返回的调用
 claim: 阻塞发送把一个请求保持打开，直到这个任务完成；`returnImmediately` 则在 `TASK_STATE_SUBMITTED` 时回答，并把轮询留给客户端.
-caption: 两个任务在请求处对齐，并在 kit 的时钟上经过同样的状态。实心方块是回复向客户端展示过的状态，空心方块是它从未看到的状态。绿色刻度是 artifact 更新，紫色条是仍打开的请求。来自 capture/out/03-blocking-task.http 和 04-polling.http。
+caption: 两个任务在请求处对齐，并在 kit 的时钟上经过同样的状态。实心方块是回复向客户端展示过的状态，空心方块是它从未看到的状态。绿色刻度是 artifact 更新，紫色条是仍打开的请求。 From capture/out/03-blocking-task.http and 04-polling.http.
 ```
 
 ## 根据结果分派 {#s-send-message-dispatch-on-the-result}

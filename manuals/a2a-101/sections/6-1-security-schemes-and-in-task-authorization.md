@@ -11,7 +11,7 @@ id: fig-credential-path
 kind: flow
 title: 一份凭据，从 card 到任务内批准
 claim: card 写出方案名称，HTTP 在 A2A 运行之前拒绝没有 token 的请求，而运行中的任务仍然可以停下来等待批准.
-caption: 分五步从上到下读。从第 2 步起，左框是 planner 发送的内容，右框是 deployer 的回答。灰色框位于 A2A 之外。任务 id 缩短为 8 个字符。来自 capture/out/01-agent-cards.http、18-extended-card.http 和 07-auth-required.http。
+caption: 分五步从上到下读。从第 2 步起，左框是 planner 发送的内容，右框是 deployer 的回答。灰色框位于 A2A 之外。任务 id 缩短为 8 个字符。 From capture/out/01-agent-cards.http, 18-extended-card.http, and 07-auth-required.http.
 ```
 
 ## card 声明了什么 {#s-security-schemes-and-in-task-authorization-what-the-card-declares}

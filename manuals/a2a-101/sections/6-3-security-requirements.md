@@ -11,7 +11,7 @@ id: fig-trust-boundaries
 kind: layers
 title: kit 中的信任边界，每条边界上的威胁与检查
 claim: 数据在 kit 的系统中跨越六条边界，每一条都需要自己的检查，因为 A2A 不会把所承载的任何内容标为安全.
-caption: 每一行从左到右读：数据在哪里跨越、可能出什么错，以及规范要求的检查。各行按 planner 遇到它们的顺序排列。紫色检查属于 planner，蓝色检查属于远程 agent。来自 capture/out/15-push.http、06-input-required.http、11-errors.http 和 17-signed-card.txt。
+caption: 每一行从左到右读：数据在哪里跨越、可能出什么错，以及规范要求的检查。各行按 planner 遇到它们的顺序排列。紫色检查属于 planner，蓝色检查属于远程 agent。 From capture/out/15-push.http, 06-input-required.http, 11-errors.http, and 17-signed-card.txt.
 ```
 
 ## 要求，以及谁满足了它们 {#s-security-requirements-the-requirements-and-who-meets-them}

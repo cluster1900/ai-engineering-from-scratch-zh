@@ -28,7 +28,7 @@ id: fig-2-3
 kind: comparison
 title: 为什么 4,096 个 token 装得下五条请求，装不下第六条
 claim: 设了 ignore_eos 时，每条请求预留自己的 256 个 prompt token 和全部 512 个输出 token，所以五条用 3,840 个 token，第六条需要 4,608.
-caption: 每根条是 --max-total-tokens 4096 的 KV pool。绿色是预留的 prompt KV，琥珀色是预留的未来输出，灰色是空闲。来自 capture/out/server-small-pool.log 和 small-pool-bench-long-output-c16.txt。
+caption: 每根条是 --max-total-tokens 4096 的 KV pool。绿色是预留的 prompt KV，琥珀色是预留的未来输出，灰色是空闲。 From capture/out/server-small-pool.log and small-pool-bench-long-output-c16.txt.
 ```
 
 ## 我们用小 pool 测到了什么 {#s-admission-and-retraction-what-we-measured-with-a-small-pool}

@@ -290,7 +290,7 @@ id: fig-6-2
 kind: flow
 title: ledger.wasm 上的 inspect_wasm_artifact
 claim: rea 复制模块，跑三个核对过版本的 WABT 程序，并返回一份 CLI 与 MCP 共享的 `observed` 记录.
-caption: 从上到下读。实线箭头是调用，虚线箭头是 rea 解析的程序输出。灰色框是 rea 之外的 WABT 程序。 From `capture/out/16-inspect-wasm-artifact.json`, `10-mcp-24-inspect-wasm-artifact.json`。
+caption: 从上到下读。实线箭头是调用，虚线箭头是 rea 解析的程序输出。灰色框是 rea 之外的 WABT 程序。 From capture/out/16-inspect-wasm-artifact.json and 10-mcp-24-inspect-wasm-artifact.json.
 ```
 
 ```takeaways

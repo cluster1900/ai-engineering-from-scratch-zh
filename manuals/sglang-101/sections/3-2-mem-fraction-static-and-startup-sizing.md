@@ -47,7 +47,7 @@ id: fig-3-2
 kind: comparison
 title: 同一台 Mac，两种内存划分
 claim: 按空闲内存 87% 划的 pool 给激活留得太少，分数 0.4 让服务器活了下来.
-caption: 每根条从左到右读。绿色部分是 KV pool，灰色部分是其余一切。来自 capture/out/oom-exploratory.log 和 capture/out/server-default.log。
+caption: 每根条从左到右读。绿色部分是 KV pool，灰色部分是其余一切。 From capture/out/oom-exploratory.log and capture/out/server-default.log.
 ```
 
 ## SGLang 如何决定划分 {#s-mem-fraction-static-and-startup-sizing-how-sglang-decides-the-split}
@@ -179,7 +179,7 @@ id: fig-3-2c
 kind: chart
 title: pool 从未装满时，更大的 pool 没有用处
 claim: 在 GB10 上把分数从 0.7 提到 0.82，BF16 pool 增大 63%，闭环吞吐的变化不到 2%.
-caption: 输出吞吐对上最大并发，每个点三个种子。实线是 0.7，虚线是 0.82。梅红色是 BF16，绿色是带 FP8 KV cache 的 FP8。来自 capture/gpu/summary/gb10.json。
+caption: 输出吞吐对上最大并发，每个点三个种子。实线是 0.7，虚线是 0.82。梅红色是 BF16，绿色是带 FP8 KV cache 的 FP8。 From capture/gpu/summary/gb10.json.
 ```
 
 日志行解释了这一点。六十四条请求持有 40,751 个 token，是 pool 的 11%。在 kit 分数 0.7 的服务器上，最高 token usage 是 18%。pool 从来不是上限，所以更大的 pool 无事可做。对比 [第 4.3 节](#s-quantization) 的 L4，那里 BF16 pool 在 64 用户时是满的，FP8 几乎把吞吐乘了三倍。

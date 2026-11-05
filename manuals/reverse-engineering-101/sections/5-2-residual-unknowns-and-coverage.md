@@ -58,7 +58,7 @@ id: fig-5-3
 kind: comparison
 title: 三个空列表，以及每一个证明什么
 claim: 带完整覆盖的空 `callees` 数组、为零的未知计数，以及单侧的包记录，各自证明的是没有观察到任何东西，绝不是什么都不存在.
-caption: 每列从上到下读，从抓到的值到记录自己的话，再到你能说的话。 From `capture/out/10-mcp-09-analyze-function-percent-change-O1.json`, `10-mcp-14-export-evidence-bundle-O1.json`, `14-compare-bundles.json`。
+caption: 每列从上到下读，从抓到的值到记录自己的话，再到你能说的话。 From capture/out/10-mcp-09-analyze-function-percent-change-O1.json, 10-mcp-14-export-evidence-bundle-O1.json, and 14-compare-bundles.json.
 ```
 
 ## ResidualUnknown 记录 {#s-residual-unknowns-and-coverage-the-residualunknown-record}

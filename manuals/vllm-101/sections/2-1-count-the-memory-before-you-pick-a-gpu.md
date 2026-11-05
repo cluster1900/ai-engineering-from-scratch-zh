@@ -77,7 +77,7 @@ id: fig-2-1b
 kind: comparison
 title: 池决定能容纳多少用户
 claim: 同一个 24,096 token 的池，在满上下文长度下能容纳 2.94 个用户，而每人持有 640 个 token 时能容纳 37 个用户.
-caption: 每个蓝色 block 是一个用户。虚线部分是满长度用户填不满的那一段池。来自 capture/gpu/out-l4/server-h2h-vllm.log。
+caption: 每个蓝色 block 是一个用户。虚线部分是满长度用户填不满的那一段池。 From capture/gpu/out-l4/server-h2h-vllm.log.
 ```
 
 ## 决定要改什么 {#s-count-the-memory-before-you-pick-a-gpu-decide-what-to-change}

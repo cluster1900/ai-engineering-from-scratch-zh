@@ -37,7 +37,7 @@ id: fig-1-1
 kind: comparison
 title: capture 那台 Mac 上的 prefill 对上 decode
 claim: 中位 TTFT 除以 prompt 长度大约是每个 prompt token 0.32 ms，一个输出 token 在 decode 里要 4.38 ms.
-caption: 从左到右读。两列来自同一次基准，一次一条请求。来自 capture/out/bench-random-c1.txt。
+caption: 从左到右读。两列来自同一次基准，一次一条请求。 From capture/out/bench-random-c1.txt.
 ```
 
 ## 四个数字 {#s-what-the-server-does-with-your-request-the-four-numbers}
@@ -62,7 +62,7 @@ id: fig-1-2
 kind: layers
 title: SGLang 管什么
 claim: SGLang 管分词、调度、KV cache 和前向，模型和运维管质量、内存和路由.
-caption: 从上往下读，从客户端到权重。灰色层在 SGLang 之外。来自 v0.5.22 源码和 capture/out/server-default.log。
+caption: 从上往下读，从客户端到权重。灰色层在 SGLang 之外。 From the v0.5.22 source and capture/out/server-default.log.
 ```
 
 有三样东西在外面。模型决定答案说什么。在我们的 Mac 上，一个 0.6B 模型被要求说出一颗行星，回答是 "Ardens"，那不是行星。SGLang 正确且快速地送出了那个答案，没有任何服务引擎能让模型变对。
@@ -92,7 +92,7 @@ id: fig-1-3
 kind: sequence
 title: 一条 /generate 请求穿过三个进程
 claim: tokenizer manager、scheduler 和 detokenizer 各碰了这条请求一次，prefill 算了 5 个 token 里的 3 个.
-caption: 从上往下读。数字来自第 1.1 节我们的 L4 请求。来自 capture/gpu/out-l4/generate.txt 和 capture/gpu/out-l4/server-default.log。
+caption: 从上往下读。数字来自第 1.1 节我们的 L4 请求。 From capture/gpu/out-l4/generate.txt and capture/gpu/out-l4/server-default.log.
 ```
 
 ## 我们的立场 {#s-what-the-server-does-with-your-request-our-position}

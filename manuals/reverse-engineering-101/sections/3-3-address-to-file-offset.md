@@ -69,7 +69,7 @@ id: fig-3-4
 kind: structure
 title: 从 0x100000518 到文件偏移 1304
 claim: 段规则、节规则与 Ghidra 的源映射给出同一个字节 1304，该字节是 `_grade` 第一条指令的起点.
-caption: 每行从左到右读。绿色框是加载命令事实，灰色框是你的算术，紫色框是 Ghidra 的答案。 From `capture/out/04-inspect-macho.json`, `08-address-to-file-offset.json`，以及 fixture 字节。
+caption: 每行从左到右读。绿色框是加载命令事实，灰色框是你的算术，紫色框是 Ghidra 的答案。 From capture/out/04-inspect-macho.json, 08-address-to-file-offset.json, and the fixture bytes.
 ```
 
 ELF 规则形状相同。对可加载段是 `offset = address - p_vaddr + p_offset`，对 section 是 `sh_offset`。[第 32 课](phases/13-tools-and-protocols/32-program-anatomy-elf-from-scratch) 在 `ledger-x86_64-O1.o` 上做那种算术。可重定位目标没有程序头表，所以没有段把它放到内存里。当[第 3.4 节](#s-analyze-overview) 显示该目标的 `.text` 在 `0x100000` 时，那个数是 Ghidra 选的放置，不是文件里的事实。

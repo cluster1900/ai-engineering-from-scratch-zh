@@ -50,7 +50,7 @@ id: fig-four-parts
 kind: structure
 title: kit 中的四种 part
 claim: kit 的 capture 用到了全部四种 part，只有 `image/png` 这一种失败，因为 `code-reviewer` 不接受该媒体类型.
-caption: 最上面一行是每种 part 的形状。下面每一行是一个已捕获的 part，按 capture 发送它们的顺序排列。内容成员在左侧，媒体类型为绿色，发送方在下方。review.json 这个 artifact 放一个给人读的 text part，和一个给代码用的 data part。来自 capture/out/06-input-required.http 和 capture/out/11-errors.http。
+caption: 最上面一行是每种 part 的形状。下面每一行是一个已捕获的 part，按 capture 发送它们的顺序排列。内容成员在左侧，媒体类型为绿色，发送方在下方。review.json 这个 artifact 放一个给人读的 text part，和一个给代码用的 data part。 From capture/out/06-input-required.http and capture/out/11-errors.http.
 ```
 
 ## 谁声明媒体类型 {#s-part-who-declares-media-types}

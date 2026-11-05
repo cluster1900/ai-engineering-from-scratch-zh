@@ -51,7 +51,7 @@ id: fig-3-1
 kind: structure
 title: Qwen3-0.6B 里一个 token 的代价
 claim: Qwen3-0.6B 的一个 token 要 114,688 字节，是模型配置里五个数的乘积.
-caption: 从左到右读。每个框是启动日志里 bytes_per_slot 的一个因子。来自 capture/out/server-default.log。
+caption: 从左到右读。每个框是启动日志里 bytes_per_slot 的一个因子。 From capture/out/server-default.log.
 ```
 
 ## 两张表，一个 pool {#s-kv-bytes-per-token-and-the-kv-pool-two-tables-one-pool}

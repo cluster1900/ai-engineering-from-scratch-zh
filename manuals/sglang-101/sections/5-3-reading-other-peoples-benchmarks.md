@@ -25,7 +25,7 @@ id: fig-5-3
 kind: decision
 title: 问一份公开 SGLang 基准的六个问题
 claim: 过不了版本或负载那一问的结果，不管数字多大，都说明不了你的服务器.
-caption: 从上往下读。每个问题要么进到下一问，要么停在玫瑰色里，也就是这个结果还能告诉你什么。来自本节引用的现场报告。
+caption: 从上往下读。每个问题要么进到下一问，要么停在玫瑰色里，也就是这个结果还能告诉你什么。来自本节引用的现场报告。 From the field reports cited in this section.
 ```
 
 1. **SGLang 版本写明了吗？** 没有的话，结果描述的是未知构建。
@@ -57,7 +57,7 @@ id: fig-5-3b
 kind: structure
 title: 六条发现，以及每条背后的机制
 claim: 本节每一条独立结果都追到一个你可以在自己服务器上测的机制.
-caption: 每一行从左到右读，从负载到报告的结果，再到 SGLang 的机制。橄榄色是客户端一侧，紫罗兰色是内核，绿色是缓存。来自本节引用的现场报告。
+caption: 每一行从左到右读，从负载到报告的结果，再到 SGLang 的机制。橄榄色是客户端一侧，紫罗兰色是内核，绿色是缓存。来自本节引用的现场报告。 From the field reports cited in this section.
 ```
 
 ## 在新硬件上很脆弱 {#s-reading-other-peoples-benchmarks-fragile-on-new-hardware}
@@ -125,7 +125,7 @@ id: fig-5-3c
 kind: chart
 title: 吞吐一样，pool 装满时的两种不同选择
 claim: 在 L4 上 64 个用户时，vLLM 的首 token 时间是 SGLang 的 1/1.7，SGLang 的 P99 token 间隔延迟是 vLLM 的 1/12.
-caption: 实线是中位 TTFT，虚线是 P99 token 间隔延迟，每个点三个种子，对数刻度。蓝色是 SGLang，琥珀色是 vLLM。来自 capture/gpu/summary/l4.json。
+caption: 实线是中位 TTFT，虚线是 P99 token 间隔延迟，每个点三个种子，对数刻度。蓝色是 SGLang，琥珀色是 vLLM。 From capture/gpu/summary/l4.json.
 ```
 
 **我们测到**吞吐上是平局。到 32 个用户，两个引擎彼此相差在 3% 以内，每个 token 时间相差在 6% 以内。在 64 个用户时中位每个 token 时间在 SGLang 上是 106 ms，在 vLLM 上是 129 ms。在池填满那一点之下，SGLang 更早给出第一个 token，8 个用户时是 170 对上 253 ms。
@@ -165,7 +165,7 @@ id: fig-5-3d
 kind: chart
 title: 两种前缀缓存，一个结果
 claim: 在 L4 上，两种前缀缓存在每个共享长度都把中位 TTFT 保持在 500 ms 以下，关掉缓存的那次跑达到 14,706 ms.
-caption: 8 个用户时中位 TTFT 对上共享 prompt 长度，每个点三个种子，对数刻度。蓝色是带 radix cache 的 SGLang，琥珀色是开了前缀缓存的 vLLM。玫瑰色虚线是关掉缓存的 SGLang，来自第 3.3 节更早的那次跑。来自 capture/gpu/summary/l4.json。
+caption: 8 个用户时中位 TTFT 对上共享 prompt 长度，每个点三个种子，对数刻度。蓝色是带 radix cache 的 SGLang，琥珀色是开了前缀缓存的 vLLM。玫瑰色虚线是关掉缓存的 SGLang，来自第 3.3 节更早的那次跑。 From capture/gpu/summary/l4.json.
 ```
 
 **我们测到**吞吐上是平局，每一个共享长度相差在 2% 以内。两个引擎的中位 TTFT 都停在 354 与 488 ms 之间。在 0 与 256 个共享 token 时，SGLang 更早给出第一个 token，超出种子散布：354 对上 408 ms，以及 470 对上 488 ms。从 1,024 个 token 起，种子范围重叠。
@@ -234,7 +234,7 @@ id: fig-5-3e
 kind: chart
 title: 固定到达速率下的同一种选择
 claim: 在 L4 上每秒 4 条请求时，vLLM 的输出多 11%，SGLang 的 P99 每 token 时间低 32%.
-caption: 实线是中位 TTFT，虚线是 P99 每输出 token 时间，每个点三个种子，对数刻度。蓝色是 SGLang，琥珀色是 vLLM。来自 capture/gpu/summary/l4.json。
+caption: 实线是中位 TTFT，虚线是 P99 每输出 token 时间，每个点三个种子，对数刻度。蓝色是 SGLang，琥珀色是 vLLM。 From capture/gpu/summary/l4.json.
 ```
 
 **我们测到**到每秒 2 个请求是平局。两个引擎都跟上到达，所以吞吐相差在 1% 以内。SGLang 在每秒 0.5 与 1 时更早给出第一个 token，超出种子散布。中位是 284 对上 317 ms，以及 166 对上 180 ms。vLLM 有更短的每个 token 时间。每秒 1 时是 68 对上 74 ms，超出散布，每秒 2 时是 89 对上 100 ms。

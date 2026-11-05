@@ -110,7 +110,7 @@ id: fig-1-3
 kind: structure
 title: 一份 Evidence 记录的 16 个字段
 claim: 记录的每个字段要么是身份、出处、答案，要么是对答案的限制，id 覆盖除显示名以外的全部.
-caption: 读字段、它在本记录里的值，以及说明。 From `capture/out/06-function-percent-change.json`，字段列表来自钉住标签上的 `src/domain/evidence.ts`。
+caption: 读字段、它在本记录里的值，以及说明。 From capture/out/06-function-percent-change.json, with the field list from src/domain/evidence.ts at the tag.
 ```
 
 ## normalized_result 里面 {#s-rea-function-end-to-end-inside-normalized-result}

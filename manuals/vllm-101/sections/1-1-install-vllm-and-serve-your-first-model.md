@@ -105,7 +105,7 @@ id: fig-1-2
 kind: structure
 title: 要读的六行启动日志
 claim: 六行启动日志给出版本、model runner、attention backend、权重显存、可用 KV cache 显存和池大小.
-caption: 从左到右读每一行：日志行、我们在 DGX Spark 上的值，以及它决定的事。来自 capture/gpu/out-gb10/server-load-vllm.log。
+caption: 从左到右读每一行：日志行、我们在 DGX Spark 上的值，以及它决定的事。 From capture/gpu/out-gb10/server-load-vllm.log.
 ```
 
 ## 发送第一个请求 {#s-install-vllm-and-serve-your-first-model-send-the-first-request}

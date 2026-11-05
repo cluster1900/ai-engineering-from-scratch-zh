@@ -21,7 +21,7 @@ id: fig-4-6
 kind: sequence
 title: 一步 EAGLE，steps 3、topk 1、4 个 draft token
 claim: 一步 EAGLE 起草一串 token，用一次目标前向验证它们，并提交接受的前缀再加一个奖励 token.
-caption: 从上往下读。数字跟的是 v0.5.22 对多数模型的默认 (3, 1, 4)。绿色 token 被接受，玫瑰色 token 被拒绝。来自 v0.5.22 的 EAGLEWorkerV2.forward_batch_generation。
+caption: 从上往下读。数字跟的是 v0.5.22 对多数模型的默认 (3, 1, 4)。绿色 token 被接受，玫瑰色 token 被拒绝。来自 v0.5.22 的 EAGLEWorkerV2.forward_batch_generation。 From EAGLEWorkerV2.forward_batch_generation at v0.5.22.
 ```
 
 1. **Draft.** draft 模型跑 `--speculative-num-steps` 次。`--speculative-eagle-topk` 大于 1 时，每一步为每个节点保留几个候选，并长成一棵树。树构建器保留最好的 `--speculative-num-draft-tokens` 个节点，并建树掩码。
@@ -123,7 +123,7 @@ id: fig-4-4b
 kind: chart
 title: 在混合专家模型上，EAGLE-3 的增益随 batch 变大仍然在
 claim: 在 GB10 上，基线中位 TPOT 除以 EAGLE-3 中位 TPOT，并发 1 是 1.60，并发 32 是 1.89.
-caption: 这条线是每一档并发上基线中位 TPOT 除以 EAGLE-3 中位 TPOT。玫瑰色虚线表示没有增益。脚注给出 acceptance length 的范围。来自 capture/gpu/summary/gb10.json。
+caption: 这条线是每一档并发上基线中位 TPOT 除以 EAGLE-3 中位 TPOT。玫瑰色虚线表示没有增益。脚注给出 acceptance length 的范围。 From capture/gpu/summary/gb10.json.
 ```
 
 这个结果与上面的 A6000 报告相反，模型解释了它。稠密模型每一步读全部权重，更大的批已经用掉多余算力。混合专家模型只读这一步的 token 选中的那些专家。verify 遍用它已经为那一步读过的专家权重，为每条请求打分四个位置。那是我们的读法，量在一个模型和一块 GPU 上。
@@ -160,7 +160,7 @@ id: fig-4-4c
 kind: chart
 title: 在 24 GB 卡上每个 token 变快了，整台服务器的吞吐没有
 claim: 在 L4 上，EAGLE-3 在并发 1 给出 2.37 倍输出吞吐，在并发 32 给出 1.00 倍.
-caption: 紫罗兰色是默认 TPOT 除以 EAGLE-3 TPOT。青色是 EAGLE-3 输出吞吐除以默认。玫瑰色虚线表示没有增益。来自 capture/gpu/summary/l4.json。
+caption: 紫罗兰色是默认 TPOT 除以 EAGLE-3 TPOT。青色是 EAGLE-3 输出吞吐除以默认。玫瑰色虚线表示没有增益。 From capture/gpu/summary/l4.json.
 ```
 
 pool 解释了差别。pool 里有 15 条请求时，其余的在等槽。在并发 32 时，有 EAGLE-3 的中位首 token 时间是 8,040 ms，没有是 2,970 ms。在 KV pool 是上限的卡上，draft 花掉批需要的那份内存。

@@ -105,7 +105,7 @@ id: fig-history-and-pages
 kind: structure
 title: history 的几种取法与列表分页
 claim: `GetTask` 把 history 裁剪到你要求的最新消息，`ListTasks` 返回最新在前的分页，并且在你要求之前省略 artifact.
-caption: 上方是任务 e5c95b09 已存储的 history，以及每种 `historyLength` 返回的内容。下方是 test-runner 上的五个任务，按列表顺序分组为 kit 请求的各页。id 缩短为 8 个字符。来自 capture/out/13-history.http、04-polling.http 和 12-list-tasks.http。
+caption: 上方是任务 e5c95b09 已存储的 history，以及每种 `historyLength` 返回的内容。下方是 test-runner 上的五个任务，按列表顺序分组为 kit 请求的各页。id 缩短为 8 个字符。 From capture/out/13-history.http, 04-polling.http, and 12-list-tasks.http.
 ```
 
 规范要求基于游标的分页，并且没有规定令牌的格式 {{spec §3.1.4}}，所以每个 SDK 都自己定义：

@@ -17,7 +17,7 @@ id: fig-6-2
 kind: flow
 title: 一个 token 穿过一个 MoE 层
 claim: 分发和合并在每个 MoE 层把每个 token 跨 GPU 搬两次，夹在中间的分组矩阵乘法是唯一的专家计算.
-caption: 从左到右读。靛蓝色箭头是 GPU 之间的 token 流量。标签点名 SGLang 阶段和挑选实现的旗标。来自 v0.5.22 的 MoE 层代码和专家并行文档。
+caption: 从左到右读。靛蓝色箭头是 GPU 之间的 token 流量。标签点名 SGLang 阶段和挑选实现的旗标。来自 v0.5.22 的 MoE 层代码和专家并行文档。 From the MoE layer code and the expert parallelism docs at v0.5.22.
 ```
 
 三个标志挑选实现 {{code}}：
@@ -82,7 +82,7 @@ id: fig-6-2c
 kind: chart
 title: GB10 上一个 MoE 模型的每输出 token 时间对上并发
 claim: batch 增大到 64 倍时，每输出 token 时间增大到 7.8 倍，多出来的每条请求都可能去读别的专家.
-caption: 每条线从左到右读。梅红色是 BF16，绿色是 FP8，色带是三个种子的最低和最高。Qwen3-30B-A3B，512 token 进、128 出。来自 capture/gpu/summary/gb10.json。
+caption: 每条线从左到右读。梅红色是 BF16，绿色是 FP8，色带是三个种子的最低和最高。Qwen3-30B-A3B，512 token 进、128 出。 From capture/gpu/summary/gb10.json.
 ```
 
 一个可能的原因是专家并集。在并发 1 时，每层在一次 decode 步读 8 个专家的权重。在 64 时，64 个 token 各自从 128 个专家里选 8 个。如果路由均匀，一步会在每层读到约 126 个专家中的 128 个。

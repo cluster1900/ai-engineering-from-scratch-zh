@@ -78,7 +78,7 @@ id: fig-4-3
 kind: structure
 title: ledger-arm64-O1 的十三个过程
 claim: 五个内部函数填满 `__text` 的 576 字节且没有空隙，四个 thunk 填满 `__stubs`，四个外部函数位于 Ghidra 造出的块里.
-caption: 按地址从上到下读。灰色行在文件之外，绿色行是 `__text` 里的代码，紫色行是 Ghidra 解析出的 thunk。 From `capture/out/10-mcp-05-list-procedures.json`，以及五份 dossier。
+caption: 按地址从上到下读。灰色行在文件之外，绿色行是 `__text` 里的代码，紫色行是 Ghidra 解析出的 thunk。 From capture/out/10-mcp-05-list-procedures.json and the five dossiers.
 ```
 
 ## 函数体 {#s-list-procedures-and-function-bodies-function-bodies}

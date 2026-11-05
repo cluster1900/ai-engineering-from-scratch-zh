@@ -21,7 +21,7 @@ id: fig-agent-card-fields
 kind: structure
 title: test-runner 的 agent card，逐个字段
 claim: 一次 `GET` 返回客户端在第一条消息之前需要的一切：这个 agent 是谁、在哪里访问它、它要求什么、它提供什么.
-caption: 每一行是 card 的一个字段，按它所回答的问题分组。圆点标出 proto 定为 REQUIRED 的字段，虚线行是这张 card 省略的可选字段。来自 capture/out/01-agent-cards.http。
+caption: 每一行是 card 的一个字段，按它所回答的问题分组。圆点标出 proto 定为 REQUIRED 的字段，虚线行是这张 card 省略的可选字段。 From capture/out/01-agent-cards.http.
 ```
 
 ## 它提供什么：skill 和 mode {#s-agentcard-fields-what-it-offers-skills-and-modes}

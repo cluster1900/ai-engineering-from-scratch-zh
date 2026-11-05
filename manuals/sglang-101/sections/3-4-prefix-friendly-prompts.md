@@ -37,7 +37,7 @@ id: fig-3-4
 kind: comparison
 title: 同样的 token，三种顺序
 claim: 随机 ID 放在 prompt 开头让大约 3,027 个 token 未命中缓存，同一个 ID 放在末尾大约只花 45 个 token.
-caption: 每条带子从左到右读，就是 prompt 的 token。绿色是从缓存复用的，梅红色是 prefill 里算的。来自 capture/out/cache-experiment.txt。
+caption: 每条带子从左到右读，就是 prompt 的 token。绿色是从缓存复用的，梅红色是 prefill 里算的。 From capture/out/cache-experiment.txt.
 ```
 
 ## 为什么顺序重要 {#s-prefix-friendly-prompts-why-the-order-matters}

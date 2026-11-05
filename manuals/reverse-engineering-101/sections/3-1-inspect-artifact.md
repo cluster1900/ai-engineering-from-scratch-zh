@@ -142,7 +142,7 @@ id: fig-3-1
 kind: tree
 title: ledger-arm64-O1 的 inspect-artifact 记录
 claim: 一次便宜的读取给出哈希过的 subject、一个节点的清单，以及一条明确分支，把 `open_binary` 点名为下一步探测.
-caption: 从顶部读起。青色框是记录，绿色框是它看到的，琥珀色框是留给后面工具的。 From `capture/out/03-inspect-artifact.json`。
+caption: 从顶部读起。青色框是记录，绿色框是它看到的，琥珀色框是留给后面工具的。 From capture/out/03-inspect-artifact.json.
 ```
 
 ## 这份记录不是什么 {#s-inspect-artifact-what-the-record-is-not}

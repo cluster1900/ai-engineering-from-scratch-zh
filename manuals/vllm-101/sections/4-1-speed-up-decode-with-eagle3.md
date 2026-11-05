@@ -34,7 +34,7 @@ id: fig-4-1
 kind: chart
 title: 按 draft 深度看的 EAGLE3 输出
 claim: 时钟锁定时，draft 深度 3 在 32 个用户下输出最高，一个用户时深度 3 和 5 打平.
-caption: 每根柱是两个种子的中位数。一个用户、不做投机解码的那次运行没有画上，因为它的时钟降到了 210 MHz。来自 capture/gpu/summary/l4.json。
+caption: 每根柱是两个种子的中位数。一个用户、不做投机解码的那次运行没有画上，因为它的时钟降到了 210 MHz。 From capture/gpu/summary/l4.json.
 ```
 
 | 用户数，L4 锁频会话 | 配置 | 中位 TPOT | 输出 tok/s | 中位 SM 时钟 |

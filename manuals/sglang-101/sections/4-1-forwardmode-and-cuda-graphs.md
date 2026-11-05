@@ -36,7 +36,7 @@ id: fig-4-1
 kind: comparison
 title: 一步 decode，逐个启动与一次回放
 claim: eager 模式下 CPU 为每一层的每个内核各发一次启动，graph 模式下一次回放调用跑完整段录下的 decode 步.
-caption: 每一列从上往下读。内核名是一层 Llama 式层的算子。右列只在 batch 对上某个捕获大小时才跑。来自 v0.5.22 的 decode CUDA graph 运行器。
+caption: 每一列从上往下读。内核名是一层 Llama 式层的算子。右列只在 batch 对上某个捕获大小时才跑。来自 v0.5.22 的 decode CUDA graph 运行器。 From the v0.5.22 decode CUDA graph runner.
 ```
 
 这份记录有代价。每个捕获的形状都用 GPU 内存，一批必须精确匹配一个捕获的形状。SGLang 为 decode 付这个代价，并把每批垫到下一个捕获大小。

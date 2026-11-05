@@ -47,7 +47,7 @@ id: fig-push-webhook
 kind: sequence
 title: 一次通过 webhook 报告的测试运行
 claim: 注册 webhook 之后，test-runner 在 SendMessage 调用已经返回之后，向 planner 的接收方 POST 八个 StreamResponse 正文.
-caption: 按 kit 执行步骤的顺序从上到下读。capture 文件把八次交付印在最后，但它们在配置调用之前就已经到达。来自 capture/out/15-push.http，id 缩短为 8 个字符。
+caption: 按 kit 执行步骤的顺序从上到下读。capture 文件把八次交付印在最后，但它们在配置调用之前就已经到达。 From capture/out/15-push.http, ids shortened to 8 characters.
 ```
 
 ```listing

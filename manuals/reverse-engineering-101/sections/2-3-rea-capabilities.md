@@ -74,7 +74,7 @@ id: fig-2-3
 kind: structure
 title: 一个 capability 组，ghidra 下的 analyze_function
 claim: 一个 capability 组在任何调用之前回答四个问题：操作是否可用、它启动什么、它写什么、它改什么.
-caption: 读字段、它在 ghidra 块里 analyze_function 组的值，以及说明。 From `capture/out/02-capabilities.json`，模式来自钉住标签上的 `src/contracts/toolOutputSchemaPrimitives.ts`。
+caption: 读字段、它在 ghidra 块里 analyze_function 组的值，以及说明。 From capture/out/02-capabilities.json, with the schema from src/contracts/toolOutputSchemaPrimitives.ts at the tag.
 ```
 
 ## 七种 effect {#s-rea-capabilities-the-seven-effects}

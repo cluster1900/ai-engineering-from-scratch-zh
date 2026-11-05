@@ -39,7 +39,7 @@ id: fig-4-2
 kind: chart
 title: 使用 n-gram 投机解码时的每 token 时间
 claim: 在我们的 L4 上，n-gram 投机解码把每 token 时间的中位数，一个用户时降到约三分之一，四个用户时降到 37%.
-caption: 每根柱是两次运行的中位数。越低越快。来自 capture/gpu/summary/l4-gpu1.json。
+caption: 每根柱是两次运行的中位数。越低越快。 From capture/gpu/summary/l4-gpu1.json.
 ```
 
 | 用户数，L4 共享 GPU 会话 | 中位 TPOT，无 / n-gram | 输出 tok/s，无 / n-gram | P99 ITL，无 / n-gram | 中位 SM 时钟，无 / n-gram |

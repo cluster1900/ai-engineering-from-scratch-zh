@@ -19,7 +19,7 @@ id: fig-1-3
 kind: flow
 title: 一个请求穿过三个进程
 claim: 一个请求穿过三个进程：API 服务器对它做 tokenize，engine core 调度它，GPU worker 运行模型.
-caption: 实线箭头把请求向前送，虚线箭头把 token id 送回来，点线箭头是文本流。来自 vLLM 0.31.0 的源码。
+caption: 实线箭头把请求向前送，虚线箭头把 token id 送回来，点线箭头是文本流。来自 vLLM 0.31.0 的源码。 From the vLLM source at v0.31.0.
 ```
 
 ## 四个数字 {#s-understand-what-happens-to-your-request-four-numbers}
@@ -49,7 +49,7 @@ id: fig-1-3b
 kind: chart
 title: 同一台服务器，两种负载
 claim: 在我们的 DGX Spark 上，64 个用户得到的总输出是 1 个用户的八倍，每个用户等待每个 token 的时间大约长了 7.5 倍.
-caption: 左图看服务器，右图看一个用户。色带覆盖三次运行的最低值和最高值。来自 capture/gpu/summary/gb10.json。
+caption: 左图看服务器，右图看一个用户。色带覆盖三次运行的最低值和最高值。 From capture/gpu/summary/gb10.json.
 ```
 
 ```takeaways

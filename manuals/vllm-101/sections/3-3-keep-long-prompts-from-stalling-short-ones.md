@@ -33,7 +33,7 @@ id: fig-3-3
 kind: chart
 title: 低负载下更大的 token 预算
 claim: 每秒 0.5 个请求时，16,384 个 token 的预算把 P99 ITL 从 574 ms 提高到 798 ms.
-caption: 每根柱是三个种子的中位数。两种预算的首 token 时间在各个种子之间有重叠。来自 capture/gpu/summary/gb10.json。
+caption: 每根柱是三个种子的中位数。两种预算的首 token 时间在各个种子之间有重叠。 From capture/gpu/summary/gb10.json.
 ```
 
 | 每秒请求数 | 预算 | TTFT 中位数 | TPOT 中位数 | P99 ITL |

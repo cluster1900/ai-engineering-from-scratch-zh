@@ -45,7 +45,7 @@ id: fig-2-3
 kind: layers
 title: DGX Spark 上的一个池
 claim: 比例为 0.75 时，vLLM 占用 DGX Spark 上 CPU 与 GPU 共享的 121.7 GiB 中的 91.3 GiB.
-caption: 这根条代表全部内存，按比例绘制。蓝色标线标出 vLLM 的份额。来自 capture/gpu/out-gb10/server-load-vllm.log。
+caption: 这根条代表全部内存，按比例绘制。蓝色标线标出 vLLM 的份额。 From capture/gpu/out-gb10/server-load-vllm.log.
 ```
 
 ## 预期第一次启动会很慢 {#s-size-memory-on-a-dgx-spark-expect-a-slow-first-start}

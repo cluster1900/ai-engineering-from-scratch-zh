@@ -73,7 +73,7 @@ id: fig-5-1
 kind: chart
 title: 旧扫描的吞吐峰值
 claim: 没有重置 cache 时，输出在 32 个用户处达到每秒 275 个 token 的峰值，这是吞吐峰值，而不是延迟拐点.
-caption: 横轴上每一档的用户数翻倍。色带覆盖三次运行的最低值和最高值。这张图和表格是同一次 2026-10-21 的扫描，当时没有重置 cache。有重置时，延迟拐点在 8 到 16 个用户之间，如正文所说。来自 capture/gpu/summary/l4.json。
+caption: 横轴上每一档的用户数翻倍。色带覆盖三次运行的最低值和最高值。这张图和表格是同一次 2026-10-21 的扫描，当时没有重置 cache。有重置时，延迟拐点在 8 到 16 个用户之间，如正文所说。 From capture/gpu/summary/l4.json.
 ```
 
 ## 避开四个错误 {#s-benchmark-your-server-in-15-minutes-avoid-the-four-mistakes}

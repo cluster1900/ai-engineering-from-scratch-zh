@@ -46,7 +46,7 @@ id: fig-3-3
 kind: comparison
 title: 一次基准，两种缓存设置
 claim: radix cache 把共享前缀基准从 129.7 s 降到 48.8 s，把中位首 token 等待从 7,222 ms 降到 1,358 ms.
-caption: 每对条从左到右读。两次跑在同一台 Mac 上用了同样的 64 条 prompt。来自 capture/out/bench-shared-prefix.txt 和 capture/out/no-radix-cache-bench-shared-prefix.txt。
+caption: 每对条从左到右读。两次跑在同一台 Mac 上用了同样的 64 条 prompt。 From capture/out/bench-shared-prefix.txt and capture/out/no-radix-cache-bench-shared-prefix.txt.
 ```
 
 ## 在 24 GB L4 上的同一测试 {#s-radixcache-the-same-test-on-a-24-gb-l4}
@@ -80,7 +80,7 @@ id: fig-3-3c
 kind: chart
 title: 共享 prompt 越长，这棵树省得越多
 claim: 在 L4 上，共享 prompt 为 4,096 token 时，radix cache 把中位 TTFT 从 14,706 ms 降到 479 ms.
-caption: 中位 TTFT 对上共享 prompt 长度，每个点三个种子，对数刻度。绿色是默认，玫瑰色是 --disable-radix-cache。来自 capture/gpu/summary/l4.json。
+caption: 中位 TTFT 对上共享 prompt 长度，每个点三个种子，对数刻度。绿色是默认，玫瑰色是 --disable-radix-cache。 From capture/gpu/summary/l4.json.
 ```
 
 | 共享提示 | 中位 TTFT，缓存开 | 中位 TTFT，缓存关 | 输出 tok/s，缓存开 | 输出 tok/s，缓存关 |

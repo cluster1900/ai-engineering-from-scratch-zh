@@ -141,7 +141,7 @@ id: fig-4-1
 kind: sequence
 title: 经 MCP 的一次打开与三个问题
 claim: open 调用在就绪检查之后返回，没有导入，第一个问题为无头导入等待数秒，下一个不到 100 ms.
-caption: 时间向下走。实线箭头是调用，虚线箭头是回复。紫色泳道是 rea 的 Ghidra 客户端，以及 `analyzeHeadless` 里的 Java 桥。时间是套件说明记下的范围。 From `capture/out/10-mcp-server.log`, `10-mcp-session.txt`。
+caption: 时间向下走。实线箭头是调用，虚线箭头是回复。紫色泳道是 rea 的 Ghidra 客户端，以及 `analyzeHeadless` 里的 Java 桥。时间是套件说明记下的范围。 From capture/out/10-mcp-server.log and 10-mcp-session.txt.
 ```
 
 ## Java 一侧的桥 {#s-open-binary-and-the-headless-bridge-the-bridge-on-the-java-side}
@@ -155,7 +155,7 @@ id: fig-4-2
 kind: tree
 title: 一次会话的私有运行时根
 claim: 一次会话拥有一个目录，里面是项目、哈希过的目标副本、描述符、套接字与日志，`close_binary` 删除它.
-caption: 从上到下读。每一条点名文件或目录，以及谁写入它。 From `src/ghidra/GhidraLauncher.ts`, `src/ghidra/GhidraClient.ts`，rea 6.7.0，文档名来自 `capture/out/05-analyze-arm64-O1.json`。
+caption: 从上到下读。每一条点名文件或目录，以及谁写入它。 From src/ghidra/GhidraLauncher.ts and src/ghidra/GhidraClient.ts at rea 6.7.0, and capture/out/05-analyze-arm64-O1.json for the document name.
 ```
 
 ## 截止时间与关闭 {#s-open-binary-and-the-headless-bridge-deadlines-and-the-close}

@@ -17,7 +17,7 @@ id: fig-8-7
 kind: sequence
 title: 一次验证
 claim: 一次目标模型验证保留第一次拒绝之前的草稿，并再补一个 token，所以一次真实请求每次大约得到 1.8 个 token.
-caption: 上半部分按位置展示这条规则。下半部分是我们 L4 上的一次真实 Qwen3-8B 请求，由 SGLang 用 EAGLE3 提供服务，规则与 vLLM 相同。绿色 token 来自各次验证。来自 manuals/sglang-101/capture/gpu/out-l4/eagle3-generate.txt。
+caption: 上半部分按位置展示这条规则。下半部分是我们 L4 上的一次真实 Qwen3-8B 请求，由 SGLang 用 EAGLE3 提供服务，规则与 vLLM 相同。绿色 token 来自各次验证。 From manuals/sglang-101/capture/gpu/out-l4/eagle3-generate.txt.
 ```
 
 ## 提议器 {#s-how-speculative-decoding-checks-drafts-the-proposers}

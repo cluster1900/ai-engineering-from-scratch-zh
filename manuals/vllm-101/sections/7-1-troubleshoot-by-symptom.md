@@ -11,7 +11,7 @@ id: fig-7-1
 kind: decision
 title: 从症状到页面
 claim: 从症状出发，检查一个数字或一行日志，然后去修复它的那一页.
-caption: 每一行是下面的一个条目，顺序相同。读症状、第一项检查，以及修复在哪里。来自我们的运行、vLLM 的 issue 和 vLLM 文档。
+caption: 每一行是下面的一个条目，顺序相同。读症状、第一项检查，以及修复在哪里。来自我们的运行、vLLM 的 issue 和 vLLM 文档。 From our runs, the vLLM issues, and the vLLM documentation.
 ```
 
 ## 服务器无法启动 {#s-troubleshoot-by-symptom-the-server-does-not-start}

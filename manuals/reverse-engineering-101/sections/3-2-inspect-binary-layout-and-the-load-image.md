@@ -99,7 +99,7 @@ id: fig-3-2
 kind: comparison
 title: 捕获用的 Mac 上的两条布局命令
 claim: 同一台主机因平台拒绝一个布局读取器，并用 17 条加载命令回答另一个，因为每个读取器点名自己的前提.
-caption: 每列从左到右。实线箭头是调用，虚线玫瑰色箭头是失败，虚线墨色箭头是回复。 From `capture/out/04-inspect-binary-layout.json`, `04-inspect-macho.json`。
+caption: 每列从左到右。实线箭头是调用，虚线玫瑰色箭头是失败，虚线墨色箭头是回复。 From capture/out/04-inspect-binary-layout.json and 04-inspect-macho.json.
 ```
 
 ## 加载映像 {#s-inspect-binary-layout-and-the-load-image-the-load-image}
@@ -228,7 +228,7 @@ id: fig-3-3
 kind: layers
 title: ledger-arm64-O1 的加载映像
 claim: 四个段把 33872 个文件字节映射进三个地址范围，其余每条加载命令都按文件偏移指向最后一个.
-caption: 从顶部的最低地址读起。左列是地址，右列是文件偏移。虚线框没有文件字节。 From `capture/out/04-inspect-macho.json`。
+caption: 从顶部的最低地址读起。左列是地址，右列是文件偏移。虚线框没有文件字节。 From capture/out/04-inspect-macho.json.
 ```
 
 ## 导入与导出 {#s-inspect-binary-layout-and-the-load-image-imports-and-exports}

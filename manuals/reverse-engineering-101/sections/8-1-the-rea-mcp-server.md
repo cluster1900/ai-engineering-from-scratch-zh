@@ -237,7 +237,7 @@ id: fig-8-1
 kind: sequence
 title: 从 initialize 到 close_binary 的一次连接
 claim: `open_binary` 在没有 Ghidra 导入的情况下于 1,632 ms 返回，`list_procedures` 为导入付出 6,349 ms，之后会话在毫秒级回答.
-caption: 从上往下读。灰色 lifeline 是捕获客户端，蓝色是 `rea mcp`，紫色是 Ghidra。实线梅色是 rea 在 330,000 ms 截止之内等待的导入与分析。 From `capture/out/10-mcp-session.txt`, `10-mcp-server.log`。
+caption: 从上往下读。灰色 lifeline 是捕获客户端，蓝色是 `rea mcp`，紫色是 Ghidra。实线梅色是 rea 在 330,000 ms 截止之内等待的导入与分析。 From capture/out/10-mcp-session.txt and 10-mcp-server.log.
 ```
 
 ```figure
@@ -245,7 +245,7 @@ id: fig-8-2
 kind: timeline
 title: 两个截止与三次测得的第一次调用
 claim: 60 秒的客户端默认值容得下这台 Mac 上 6.3 秒的第一次调用，64 秒的 Linux 调用超出这个默认值，而 rea 最多等 330 秒.
-caption: 按秒从左到右读。灰色条是客户端默认值，虚线灰色条是文档里 240 秒的示例设置。蓝色条是 rea 的启动截止。编号标记是三次测得的第一次调用。 From `capture/out/10-mcp-session.txt`，以及钉住标签上的 rea MCP 契约页。
+caption: 按秒从左到右读。灰色条是客户端默认值，虚线灰色条是文档里 240 秒的示例设置。蓝色条是 rea 的启动截止。编号标记是三次测得的第一次调用。 From capture/out/10-mcp-session.txt and the rea MCP contracts page at the tag.
 ```
 
 当客户端在启动期间放弃时，待处理的查询可能已被中断。对同一目标的第二次 `open_binary` 重用当前客户端，而不是重新开始。文档化的恢复留在同一连接上 {{mcp Ghidra first-query deadlines and recovery}}。如果保留的记录重要就导出一个包，然后调用 `close_binary` 并检查其结果。然后用同一路径与 `provider_id: "ghidra"` 调用 `open_binary`，并用更长的客户端截止期限重试第一次查询。

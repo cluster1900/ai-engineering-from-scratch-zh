@@ -44,7 +44,7 @@ id: fig-4-3
 kind: chart
 title: eager 模式对比默认设置
 claim: 在我们的 L4 上，eager 模式在每种并发下每 token 慢 1.2% 到 2.3%.
-caption: 色带覆盖三次运行的最低值和最高值。两条线靠得很近，因为 8B 的一次 decode step 等的是显存，不是 kernel 启动。来自 capture/gpu/summary/l4.json。
+caption: 色带覆盖三次运行的最低值和最高值。两条线靠得很近，因为 8B 的一次 decode step 等的是显存，不是 kernel 启动。 From capture/gpu/summary/l4.json.
 ```
 
 | 用户数，L4 满频会话 | 中位 TPOT，默认 / eager | 中位 SM 时钟，默认 / eager |

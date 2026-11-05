@@ -182,7 +182,7 @@ id: fig-6-1
 kind: tree
 title: ledger-desk 的应用图
 claim: 图把包入口连到三个 IPC 处理函数与一个网络端点，每条边都点名它是观察到的还是推断出的.
-caption: 从左上读起。橄榄色框是应用自己的代码，灰色框是它外面的网络端点，青色框是浏览器存储。关系名写在箭头上。三条桥调用路径的九个 `javascript-expression` 步骤节点没有画出。 From `capture/out/15-js-app-graph.json`。
+caption: 从左上读起。橄榄色框是应用自己的代码，灰色框是它外面的网络端点，青色框是浏览器存储。关系名写在箭头上。三条桥调用路径的九个 `javascript-expression` 步骤节点没有画出。 From capture/out/15-js-app-graph.json.
 ```
 
 ## 大记录上的视图 {#s-analyze-javascript-application-views-over-a-large-record}

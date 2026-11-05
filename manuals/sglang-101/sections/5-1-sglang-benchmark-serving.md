@@ -97,7 +97,7 @@ id: fig-5-1b
 kind: structure
 title: 报告每一行是从什么算出来的
 claim: 并发和峰值并发请求来自跑完之后的请求时间戳，所以这两行都不是你设的那个上限.
-caption: 每一行从左到右读，从报告行到 calculate_metrics 里的公式，再到上限 8 时我们的值。橄榄色框是客户端测量。来自 capture/out/bench-random-c8.txt 和 v0.5.22 的 benchmark 模块。
+caption: 每一行从左到右读，从报告行到 calculate_metrics 里的公式，再到上限 8 时我们的值。橄榄色框是客户端测量。 From capture/out/bench-random-c8.txt and the benchmark module at v0.5.22.
 ```
 
 ## Sweep 与拐点 {#s-sglang-benchmark-serving-the-sweep-and-the-knee}
@@ -117,7 +117,7 @@ id: fig-5-1
 kind: comparison
 title: 吞吐在上限 8 停住，延迟没有
 claim: 把上限从 8 提到 32 没有增加吞吐，并把中位首 token 放慢到 5 倍.
-caption: 左图是每一档上限的每秒输出 token。右图是同样上限上的中位 TTFT，共用刻度。橄榄色柱是客户端测量，玫瑰色标出过了拐点的那次跑。来自 capture/out/bench-random-c1.txt、c8.txt 和 c32.txt。
+caption: 左图是每一档上限的每秒输出 token。右图是同样上限上的中位 TTFT，共用刻度。橄榄色柱是客户端测量，玫瑰色标出过了拐点的那次跑。 From capture/out/bench-random-c1.txt, c8.txt, and c32.txt.
 ```
 
 拐点是吞吐停止上升之后的那个上限。在这台机器上它在 8 或以下。过了拐点，服务器没有空闲算力可给。新请求只是等同一批 decode 步里的一份。调度器在[第 2.2 节](#s-the-scheduler-loop-and-schedule-policy) 里仍会接纳它们，因为这台 Mac 上它的接纳上限是 `max_running_requests=4096`。
@@ -168,7 +168,7 @@ id: fig-5-1c
 kind: chart
 title: GB10 上输出吞吐对上并发
 claim: 每个点的三个种子彼此很近，所以每条线都是一次测量，线与线之间的空隙是真的.
-caption: 每条线从左到右读，一条线一种服务器配置。色带是三个种子的最低和最高。Qwen3-30B-A3B，512 token 进、128 token 出。来自 capture/gpu/summary/gb10.json。
+caption: 每条线从左到右读，一条线一种服务器配置。色带是三个种子的最低和最高。Qwen3-30B-A3B，512 token 进、128 token 出。 From capture/gpu/summary/gb10.json.
 ```
 
 图里最宽的带是上限 8 时的 EAGLE-3，从 86.93 到 107.23 tok/s。其他每一条带都在其中位大约 10% 以内。有了那份散布，1.9 倍的差距是真的。在上限 64 时，FP8 给出 440.86 tok/s，BF16 给出 235.38 tok/s。没有 CUDA graph 的那次跑压在默认线上，[第 4.1 节](#s-forwardmode-and-cuda-graphs) 解释了为什么。
@@ -182,7 +182,7 @@ id: fig-5-1e
 kind: chart
 title: 上限 16 时三次跑的 TTFT 分位
 claim: 大约一半请求的等待是另一半的好几倍，所以中位数哪一组都描述不了.
-caption: 每条线取自汇合请求的 51 个分位，从最快到最慢。玫瑰色线标出 P90。时间轴是对数的。来自 capture/gpu/summary/gb10.json 里按请求的记录，上限 16 的负载 sweep。
+caption: 每条线取自汇合请求的 51 个分位，从最快到最慢。玫瑰色线标出 P90。时间轴是对数的。 From the per-request records in capture/gpu/summary/gb10.json, the load sweep at a cap of 16.
 ```
 
 **我们在 GB10 上测到**两群。对 BF16，最快一半请求的第一个 token 从 186.3 到 211.8 ms。从第 68 百分位起，请求等了 1,639.8 到 1,743.4 ms。中位是 237.6 ms，P90 是 1,721.5 ms，多 7.2 倍。FP8 有同样的两群：快的一半是 122.7 到 139.5 ms，慢的一半是 589.9 到 1,162.2 ms。
@@ -235,7 +235,7 @@ id: fig-5-1h
 kind: chart
 title: 固定长度用更慢的首 token 换更平稳的 decode
 claim: 固定长度时中位 TTFT 是 1,996 ms、P99 ITL 是 82 ms，混合长度时是 291 ms 和 300 ms.
-caption: 实线是中位 TTFT，虚线是 P99 token 间隔延迟，每个点三个种子，对数刻度。梅红色是 BF16，绿色是带 FP8 KV cache 的 FP8。来自 capture/gpu/summary/l4.json。
+caption: 实线是中位 TTFT，虚线是 P99 token 间隔延迟，每个点三个种子，对数刻度。梅红色是 BF16，绿色是带 FP8 KV cache 的 FP8。 From capture/gpu/summary/l4.json.
 ```
 
 | 比例 | BF16 中位 TTFT | BF16 P99 ITL | FP8 中位 TTFT | FP8 P99 ITL |
@@ -305,7 +305,7 @@ id: fig-5-1d
 kind: chart
 title: 完成的请求和达标的请求，对上供给负载
 claim: 供给为 1 时，FP8 每秒完成 1.03 条达标请求，BF16 在任一速率下几乎没有达标请求.
-caption: 虚线是每秒完成的请求。实线是达标的请求，色带是三个种子的范围。绿色是带 FP8 KV cache 的 FP8，梅红色是 BF16。来自 capture/gpu/summary/gb10.json 的速率 sweep。
+caption: 虚线是每秒完成的请求。实线是达标的请求，色带是三个种子的范围。绿色是带 FP8 KV cache 的 FP8，梅红色是 BF16。 From capture/gpu/summary/gb10.json, the rate sweep.
 ```
 
 **我们在 GB10 上测到**这一点。在每秒 0.5 个请求时，BF16 已经有 177.5 ms 的中位每个 token 时间。到达重叠：在每秒 0.52 个请求、各 128 个 token、每个 token 177.5 ms 时，大约 12 条请求共享每一个 decode 步。只有每秒 0.07 个请求达到目标。FP8 到每秒 1 个时每一条请求都达到目标，然后在 2 时降到 0.17。
@@ -319,7 +319,7 @@ id: fig-5-1g
 kind: chart
 title: 24 GB L4 上的同一条开环
 claim: 在 L4 上，供给为 4 时 FP8 每秒完成 3.18 条达标请求，从供给 4 起 BF16 没有达标请求.
-caption: 虚线是每秒完成的请求。实线是达标的请求，色带是三个种子的范围。绿色是带 FP8 KV cache 的 FP8，梅红色是 BF16。来自 capture/gpu/summary/l4.json 的速率 sweep。
+caption: 虚线是每秒完成的请求。实线是达标的请求，色带是三个种子的范围。绿色是带 FP8 KV cache 的 FP8，梅红色是 BF16。 From capture/gpu/summary/l4.json, the rate sweep.
 ```
 
 **我们在更小的卡上测到**不同的形状。两个服务器到每秒 1 个时每一条请求都达到目标。BF16 在 offer 2 时在目标内保持 0.88，从 4 起一个都没有。FP8 在 offer 4 时在目标内保持 3.18，是最好 BF16 点的三倍。FP8 服务器还有 142,369 个 token 的池，对上 BF16 的 24,094。从 offer 4 起，BF16 池是上限。
@@ -382,7 +382,7 @@ id: fig-5-1f
 kind: chart
 title: 同一台服务器、同一块 L4，一次热着测，一次冷却后测
 claim: 热的 sweep 报告的吞吐比冷却后的 sweep 最多低 28%，同一条命令、同一块卡.
-caption: 蓝色是冷却到 72 C 并记下时钟的 sweep，玫瑰色是没有遥测的第一次 sweep。色带是三个种子的范围。Qwen3-8B，512 token 进、128 token 出。来自 capture/gpu/summary/l4.json 和 capture/gpu/summary/l4-throttled.json。
+caption: 蓝色是冷却到 72 C 并记下时钟的 sweep，玫瑰色是没有遥测的第一次 sweep。色带是三个种子的范围。Qwen3-8B，512 token 进、128 token 出。 From capture/gpu/summary/l4.json and capture/gpu/summary/l4-throttled.json.
 ```
 
 **我们在 L4 上测到**差异。在上限 32 时，冷却后的 sweep 给出 270.11 tok/s，热的 sweep 给出 194.16 tok/s。在上限 1 时，中位每个 token 时间是 60.16 ms 对上 103.38 ms。

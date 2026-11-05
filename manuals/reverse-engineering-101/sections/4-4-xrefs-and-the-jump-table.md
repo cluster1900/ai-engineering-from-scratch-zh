@@ -92,7 +92,7 @@ id: fig-4-6
 kind: tree
 title: 对四个 ledger 函数的每一条引用
 claim: `entry` 调用四个函数里的三个，函数起点表指向全部四个，没有东西调用 `_grade`，因为它的函数体被内联了.
-caption: 每一行横着读。左边的绿色框是 `entry` 里的调用点，紫色框是函数，右边的绿色框是 `LC_FUNCTION_STARTS` 的条目。 From 四份 `analyze_function` dossier 与 `capture/fixtures/ledger-arm64-O1`。
+caption: 每一行横着读。左边的绿色框是 `entry` 里的调用点，紫色框是函数，右边的绿色框是 `LC_FUNCTION_STARTS` 的条目。 From the four analyze_function dossiers and capture/fixtures/ledger-arm64-O1.
 ```
 
 ## 并不存在的跳转表 {#s-xrefs-and-the-jump-table-the-jump-table-that-is-not-there}
@@ -114,7 +114,7 @@ id: fig-4-5
 kind: comparison
 title: -O0 的一张跳转表与 -O1 的一张值表
 claim: 在 -O0，经五个重定位条目的间接跳转到达五个 case 块，在 -O1，从五个值的一次加载替换了全部.
-caption: 每列从上到下读。左列来自第 33 课 fixture `ledger-x86_64-O0.o`，右列来自 arm64 dossier。绿色框是文件里的数据，紫色框是 Ghidra 看到的。 From `phases/13-tools-and-protocols/33-disassembly-and-control-flow/code/fixtures`, `capture/out/06-function-grade.json`。
+caption: 每列从上到下读。左列来自第 33 课 fixture `ledger-x86_64-O0.o`，右列来自 arm64 dossier。绿色框是文件里的数据，紫色框是 Ghidra 看到的。 From phases/13-tools-and-protocols/33-disassembly-and-control-flow/code/fixtures and capture/out/06-function-grade.json.
 ```
 
 [第 33 课](phases/13-tools-and-protocols/33-disassembly-and-control-flow) 用规则 `S + A - P` 从重定位恢复 `-O0` 表。它展示有表与无表的控制流图：8 个块与 11 条边，对上 3 个块与一次未解析的跳转。

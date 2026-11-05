@@ -46,7 +46,7 @@ id: fig-5-3
 kind: chart
 title: L4 上的吞吐
 claim: 在我们的 L4 上用 Qwen3-8B，32 个用户以内 vLLM 和 SGLang 的输出相差不超过 3%.
-caption: 两台服务器的 KV 池相同。色带覆盖三次运行。来自 capture/gpu/summary/l4.json。
+caption: 两台服务器的 KV 池相同。色带覆盖三次运行。 From capture/gpu/summary/l4.json.
 ```
 
 ```figure
@@ -54,7 +54,7 @@ id: fig-5-3b
 kind: chart
 title: GB10 上最差的 token 间隔
 claim: 在我们的 DGX Spark 上，32 个用户时 vLLM 的第 99 百分位 token 间隔是 SGLang 的两倍多.
-caption: 线越高，流式输出越不平稳。色带覆盖三次运行。来自 capture/gpu/summary/gb10.json。
+caption: 线越高，流式输出越不平稳。色带覆盖三次运行。 From capture/gpu/summary/gb10.json.
 ```
 
 ## 做出决定 {#s-decide-between-vllm-and-sglang-decide}

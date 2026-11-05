@@ -60,7 +60,7 @@ id: fig-5-2
 kind: comparison
 title: 一台服务器，两种缓存命中率
 claim: gauge 把最近一个 prefill 区间报成 0.942，而整次跑的 counter 给出 0.636.
-caption: 左图是 gauge 和它记住的区间。右图是两个 counter 和它们的比。绿色是缓存的 token，梅红色是算过的 prefill token。来自默认实验之后的 capture/out/metrics.txt。
+caption: 左图是 gauge 和它记住的区间。右图是两个 counter 和它们的比。绿色是缓存的 token，梅红色是算过的 prefill token。 From capture/out/metrics.txt after the default experiments.
 ```
 
 计数器的 HELP 文本给出窗口速率公式。用 PromQL 读起来像这样：

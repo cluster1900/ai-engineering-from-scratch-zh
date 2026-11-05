@@ -113,7 +113,7 @@ id: fig-2-2
 kind: flow
 title: rea doctor 对 Ghidra 作用域的九项检查
 claim: rea doctor 按固定顺序对 Ghidra 作用域跑九项检查，在捕获用的 Mac 上每一项都带着它找到的路径或版本通过.
-caption: 从左到右，再向下读，底部两个框是报告的两条裁决。 From `capture/out/01-doctor-ghidra.json`, `00-commands.txt`，顺序来自钉住标签上的 `src/ghidra/GhidraInstallation.ts`。
+caption: 从左到右，再向下读，底部两个框是报告的两条裁决。 From capture/out/01-doctor-ghidra.json and 00-commands.txt, with the order from src/ghidra/GhidraInstallation.ts at the tag.
 ```
 
 ## healthy 与 environment_healthy {#s-rea-doctor-and-the-ghidra-provider-healthy-and-environment-healthy}
