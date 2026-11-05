@@ -9,10 +9,10 @@
 ## 这份清单 {#s-list-procedures-and-function-bodies-the-inventory}
 
 ```listing
-title: five of the thirteen procedures
+title: 十三个过程里的五个
 source: capture/out/10-mcp-05-list-procedures.json
 lang: json
-note: Cut from normalized_result: one external function, two internal functions, and one thunk. The other nine entries have the same shape.
+note: 从 `normalized_result` 裁出：一个外部函数、两个内部函数、一个 thunk。其余九条形状相同。
 ---
 "normalized_result": [
   {
@@ -76,9 +76,9 @@ note: Cut from normalized_result: one external function, two internal functions,
 ```figure
 id: fig-4-3
 kind: structure
-title: the thirteen procedures of ledger-arm64-O1
-claim: Five internal functions fill the 576 bytes of __text without a gap, four thunks fill __stubs, and four externals live in a block Ghidra made.
-caption: Read top to bottom by address. Grey rows are outside the file, green rows are code in __text, violet rows are the thunks Ghidra resolved. From capture/out/10-mcp-05-list-procedures.json and the five dossiers.
+title: ledger-arm64-O1 的十三个过程
+claim: 五个内部函数填满 `__text` 的 576 字节且没有空隙，四个 thunk 填满 `__stubs`，四个外部函数位于 Ghidra 造出的块里.
+caption: 按地址从上到下读。灰色行在文件之外，绿色行是 `__text` 里的代码，紫色行是 Ghidra 解析出的 thunk。 From `capture/out/10-mcp-05-list-procedures.json`，以及五份 dossier。
 ```
 
 ## 函数体 {#s-list-procedures-and-function-bodies-function-bodies}
@@ -86,10 +86,10 @@ caption: Read top to bottom by address. Grey rows are outside the file, green ro
 这份清单没有大小。函数的大小在其 `analyze_function` dossier 的 `procedure.body` 里，而[第 4.6 节](#s-analyze-function-and-pseudocode) 读那份记录的其余部分。
 
 ```listing
-title: the procedure block of the _grade dossier
+title: _grade dossier 的 procedure 块
 source: capture/out/06-function-grade.json
 lang: json
-note: Cut from normalized_result. The pseudocode and every later facet are cut.
+note: 从 `normalized_result` 裁出。伪代码以及之后的每个 facet 已裁。
 ---
 "procedure": {
   "address": "0x100000518",

@@ -9,10 +9,10 @@
 ## 这次调用与这段文本 {#s-procedure-assembly-the-call-and-the-text}
 
 ```listing
-title: procedure_assembly for _grade
+title: _grade 的 procedure_assembly
 source: capture/out/10-mcp-06-procedure-assembly-grade.json
 lang: json
-note: The request arguments and the start of the result. The result is one string with newlines, cut after the second line.
+note: 请求参数与结果的开头。结果是带换行的一个字符串，在第二行之后裁断。
 ---
 "name": "procedure_assembly",
 "arguments": {
@@ -27,10 +27,10 @@ note: The request arguments and the start of the result. The result is one strin
 [第 4.6 节](#s-analyze-function-and-pseudocode) 的 dossier 以数组形式带着同样的行，读起来更容易。
 
 ```listing
-title: the fifteen instructions of _grade
+title: _grade 的十五条指令
 source: capture/out/06-function-grade.json
 lang: json
-note: The assembly array of the dossier, complete.
+note: dossier 的 assembly 数组，完整。
 ---
 "assembly": [
   "0x100000518: mov w8, #0x6667",
@@ -66,9 +66,9 @@ note: The assembly array of the dossier, complete.
 ```figure
 id: fig-4-4
 kind: state
-title: the three blocks of _grade
-claim: Ghidra's basic_blocks split the fifteen instructions at the one conditional branch, and both leaf blocks end in ret with no successor.
-caption: Read from the top block. The arrows are the two successors of the first block, and each leaf block has an empty successors list. From capture/out/06-function-grade.json.
+title: _grade 的三个块
+claim: Ghidra 的 `basic_blocks` 在那一条条件分支处把十五条指令切开，两个叶子块都以 ret 结束且没有后继.
+caption: 从顶部的块读起。箭头是第一个块的两个后继，每个叶子块的 successors 列表为空。 From `capture/out/06-function-grade.json`。
 ```
 
 **基本块：** 一段指令，顶部一个入口，底部一个出口。控制只在第一条指令进入，只在最后一条之后离开。dossier 的 `basic_blocks` 为 `_grade` 列出三个：`0x100000518` 到 `0x10000053c`，后继是 `0x10000053c` 与 `0x10000054c`，以及两个没有后继的叶块。[第 33 课](phases/13-tools-and-protocols/33-disassembly-and-control-flow) 构建从字节产生同一划分的解码器与块分割器。
@@ -76,10 +76,10 @@ caption: Read from the top block. The arrows are the two successors of the first
 ## 同一个函数在 x86-64 上 {#s-procedure-assembly-the-same-function-on-x86-64}
 
 ```listing
-title: grade in the x86-64 object
+title: x86-64 目标文件里的 grade
 source: capture/out/06-function-grade-x86_64-O1.json
 lang: json
-note: The assembly array of the x86-64 dossier, complete. Ghidra renders x86 in Intel syntax with uppercase mnemonics.
+note: x86-64 dossier 的 assembly 数组，完整。Ghidra 用 Intel 语法、大写助记符渲染 x86。
 ---
 "assembly": [
   "0x100010: MOVSXD RAX, EDI",

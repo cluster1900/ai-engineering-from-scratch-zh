@@ -60,7 +60,7 @@ sglang version
 ```
 
 ```listing
-title: the installed version
+title: 装上的版本
 source: capture/gpu/out-gb10/sglang-version.txt
 lang: text
 ---
@@ -101,10 +101,10 @@ docker run --rm --gpus all --ipc=host --shm-size 32g -p 127.0.0.1:30000:30000 \
 第一次启动会下载权重。然后服务器划好内存并准备 kernel。等到这段 listing 的最后一行：
 
 ```listing
-title: the startup lines of our L4 server
+title: 我们 L4 服务器的启动行
 source: capture/gpu/out-l4/server-default.log
 lang: text
-note: Five lines from the startup log. The import, download, and warning lines between them are cut.
+note: 启动日志里的五行。中间的 import、下载和 warning 行已截去。
 ---
 [2026-10-17 14:42:45] KV Cache is allocated. dtype: torch.bfloat16, #tokens: 22939, K size: 1.58 GB, V size: 1.58 GB
 …
@@ -140,10 +140,10 @@ curl -s http://127.0.0.1:30000/generate \
 我们的 L4 服务器这样回答：
 
 ```listing
-title: the answer from the native API
+title: 原生 API 的答案
 source: capture/gpu/out-l4/generate.txt
 lang: json
-note: Cut from the /generate response. The token ids, the request id, and the timing fields other than e2e_latency are cut.
+note: 从 /generate 响应里截出。token id、请求 id，以及 e2e_latency 以外的计时字段已截去。
 ---
   "text": " Paris. The capital of Italy is Rome. The capital of",
 …
@@ -176,10 +176,10 @@ curl -s http://127.0.0.1:30000/v1/chat/completions \
 ```
 
 ```listing
-title: the answer from the OpenAI chat API
+title: OpenAI chat API 的答案
 source: capture/gpu/out-l4/generate.txt
 lang: json
-note: Cut from the /v1/chat/completions response. The id, the timestamp, and the metadata block are cut.
+note: 从 /v1/chat/completions 响应里截出。id、时间戳和 metadata 块已截去。
 ---
   "model": "default",
 …

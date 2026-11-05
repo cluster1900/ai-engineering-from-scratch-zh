@@ -11,10 +11,10 @@
 注册服务器的已发布方式是一个 `mcpServers` 条目，经 `npx` 用 `mcp` 命令跑该包：
 
 ```listing
-title: the registration shape this manual uses
+title: 本手册使用的注册形状
 source: examples/mcp-registration.json
 lang: json
-note: Nothing is cut. The shape follows the install docs {{install MCP Registry}}. Run through npx, rea setup writes the same shape for the clients it knows and pins the version that ran it.
+note: 没有裁剪。形状遵循安装文档 {{install MCP Registry}}。经 npx 运行时，`rea setup` 为它认识的客户端写入同样的形状，并钉住跑它的那个版本。
 ---
 {
   "mcpServers": {
@@ -35,10 +35,10 @@ note: Nothing is cut. The shape follows the install docs {{install MCP Registry}
 第一份文件持有一条注释与一个尾随逗号。Claude Code 把 `.claude.json` 读成严格 JSON，且 setup 在做备份或写入任何东西之前应用同一规则：
 
 ```listing
-title: setup refuses a Claude Code file with a comment
+title: setup 拒绝带注释的 Claude Code 文件
 source: capture/out/18-setup-claude-jsonc.json
 lang: json
-note: The command was rea setup --client claude_code --skill=false --dry-run. The other fields of the registration are cut.
+note: 命令是 `rea setup --client claude_code --skill=false --dry-run`。注册的其余字段已裁。
 ---
 {
   "status": "needs_human",
@@ -54,10 +54,10 @@ note: The command was rea setup --client claude_code --skill=false --dry-run. Th
 第二份文件在 `mcpServers` 里持有两个 `rea` 成员。`JSON.parse` 保留带重复名的最后一个成员，所以 Claude Code 读第二个。带 `--yes` 的 setup 编辑了那个成员，并原样留下了第一个：
 
 ```listing
-title: the configuration after setup edited the last rea member
+title: setup 改完最后一个 rea 成员之后的配置
 source: capture/out/18-setup-configs.txt
 lang: text
-note: The args array of the new entry is cut.
+note: 新条目的 `args` 数组已裁。
 ---
 # claude-duplicate.json after rea setup --yes
 {
@@ -88,10 +88,10 @@ setup 报告 `ready`，动作为 `configured_claude_code`（[捕获](manuals/rev
 客户端带着它说的协议版本、其能力与其名字发送 `initialize`。服务器用它协商的版本、它自己的能力、其身份，以及给模型的一条指令字符串作答：
 
 ```listing
-title: the initialize reply
+title: initialize 回复
 source: capture/out/10-mcp-01-initialize.json
 lang: json
-note: The request is cut. It carried protocolVersion 2025-06-18, empty capabilities, and clientInfo re101-capture 1.0.0.
+note: 请求已裁。它携带 `protocolVersion` 2025-06-18、空的 capabilities，以及 `clientInfo` re101-capture 1.0.0。
 ---
   "response": {
     "result": {
@@ -126,10 +126,10 @@ note: The request is cut. It carried protocolVersion 2025-06-18, empty capabilit
 **工具目录：** 服务器通告的完整工具列表，在 6.7.0 里是 207 个。每一个条目有一个名字、一个标题、一段描述、一个输入模式、一个输出模式，以及四个注解提示。`tools/list` 返回每一个工具，不论当前目标是否支持它 {{mcp Identity and discovery}}。打开或关闭一个目标不改变该列表，也不发送 `notifications/tools/list_changed`。会话自己的视图是权威。`binary_session` 为打开的目标报告 `tool_availability`，对每一个不可用工具带着原因与补救，以及目录计数。
 
 ```listing
-title: the first tool of 207
+title: 207 个工具里的第一个
 source: capture/out/10-mcp-02-tools-list.json
 lang: json
-note: The description is cut after its second sentence, and the schemas were cut by the capture kit for the tools the session did not call.
+note: description 在第二句之后裁断。会话没有调用的工具，其 schema 由捕获套件裁掉。
 ---
 {
   "request": {
@@ -161,10 +161,10 @@ note: The description is cut after its second sentence, and the schemas were cut
 三十一个工具带 `destructiveHint: true`。文档为三种情况设置这个提示 {{mcp Request scope and local effects}}。工具可以丢弃数据、跑 rea 不拥有的代码，或更改一台已附加的 Android 设备。其中包括可能覆盖文件的 `export_evidence_bundle`，以及丢弃会话的 `close_binary`。诸如 `annotate_native_function` 的注解工具也在其中，因为它们覆盖分析员名字与注释。
 
 ```listing
-title: the catalog counts the session reports
+title: 会话报告的 catalog 计数
 source: capture/out/10-mcp-04-binary-session.json
 lang: json
-note: Six lines of the server_identity object. The digests that follow identify this exact catalog.
+note: `server_identity` 对象的六行。随后的 digest 标识这一份确切的 catalog。
 ---
               "counts": {
                 "cli_commands": 153,
@@ -180,10 +180,10 @@ note: Six lines of the server_identity object. The digests that follow identify 
 捕获里每一个输入模式都是自包含的。每一个属性在原地陈述其类型、其模式或枚举，以及其描述，没有要跟随的 `$defs` 或 `$ref`。那种形式下 `list_procedures` 输入模式是 270 字节。输出模式仍经 `$ref` 共享定义。`open_binary` 的 `architecture` 属性完整显示一个枚举：
 
 ```listing
-title: the architecture enum of open_binary
+title: open_binary 的 architecture 枚举
 source: capture/out/10-mcp-02-tools-list.json
 lang: json
-note: One property of the open_binary input schema. The other five properties are cut.
+note: `open_binary` 输入模式的一个属性。其余五个属性已裁。
 ---
               "architecture": {
                 "description": "Caller-supplied CPU family. Required with format=raw-binary; rejected otherwise.",
@@ -218,10 +218,10 @@ note: One property of the open_binary input schema. The other five properties ar
 捕获显示了两个时钟。`open_binary` 花了 1,632 ms。它以 `rea doctor` 的方式检查了 Ghidra 安装，绑定了提供者，且什么都没导入。第一次由 Ghidra 支撑的调用 `list_procedures` 花了 6,349 ms。同一目标上每一次后来的调用花 44 ms 或更少：
 
 ```listing
-title: the first three tool calls in the server log
+title: 服务器日志里的前三次工具调用
 source: capture/out/10-mcp-server.log
 lang: jsonl
-note: Lines 1 to 3 of 17. The time field is epoch milliseconds.
+note: 17 行里的第 1 到 3 行。time 字段是纪元毫秒。
 ---
 {"level":30,"time":1792316953452,"application":"rea","mode":"mcp","layer":"server","tool":"open_binary","durationMs":1629.64,"status":"ok","msg":"MCP tool execution completed"}
 {"level":30,"time":1792316959840,"application":"rea","mode":"mcp","layer":"server","tool":"list_procedures","durationMs":6346.88,"status":"ok","msg":"MCP tool execution completed"}
@@ -235,17 +235,17 @@ note: Lines 1 to 3 of 17. The time field is epoch milliseconds.
 ```figure
 id: fig-8-1
 kind: sequence
-title: one connection from initialize to close_binary
-claim: open_binary returns in 1,632 ms without a Ghidra import, and list_procedures pays 6,349 ms for the import before the session answers in milliseconds.
-caption: Read top down. The grey lifeline is the capture client, blue is rea mcp, and violet is Ghidra. Solid plum is the import and analysis that rea waits for under its 330,000 ms deadline. From capture/out/10-mcp-session.txt and 10-mcp-server.log.
+title: 从 initialize 到 close_binary 的一次连接
+claim: `open_binary` 在没有 Ghidra 导入的情况下于 1,632 ms 返回，`list_procedures` 为导入付出 6,349 ms，之后会话在毫秒级回答.
+caption: 从上往下读。灰色 lifeline 是捕获客户端，蓝色是 `rea mcp`，紫色是 Ghidra。实线梅色是 rea 在 330,000 ms 截止之内等待的导入与分析。 From `capture/out/10-mcp-session.txt`, `10-mcp-server.log`。
 ```
 
 ```figure
 id: fig-8-2
 kind: timeline
-title: two deadlines and three measured first calls
-claim: The 60 s client default covers the 6.3 s first call on this Mac, the 64 s Linux call fails it, and rea waits up to 330 s.
-caption: Read left to right in seconds. The grey bar is the client default and the dashed grey bar is the 240 s example setting from the docs. The blue bar is the rea startup deadline. Numbered marks are the three measured first calls. From capture/out/10-mcp-session.txt and the rea MCP contracts page at the tag.
+title: 两个截止与三次测得的第一次调用
+claim: 60 秒的客户端默认值容得下这台 Mac 上 6.3 秒的第一次调用，64 秒的 Linux 调用超出这个默认值，而 rea 最多等 330 秒.
+caption: 按秒从左到右读。灰色条是客户端默认值，虚线灰色条是文档里 240 秒的示例设置。蓝色条是 rea 的启动截止。编号标记是三次测得的第一次调用。 From `capture/out/10-mcp-session.txt`，以及钉住标签上的 rea MCP 契约页。
 ```
 
 当客户端在启动期间放弃时，待处理的查询可能已被中断。对同一目标的第二次 `open_binary` 重用当前客户端，而不是重新开始。文档化的恢复留在同一连接上 {{mcp Ghidra first-query deadlines and recovery}}。如果保留的记录重要就导出一个包，然后调用 `close_binary` 并检查其结果。然后用同一路径与 `provider_id: "ghidra"` 调用 `open_binary`，并用更长的客户端截止期限重试第一次查询。

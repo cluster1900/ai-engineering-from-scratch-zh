@@ -9,10 +9,10 @@
 WebAssembly 不是原生目标。对模块的 `open_binary` 返回带约束 `wasm_requires_static_inspection` 的 `target_unavailable`，且错误点名要做的 `inspect_wasm_artifact` 调用。该工具需要你自己安装的三个 WABT 程序。把 `REA_WABT_BIN_DIRECTORY` 设为持有 `wasm-validate`、`wasm-objdump` 与 `wasm2wat` 的绝对目录。只有当该变量是绝对路径时工具才可用，且 `binary_session` 报告该可用性。
 
 ```listing
-title: the WABT block of the version record
+title: 版本记录的 WABT 块
 source: capture/out/00-versions.txt
 lang: text
-note: The fourth program, wat2wasm, built the fixture. rea does not run it.
+note: 第四个程序 wat2wasm 构建了 fixture。rea 不跑它。
 ---
 REA_WABT_BIN_DIRECTORY=/opt/homebrew/bin
 $ /opt/homebrew/bin/wasm-validate --version
@@ -31,20 +31,20 @@ $ /opt/homebrew/bin/wasm2wat --version
 CLI 命令是 `rea inspect-wasm-artifact PATH`。在捕获里它在大约两秒后以 0 退出，并打印一份 Evidence 记录。
 
 ```listing
-title: the CLI call
+title: CLI 调用
 source: capture/out/00-commands.txt
 lang: text
-note: The time is cut, because it changes with every recording.
+note: 时间已裁，因为每次录制都会变。
 ---
 $ rea inspect-wasm-artifact fixtures/wasm/ledger.wasm --format json
 [exit 0] (… s) -> 16-inspect-wasm-artifact.json
 ```
 
 ```listing
-title: the head of the inspect_wasm_artifact record
+title: inspect_wasm_artifact 记录的开头
 source: capture/out/16-inspect-wasm-artifact.json
 lang: json
-note: The ids and digests are cut to eight characters. The normalized_result follows.
+note: id 与 digest 裁到八个字符。`normalized_result` 在后面。
 ---
 {
   "evidence_id": "ev_3a09e4b0…",
@@ -79,10 +79,10 @@ note: The ids and digests are cut to eight characters. The normalized_result fol
 rea 把模块复制进私有工作区，作为只读的 `module.wasm`。然后它从 `REA_WABT_BIN_DIRECTORY` 点名的目录跑三个程序。每一个程序必须正好打印 `1.0.42` 作为其版本。如果有一个不打印，rea 就不跑它。`tool_profile` 记录跑了什么。
 
 ```listing
-title: the tool profile, first command
+title: 工具 profile，第一条命令
 source: capture/out/16-inspect-wasm-artifact.json
 lang: json
-note: The source commit, the digests, and the wasm-objdump and wasm2wat entries are cut. They have the arguments -h -x and --enable-all.
+note: 源提交、digest，以及 wasm-objdump 与 wasm2wat 条目已裁。它们的参数是 `-h -x` 与 `--enable-all`。
 ---
 "tool_profile": {
   "source": "https://github.com/WebAssembly/wabt",
@@ -115,10 +115,10 @@ rea 在每个程序之前与之后检查副本的摘要。它也在命令之后�
 `sections` 数组持有七个 section，带着它们的字节范围以及每一个里的条目计数。
 
 ```listing
-title: the seven sections of ledger.wasm
+title: ledger.wasm 的七个节
 source: capture/out/16-inspect-wasm-artifact.json
 lang: json
-note: The Function, Memory, Export, and Code entries are cut. They start at 41, 48, 53, and 113.
+note: Function、Memory、Export 与 Code 条目已裁。它们从 41、48、53 与 113 开始。
 ---
 "artifact": {
   "path": "$CAPTURE/fixtures/wasm/ledger.wasm",
@@ -159,10 +159,10 @@ note: The Function, Memory, Export, and Code entries are cut. They start at 41, 
 该记录把导入与导出持有两次。`imports` 与 `exports` 数组保留精确的 WAT 形式。`interface` 条目为每一个加上方向、索引，以及一份已解析签名。
 
 ```listing
-title: two interface entries
+title: 两个接口条目
 source: capture/out/16-inspect-wasm-artifact.json
 lang: json
-note: The memory export and three function exports are cut.
+note: memory 导出与三个函数导出已裁。
 ---
 "interface": {
   "state": "complete",
@@ -213,10 +213,10 @@ note: The memory export and three function exports are cut.
 `wat` 字段持有 `wasm2wat` 打印的文本、其 SHA-256 `37eab56a…`，以及表示 `decoded-wat`。`percent_change` 的体是栈形式上的 C 函数。它测试第一个参数是否为零。然后它压入 0，或者计算减法、乘以 100，以及有符号除法。
 
 ```listing
-title: percent_change in the text form
+title: 文本形式里的 percent_change
 source: capture/out/16-inspect-wasm-artifact.json
 lang: text
-note: Cut from normalized_result.wat.text. The other three function bodies are cut.
+note: 从 `normalized_result.wat.text` 裁出。另外三个函数体已裁。
 ---
   (func (;1;) (type 1) (param i32 i32) (result i32)
     local.get 0
@@ -241,10 +241,10 @@ note: Cut from normalized_result.wat.text. The other three function bodies are c
 该记录有[第 5 部分](#s-the-evidence-record) 描述的一切：一个 `evidence_id`、一个 `confidence`、一个 `authority`，以及五条 `limitations`。该记录不反编译这些函数。它给出 WAT 文本，而读那份文本是你的工作。
 
 ```listing
-title: the five limitations of the record
+title: 记录的五条 limitation
 source: capture/out/16-inspect-wasm-artifact.json
 lang: json
-note: Nothing is cut.
+note: 没有裁剪。
 ---
 "limitations": [
   "WAT is a decoded representation, not original source or proof of runtime behavior. Custom annotations may retain payloads, but WAT does not establish original binary layout or round-trip byte identity. Original bytes and objdump output remain authoritative.",
@@ -262,10 +262,10 @@ note: Nothing is cut.
 经 MCP，工具是带同样 `path` 的 `inspect_wasm_artifact`。会话的步骤 24 在 404 ms 后返回 `ok`。回复是一次工具结果。其 `structuredContent` 是同一份 Evidence 记录，带着同一个 id `ev_3a09e4b0…`。其 `_meta` 带着[第 8.1 节](#s-the-rea-mcp-server) 的不可信内容标记。
 
 ```listing
-title: the head of the MCP result
+title: MCP 结果的开头
 source: capture/out/10-mcp-24-inspect-wasm-artifact.json
 lang: json
-note: The text copy and the rest of the record are cut.
+note: 文本副本与记录的其余部分已裁。
 ---
 "result": {
   "_meta": {
@@ -288,9 +288,9 @@ note: The text copy and the rest of the record are cut.
 ```figure
 id: fig-6-2
 kind: flow
-title: inspect_wasm_artifact on ledger.wasm
-claim: rea copies the module, runs three WABT programs with checked versions, and returns one observed record that the CLI and MCP share.
-caption: Read top to bottom. Solid arrows are calls, and dashed arrows are the program outputs that rea parses. Grey boxes are the WABT programs outside rea. From capture/out/16-inspect-wasm-artifact.json and 10-mcp-24-inspect-wasm-artifact.json.
+title: ledger.wasm 上的 inspect_wasm_artifact
+claim: rea 复制模块，跑三个核对过版本的 WABT 程序，并返回一份 CLI 与 MCP 共享的 `observed` 记录.
+caption: 从上到下读。实线箭头是调用，虚线箭头是 rea 解析的程序输出。灰色框是 rea 之外的 WABT 程序。 From `capture/out/16-inspect-wasm-artifact.json`, `10-mcp-24-inspect-wasm-artifact.json`。
 ```
 
 ```takeaways

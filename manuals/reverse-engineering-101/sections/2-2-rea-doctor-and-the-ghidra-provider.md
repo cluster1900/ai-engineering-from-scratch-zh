@@ -13,10 +13,10 @@
 在捕获用的 Mac 上，Homebrew 把两个工具都放好了：
 
 ```listing
-title: the Ghidra and JDK paths on the capture Mac
+title: 捕获用的 Mac 上的 Ghidra 与 JDK 路径
 source: capture/out/00-versions.txt
 lang: text
-note: Cut to the Ghidra and Java blocks. The rea, node, clang, llvm-objdump, macOS, and WABT blocks are cut.
+note: 裁到 Ghidra 与 Java 块。rea、node、clang、llvm-objdump、macOS 与 WABT 块已裁。
 ---
 …
 GHIDRA_INSTALL_DIR=/opt/homebrew/Cellar/ghidra/12.1.4/libexec
@@ -46,10 +46,10 @@ rea doctor --provider ghidra --format json
 ## 九项检查 {#s-rea-doctor-and-the-ghidra-provider-the-nine-checks}
 
 ```listing
-title: the doctor report for the Ghidra scope
+title: Ghidra 作用域的 doctor 报告
 source: capture/out/01-doctor-ghidra.json
 lang: json
-note: Cut to the head, the first check, and the two checks that read the install. The other six checks are cut.
+note: 裁到开头、第一项检查，以及读取安装的那两项检查。其余六项检查已裁。
 ---
 {
   "healthy": true,
@@ -111,9 +111,9 @@ note: Cut to the head, the first check, and the two checks that read the install
 ```figure
 id: fig-2-2
 kind: flow
-title: the nine checks of rea doctor for the Ghidra scope
-claim: rea doctor runs nine checks for the Ghidra scope in a fixed order, and on the capture Mac every one passed with the path or version it found.
-caption: Read left to right, then down, and the two boxes at the bottom are the report's two verdicts. From capture/out/01-doctor-ghidra.json and 00-commands.txt, with the order from src/ghidra/GhidraInstallation.ts at the tag.
+title: rea doctor 对 Ghidra 作用域的九项检查
+claim: rea doctor 按固定顺序对 Ghidra 作用域跑九项检查，在捕获用的 Mac 上每一项都带着它找到的路径或版本通过.
+caption: 从左到右，再向下读，底部两个框是报告的两条裁决。 From `capture/out/01-doctor-ghidra.json`, `00-commands.txt`，顺序来自钉住标签上的 `src/ghidra/GhidraInstallation.ts`。
 ```
 
 ## healthy 与 environment_healthy {#s-rea-doctor-and-the-ghidra-provider-healthy-and-environment-healthy}

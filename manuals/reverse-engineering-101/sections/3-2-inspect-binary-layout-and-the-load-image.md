@@ -9,10 +9,10 @@
 ## 错误信封 {#s-inspect-binary-layout-and-the-load-image-the-error-envelope}
 
 ```listing
-title: inspect-binary-layout on macOS
+title: macOS 上的 inspect-binary-layout
 source: capture/out/04-inspect-binary-layout.json
 lang: json
-note: The whole file. The CLI exit status was 1.
+note: 整个文件。CLI 退出状态是 1。
 ---
 {
   "code": "capability_unavailable",
@@ -39,10 +39,10 @@ rea 里每一次失败都是这个形状：`code`、`category`、`message`、`re
 `inspect-macho` 是 macOS 读取器，来自 provider `native-macos`，"macOS native inspection utilities"。它跑七条主机命令，并把每一条记为 provenance。
 
 ```listing
-title: the provenance of one inspect-macho run
+title: 一次 inspect-macho 运行的出处
 source: capture/out/04-inspect-macho.json
 lang: json
-note: Cut to the tool names and three of the commands. Each entry also records the executable SHA-256, the exit code, and the output sizes.
+note: 裁到工具名与其中三条命令。每条还记录可执行文件的 SHA-256、退出码与输出大小。
 ---
 "provenance": [
   {
@@ -97,18 +97,18 @@ note: Cut to the tool names and three of the commands. Each entry also records t
 ```figure
 id: fig-3-2
 kind: comparison
-title: two layout commands on the capture Mac
-claim: The same host refuses one layout reader on platform and answers the other with 17 load commands, because each reader names its own prerequisites.
-caption: Left to right in each column. Solid arrows are calls, the dashed rose arrow is the failure, the dashed ink arrow is a reply. From capture/out/04-inspect-binary-layout.json and 04-inspect-macho.json.
+title: 捕获用的 Mac 上的两条布局命令
+claim: 同一台主机因平台拒绝一个布局读取器，并用 17 条加载命令回答另一个，因为每个读取器点名自己的前提.
+caption: 每列从左到右。实线箭头是调用，虚线玫瑰色箭头是失败，虚线墨色箭头是回复。 From `capture/out/04-inspect-binary-layout.json`, `04-inspect-macho.json`。
 ```
 
 ## 加载映像 {#s-inspect-binary-layout-and-the-load-image-the-load-image}
 
 ```listing
-title: header facts and the entry point
+title: 头事实与入口点
 source: capture/out/04-inspect-macho.json
 lang: json
-note: Cut from normalized_result to the header, the entry point, and the build metadata. rea names the build platform and tool codes from loader.h.
+note: 从 `normalized_result` 裁到头、入口点与构建元数据。rea 依据 `loader.h` 点名构建平台与工具代码。
 ---
 "format": "mach-o",
 "selected_architecture": {
@@ -152,10 +152,10 @@ note: Cut from normalized_result to the header, the entry point, and the build m
 | `__LINKEDIT` | `0x100008000` | 16384 | 32768 | 1104 | 1，读 | 0 |
 
 ```listing
-title: the __TEXT segment and its five sections
+title: __TEXT 段及其五个节
 source: capture/out/04-inspect-macho.json
 lang: json
-note: Cut from the segments collection. Permissions, alignment, and flags are cut from each section.
+note: 从 segments 集合裁出。每个节的权限、对齐与标志已裁。
 ---
 {
   "name": "__TEXT",
@@ -226,18 +226,18 @@ note: Cut from the segments collection. Permissions, alignment, and flags are cu
 ```figure
 id: fig-3-3
 kind: layers
-title: the load image of ledger-arm64-O1
-claim: Four segments map 33872 file bytes into three address ranges, and every other load command points into the last one by file offset.
-caption: Read from the lowest address at the top. The left column is the address, the right column is the file offset. The dashed box has no file bytes. From capture/out/04-inspect-macho.json.
+title: ledger-arm64-O1 的加载映像
+claim: 四个段把 33872 个文件字节映射进三个地址范围，其余每条加载命令都按文件偏移指向最后一个.
+caption: 从顶部的最低地址读起。左列是地址，右列是文件偏移。虚线框没有文件字节。 From `capture/out/04-inspect-macho.json`。
 ```
 
 ## 导入与导出 {#s-inspect-binary-layout-and-the-load-image-imports-and-exports}
 
 ```listing
-title: the exported functions
+title: 导出的函数
 source: capture/out/04-inspect-macho.json
 lang: json
-note: Cut from the exports collection. The __mh_execute_header entry and the weak and reexport fields are cut.
+note: 从 exports 集合裁出。`__mh_execute_header` 条目以及 weak 与 reexport 字段已裁。
 ---
 "exports": {
   "items": [

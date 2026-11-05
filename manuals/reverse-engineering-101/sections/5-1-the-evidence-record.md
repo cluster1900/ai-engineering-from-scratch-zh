@@ -9,10 +9,10 @@
 **Evidence 记录：** rea 对一次成功观察返回的那一种记录类型。模式是带十六个字段的一个严格对象。带额外字段的记录被拒绝，省略字段的记录也被拒绝。没有调用者或被调用者集合的操作仍然写入 `relationship_coverage`，值为 `null`。MCP 服务器把完整的规范记录返回两次，一次作为 `structuredContent`，一次作为文本副本 {{mcp Tool results}}。
 
 ```listing
-title: the sixteen fields of the _percent_change dossier record
+title: _percent_change dossier 记录的十六个字段
 source: capture/out/10-mcp-09-analyze-function-percent-change-O1.json
 lang: json
-note: The profile parameters, the raw result, the normalized result, nine of the ten limitations, and the coverage diagnostics are cut. The kit replaced the text copy of the record with a marker.
+note: profile 参数、原始结果、规范化结果、十条 limitation 里的九条，以及覆盖诊断已裁。抓取套件用一个标记替换了记录的文本副本。
 ---
 "evidence_id": "ev_b492c85eb9570bd5f8e866f94523122c8600ea0106603d90e9ea5445cf757b2a",
 "subject": {
@@ -107,10 +107,10 @@ MCP 处理器可以在引擎启动之前跑一次预检。它在引擎回答之�
 `limitations` 是普通字符串的数组，生产者把自己的追加到它继承的那些上。比较记录展示两种。它的第一条是没有主体的记录的自动那条。接下来 26 条是两侧的 dossier 限制，每一条以 `Left:` 或 `Right:` 为前缀。
 
 ```listing
-title: the trust fields of the compare_functions record
+title: compare_functions 记录的信任字段
 source: capture/out/10-mcp-20-compare-functions-percent-change.json
 lang: json
-note: Of the 27 limitations, the first two are shown.
+note: 27 条 limitation 里，展示前两条。
 ---
 "confidence": "derived",
 "authority": "analyst-inference",
@@ -174,9 +174,9 @@ console.log(evidence_id, evidence_id === `ev_${digest}` ? "match" : "mismatch");
 ```figure
 id: fig-5-1
 kind: structure
-title: the sixteen fields of one Evidence record
-claim: The id hashes every field of the record except subject.name and subject.local_path, so the same observation of the same bytes gets the same id anywhere.
-caption: Read top to bottom. Solid rows enter the hash and dashed rows are display fields. Values are from the function capture, digests shown by their first hex digits.
+title: 一份 Evidence 记录的十六个字段
+claim: id 对除 `subject.name` 与 `subject.local_path` 以外的每个字段做哈希，所以对同样字节的同一观察在任何地方得到同一 id.
+caption: 从上到下读。实线行进入哈希，虚线行是显示字段。值来自函数抓取，digest 只显示前几位十六进制。
 ```
 
 [Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler?symbols=off) 机器把一次反编译的每一阶段记进一份证据账本。账本使用同样三个置信度词，并加上一个未知事项的托盘。这个链接打开关掉符号表的那次运行，于是你可以看到哪些事实从 observed 移到 unknown。

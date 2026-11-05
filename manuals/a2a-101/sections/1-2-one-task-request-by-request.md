@@ -9,9 +9,9 @@
 ```figure
 id: fig-one-streamed-task
 kind: sequence
-title: one streamed task from the card read to the close
-claim: A streamed task opens with the task itself, reports its work as status and artifact frames, and ends when the server closes the stream after the terminal status.
-caption: Read top to bottom. Unnumbered rows come before the stream, and each numbered row is one data frame, numbered as in the streaming capture. Timestamps on the right come from the kit clock, and the task id is shortened to 8 characters.
+title: 一次流式任务，从读取 card 到关闭
+claim: 流式任务以任务本身开头，用状态帧和 artifact 帧报告工作，并在终止状态之后由服务器关闭流时结束.
+caption: 从上到下读。无编号的行出现在流之前，每个有编号的行是一帧 data，编号与流式 capture 中一致。右侧的时间戳来自 kit 的时钟，任务 id 缩短为 8 个字符。
 ```
 
 ## 第一帧之前 {#s-one-task-request-by-request-before-the-first-frame}
@@ -19,10 +19,10 @@ caption: Read top to bottom. Unnumbered rows come before the stream, and each nu
 除非 card 把 `capabilities.streaming` 设为 `true`，否则 agent 必须用 `UnsupportedOperationError` 拒绝 `SendStreamingMessage` {{spec §3.3.4}}，[发现](#s-discovery-and-supported-interfaces)一节解释了这一点。请求本身很短：
 
 ```listing
-title: the request that opens the stream
+title: 打开这条流的请求
 source: capture/out/05-streaming.http
 lang: http
-note: The first lines of the JSON-RPC envelope and its closing brackets are cut.
+note: JSON-RPC 信封的开头几行和结尾括号已删节。
 ---
 POST /a2a/jsonrpc HTTP/1.1
 Host: localhost:41241
@@ -50,10 +50,10 @@ Accept: text/event-stream
 任务流有固定的开头：流必须以 `Task` 对象开始 {{spec §3.1.2}}。这个任务已经处于 `TASK_STATE_SUBMITTED`：
 
 ```listing
-title: frame 1, the new task
+title: 第 1 帧，新任务
 source: capture/out/05-streaming.events.json
 lang: json
-note: The JSON-RPC envelope, the message parts, and the closing brackets are cut.
+note: JSON-RPC 信封、消息的 part 和结尾括号已删节。
 ---
 "task": {
   "id": "728ba084-97eb-422b-b94b-b0fe9153ce2c",

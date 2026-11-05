@@ -46,9 +46,9 @@ rollout 时间随回答长度变化，而 48 步的中位数包含了后期回�
 ```figure
 id: fig-5-3
 kind: chart
-title: A heat pause adds time that is not the work
-claim: Steps that overlapped a heat pause took about 45 s longer than the clean steps.
-caption: Rollout seconds per step for one 12-step run.
+title: 温度暂停加上的时间并不是工作本身
+claim: 与温度暂停重叠的步，比干净步大约多花 45 s.
+caption: 一次 12 步运行中，每步的 rollout 秒数。
 ```
 
 

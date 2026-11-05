@@ -30,10 +30,10 @@ uv pip install -e .
 两个 `SHOULD` 失败是因为 card 缺少 `Cache-Control` 和 `ETag` 响应头 {{spec §8.6}}。其余的失败属于 TCK 本身，或者属于它的示例输入。
 
 ```listing
-title: six push requirements after the kit fix
+title: kit 修复之后的六条推送要求
 source: research/tck-summary.txt
 lang: text
-note: One line per requirement: its id, its level, the verdict on each binding, and the verdict the TCK records. The six HTTP+JSON records pass. The JSON-RPC records fail on the TCK's snake_case parameters, so the TCK records each requirement as FAIL.
+note: 每条要求一行：它的 id、级别、每种绑定上的结论，以及 TCK 记录的结论。六条 HTTP+JSON 记录通过。JSON-RPC 记录因 TCK 的 snake_case 参数而失败，所以 TCK 把每条要求记为 FAIL。
 ---
 PUSH-CREATE-001 MUST grpc=SKIPPED,http_json=PASS,jsonrpc=FAIL FAIL
 PUSH-CREATE-002 MUST grpc=SKIPPED,http_json=PASS,jsonrpc=FAIL FAIL

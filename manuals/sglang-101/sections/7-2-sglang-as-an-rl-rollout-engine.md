@@ -45,9 +45,9 @@ for rollout_id in range(args.start_rollout_id, args.num_rollout):
 ```figure
 id: fig-7-2b
 kind: timeline
-title: GPU memory across one colocated RL step
-claim: SGLang and the trainer never hold the GPU at the same time in this mode, and SGLang gets its KV cache back only after the new weights arrive.
-caption: Read left to right, one column per phase of train.py. A filled cell means the memory is on the GPU. From train.py and inference_controller.py in Miles at v0.1.2.
+title: 一步共置 RL 里的 GPU 内存
+claim: 在这种模式下 SGLang 和训练器从不同时占着 GPU，SGLang 只在新权重到达之后才拿回 KV cache.
+caption: 从左到右读，train.py 的每个阶段一列。填了色的格子表示这块内存在 GPU 上。来自 Miles v0.1.2 的 train.py 和 inference_controller.py。
 ```
 
 ## 库存 SGLang 给训练器什么 {#s-sglang-as-an-rl-rollout-engine-what-stock-sglang-gives-the-trainer}
@@ -63,9 +63,9 @@ caption: Read left to right, one column per phase of train.py. A filled cell mea
 ```figure
 id: fig-7-2
 kind: sequence
-title: one weight update between Miles and SGLang
-claim: A weight update is a session: pause, begin, send every bucket, end with one repack, set the version, and resume.
-caption: Read top to bottom. Rows 3 and 4 repeat once per bucket of the default NCCL broadcast transfer. From weight_update/session.py and protocols/broadcast.py in Miles at v0.1.2 and the endpoints in http_server.py at v0.5.22.
+title: Miles 和 SGLang 之间的一次权重更新
+claim: 一次权重更新是一个会话：暂停、开始、送出每一个 bucket、用一次 repack 结束、设上版本，然后恢复.
+caption: 从上往下读。第 3 行和第 4 行对默认 NCCL broadcast 传输的每个 bucket 重复一次。来自 Miles v0.1.2 的 weight_update/session.py 和 protocols/broadcast.py，以及 v0.5.22 的 http_server.py 里的端点。
 ```
 
 ## 移动权重的四种方式 {#s-sglang-as-an-rl-rollout-engine-four-ways-to-move-the-weights}
@@ -108,10 +108,10 @@ Miles 在此之上用一套启动计划，在两侧设匹配的标志。覆盖�
 我们在一块 NVIDIA GB10 上用 `radixark/miles:latest` 镜像跑 GRPO。镜像持有 Miles commit `08752a12` 与 SGLang `0.5.22.dev46+g7b6993a`。模型是 GSM8K 上的 `Qwen/Qwen3-0.6B`，FSDP 与 SGLang 共置在那一块 GPU 上。12 步里每一步对 32 条提示各采样 8 次，最多 1,024 个响应 token，温度 1。SGLang 的内存比例是 0.4。
 
 ```listing
-title: one GRPO step, as Miles logs it
+title: 一步 GRPO，按 Miles 记日志的样子
 source: capture/gpu/out-miles/plain-excerpt.log
 lang: text
-note: The rollout and training metrics of the first step, one weight update, and one warning. Long lines are cut.
+note: 第一步的 rollout 和训练指标、一次权重更新，以及一条警告。过长的行已截去。
 ---
 metrics.py:94 - perf 0: {'rollout/raw_reward_unfiltered': 0.62890625, 'rollout/num_training_samples': 256, 'rollout/episode_raw_reward': 0.62890625, 'rollout/episode_response_length/mean': 739.92578125, 'rollout/episode_response_length/median': 759.5, 'rollout
 {'train/loss': -4.656612873077393e-10, 'train/pg_loss': -4.656612873077393e-10, 'train/entropy_loss': 0.0, 'train/pg_clipfrac': 0.0, 'train/ppo_kl': 0.0, 'train/ess_ratio': 1.0, 'train/train_rollout_logprob_abs_diff': 0.015336457639932632, 'train/train_rollout_kl': 0.0006840902497060597, 'train/grad_norm': 0.5216571092605591, 'train/lr-pg_0': 1e-06, 'train/step': 0}
@@ -124,9 +124,9 @@ timer.py:42 - Timer update_weights end (elapsed: 0.7s)
 ```figure
 id: fig-7-2c
 kind: chart
-title: One GRPO step on a GB10, by phase
-claim: On one GB10, the trainer phases took 1.8 times as long as the SGLang rollout, and the weight update took under a second.
-caption: Median seconds per phase over 12 steps. Blue is SGLang generation, violet is the trainer, and amber is the weight update and the memory release between them. From capture/gpu/summary/miles-gb10.json.
+title: GB10 上一步 GRPO，按阶段
+claim: 在一块 GB10 上，训练器各阶段的时间是 SGLang rollout 的 1.8 倍，权重更新不到 1 s.
+caption: 12 步里每个阶段的中位秒数。蓝色是 SGLang 生成，紫罗兰色是训练器，琥珀色是两者之间的权重更新和内存释放。来自 capture/gpu/summary/miles-gb10.json。
 ```
 
 在这个规模上，rollout 不是瓶颈。对一块 GPU 上的 0.6B 模型，更快的服务引擎最多大约能省下这一步的三分之一，35%。权重更新与内存释放，也就是本节大部分内容所关于的，花 2.4 秒。从各阶段中位相加，这一步大约花 165 秒。
@@ -138,10 +138,10 @@ caption: Median seconds per phase over 12 steps. Blue is SGLang generation, viol
 然后我们用同样的设置把同一份工作跑了 48 步：内存比例 0.4 与温度 1，先用默认种子。在那些步里策略开始学习，rollout 也随之变快。
 
 ```listing
-title: the last GRPO step of 48
+title: 48 步里的最后一步 GRPO
 source: capture/gpu/out-miles/plain-48-excerpt.log
 lang: text
-note: The rollout and training metrics of step 47, the scheduler exit, and the job status. Long lines are cut.
+note: 第 47 步的 rollout 和训练指标、scheduler 退出，以及作业状态。过长的行已截去。
 ---
 metrics.py:94 - perf 47: {'rollout/raw_reward_unfiltered': 0.79296875, 'rollout/num_training_samples': 256, 'rollout/episode_raw_reward': 0.79296875, 'rollout/episode_response_length/mean': 421.73046875, 'rollout/episode_response_length/median': 369.5, 'rollou
 {'train/loss': -3.4924596548080444e-09, 'train/pg_loss': -3.4924596548080444e-09, 'train/entropy_loss': 0.0, 'train/pg_clipfrac': 0.0, 'train/ppo_kl': 0.0, 'train/ess_ratio': 1.0, 'train/train_rollout_logprob_abs_diff': 0.014126655645668507, 'train/train_rollo
@@ -154,9 +154,9 @@ Job 'raysubmit_MKE9XLVeZ87U7iQV' succeeded
 ```figure
 id: fig-7-2d
 kind: chart
-title: Forty-eight GRPO steps on a GB10
-claim: Over 48 steps the raw reward went up from a mean of 0.636 to 0.758, and the share of cut samples went down from 0.33 to 0.08.
-caption: Raw reward and the share of samples cut at 1,024 tokens for each step of the default seed. The dashed lines are the raw rewards of seeds 2 and 3. The means are over the first 8 and the last 8 steps. From capture/gpu/summary/miles-gb10.json.
+title: GB10 上的 48 步 GRPO
+claim: 48 步里原始奖励的均值从 0.636 升到 0.758，被截断样本的份额从 0.33 降到 0.08.
+caption: 默认种子每一步的原始奖励，以及在 1,024 token 处被截断的样本份额。虚线是种子 2 和种子 3 的原始奖励。均值取前 8 步和后 8 步。来自 capture/gpu/summary/miles-gb10.json。
 ```
 
 从一步到下一步，奖励最多变了 0.207，从第 30 步的 0.801 到第 31 步的 0.594。从 8 步均值读趋势，不要从一步读。
@@ -174,10 +174,10 @@ caption: Raw reward and the share of samples cut at 1,024 tokens for each step o
 在种子 2 与 3 的 9.3 小时里，容器大约有 58% 的时间处于暂停。暂停停下进程，并不改它的算术。所以我们把奖励、长度、截断份额与对数概率差距读作有效。我们没有用同一个种子的暂停与未暂停跑做过测试。Rollout 时间则不是，我们不为种子 2 与 3 报告它们。
 
 ```listing
-title: the last step of seed 2
+title: 种子 2 的最后一步
 source: capture/gpu/out-miles/plain-48-s2-excerpt.log
 lang: text
-note: The rollout and training metrics of step 47 with MILES_SEED=2, and the job status. Long lines are cut.
+note: MILES_SEED=2 时第 47 步的 rollout 和训练指标，以及作业状态。过长的行已截去。
 ---
 metrics.py:94 - perf 47: {'rollout/raw_reward_unfiltered': 0.6484375, 'rollout/num_training_samples': 256, 'rollout/episode_raw_reward': 0.6484375, 'rollout/episode_response_length/mean': 514.0390625, 'rollout/episode_response_length/median
 {'train/loss': -5.122274160385132e-09, 'train/pg_loss': -5.122274160385132e-09, 'train/entropy_loss': 0.0, 'train/pg_clipfrac': 0.0, 'train/ppo_kl': 0.0, 'train/ess_ratio': 1.0, 'train/train_rollout_logprob_abs_diff': 0.014963770285248756,
@@ -198,10 +198,10 @@ Job 'raysubmit_y4umCbEa8Qp5Bbad' succeeded
 然后我们用 Miles Triton 例子的标志设了 `--true-on-policy-mode`。SGLang 启动了，训练器在启动器开始后 61 秒停下。
 
 ```listing
-title: the FSDP trainer rejects the Triton attention
+title: FSDP 训练器拒绝 Triton attention
 source: capture/gpu/out-miles/true-on-policy-error.log
 lang: text
-note: The first launcher line, the trainer error, and the failed init. Long lines are cut.
+note: 第一行启动器、训练器错误，以及失败的 init。过长的行已截去。
 ---
 [2026-10-17 16:28:41.340 launcher] common.py:290 - EXEC: mkdir -p /root/lab/mode
 ValueError: Specified `attn_implementation="triton"` is not supported. The only possible arguments are `attn_implementation="eager"`, `"paged|eager"`, `"attn_implementation=flash_attention_2"`, `"attn_implementation=paged|flash_attention_2"`, `"attn_implementa
@@ -213,10 +213,10 @@ ValueError: Specified `attn_implementation="triton"` is not supported. The only 
 Miles 里唯一的 true on-policy 合约把 SGLang 的 `fa3` 后端与 FSDP 里的 `flash_attention_3` 配对 {{code}}。我们用合约标志又跑了一次作业，看它停在哪里。
 
 ```listing
-title: the contract flags on a GB10
+title: GB10 上的合约旗标
 source: capture/gpu/out-miles/true-on-policy-fa3-error.log
 lang: text
-note: The SGLang start, its failure, and the first and last of the rollout errors that followed. Process prefixes are cut.
+note: SGLang 的启动、它的失败，以及随后 rollout 错误的第一条和最后一条。进程前缀已截去。
 ---
 [2026-10-17 21:03:03] Enable deterministic inference because of legacy rl_on_policy_target.
 AssertionError: FlashAttention v3 Backend requires SM>=80 and SM<=90. Please use `--attention-backend flashinfer`.

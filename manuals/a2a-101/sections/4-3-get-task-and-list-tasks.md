@@ -23,10 +23,10 @@ planner 到 `deployer` 的流断了。一个 webhook 说一次测试运行已经
 `historyLength` 为 1 时，kit 只返回审查任务最新的一条消息：
 
 ```listing
-title: GetTask with historyLength 1
+title: historyLength 为 1 的 GetTask
 source: capture/out/13-history.http
 lang: json
-note: The JSON-RPC envelopes, the reply's ids, status, and artifacts, and the ids inside the message are cut.
+note: JSON-RPC 信封、回复中的 id、status 和 artifacts，以及消息内部的 id 已删节。
 ---
   "method": "GetTask",
   "params": {
@@ -73,10 +73,10 @@ note: The JSON-RPC envelopes, the reply's ids, status, and artifacts, and the id
 kit 向持有五个任务的 `test-runner` 请求 `pageSize` 2 和 `historyLength` 0：
 
 ```listing
-title: the first page of ListTasks
+title: ListTasks 的第一页
 source: capture/out/12-list-tasks.http
 lang: json
-note: Each task is cut to its id, state, and status timestamp, and the token is cut after its first 44 characters.
+note: 每个任务删节到 id、state 和 status 的 timestamp，token 在前 44 个字符之后已删节。
 ---
     "tasks": [
       {
@@ -103,9 +103,9 @@ note: Each task is cut to its id, state, and status timestamp, and the token is 
 ```figure
 id: fig-history-and-pages
 kind: structure
-title: history regimes and list pages
-claim: `GetTask` trims history to the newest messages you ask for, and `ListTasks` returns newest-first pages that leave out artifacts until you ask for them.
-caption: Top, the stored history of task e5c95b09 and what each `historyLength` returns. Bottom, the five tasks on test-runner in list order, grouped into the pages the kit requested. Ids are shortened to 8 characters. From capture/out/13-history.http, 04-polling.http, and 12-list-tasks.http.
+title: history 的几种取法与列表分页
+claim: `GetTask` 把 history 裁剪到你要求的最新消息，`ListTasks` 返回最新在前的分页，并且在你要求之前省略 artifact.
+caption: 上方是任务 e5c95b09 已存储的 history，以及每种 `historyLength` 返回的内容。下方是 test-runner 上的五个任务，按列表顺序分组为 kit 请求的各页。id 缩短为 8 个字符。来自 capture/out/13-history.http、04-polling.http 和 12-list-tasks.http。
 ```
 
 规范要求基于游标的分页，并且没有规定令牌的格式 {{spec §3.1.4}}，所以每个 SDK 都自己定义：

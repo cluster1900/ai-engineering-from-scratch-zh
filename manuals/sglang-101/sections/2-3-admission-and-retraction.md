@@ -26,9 +26,9 @@ SGLang 用带校正的预估。两条规则决定准入 {{code}}：
 ```figure
 id: fig-2-3
 kind: comparison
-title: why five requests fit in 4,096 tokens and six do not
-claim: With ignore_eos, each request reserves its 256 prompt tokens and all 512 output tokens, so five requests use 3,840 tokens and a sixth would need 4,608.
-caption: Each bar is the KV pool of --max-total-tokens 4096. Green is reserved prompt KV, amber is reserved future output, grey is free. From capture/out/server-small-pool.log and small-pool-bench-long-output-c16.txt.
+title: 为什么 4,096 个 token 装得下五条请求，装不下第六条
+claim: 设了 ignore_eos 时，每条请求预留自己的 256 个 prompt token 和全部 512 个输出 token，所以五条用 3,840 个 token，第六条需要 4,608.
+caption: 每根条是 --max-total-tokens 4096 的 KV pool。绿色是预留的 prompt KV，琥珀色是预留的未来输出，灰色是空闲。来自 capture/out/server-small-pool.log 和 small-pool-bench-long-output-c16.txt。
 ```
 
 ## 我们用小 pool 测到了什么 {#s-admission-and-retraction-what-we-measured-with-a-small-pool}
@@ -38,10 +38,10 @@ caption: Each bar is the KV pool of --max-total-tokens 4096. Green is reserved p
 基准客户端默认把 `ignore_eos` 设为 true，所以每条请求正好生成 512 个 token {{code}}。因此每条请求预留 256 加 512，也就是 768 个 token。五条请求预留 3,840 个 token，第六条会需要 4,608。调度器正好准入了五条。
 
 ```listing
-title: five running, eleven waiting
+title: 五条在跑，十一条在等
 source: capture/out/server-small-pool.log
 lang: text
-note: Lines cut from the first minute of the run. The first line is the cached warm-up prompt.
+note: 从这次跑的第一分钟截出。第一行是已缓存的 warm-up prompt。
 ---
 [2026-10-16 14:08:02] Prefill batch, #new-seq: 1, #new-token: 1, #cached-token: 255, token usage: 0.06, #running-req: 0, #queue-req: 15, #pending-token: 0, cuda graph: False, input throughput (token/s): 0.80
 [2026-10-16 14:08:02] Prefill batch, #new-seq: 4, #new-token: 896, #cached-token: 0, token usage: 0.28, #running-req: 1, #queue-req: 11, #pending-token: 2808, cuda graph: False, input throughput (token/s): 3889.60
@@ -57,10 +57,10 @@ note: Lines cut from the first minute of the run. The first line is the cached w
 客户端看到了这种顺序的代价：
 
 ```listing
-title: what the users felt
+title: 用户感受到的
 source: capture/out/small-pool-bench-long-output-c16.txt
 lang: text
-note: Lines cut from the summary block.
+note: 从摘要块截出的行。
 ---
 Successful requests:                     32        
 …
@@ -84,7 +84,7 @@ Mean TPOT (ms):                          24.26
 我们的小 pool 运行完全没有收回。它的服务器日志没有 `Retract requests` 行。Metrics 端点也同意，但有一个限制。`num_retracted_reqs` 是一个 gauge，调度器在每个日志间隔后重置。所以读到 0 只覆盖最后一个间隔。计数器 `num_retracted_requests_total` 覆盖整次运行。
 
 ```listing
-title: zero retractions in the small-pool run
+title: 小 pool 这次跑里零次收回
 source: capture/out/small-pool-metrics.txt
 lang: text
 ---
@@ -96,9 +96,9 @@ sglang:num_retracted_reqs{engine_type="unified",model_name="mlx-community/Qwen3-
 ```figure
 id: fig-2-3b
 kind: timeline
-title: the new token ratio over 600 decode steps
-claim: The ratio starts at 0.7, falls to 0.098 after 600 decode steps, and jumps back up after a retraction, so admission grows bolder until it fails.
-caption: Read left to right over decode steps. The amber line is the default ratio for requests without ignore_eos. The rose mark is a retraction. Constants from new_token_ratio_tracker.py at v0.5.22.
+title: 600 步 decode 上的 new token ratio
+claim: 比率从 0.7 起，600 步 decode 之后降到 0.098，一次收回之后又跳回去，所以准入越来越大胆，直到失败.
+caption: 沿 decode 步从左到右读。琥珀色线是没设 ignore_eos 的请求的默认比率。玫瑰色标记是一次收回。常数来自 v0.5.22 的 new_token_ratio_tracker.py。
 ```
 
 ## 事故：收回本身就是问题 {#s-admission-and-retraction-incidents-when-retraction-is-the-problem}

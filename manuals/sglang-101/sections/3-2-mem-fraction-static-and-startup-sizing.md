@@ -11,10 +11,10 @@
 在 capture kit 存在之前，我们用同一条命令、不带 `--mem-fraction-static` 启了两次服务器。两次启动给 pool 定的大小差很多。
 
 ```listing
-title: two startups, two pool sizes
+title: 两次启动，两种 pool 大小
 source: capture/out/oom-exploratory.log
 lang: text
-note: Lines from two exploratory runs on the same Mac, before the capture kit. The comment lines are ours.
+note: 同一台 Mac 上、capture kit 出现之前的两次探索运行。注释行是我们加的。
 ---
 # run 1 startup
 [2026-10-16 13:30:31] Auto-sized attention KV pool: sys_available=27.81 GB, mlx_limit=51.8 GB, mlx_used=0.31 GB, kv_budget=24.25 GB, bytes_per_slot=114688, pool_size=227022
@@ -26,10 +26,10 @@ note: Lines from two exploratory runs on the same Mac, before the capture kit. T
 两次运行之间 SGLang 什么都没变。第二次启动时 Mac 上其他程序用的内存更少，所以 `sys_available` 从 27.81 GB 涨到 38.29 GB。pool 跟着涨，从 24.25 GB 到 33.39 GB。两份预算都是空闲内存的 87.2%，因为自动的 `mem_fraction_static` 解析成了 0.872。
 
 ```listing
-title: the crash at concurrency 32
+title: 并发 32 时的崩溃
 source: capture/out/oom-exploratory.log
 lang: text
-note: Lines from run 2. The traceback above the RuntimeError line is cut.
+note: 来自 run 2 的行。RuntimeError 那一行上面的 traceback 已截去。
 ---
 [2026-10-16 13:42:53] Decode batch, #running-req: 32, #token: 16095, token usage: 0.05, cuda graph: False, gen throughput (token/s): 564.55, #queue-req: 0
 [2026-10-16 13:42:55] Prefill batch, #new-seq: 1, #new-token: 511, #cached-token: 0, token usage: 0.00, #running-req: 0, #queue-req: 9, #pending-token: 0, cuda graph: False, input throughput (token/s): 66.85
@@ -45,9 +45,9 @@ RuntimeError: [METAL] Command buffer execution failed: Insufficient Memory (0000
 ```figure
 id: fig-3-2
 kind: comparison
-title: the same Mac, two memory splits
-claim: A pool sized at 87 percent of free memory left too little for activations, and a fraction of 0.4 kept the server alive.
-caption: Read each bar left to right. The green part is the KV pool, and the grey part is everything else. From capture/out/oom-exploratory.log and capture/out/server-default.log.
+title: 同一台 Mac，两种内存划分
+claim: 按空闲内存 87% 划的 pool 给激活留得太少，分数 0.4 让服务器活了下来.
+caption: 每根条从左到右读。绿色部分是 KV pool，灰色部分是其余一切。来自 capture/out/oom-exploratory.log 和 capture/out/server-default.log。
 ```
 
 ## SGLang 如何决定划分 {#s-mem-fraction-static-and-startup-sizing-how-sglang-decides-the-split}
@@ -75,10 +75,10 @@ Apple silicon 上的 MLX 后端用更简单的规则 {{code}}。它取两个数�
 **我们测到** 同一条规则在一块 NVIDIA GB10 上，那是 DGX Spark 的芯片。它的 CPU 和 GPU 共享 121.7 GiB 内存。没有单独的 GPU 内存，启动日志里每个数字的含义因此改变。
 
 ```listing
-title: one GB10 startup, from capacity to pool
+title: 一次 GB10 启动，从容量到 pool
 source: capture/gpu/out-gb10/server-default.log
 lang: text
-note: Lines cut from the startup of the default GPU configuration, Qwen3-30B-A3B in BF16 with a fraction of 0.7.
+note: 从默认 GPU 配置的启动截出，Qwen3-30B-A3B，BF16，分数 0.7。
 ---
 [2026-10-17 14:12:57] Failed to get GPU memory capacity from nvidia-smi. Falling back to torch.cuda.mem_get_info(). Reported total GPU memory per device (MiB): [124610], using min: 124610 MiB.
 …
@@ -111,10 +111,10 @@ note: Lines cut from the startup of the default GPU configuration, Qwen3-30B-A3B
 在 GB10 上，KV pool 有几十 GB，SGLang 几秒内就分配完。机器上每个其他程序都看见那份内存消失。我们的 GB10 还为其他用户跑了一个内存守护守护进程。空闲内存变低时，它停掉涨得最快的那个进程。启动期间它三次停掉了我们的调度器：
 
 ```listing
-title: the memory guard stops the scheduler
+title: 内存守护停掉调度器
 source: capture/gpu/incidents/gb10-memory-guard-pauses.txt
 lang: text
-note: The first two lines of the guard log for our runs on the GB10.
+note: 我们在 GB10 上几次运行的守护日志的前两行。
 ---
 2026-10-16T12:53:16+00:00 2026/10/16 12:53:16 guardian level: Critical: 34.2 GiB left before the freeze zone.
 2026-10-16T12:53:16+00:00 2026/10/16 12:53:16 guardian pause: Paused sglang::schedul (pid 2983880, rohit): it grew 36.7 GiB in 5s with 34.2 GiB left. Resume or stop it from the app.
@@ -125,10 +125,10 @@ note: The first two lines of the guard log for our runs on the GB10.
 NVIDIA 驱动在启动时也会报告内存错误。GB10 的内核日志里有成串的这一行：
 
 ```listing
-title: the driver line at server startup
+title: 服务器启动时的驱动行
 source: capture/gpu/incidents/gb10-driver-no-memory.txt
 lang: text
-note: The last line of the file. The lines above it count the bursts per minute.
+note: 文件的最后一行。上面的行按分钟计突发次数。
 ---
 NVRM: nvCheckOkFailedNoLog: Check failed: Out of memory [NV_ERR_NO_MEMORY] (0x00000051) returned from _memdescAllocInternal(pMemDesc) @ mem_desc.c:1359
 ```
@@ -150,10 +150,10 @@ NVRM: nvCheckOkFailedNoLog: Check failed: Out of memory [NV_ERR_NO_MEMORY] (0x00
 在除了 SGLang 还跑别的东西的机器上，自己传 `--mem-fraction-static`。capture kit 在 Mac 上用 0.4。有了那个值，打崩 run 2 的同一基准在并发 32 下跑完了全部 128 条请求。
 
 ```listing
-title: the kit's server, with an explicit fraction
+title: kit 的服务器，带一个写明的分数
 source: capture/out/server-default.log
 lang: text
-note: One startup line from the default kit configuration.
+note: 默认 kit 配置的一行启动日志。
 ---
 [2026-10-16 13:58:03] Auto-sized attention KV pool: sys_available=48.49 GB, mlx_limit=51.8 GB, mlx_used=0.31 GB, kv_budget=19.39 GB, bytes_per_slot=114688, pool_size=181574
 ```
@@ -163,10 +163,10 @@ note: One startup line from the default kit configuration.
 我们在 GB10 上测了另一个方向。[第 5.1 节](#s-sglang-benchmark-serving) 的负载扫描跑了两遍，2026-10-16 用 kit 的分数 0.7，2026-10-17 用 0.82，每个点三个种子。
 
 ```listing
-title: a larger pool on the GB10, at its fullest
+title: GB10 上更大的 pool，在它最满的时候
 source: capture/gpu/out-gb10/server-load-default-kv-max.log
 lang: text
-note: The pool at a fraction of 0.82, and the decode line with the highest token usage in the whole sweep.
+note: 分数 0.82 时的 pool，以及整次 sweep 里 token usage 最高的那条 decode 行。
 ---
 [2026-10-17 16:35:26] KV Cache is allocated. dtype: torch.bfloat16, #tokens: 383065, K size: 17.54 GB, V size: 17.54 GB
 [2026-10-17 16:47:45] Decode batch, #running-req: 64, #token: 40751, token usage: 0.11, cuda graph: True, gen throughput (token/s): 263.88, #queue-req: 0
@@ -177,9 +177,9 @@ note: The pool at a fraction of 0.82, and the decode line with the highest token
 ```figure
 id: fig-3-2c
 kind: chart
-title: A larger pool bought nothing when the pool was never full
-claim: Raising the fraction from 0.7 to 0.82 on the GB10 grew the BF16 pool by 63 percent and changed closed-loop throughput by less than 2 percent.
-caption: Output throughput against max concurrency, three seeds per point. Solid lines are 0.7 and dashed lines are 0.82. Plum is BF16 and green is FP8 with an FP8 KV cache. From capture/gpu/summary/gb10.json.
+title: pool 从未装满时，更大的 pool 没有用处
+claim: 在 GB10 上把分数从 0.7 提到 0.82，BF16 pool 增大 63%，闭环吞吐的变化不到 2%.
+caption: 输出吞吐对上最大并发，每个点三个种子。实线是 0.7，虚线是 0.82。梅红色是 BF16，绿色是带 FP8 KV cache 的 FP8。来自 capture/gpu/summary/gb10.json。
 ```
 
 日志行解释了这一点。六十四条请求持有 40,751 个 token，是 pool 的 11%。在 kit 分数 0.7 的服务器上，最高 token usage 是 18%。pool 从来不是上限，所以更大的 pool 无事可做。对比 [第 4.3 节](#s-quantization) 的 L4，那里 BF16 pool 在 64 用户时是满的，FP8 几乎把吞吐乘了三倍。
@@ -187,19 +187,19 @@ caption: Output throughput against max concurrency, three seeds per point. Solid
 [第 5.1 节](#s-sglang-benchmark-serving) 的开环扫描给出答案的另一半。在每秒 16 条请求、超过 GB10 能服务的速率时，更早的请求还在跑，新请求不停到达。那里更大的 pool 确实重要。
 
 ```listing
-title: the pool at 0.7 under an open-loop overload
+title: 开环过载下分数 0.7 的 pool
 source: capture/gpu/out-gb10/server-rate-default-full.log
 lang: text
-note: One decode line at 16 offered requests per second, at a fraction of 0.7.
+note: 每秒供给 16 条请求、分数 0.7 时的一条 decode 行。
 ---
 [2026-10-16 19:08:23] Decode batch, #running-req: 374, #token: 227530, token usage: 0.96, cuda graph: False, gen throughput (token/s): 866.37, #queue-req: 101
 ```
 
 ```listing
-title: the pool at 0.82 under the same overload
+title: 同样过载下分数 0.82 的 pool
 source: capture/gpu/out-gb10/server-rate-default-kv-max.log
 lang: text
-note: The decode line with the highest token usage at 16 offered requests per second, at a fraction of 0.82.
+note: 每秒供给 16 条请求、分数 0.82 时，token usage 最高的那条 decode 行。
 ---
 [2026-10-17 18:00:45] Decode batch, #running-req: 480, #token: 289721, token usage: 0.75, cuda graph: False, gen throughput (token/s): 994.20, #queue-req: 0
 ```

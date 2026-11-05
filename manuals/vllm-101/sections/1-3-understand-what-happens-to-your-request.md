@@ -17,9 +17,9 @@ vLLM 不会把这两个阶段作为分开的环节来运行。每个调度步骤
 ```figure
 id: fig-1-3
 kind: flow
-title: one request through three processes
-claim: A request crosses three processes: the API server tokenizes it, the engine core schedules it, and a GPU worker runs the model.
-caption: Solid arrows carry the request forward, dashed arrows carry token ids back, and the dotted arrow is the text stream. From the vLLM source at v0.31.0.
+title: 一个请求穿过三个进程
+claim: 一个请求穿过三个进程：API 服务器对它做 tokenize，engine core 调度它，GPU worker 运行模型.
+caption: 实线箭头把请求向前送，虚线箭头把 token id 送回来，点线箭头是文本流。来自 vLLM 0.31.0 的源码。
 ```
 
 ## 四个数字 {#s-understand-what-happens-to-your-request-four-numbers}
@@ -47,9 +47,9 @@ caption: Solid arrows carry the request forward, dashed arrows carry token ids b
 ```figure
 id: fig-1-3b
 kind: chart
-title: one server, two loads
-claim: On our DGX Spark, 64 users got eight times the total output of one user, and each user waited about 7.5 times longer for every token.
-caption: Read the left chart for the server and the right chart for one user. Bands span the lowest and highest of three runs. From capture/gpu/summary/gb10.json.
+title: 同一台服务器，两种负载
+claim: 在我们的 DGX Spark 上，64 个用户得到的总输出是 1 个用户的八倍，每个用户等待每个 token 的时间大约长了 7.5 倍.
+caption: 左图看服务器，右图看一个用户。色带覆盖三次运行的最低值和最高值。来自 capture/gpu/summary/gb10.json。
 ```
 
 ```takeaways

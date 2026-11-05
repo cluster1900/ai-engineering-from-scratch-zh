@@ -19,9 +19,9 @@
 ```figure
 id: fig-4-8
 kind: flow
-title: one constrained request from arrival to sampling
-claim: A schema compiles once in a thread pool while the request waits in the grammar queue, then masks the logits at every decode step.
-caption: Read left to right. The cache key is the constraint type and its text. A cache hit skips the thread pool. From GrammarManager and ModelRunner._preprocess_logits at v0.5.22.
+title: 一条受约束的请求，从到达到采样
+claim: schema 在线程池里编译一次，请求在语法队列里等，然后在每一步 decode 给 logits 打掩码.
+caption: 从左到右读。缓存键是约束类型和它的文本。缓存命中就跳过线程池。来自 v0.5.22 的 GrammarManager 和 ModelRunner._preprocess_logits。
 ```
 
 1. **Look up.** 语法管理器用约束类型和它的文本建键，例如 `("json", schema)`。该键的已编译语法立刻从缓存回来。

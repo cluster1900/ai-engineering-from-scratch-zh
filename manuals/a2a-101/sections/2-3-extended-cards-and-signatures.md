@@ -19,16 +19,16 @@ planner 持有一个 bearer token，并读取 `deployer` 的公开 card。这张
 ```figure
 id: fig-extended-card
 kind: sequence
-title: earning the extended card
-claim: The same `GetExtendedAgentCard` call fails with HTTP 401 before any A2A method runs, then returns a card with a second skill once a token is attached.
-caption: Time runs down. Steps 1 and 2 come from the captured agent cards. Steps 3 and 4 are exchange 1 of the extended-card capture, and steps 6 and 7 are exchange 2. The token comes from the platform team, outside A2A.
+title: 换得扩展 card
+claim: 同一次 `GetExtendedAgentCard` 调用在任何 A2A 方法运行之前就以 HTTP 401 失败，附上 token 之后则返回一张多出第二个 skill 的 card.
+caption: 时间向下推进。第 1、2 步来自已捕获的 agent card。第 3、4 步是扩展 card capture 的第 1 次交换，第 6、7 步是第 2 次交换。token 来自平台团队，在 A2A 之外。
 ```
 
 ```listing
-title: GetExtendedAgentCard with a token, and the skill it adds
+title: 带 token 的 GetExtendedAgentCard，以及它增加的 skill
 source: capture/out/18-extended-card.http
 lang: http
-note: Exchange 2, cut to the token and the second skill. The rest of the card equals the public card, without its signatures.
+note: 第 2 次交换，删节到 token 和第二个 skill。card 的其余部分与公开 card 相同，但不含 signatures。
 ---
 ### 2 · GetExtendedAgentCard: with a token
 …
@@ -75,10 +75,10 @@ protected header 包含 `alg`、`typ` 和 `kid` {{spec §8.4.2}}，而 `typ` 那
 签名时，用句点连接 base64url 编码的 header 和规范化的 payload，再用 `kid` 指定的密钥对这个输入签名 {{spec §8.4.2}}。
 
 ```listing
-title: the deployer card, canonicalized, signed, and checked
+title: deployer 的 card：规范化、签名并检查
 source: capture/out/17-signed-card.txt
 lang: text
-note: The payload and the signing input are cut inside their lines. Step 2 prints the header with spaces, and the encoded bytes have none.
+note: payload 和签名输入在各自的行内已删节。第 2 步打印的 header 带有空格，编码后的字节则没有。
 ---
 # 1. canonical payload (RFC 8785): the card without signatures, keys sorted, no spaces
 {"capabilities":{"extendedAgentCard":true,"streaming":true},…"version":"1.4.1"}
@@ -112,9 +112,9 @@ kit 的检查在发布的 card 上通过，在 description 写成 production 的
 ```figure
 id: fig-card-signature
 kind: flow
-title: signing and verifying the deployer card
-claim: The signature covers the RFC 8785 bytes of the card without `signatures`, so an edit to the description changes those bytes and verification fails.
-caption: Read the top half left to right and down, then the bottom half left to right. Steps 5 and 6 are the last two lines of the signed-card capture. Values are shortened to 8 characters.
+title: 对 deployer 的 card 签名并验证
+claim: 签名覆盖不含 `signatures` 的 card 的 RFC 8785 字节，因此改动 description 会改变这些字节，验证随之失败.
+caption: 上半部分从左到右再向下读，然后下半部分从左到右读。第 5、6 步是 signed-card capture 的最后两行。值缩短为 8 个字符。
 ```
 
 客户端在信任一张 Agent Card 之前应至少验证一个签名 {{spec §8.4.3}}，并且绝不使用已过期或已吊销的密钥。像参考 SDK 那样给验证方一个明确的允许算法列表，以防止算法混淆攻击 {{sdk src/a2a/utils/signing.py}}。[安全要求](#s-security-requirements)一节讲解 card 伪造。

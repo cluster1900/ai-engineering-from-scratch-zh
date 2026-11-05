@@ -34,9 +34,9 @@ SGLang 把任何为每条请求写很多 KV 条目的前向叫 "extend"。这就
 ```figure
 id: fig-4-1
 kind: comparison
-title: one decode step, launched and replayed
-claim: In eager mode the CPU launches each kernel of every layer, and in graph mode one replay call runs the whole recorded decode step.
-caption: Read each column top to bottom. Kernel names are the ops of one Llama-style layer. The right column runs only when the batch fits a captured size. From the v0.5.22 decode CUDA graph runner.
+title: 一步 decode，逐个启动与一次回放
+claim: eager 模式下 CPU 为每一层的每个内核各发一次启动，graph 模式下一次回放调用跑完整段录下的 decode 步.
+caption: 每一列从上往下读。内核名是一层 Llama 式层的算子。右列只在 batch 对上某个捕获大小时才跑。来自 v0.5.22 的 decode CUDA graph 运行器。
 ```
 
 这份记录有代价。每个捕获的形状都用 GPU 内存，一批必须精确匹配一个捕获的形状。SGLang 为 decode 付这个代价，并把每批垫到下一个捕获大小。
@@ -61,18 +61,18 @@ caption: Read each column top to bottom. Kernel names are the ops of one Llama-s
 ```figure
 id: fig-4-2
 kind: decision
-title: which decode batches replay a graph
-claim: A decode batch replays the next captured graph when it fits under max_bs, and runs eager with one launch per kernel when it does not.
-caption: Read left to right. The bucket list is the v0.5.22 default without speculative decoding on an 80 GB GPU at TP 1. A batch of 300 runs eager.
+title: 哪些 decode batch 回放一份 graph
+claim: decode batch 在不超过 max_bs 时回放下一个捕获的 graph，装不下时用 eager 跑，每个内核一次启动.
+caption: 从左到右读。桶列表是 v0.5.22 在 80 GB GPU、TP 1、没有推测解码时的默认。300 的 batch 用 eager 跑。
 ```
 
 代码不会用同样的方式改你的 prefill 形状。自 PR #29458（2026-07-01）起，CUDA 构建对 prefill 用可打断的 graph。**Breakable graph：** 一份在每个标成 eager 跑的算子处结束一段、eager 跑那个算子、再开始下一段的捕获。一个带有 graph 装不下的算子的模型，仍为其他每个算子得到 graphs。在其他平台上 prefill graphs 是关的，我们的 Mac 捕获记下了这两点。
 
 ```listing
-title: graph status in the startup log and the first batches
+title: 启动日志和头几批里的 graph 状态
 source: capture/out/server-default.log
 lang: text
-note: Two lines from the default server log. Timestamps and the end of the batch line are cut.
+note: 默认服务器日志里的两行。时间戳和 batch 行的末尾已截去。
 ---
 … Disable prefill CUDA graph because cuda_graph_config resolved prefill.backend='disabled' (e.g. via --cuda-graph-backend-prefill=disabled or auto-disable rules).
 … Prefill batch, #new-seq: 1, #new-token: 6, #cached-token: 0, token usage: 0.00, #running-req: 0, #queue-req: 0, #pending-token: 0, cuda graph: False, …
@@ -111,10 +111,10 @@ Jarvislabs 的现场报告 {{field Jarvislabs 2026-05}} 用默认 SGLang 旗标�
 然后我们在冷却的 L4 上跑了同一对。同一天那一对的每次运行都从 72 C 或以下开始。中位 SM 时钟低于 1,000 MHz 的运行最多重跑三次。第一对跑在两天，2026-10-16 和 2026-10-18。我们在 2026-10-21 又把两台服务器一前一后跑了一遍，同一份 24,094 token 的 pool。表展示同一天那一对。
 
 ```listing
-title: the same batch, with and without a graph
+title: 同一个 batch，有 graph 和没有 graph
 source: capture/gpu/out-l4/server-load-graphs-on-off.log
 lang: text
-note: One decode line from each server of the first pair, on two days, at 33 running requests. The first replayed a graph, the second ran eager.
+note: 第一对里每台服务器一条 decode 行，分两天，33 条请求在跑。第一条回放了 graph，第二条用 eager 跑。
 ---
 [2026-10-16 20:32:22] Decode batch, #running-req: 33, #token: 19597, token usage: 0.81, cuda graph: True, gen throughput (token/s): 319.70, #queue-req: 0
 [2026-10-18 18:01:00] Decode batch, #running-req: 33, #token: 20422, token usage: 0.85, cuda graph: False, gen throughput (token/s): 350.78, #queue-req: 0
@@ -151,10 +151,10 @@ GB10 在同一天没有这种差距。有 graphs 和没有 graphs 的 P99 ITL �
 两个旗标名在 v0.5.22 变了，旧配方会在它们上面坏掉。`--disable-cuda-graph` 仍可用，帮助文本标它为已弃用。
 
 ```listing
-title: the deprecated graph flag in sglang serve --help
+title: sglang serve --help 里已废弃的 graph 旗标
 source: capture/out/serve-help.txt
 lang: text
-note: Two lines from the deprecated flags at the end of the help text.
+note: 帮助文本末尾、已废弃旗标里的两行。
 ---
   --disable-cuda-graph  Deprecated. Use --cuda-graph-
                         backend-{decode,prefill}=disabled instead.

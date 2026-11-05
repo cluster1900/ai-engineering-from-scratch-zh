@@ -11,10 +11,10 @@
 `analyze` 与 `inspect` 是 MCP 操作 `binary_overview` 的别名。配 Ghidra 时，该操作向桥问一个问题，`read_binary_inventory_summary`，并在一次回复里拿到段与两个计数。没有那个问题的 provider 走更老的路径：同时跑 `list_segments`、`list_procedures` 与 `list_strings`。无论哪条路，结果都是带长度的段以及那两个计数。输出 schema 有六个字段：`document`、`image_base`、`segments`、`segment_count`、`procedure_count` 与 `string_count`。每个段还可以带 `image_base` 与 `address_space`。
 
 ```listing
-title: the two overview commands
+title: 两条 overview 命令
 source: capture/out/00-commands.txt
 lang: text
-note: Four lines from the command index. Each call imported its target into a fresh headless project and took 7 to 9 s. The times change on every run and are cut.
+note: 命令索引里的四行。每次调用都把目标导入全新的 headless 项目，花 7 到 9 秒。时间每次运行都会变，已裁。
 ---
 $ rea analyze fixtures/ledger-arm64-O1 --provider ghidra --format json
 [exit 0] (…) -> 05-analyze-arm64-O1.json
@@ -25,10 +25,10 @@ $ rea analyze fixtures/ledger-x86_64-O1.o --provider ghidra --format json
 **Composed operation：** 结果由其他操作构建出来的 rea 操作。它的 Evidence 记录点名 provider `rea-workflow`，把 Ghidra profile 作为 `upstream_analysis_profile` 携带，并有 `confidence: "derived"`。它的第一条 limitation 是 "Derived by an REA composed workflow."。其后是 Ghidra 的 limitations，每一条都以引擎、其版本以及产生它的操作开头，例如 `Ghidra (ghidra 12.1.4) read_binary_inventory_summary:`。profile 参数 `source_limitations: "provider-operation-caveats-v1"` 点名那条规则。像 `list_procedures` 这样的原始操作是 `observed`。
 
 ```listing
-title: the provider block of a composed record
+title: 一份组合记录的 provider 块
 source: capture/out/05-analyze-arm64-O1.json
 lang: json
-note: Cut to the provider, the start of the analysis profile, and the two workflow parameters. The remaining profile parameters are the same in every Ghidra record of this manual.
+note: 裁到 provider、analysis profile 的开头，以及两个 workflow 参数。其余 profile 参数在本手册每一份 Ghidra 记录里都相同。
 ---
 "provider": {
   "id": "rea-workflow",
@@ -64,10 +64,10 @@ note: Cut to the provider, the start of the analysis profile, and the two workfl
 ## arm64 可执行文件 {#s-analyze-overview-the-arm64-executable}
 
 ```listing
-title: binary_overview of ledger-arm64-O1
+title: ledger-arm64-O1 的 binary_overview
 source: capture/out/05-analyze-arm64-O1.json
 lang: json
-note: Cut to the result. Nine of the twelve segment entries and eight of the nine limitations are cut.
+note: 裁到结果。十二个段条目里的九个，以及九条 limitation 里的八条已裁。
 ---
 "normalized_result": {
   "document": "target-01b5d08b08fb.bin",
@@ -123,10 +123,10 @@ note: Cut to the result. Nine of the twelve segment entries and eight of the nin
 ## x86-64 可重定位目标文件 {#s-analyze-overview-the-x86-64-relocatable-object}
 
 ```listing
-title: binary_overview of ledger-x86_64-O1.o
+title: ledger-x86_64-O1.o 的 binary_overview
 source: capture/out/05-analyze-x86_64-O1.json
 lang: json
-note: Cut to the result. The .comment, .rela.rodata, .rela.text, .strtab, .symtab, and _elfHeader entries are cut.
+note: 裁到结果。`.comment`、`.rela.rodata`、`.rela.text`、`.strtab`、`.symtab` 与 `_elfHeader` 条目已裁。
 ---
 "normalized_result": {
   "document": "target-9a4a8082ba5e.o",
@@ -191,9 +191,9 @@ note: Cut to the result. The .comment, .rela.rodata, .rela.text, .strtab, .symta
 ```figure
 id: fig-3-5
 kind: comparison
-title: the two overviews side by side
-claim: The same four functions give 13 procedures in a linked executable and 4 in a relocatable object, because stubs, externals, and an entry point exist only after linking.
-caption: Read each column top to bottom. The green box names the Ghidra document, the list is every block with its length, and the violet box is the record's confidence. From capture/out/05-analyze-arm64-O1.json and 05-analyze-x86_64-O1.json.
+title: 并排的两份 overview
+claim: 同样四个函数在已链接的可执行文件里给出 13 个过程，在可重定位目标文件里给出 4 个，因为 stub、外部符号与入口点只在链接之后才存在.
+caption: 每列从上到下读。绿色框点名 Ghidra 文档，列表是每个块及其长度，紫色框是记录的 confidence。 From `capture/out/05-analyze-arm64-O1.json`, `05-analyze-x86_64-O1.json`。
 ```
 
 ## 概览没说什么 {#s-analyze-overview-what-the-overview-does-not-say}

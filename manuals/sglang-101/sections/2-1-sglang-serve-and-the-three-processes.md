@@ -27,9 +27,9 @@ LinkedIn 在 H100 上用小型排序模型测过这个。单是批量 tokenizati
 ```figure
 id: fig-2-1
 kind: flow
-title: the three processes of one SGLang server
-claim: One request crosses three processes over ZMQ, and only the scheduler touches the model, so text work never runs on the thread that launches GPU steps.
-caption: Read the numbered arrows in order. Blue boxes are SGLang processes, the olive box is the client. Process ids 5782 and 5909 are from the default server log of our Mac run.
+title: 一台 SGLang 服务器的三个进程
+claim: 一条请求经 ZMQ 穿过三个进程，只有 scheduler 碰模型，所以文本工作从不跑在启动 GPU 步的那个线程上.
+caption: 按编号顺序读箭头。蓝色框是 SGLang 进程，橄榄色框是客户端。进程号 5782 和 5909 来自我们 Mac 运行的默认服务器日志。
 ```
 
 开了 tensor parallelism 时，只有 scheduler 的 rank 0 打开 ZMQ socket。它把每条请求广播给其他 rank，好让每块 GPU 组出同一个 batch {{code}}。没有任何 rank 独自做决定。
@@ -39,7 +39,7 @@ caption: Read the numbered arrows in order. Blue boxes are SGLang processes, the
 我们在一台带 MLX 后端的 Apple silicon Mac 上启动了服务器，模型是 4-bit 的 Qwen3 0.6B。`sglang serve` 是 v0.5.22 的推荐命令。更老的 `python -m sglang.launch_server` 仍可用，并打印一条警告，把 `sglang serve` 点名为推荐入口 {{code}}。
 
 ```listing
-title: the server command for every default capture
+title: 每次默认 capture 用的服务器命令
 source: capture/out/server-default.command.txt
 lang: text
 ---
@@ -57,10 +57,10 @@ SGLANG_USE_MLX=1 sglang serve --model-path mlx-community/Qwen3-0.6B-4bit --disab
 启动日志告诉你 SGLang 替你决定了什么。那些数字大多不是你设的旗标。它们是 SGLang 根据你的内存、模型和硬件算出来的值。
 
 ```listing
-title: the limits SGLang computed at startup
+title: SGLang 在启动时算出的上限
 source: capture/out/server-default.log
 lang: text
-note: Lines cut from the startup section. The same lines appear in every capture with different memory numbers.
+note: 从启动段截出的行。每次 capture 都有同样的行，只是内存数字不同。
 ---
 [2026-10-16 13:58:05] max_total_num_tokens=181574, chunked_prefill_size=4096, max_prefill_tokens=16384, max_running_requests=4096, context_len=40960, available_gpu_mem=47.96 GB
 …
@@ -83,7 +83,7 @@ Tree cache 行也重要。从 v0.5.21 起，Linux 上 radix tree 默认跑在 Ru
 在服务器说自己就绪之前，它会给自己发一条请求。然后调用自己的 `/freeze_gc` 端点。
 
 ```listing
-title: the warm-up request and the frozen garbage collector
+title: warm-up 请求和冻结的垃圾回收器
 source: capture/out/server-default.log
 lang: text
 ---
@@ -100,7 +100,7 @@ lang: text
 进程拆分最清楚的证据出现在服务器停下来时。我们的 capture kit 用 SIGTERM 停掉每台服务器。
 
 ```listing
-title: shutdown, seen from the main process
+title: 从主进程看到的关闭
 source: capture/out/server-default.log
 lang: text
 ---

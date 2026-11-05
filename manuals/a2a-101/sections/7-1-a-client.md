@@ -17,10 +17,10 @@ planner 只有一项工作：把一个变更交付到 `payments-api`。它必须
 每次委派都是一个不带 `returnImmediately` 的 `SendMessage`。它会阻塞，直到任务到达终止状态或中断状态，正如 [SendMessage](#s-send-message) 一节所解释的。bearer 令牌只发给 card 要求令牌的 agent，如[安全方案](#s-security-schemes-and-in-task-authorization)一节所述。然后一个循环根据回复分支。
 
 ```listing
-title: delegate, the loop that switches on every reply
+title: delegate，根据每个回复分支的循环
 source: capture/planner.py
 lang: python
-note: The loop of the delegate method, complete. The lines above it, which pick the agent and send the message, are cut.
+note: delegate 方法的循环，完整保留。它上方用于选择 agent 并发送消息的那些行已删节。
 ---
         while True:
             if "error" in reply:
@@ -55,10 +55,10 @@ note: The loop of the delegate method, complete. The lines above it, which pick 
 订阅的第一帧是任务的快照，如[流式传输](#s-streaming-and-subscribe-to-task)一节所示。planner 先订阅，只有在那个快照到达时才叫操作员。
 
 ```listing
-title: follow, until the stream ends
+title: follow，直到流结束
 source: capture/planner.py
 lang: python
-note: The whole method. The operator call stands in for a person who approves outside A2A.
+note: 整个方法。对操作员的调用代表一个在 A2A 之外做批准的人。
 ---
     def follow(self, agent, task, headers):
         def on_frame(index, event):
@@ -80,9 +80,9 @@ note: The whole method. The operator call stands in for a person who approves ou
 ```figure
 id: fig-planner-run
 kind: flow
-title: the planner's run, decision by decision
-claim: The planner reads three cards, delegates three skills in turn, answers a question, escalates an approval, and decides from data parts before each next step.
-caption: Read the three lanes left to right, then the decisions row. Each lane is one delegation, top to bottom, with the states the replies carried. Task ids are shortened to 8 characters. From capture/out/19-planner.log and 19-planner.http.
+title: planner 的这次运行，一个决定接一个决定
+claim: planner 读取三张 card，依次委派三个 skill，回答一个问题，把一次批准交给操作员，并在每一步之前根据 data part 做决定.
+caption: 三条泳道从左到右读，然后读决定那一行。每条泳道是一次委派，从上到下，标出回复所带的状态。任务 id 缩短为 8 个字符。来自 capture/out/19-planner.log 和 19-planner.http。
 ```
 
 每个决定都读取一个数据 part，绝不读取自由文本：从 `summary.json` 读取 `passed` 和 `failed`，从 `review.json` 的每个发现中读取 `severity`。在 commit `9f3c2e1` 上有一个测试失败，planner 会在审查之前停止。

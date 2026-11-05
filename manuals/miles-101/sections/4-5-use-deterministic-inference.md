@@ -21,10 +21,10 @@
 在我们的 GB10 上，`triton` 和 `flashinfer` 加上这个参数都能启动。引擎还会切换它的采样器，日志里也会写明：
 
 ```listing
-title: the engine changes its sampler for deterministic mode
+title: 引擎为确定性模式更换采样器
 source: capture/gpu/out-gb10/deterministic-sampler.log
 lang: text
-note: One line from the Triton run and one from the FlashInfer run.
+note: 一行来自 Triton 运行，一行来自 FlashInfer 运行。
 ---
 [2026-10-21 13:45:36] Sampling backend is set to pytorch for deterministic inference.
 [2026-10-21 14:55:18] Sampling backend is set to pytorch for deterministic inference.
@@ -56,9 +56,9 @@ note: One line from the Triton run and one from the FlashInfer run.
 ```figure
 id: fig-4-5
 kind: chart
-title: Deterministic inference repeats, and the gap stays
-claim: The two deterministic Triton runs gave the same gap at step 0, and all four runs kept a gap near 0.015.
-caption: The logprob gap per step for four 12-step runs with seed 1.
+title: 确定性推理能够重复，差距保持不变
+claim: 两次确定性的 Triton 运行在第 0 步给出相同的差距，四次运行的差距都保持在 0.015 附近.
+caption: 四次种子为 1 的 12 步运行里，每一步的 log 概率差距。
 ```
 
 ## 代价 {#s-use-deterministic-inference-the-cost}

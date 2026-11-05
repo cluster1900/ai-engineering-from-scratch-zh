@@ -9,10 +9,10 @@
 ## 这次调用 {#s-xrefs-and-the-jump-table-the-call}
 
 ```listing
-title: xrefs for the entry of _grade
+title: _grade 入口的 xrefs
 source: capture/out/10-mcp-07-xrefs-grade.json
 lang: json
-note: The request arguments, the result, and two of the seven limitations.
+note: 请求参数、结果，以及七条 limitation 里的两条。
 ---
 "name": "xrefs",
 "arguments": {
@@ -40,10 +40,10 @@ note: The request arguments, the result, and two of the seven limitations.
 **函数起点：** 一张无符号 LEB128 差值表，每个函数一项，dyld 与调试器用它在剥离映像里找函数入口。fixture 里的八个字节是 `80 0a 18 3c 34 48 00 00`。第一个差值是 `0x500`，给出 `0x100000500`，`_percent_change`。第二个，在偏移 33050，是 `0x18`，给出 `0x100000518`，`_grade`。然后 `0x3c` 给出 `_total`，`0x34` 给出 `_grade_label`，`0x48` 给出 `entry`。Ghidra 的 Mach-O 加载器把每一项标成对其所命名函数的数据引用，而 dossier 正好显示这一点。
 
 ```listing
-title: the one incoming reference of _grade
+title: _grade 的那一条进入引用
 source: capture/out/06-function-grade.json
 lang: json
-note: Cut from incoming_references. The target_procedure block repeats the procedure block of section 4.2 and is cut.
+note: 从 `incoming_references` 裁出。`target_procedure` 块重复第 4.2 节的 procedure 块，已裁。
 ---
 "incoming_references": [
   {
@@ -68,10 +68,10 @@ note: Cut from incoming_references. The target_procedure block repeats the proce
 `source_procedure` 是 `null`，因为没有函数拥有这张表。种类是 `DATA`，且 `call` 为 false。所以代码里没有任何东西调用 `_grade`。对比 `_grade_label`，其 dossier 列出两次传入引用。一次是来自 `entry` 内部 `0x1000006ec` 的 `UNCONDITIONAL_CALL`。另一次是来自 `0x10000811c` 的 `DATA` 引用，也就是同一张表的第四项。
 
 ```listing
-title: the two incoming references of _grade_label
+title: _grade_label 的两条进入引用
 source: capture/out/10-mcp-12-analyze-function-grade-label-O1.json
 lang: json
-note: Cut from incoming_references to the addresses and the reference types.
+note: 从 `incoming_references` 裁到地址与引用类型。
 ---
 "source_address": "0x1000006ec",
 "target_address": "0x100000588",
@@ -90,9 +90,9 @@ note: Cut from incoming_references to the addresses and the reference types.
 ```figure
 id: fig-4-6
 kind: tree
-title: every reference to the four ledger functions
-claim: entry calls three of the four functions, the function starts table refers to all four, and nothing calls _grade because its body was inlined.
-caption: Read across each row. Green boxes on the left are call sites inside entry, violet boxes are the functions, green boxes on the right are entries of LC_FUNCTION_STARTS. From the four analyze_function dossiers and capture/fixtures/ledger-arm64-O1.
+title: 对四个 ledger 函数的每一条引用
+claim: `entry` 调用四个函数里的三个，函数起点表指向全部四个，没有东西调用 `_grade`，因为它的函数体被内联了.
+caption: 每一行横着读。左边的绿色框是 `entry` 里的调用点，紫色框是函数，右边的绿色框是 `LC_FUNCTION_STARTS` 的条目。 From 四份 `analyze_function` dossier 与 `capture/fixtures/ledger-arm64-O1`。
 ```
 
 ## 并不存在的跳转表 {#s-xrefs-and-the-jump-table-the-jump-table-that-is-not-there}
@@ -112,9 +112,9 @@ caption: Read across each row. Green boxes on the left are call sites inside ent
 ```figure
 id: fig-4-5
 kind: comparison
-title: a jump table at -O0 and a value table at -O1
-claim: At -O0 an indirect jump through five relocated entries reaches five case blocks, and at -O1 one load from five values replaces all of them.
-caption: Read each column top to bottom. The left column comes from the lesson 33 fixture ledger-x86_64-O0.o, the right from the arm64 dossier. The green boxes are data in the file, the violet boxes are what Ghidra saw. From phases/13-tools-and-protocols/33-disassembly-and-control-flow/code/fixtures and capture/out/06-function-grade.json.
+title: -O0 的一张跳转表与 -O1 的一张值表
+claim: 在 -O0，经五个重定位条目的间接跳转到达五个 case 块，在 -O1，从五个值的一次加载替换了全部.
+caption: 每列从上到下读。左列来自第 33 课 fixture `ledger-x86_64-O0.o`，右列来自 arm64 dossier。绿色框是文件里的数据，紫色框是 Ghidra 看到的。 From `phases/13-tools-and-protocols/33-disassembly-and-control-flow/code/fixtures`, `capture/out/06-function-grade.json`。
 ```
 
 [第 33 课](phases/13-tools-and-protocols/33-disassembly-and-control-flow) 用规则 `S + A - P` 从重定位恢复 `-O0` 表。它展示有表与无表的控制流图：8 个块与 11 条边，对上 3 个块与一次未解析的跳转。

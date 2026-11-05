@@ -54,9 +54,9 @@ source: readme DISCLAIMER.md, Responsible use
 ```figure
 id: fig-2-1
 kind: decision
-title: five questions before the first command
-claim: Five questions from 17 USC 1201(f), Directive 2009/24/EC, Sega, and Connectix stand before the first command, and the fixtures of this manual answer all five by construction.
-caption: Read the five questions from the top down, and follow a dashed rose arrow at the first no. The references are the statutes and decisions that the sources reference lists.
+title: 第一条命令之前的五个问题
+claim: 来自 17 USC 1201(f)、Directive 2009/24/EC、Sega 与 Connectix 的五个问题站在第一条命令之前，本手册的 fixture 按构造回答了全部五个.
+caption: 五个问题从上往下读，在第一个否处沿虚线玫瑰色箭头走。引用是源参考列出的成文法与判决。
 ```
 
 ## 本手册的规则 {#s-the-readme-use-rule-and-the-law-the-rule-of-this-manual}
@@ -64,10 +64,10 @@ caption: Read the five questions from the top down, and follow a dashed rose arr
 本手册里每一个目标都是为它写的程序。`ledger.c` 与 `ledger-main.c` 是 C 源，`js-app/` 是一个六文件应用，`wasm/ledger.wat` 是手写模块。捕获套件记录它们的哈希与大小：
 
 ```listing
-title: the fixtures and their hashes
+title: fixture 及其哈希
 source: capture/out/00-fixtures.txt
 lang: text
-note: Cut to the two C sources, the two arm64 executables, the module, and its text. The object files, the JavaScript files, and the smoke-test program are cut.
+note: 裁到两份 C 源、两个 arm64 可执行文件、模块及其文本。目标文件、JavaScript 文件与 smoke-test 程序已裁。
 ---
 01b5d08b…   33872  fixtures/ledger-arm64-O1
 …

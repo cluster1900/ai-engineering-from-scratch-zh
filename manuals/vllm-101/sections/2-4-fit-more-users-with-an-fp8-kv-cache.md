@@ -23,9 +23,9 @@ vllm serve Qwen/Qwen3-8B --kv-cache-dtype fp8
 ```figure
 id: fig-2-4
 kind: chart
-title: the KV tokens in one GiB
-claim: For Qwen3-8B, one GiB of KV cache holds about 7,300 tokens in BF16 and about 14,600 tokens in FP8.
-caption: The numbers come from the bytes per token, not from a run. From the model config of Qwen/Qwen3-8B.
+title: 1 GiB 里的 KV token 数
+claim: 对 Qwen3-8B 来说，1 GiB 的 KV cache 在 BF16 下大约容纳 7,300 个 token，在 FP8 下大约容纳 14,600 个 token.
+caption: 这些数字来自每 token 的字节数，不是来自一次运行。来自 Qwen/Qwen3-8B 的模型配置。
 ```
 
 同样的显存能容纳两倍的 token。所以在相同长度下能容纳两倍的用户，或者每个用户的上下文可以长一倍。
@@ -40,10 +40,10 @@ caption: The numbers come from the bytes per token, not from a run. From the mod
 4. FlashInfer 在第一次启动时构建它的 kernel。在我们的节点上，这次构建失败了。
 
 ```listing
-title: the FlashInfer build error on our L4
+title: 我们 L4 上的 FlashInfer 构建错误
 source: capture/gpu/incidents/l4-vllm-kv-fp8-flashinfer-attention-jit.txt
 lang: text
-note: Our FP8 start on 2026-10-22. vLLM picked FlashInfer from two valid backends. The build of its FP8 prefill kernel failed, because the CUDA compiler and the CUDA headers came from different releases.
+note: 我们 2026-10-22 的那次 FP8 启动。vLLM 在两个可用 backend 里选了 FlashInfer。它的 FP8 prefill kernel 构建失败，因为 CUDA 编译器和 CUDA 头文件来自不同版本。
 ---
 (EngineCore pid=814129) INFO 10-22 09:11:03 [cuda.py:526] Using FLASHINFER attention backend out of potential backends: ['FLASHINFER', 'TRITON_ATTN'].
 (EngineCore pid=814129) ERROR 10-22 09:11:53 [core.py:1433] /data/vllm/.venv/lib/python3.12/site-packages/flashinfer/data/cccl/libcudacxx/include/cuda/std/__cccl/cuda_toolkit.h:41:8: error: #error "CUDA compiler and CUDA toolkit headers are incompatible, please check your include paths"
@@ -80,10 +80,10 @@ VLLM_USE_FLASHINFER_SAMPLER=0 vllm serve Qwen/Qwen3-8B --kv-cache-dtype fp8 --at
 2026-10-23，我们在 L4 上运行了前 500 道 GSM8K 题目，8-shot、贪心解码。Qwen3-8B 没有 KV scale，所以 FP8 KV 的运行使用的 scale 是 1.0。FP8 KV 的运行与上文一样使用 Triton 后端。
 
 ```listing
-title: GSM8K accuracy, 500 questions, 8-shot, Qwen3-8B on vLLM 0.31.0
+title: GSM8K 准确率，500 题，8-shot，Qwen3-8B，vLLM 0.31.0
 source: capture/gpu/out-l4/gsm8k-fp8-accuracy.txt
 lang: text
-note: The vLLM rows. The SGLang rows of the same file are cut.
+note: vLLM 的几行。同一文件里 SGLang 的几行已略去。
 ---
 engine   config                     correct   accuracy   Wilson 95% interval
 …

@@ -9,10 +9,10 @@
 ## open_binary {#s-open-binary-and-the-headless-bridge-open-binary}
 
 ```listing
-title: the open_binary exchange
+title: open_binary 交换
 source: capture/out/10-mcp-03-open-binary-O1.json
 lang: json
-note: The request and the result. The text copy of the result is cut by the capture kit.
+note: 请求与结果。结果的文本副本由抓取套件裁掉。
 ---
 "method": "tools/call",
 "params": {
@@ -39,10 +39,10 @@ note: The request and the result. The text copy of the result is cut by the capt
 选择会等待 provider 的就绪检查。在抓取用的 Mac 上，服务器日志显示第一次 `open_binary` 大约 1.6 s，第二次大约 0.4 s。设计文档允许这次等待：就绪检查可以等待它拥有的命令。发行版 6.5.0 以 36 ms 与 1 ms 回答同样的调用。两个版本在这一步都不导入目标。
 
 ```listing
-title: the binding that binary_session reports
+title: binary_session 报告的绑定
 source: capture/out/10-mcp-04-binary-session.json
 lang: json
-note: Cut to the provider binding and the server identity. The capabilities, candidates, and tool availability lists are cut.
+note: 裁到 provider 绑定与服务器身份。capabilities、候选与工具可用性列表已裁。
 ---
 "open": true,
 …
@@ -86,10 +86,10 @@ source: mcp §Ghidra first-query deadlines and recovery
 ## 第一次由 Ghidra 支撑的调用 {#s-open-binary-and-the-headless-bridge-the-first-ghidra-backed-call}
 
 ```listing
-title: six calls from the session index
+title: 会话索引里的六次调用
 source: capture/out/10-mcp-session.txt
 lang: text
-note: Lines 03 to 08 of the index. The time in parentheses is measured by the capture client around each call, changes on every run, and is cut.
+note: 索引的第 03 到 08 行。括号里的时间由抓取客户端在每次调用前后测量，每次运行都会变，已裁。
 ---
 03  tools/call open_binary              ok     -> 10-mcp-03-open-binary-O1.json  (…)
 04  tools/call binary_session           ok     -> 10-mcp-04-binary-session.json  (…)
@@ -100,10 +100,10 @@ note: Lines 03 to 08 of the index. The time in parentheses is measured by the ca
 ```
 
 ```listing
-title: the same calls in the server log
+title: 服务器日志里的同几次调用
 source: capture/out/10-mcp-server.log
 lang: jsonl
-note: The first five lines of the stderr of rea mcp. durationMs is measured inside the server. The time and durationMs values change on every run and are cut.
+note: `rea mcp` 的 stderr 前五行。`durationMs` 在服务器内部测量。time 与 `durationMs` 的值每次运行都会变，已裁。
 ---
 {"level":30,"time":…,"application":"rea","mode":"mcp","layer":"server","tool":"open_binary","durationMs":…,"status":"ok","msg":"MCP tool execution completed"}
 {"level":30,"time":…,"application":"rea","mode":"mcp","layer":"server","tool":"list_procedures","durationMs":…,"status":"ok","msg":"MCP tool execution completed"}
@@ -139,9 +139,9 @@ note: The first five lines of the stderr of rea mcp. durationMs is measured insi
 ```figure
 id: fig-4-1
 kind: sequence
-title: one open and three questions over MCP
-claim: The open call returns after the readiness checks with no import, the first question waits seconds for the headless import, and the next takes under 100 ms.
-caption: Time runs down. Solid arrows are calls, dashed arrows are replies. The violet lanes are rea's Ghidra client and the Java bridge inside analyzeHeadless. The times are the ranges that the kit notes record. From capture/out/10-mcp-server.log and 10-mcp-session.txt.
+title: 经 MCP 的一次打开与三个问题
+claim: open 调用在就绪检查之后返回，没有导入，第一个问题为无头导入等待数秒，下一个不到 100 ms.
+caption: 时间向下走。实线箭头是调用，虚线箭头是回复。紫色泳道是 rea 的 Ghidra 客户端，以及 `analyzeHeadless` 里的 Java 桥。时间是套件说明记下的范围。 From `capture/out/10-mcp-server.log`, `10-mcp-session.txt`。
 ```
 
 ## Java 一侧的桥 {#s-open-binary-and-the-headless-bridge-the-bridge-on-the-java-side}
@@ -153,9 +153,9 @@ caption: Time runs down. Solid arrows are calls, dashed arrows are replies. The 
 ```figure
 id: fig-4-2
 kind: tree
-title: the private runtime root of one session
-claim: One session owns one directory with the project, the hashed target copy, the descriptor, the socket, and the logs, and close_binary deletes it.
-caption: Read top to bottom. Each entry names the file or directory and what writes it. From src/ghidra/GhidraLauncher.ts and src/ghidra/GhidraClient.ts at rea 6.7.0, and capture/out/05-analyze-arm64-O1.json for the document name.
+title: 一次会话的私有运行时根
+claim: 一次会话拥有一个目录，里面是项目、哈希过的目标副本、描述符、套接字与日志，`close_binary` 删除它.
+caption: 从上到下读。每一条点名文件或目录，以及谁写入它。 From `src/ghidra/GhidraLauncher.ts`, `src/ghidra/GhidraClient.ts`，rea 6.7.0，文档名来自 `capture/out/05-analyze-arm64-O1.json`。
 ```
 
 ## 截止时间与关闭 {#s-open-binary-and-the-headless-bridge-deadlines-and-the-close}

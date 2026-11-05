@@ -28,10 +28,10 @@ docker run -it --gpus all \
 镜像存在的理由，是 pip 安装会藏起来的。**我们测过**这一点：一台主机有两块 NVIDIA L4、Ubuntu 24.04、驱动，没有 CUDA toolkit。`pip install sglang==0.5.22` 没有报错就结束了。第一次 `sglang serve` 随后失败，接下来三次也失败，每一次是新的原因：
 
 ```listing
-title: four starts, four missing pieces
+title: 四次启动，四块缺失
 source: capture/gpu/incidents/l4-toolchain-failures.txt
 lang: text
-note: The first error line of each attempt. Repeated lines and progress bars are cut.
+note: 每次尝试的第一行错误。重复的行和进度条已截去。
 ---
 === attempt: out-l4-nopyheaders/server-default.log
 <site-packages>/triton/backends/nvidia/driver.c:9:10: fatal error: Python.h: No such file or directory
@@ -65,10 +65,10 @@ note: The first error line of each attempt. Repeated lines and progress bars are
 一个新的 SGLang 进程加载权重、编译或加载内核、定好 KV 池大小，并捕获 graph。我们的抓取把每个阶段记在一行上。这次跑用的模型已经在磁盘上：
 
 ```listing
-title: startup phases of the default server
+title: 默认服务器的启动阶段
 source: capture/out/server-default.log
 lang: text
-note: One line from the startup log. The CUDA graph fields are all 0.00 because the MLX path captures no CUDA graphs.
+note: 启动日志里的一行。CUDA graph 字段全是 0.00，因为 MLX 路径不捕获 CUDA graph。
 ---
 [2026-10-16 13:58:06] Engine startup timings (s): load_weight=0.00, kv_cache_allocation=0.00, scheduler_e2e=7.01, cuda_graph={prefill=0.00, decode=0.00, target_verify=0.00, draft_prefill=0.00, draft_decode=0.00, draft_extend=0.00}, tokenizer_e2e=11.92
 ```
@@ -100,18 +100,18 @@ SGLang 有两类健康端点 {{code}}：
 ```figure
 id: fig-7-1
 kind: state
-title: three ways an SGLang server stops
-claim: Only a SIGTERM to the main process drains running requests, and a forced exit or a signal to the process group stops work in progress.
-caption: Read left to right along the top for the graceful path, then down for the two other paths. The numbers match the key. From capture/out/shutdown-exploratory.log, capture/out/server-default.log, and the shutdown code at v0.5.22.
+title: 一台 SGLang 服务器停下的三种方式
+claim: 只有发给主进程的 SIGTERM 会排空正在跑的请求，强制退出或发给进程组的信号会停掉进行中的活.
+caption: 沿顶部从左到右读优雅退出那条路径，再往下读另外两条。数字与图例相符。来自 capture/out/shutdown-exploratory.log、capture/out/server-default.log，以及 v0.5.22 的关闭代码。
 ```
 
 **我们测过** Mac 上的两种情况。我们的抓取套件通过向整个进程组发 SIGTERM 停掉每一台服务器。调度器子进程也收到信号并先死：
 
 ```listing
-title: SIGTERM to the process group
+title: 发给进程组的 SIGTERM
 source: capture/out/server-default.log
 lang: text
-note: Four consecutive lines from the end of the default run.
+note: 默认这次跑末尾连续的四行。
 ---
 [2026-10-16 14:01:45] SIGTERM received. signum=None frame=None. Draining requests and shutting down...
 [2026-10-16 14:01:45] Subprocess scheduler_0 (pid=5909) crashed with exit code -15. Triggering SIGQUIT for cleanup...
@@ -122,10 +122,10 @@ note: Four consecutive lines from the end of the default run.
 父进程看到崩溃的子进程，走上崩溃路径，并杀掉进程树。那一刻没有请求在跑，所以什么都没丢。在负载下，每一个在跑的请求都会失败。然后我们启动一台服务器，给它发一条要 3,000 个输出 token 的请求，并只向主进程发 SIGTERM：
 
 ```listing
-title: SIGTERM to the main process, with one request running
+title: 发给主进程的 SIGTERM，有一条请求在跑
 source: capture/out/shutdown-exploratory.log
 lang: text
-note: Lines cut from the log of a separate run. Decode batch lines between them are cut.
+note: 从另一次跑的日志截出。中间的 decode batch 行已截去。
 ---
 [2026-10-16 14:13:54] SIGTERM received. signum=None frame=None. Draining requests and shutting down...
 …
@@ -140,10 +140,10 @@ note: Lines cut from the log of a separate run. Decode batch lines between them 
 ```
 
 ```listing
-title: what the client saw
+title: 客户端看到的
 source: capture/out/shutdown-exploratory.txt
 lang: text
-note: The whole output of the probe script.
+note: 探针脚本的全部输出。
 ---
 health before SIGTERM: 200
 sent SIGTERM to the server process only
@@ -177,10 +177,10 @@ server exit code: 0
 我们在 SGLang 0.5.22 上看到这一点，配 `Qwen/Qwen3-0.6B`、8,192 token 的池，以及[第 3.5 节](#s-eviction-policies-and-hicache) 的那条轨迹。从第四轮起，池几乎在每一步都驱逐前缀。CUDA graph 与 overlap 调度器是开的，那是默认。这些跑在 2026-10-23 我们 L4 节点的第二块 GPU 上，其所有者共享它，且没有锁时钟。
 
 ```listing
-title: aborts and hangs by variant, same server and trace
+title: 按变体统计的中止与挂起，同一台服务器、同一条轨迹
 source: capture/gpu/out-l4/small-pool-crash.txt
 lang: text
-note: The tally from the summary. A hang is a log with no new line for 5 minutes, or a run longer than 15 minutes.
+note: 摘要里的计数。挂起是 5 分钟没有新日志行，或一次跑超过 15 分钟。
 ---
 variant                                          runs   aborts   hangs   clean
 lru, CUDA graph and overlap on (default)         6      1        3       2
@@ -205,9 +205,9 @@ lru, HiCache, CUDA_LAUNCH_BLOCKING=1             2      0        0       2
 ```figure
 id: fig-7-1b
 kind: flow
-title: the order to change SGLang settings
-claim: Measure first, then fix memory, prompts, and concurrency, and only then touch kernels, parallelism, and disaggregation.
-caption: Read top to bottom. Each row is one setting or action, with the measurement that justifies it and the section that shows that measurement.
+title: 改 SGLang 设置的顺序
+claim: 先测量，再修内存、prompt 和并发，最后才动内核、并行和拆开 prefill 与 decode.
+caption: 从上往下读。每一行是一项设置或动作，旁边是证明它的测量，以及展示那次测量的节。
 ```
 
 1. 用 `sglang.benchmark.serving` 在三个并发级别上测量，如[第 5.1 节](#s-sglang-benchmark-serving)。没有基线，后面的改动就没有数字。

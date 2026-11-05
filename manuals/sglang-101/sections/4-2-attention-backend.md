@@ -41,9 +41,9 @@
 ```figure
 id: fig-4-3
 kind: decision
-title: the default attention backend at v0.5.22
-claim: SGLang picks the attention backend from the GPU generation and the attention type of the model, and each branch records a measured limit.
-caption: Read top to bottom. MHA models follow the left path and MLA models the right. Hopper means CUDA 12.3 or later. From get_default_attn_backend at v0.5.22.
+title: v0.5.22 的默认 attention 后端
+claim: SGLang 按 GPU 代际和模型的 attention 类型选 attention 后端，每条分支记下一个测过的上限.
+caption: 从上往下读。MHA 模型走左边，MLA 模型走右边。Hopper 指 CUDA 12.3 或更新。来自 v0.5.22 的 get_default_attn_backend。
 ```
 
 对 MHA 模型，例如 Llama 和 Qwen，顺序是这样：
@@ -76,10 +76,10 @@ v0.5.22 文档里的 attention 后端页仍列出 Cutlass MLA 和 Dual Chunk Fla
 我们在一块 L4 上用 `Qwen/Qwen3-8B` 跑了 [第 5.1 节](#s-sglang-benchmark-serving) 的负载扫描，每个点三个种子。默认服务器把后端解析成 `flashinfer`，跑在 2026-10-16。第二台服务器设 `--attention-backend triton`，跑在 2026-10-18。两者都有同一份 24,094 token 的 pool，并回放最多 48 条正在跑请求的 decode graphs。每次运行的中位 SM 时钟都是 1,000 MHz 或更高。
 
 ```listing
-title: the Triton server under load
+title: 负载下的 Triton 服务器
 source: capture/gpu/out-l4/server-load-triton.log
 lang: text
-note: The pool at startup, and one decode line at 33 running requests.
+note: 启动时的 pool，以及 33 条请求在跑时的一条 decode 行。
 ---
 [2026-10-18 14:28:40] KV Cache is allocated. dtype: torch.bfloat16, #tokens: 24094, K size: 1.65 GB, V size: 1.65 GB
 [2026-10-18 16:11:42] Decode batch, #running-req: 33, #token: 20422, token usage: 0.85, cuda graph: True, gen throughput (token/s): 311.50, #queue-req: 0

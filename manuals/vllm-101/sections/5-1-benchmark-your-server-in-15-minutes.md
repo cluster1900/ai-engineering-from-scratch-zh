@@ -50,10 +50,10 @@ done
 不要把这个跳变当作拐点。这次扫描在不同用户数之间没有重置 prefix cache，而且每个种子在每个用户数下发送的头几个 prompt 都相同。在 32 个用户以下，很多请求在 cache 里找到了自己的 prompt。2026-10-23 我们又跑了一次扫描，每次运行前都重置，并把时钟锁在 900 MHz：
 
 ```listing
-title: median TTFT with and without a cache flush, Qwen3-8B on our L4 at 900 MHz
+title: 有无清空 cache 时的 TTFT 中位数，我们 L4 上的 Qwen3-8B，900 MHz
 source: capture/gpu/out-l4/load-flushed-vs-unflushed.txt
 lang: text
-note: The median TTFT rows. The share that met the target and the P99 ITL lines are cut.
+note: TTFT 中位数那几行。达到目标的比例和 P99 ITL 那几行已略去。
 ---
 median TTFT, flushed against unflushed
 users   vLLM                                   SGLang
@@ -71,9 +71,9 @@ users   vLLM                                   SGLang
 ```figure
 id: fig-5-1
 kind: chart
-title: the throughput peak of the old sweep
-claim: Without a cache reset, output peaked at 275 tokens per second at 32 users, which is the throughput peak and not the latency knee.
-caption: Users double at each step on the axis. The band spans the lowest and highest of three runs. The figure and the table show the same sweep of 2026-10-21, which had no cache reset. The latency knee with a reset is between 8 and 16 users, as the text says. From capture/gpu/summary/l4.json.
+title: 旧扫描的吞吐峰值
+claim: 没有重置 cache 时，输出在 32 个用户处达到每秒 275 个 token 的峰值，这是吞吐峰值，而不是延迟拐点.
+caption: 横轴上每一档的用户数翻倍。色带覆盖三次运行的最低值和最高值。这张图和表格是同一次 2026-10-21 的扫描，当时没有重置 cache。有重置时，延迟拐点在 8 到 16 个用户之间，如正文所说。来自 capture/gpu/summary/l4.json。
 ```
 
 ## 避开四个错误 {#s-benchmark-your-server-in-15-minutes-avoid-the-four-mistakes}
@@ -90,10 +90,10 @@ prefix cache 保留之前 prompt 的 KV 块。它会在两次运行之间改变�
 为了看出对速度的影响，我们用同一个种子、不重置，把同一负载跑了两次。这是 2026-10-22 和 2026-10-23 在我们 L4 节点的第二块 GPU 上进行的。我们用了 `Qwen/Qwen3-0.6B`，16 个用户发 64 个 prompt，输入 512 token，输出 128 token。那块 GPU 与其所有者共享，也没有锁频，所以请相信比值，而不是时间。
 
 ```listing
-title: median TTFT in ms, the same load four times in a row
+title: 同一负载连跑四次的 TTFT 中位数，单位 ms
 source: capture/gpu/out-l4/prefix-cache-flush.txt
 lang: text
-note: The vLLM row of the summary. The SGLang row is cut.
+note: 摘要里的 vLLM 行。SGLang 行已略去。
 ---
 engine        fresh   repeat, not flushed   repeat after a flush   repeat, not flushed
 …
@@ -137,10 +137,10 @@ done
 2026-10-23，我们用 `Qwen/Qwen3-0.6B` 让三个客户端对同一个 vLLM 服务器进行测试：SGLang 客户端、`vllm bench serve` 和它的 Rust 版本。这是在我们 L4 节点共享的第二块 GPU 上。它的时钟在降频，但每次运行都保持在 420 到 495 MHz。每次运行前我们都重置 cache，并在两轮中交替使用各客户端。
 
 ```listing
-title: output tok/s from three clients, two rounds each
+title: 三个客户端的输出 tok/s，各跑两轮
 source: capture/gpu/out-l4/bench-client-bias.txt
 lang: text
-note: The rows at 64 users from the throughput table. The other rows and the TTFT table are cut.
+note: 吞吐表里 64 个用户的几行。其余的行和 TTFT 表已略去。
 ---
 users   temperature   SGLang client    vllm bench       vllm bench, Rust
 …

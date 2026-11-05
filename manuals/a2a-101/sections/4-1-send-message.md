@@ -50,9 +50,9 @@ source: spec §3.2.2
 ```figure
 id: fig-message-or-task
 kind: decision
-title: one method, two result shapes
-claim: The same `SendMessage` to `code-reviewer` returns a message for a question and a task for a diff, and only the task gives the client something to follow.
-caption: Read top down. The agent's own logic picks the shape, here the review_quick rule of the kit's agent code. Left, the captured message reply. Right, the captured input-required task. Ids are shortened to 8 characters.
+title: 一个方法，两种结果形状
+claim: 发给 `code-reviewer` 的同一次 `SendMessage`，对问题返回一条消息，对 diff 返回一个任务，只有任务给客户端留下可以跟进的东西.
+caption: 从上到下读。形状由 agent 自己的逻辑选择，这里是 kit 的 agent 代码中的 review_quick 规则。左侧是已捕获的消息回复。右侧是已捕获的 input-required 任务。id 缩短为 8 个字符。
 ```
 
 ## 立即返回并用 GetTask 轮询 {#s-send-message-returning-at-once-and-polling-with-gettask}
@@ -62,10 +62,10 @@ caption: Read top down. The agent's own logic picks the shape, here the review_q
 **轮询：** 用 `GetTask` 读取任务，直到它的状态告诉你停下。在 `04-polling.http` 中，kit 用 `returnImmediately` 发送，然后以 `historyLength` 0 轮询任务 `d0c28826` 两次：
 
 ```listing
-title: a send that returns at once, then two polls
+title: 一次立即返回的发送，然后两次轮询
 source: capture/out/04-polling.http
 lang: json
-note: The send and the first GetTask request are cut to their key lines. The second GetTask request matches the first apart from its JSON-RPC id. Each reply is cut to its state, and the first poll also shows its one log part.
+note: 发送和第一次 GetTask 请求删节到关键行。第二次 GetTask 请求除 JSON-RPC id 外与第一次相同。每个回复删节到其 state，第一次轮询还展示了它唯一的日志 part。
 ---
     "configuration": {
       "returnImmediately": true
@@ -91,9 +91,9 @@ note: The send and the first GetTask request are cut to their key lines. The sec
 ```figure
 id: fig-blocking-and-return
 kind: timeline
-title: a blocking call and a call that returns at once
-claim: A blocking send holds one request open until this task completes, while `returnImmediately` answers at `TASK_STATE_SUBMITTED` and leaves the client to poll.
-caption: Both tasks are aligned at the request and run through the same states on the kit's clock. Filled squares are states a reply showed the client, and hollow squares are states it never saw. Green ticks are artifact updates, and violet bars are open requests. From capture/out/03-blocking-task.http and 04-polling.http.
+title: 一次阻塞调用，和一次立即返回的调用
+claim: 阻塞发送把一个请求保持打开，直到这个任务完成；`returnImmediately` 则在 `TASK_STATE_SUBMITTED` 时回答，并把轮询留给客户端.
+caption: 两个任务在请求处对齐，并在 kit 的时钟上经过同样的状态。实心方块是回复向客户端展示过的状态，空心方块是它从未看到的状态。绿色刻度是 artifact 更新，紫色条是仍打开的请求。来自 capture/out/03-blocking-task.http 和 04-polling.http。
 ```
 
 ## 根据结果分派 {#s-send-message-dispatch-on-the-result}
@@ -101,10 +101,10 @@ caption: Both tasks are aligned at the request and run through the same states o
 kit 的 planner 在接触任何一个成员之前，先测试哪个成员存在：
 
 ```listing
-title: the planner's dispatch on a SendMessage result
+title: planner 对 SendMessage 结果的分派
 source: capture/planner.py
 lang: python
-note: The top of the loop in Planner.delegate. The interrupted states are handled below this cut.
+note: Planner.delegate 中循环的开头。中断状态在这次删节之下处理。
 ---
         while True:
             if "error" in reply:

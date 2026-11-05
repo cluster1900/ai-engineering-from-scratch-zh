@@ -17,10 +17,10 @@ planner 的配置中一开始有三个端口：`41241`、`41242` 和 `41243`。�
 planner 的端口来自[kit 运行脚本](manuals/a2a-101/capture/run.py)中的直接配置，每张 card 来自 well-known 路径。
 
 ```listing
-title: discovery is one GET on the well-known path
+title: 发现就是 well-known 路径上的一次 GET
 source: capture/out/01-agent-cards.http
 lang: http
-note: The response body is cut after its first field. [Figure](#fig-agent-card-fields) draws the whole card.
+note: 响应体在第一个字段之后已删节。[图](#fig-agent-card-fields)画出整张 card。
 ---
 ### 1 · discover test-runner
 GET /.well-known/agent-card.json HTTP/1.1
@@ -43,9 +43,9 @@ Content-Type: application/json
 ```figure
 id: fig-finding-an-agent
 kind: flow
-title: from a host to a checked call
-claim: Three routes lead to one card, and a client takes the first interface it speaks and checks a capability flag before each optional operation.
-caption: Read top to bottom. The planner finds the code-reviewer card through configuration and the well-known path, takes interface 0, and reads two flags. The failed call is exchange 6 of the error capture.
+title: 从一台主机到一次经过检查的调用
+claim: 三条途径通向同一张 card，客户端选取自己支持的第一个 interface，并在每次可选操作之前检查 capability 标志.
+caption: 从上到下读。planner 通过配置和 well-known 路径找到 code-reviewer 的 card，选取 interface 0，并读取两个标志。失败的调用是错误 capture 的第 6 次交换。
 ```
 
 ## 从 supportedInterfaces 中选择 {#s-discovery-and-supported-interfaces-choosing-from-supportedinterfaces}
@@ -85,10 +85,10 @@ source: spec §3.3.4
 `code-reviewer` 的 card 没有 `pushNotifications` 标志，而 kit 的错误场景仍向它注册了一个 webhook：
 
 ```listing
-title: a push configuration on an agent that declares no push support
+title: 在声明不支持推送的 agent 上注册推送配置
 source: capture/out/11-errors.http
 lang: http
-note: Exchange 6, cut to the method, the task id, and the error. The JSON-RPC error arrives with HTTP 200, as [Errors](#s-errors) explains.
+note: 第 6 次交换，删节到方法、任务 id 和错误。JSON-RPC 错误随 HTTP 200 到达，[错误](#s-errors)对此有说明。
 ---
 ### 6 · CreateTaskPushNotificationConfig: not supported
 POST /a2a/jsonrpc HTTP/1.1

@@ -33,9 +33,9 @@ context 通常也由服务器创建。agent 可以为不带 `contextId` 的消�
 ```figure
 id: fig-context-and-tasks
 kind: tree
-title: one context, two tasks
-claim: The review task holds both exchanges of the conversation, and a follow-up review joins the same context as a new task, because the review task is terminal.
-caption: Read top down: the context, its tasks, and each task's history in order. The dashed task and its message show what a client sends next, because the captures stop before it. Ids shortened to 8 characters. From capture/out/06-input-required.http and capture/out/13-history.http.
+title: 一个 context，两个任务
+claim: 审查任务保存这段对话的两次交换，后续审查作为新任务加入同一个 context，因为审查任务已经处于终止状态.
+caption: 从上到下读：context、它的任务，以及每个任务按顺序排列的 history。虚线任务及其消息表示客户端接下来会发送的内容，因为 capture 在那之前就停了。id 缩短为 8 个字符。来自 capture/out/06-input-required.http 和 capture/out/13-history.http。
 ```
 
 没有什么限制一个 context 同一时间只能有一个任务：agent 可以为每条后续消息创建一个单独的并行任务 {{docs life-of-a-task}}。

@@ -20,19 +20,19 @@ Capture kit 把 SGLang 自己的共享前缀基准跑两遍。四组各 16 条 p
 我们测到运行短了 2.7 倍，等首 token 的中位时间短了 5.3 倍。调度器日志说明时间花在哪里。
 
 ```listing
-title: one prefill batch with the radix cache
+title: 带 radix cache 的一个 prefill batch
 source: capture/out/server-default.log
 lang: text
-note: One line from the shared-prefix benchmark in the default configuration.
+note: 默认配置下共享前缀基准里的一行。
 ---
 [2026-10-16 14:01:00] Prefill batch, #new-seq: 7, #new-token: 955, #cached-token: 15102, token usage: 0.05, #running-req: 1, #queue-req: 0, #pending-token: 0, cuda graph: False, input throughput (token/s): 1472.94
 ```
 
 ```listing
-title: prefill batches without the radix cache
+title: 没有 radix cache 的 prefill batch
 source: capture/out/server-no-radix-cache.log
 lang: text
-note: Three consecutive lines from the same benchmark with --disable-radix-cache.
+note: 同一基准、带 --disable-radix-cache 的连续三行。
 ---
 [2026-10-16 14:02:34] Prefill batch, #new-seq: 3, #new-token: 4096, #cached-token: 0, token usage: 0.06, #running-req: 2, #queue-req: 3, #pending-token: 7883, cuda graph: False, input throughput (token/s): 2261.21
 [2026-10-16 14:02:36] Prefill batch, #new-seq: 3, #new-token: 4096, #cached-token: 0, token usage: 0.08, #running-req: 4, #queue-req: 1, #pending-token: 3787, cuda graph: False, input throughput (token/s): 2245.89
@@ -44,9 +44,9 @@ note: Three consecutive lines from the same benchmark with --disable-radix-cache
 ```figure
 id: fig-3-3
 kind: comparison
-title: one benchmark, two cache settings
-claim: The radix cache cut the shared-prefix benchmark from 129.7 to 48.8 seconds and the median first-token wait from 7,222 to 1,358 ms.
-caption: Read each pair of bars left to right. Both runs used the same 64 prompts on the same Mac. From capture/out/bench-shared-prefix.txt and capture/out/no-radix-cache-bench-shared-prefix.txt.
+title: 一次基准，两种缓存设置
+claim: radix cache 把共享前缀基准从 129.7 s 降到 48.8 s，把中位首 token 等待从 7,222 ms 降到 1,358 ms.
+caption: 每对条从左到右读。两次跑在同一台 Mac 上用了同样的 64 条 prompt。来自 capture/out/bench-shared-prefix.txt 和 capture/out/no-radix-cache-bench-shared-prefix.txt。
 ```
 
 ## 在 24 GB L4 上的同一测试 {#s-radixcache-the-same-test-on-a-24-gb-l4}
@@ -54,20 +54,20 @@ caption: Read each pair of bars left to right. Both runs used the same 64 prompt
 Mac 会让每次 prefill 都慢，所以我们在一块 NVIDIA L4 上用 `Qwen/Qwen3-8B` 重跑了测试。这次我们把共享 system prompt 的长度从 0 变到 4,096 个 token。每次运行有四组各 16 条 prompt、128 token 的问题、64 个输出 token，以及最多八条并发请求。每个长度跑三个种子。
 
 ```listing
-title: prefill on the L4 with the radix cache
+title: L4 上带 radix cache 的 prefill
 source: capture/gpu/out-l4/server-prefix-default.log
 lang: text
-note: Two lines from the run with a 2,048-token shared prompt. Timestamps are cut.
+note: 共享 prompt 为 2,048 token 的那次跑里的两行。时间戳已截去。
 ---
 … Prefill batch, #new-seq: 3, #new-token: 405, #cached-token: 12952, token usage: 0.58, #running-req: 1, #queue-req: 0, #pending-token: 0, cuda graph: True, input throughput (token/s): 1452.28
 … Prefill batch, #new-seq: 4, #new-token: 546, #cached-token: 17269, token usage: 0.58, #running-req: 4, #queue-req: 0, #pending-token: 0, cuda graph: True, input throughput (token/s): 2532.09
 ```
 
 ```listing
-title: prefill on the L4 without the radix cache
+title: L4 上没有 radix cache 的 prefill
 source: capture/gpu/out-l4/server-prefix-no-radix-cache.log
 lang: text
-note: Two lines from the run with a 4,096-token shared prompt. Timestamps are cut.
+note: 共享 prompt 为 4,096 token 的那次跑里的两行。时间戳已截去。
 ---
 … Prefill batch, #new-seq: 2, #new-token: 4096, #cached-token: 0, token usage: 0.68, #running-req: 1, #queue-req: 0, #pending-token: 5527, cuda graph: True, input throughput (token/s): 1632.42
 … Prefill batch, #new-seq: 2, #new-token: 4096, #cached-token: 0, token usage: 0.74, #running-req: 2, #queue-req: 0, #pending-token: 1431, cuda graph: True, input throughput (token/s): 1634.70
@@ -78,9 +78,9 @@ note: Two lines from the run with a 4,096-token shared prompt. Timestamps are cu
 ```figure
 id: fig-3-3c
 kind: chart
-title: The longer the shared prompt, the more the tree saves
-claim: With a 4,096-token shared prompt on the L4, the radix cache cut the median TTFT from 14,706 to 479 ms.
-caption: Median TTFT against the shared prompt length, three seeds per point, on a log scale. Green is the default and rose is --disable-radix-cache. From capture/gpu/summary/l4.json.
+title: 共享 prompt 越长，这棵树省得越多
+claim: 在 L4 上，共享 prompt 为 4,096 token 时，radix cache 把中位 TTFT 从 14,706 ms 降到 479 ms.
+caption: 中位 TTFT 对上共享 prompt 长度，每个点三个种子，对数刻度。绿色是默认，玫瑰色是 --disable-radix-cache。来自 capture/gpu/summary/l4.json。
 ```
 
 | 共享提示 | 中位 TTFT，缓存开 | 中位 TTFT，缓存关 | 输出 tok/s，缓存开 | 输出 tok/s，缓存关 |
@@ -115,9 +115,9 @@ caption: Median TTFT against the shared prompt length, three seeds per point, on
 ```figure
 id: fig-3-3b
 kind: tree
-title: two groups of the shared-prefix benchmark in one tree
-claim: Two running requests share one system-prompt node, and the tree splits exactly where their questions start.
-caption: Read from the root down. Numbers on nodes are lock counts while two requests of group 1 run. Mechanism from RadixCache at v0.5.22, token counts from the settings of our shared-prefix benchmark.
+title: 共享前缀基准的两组，在同一棵树里
+claim: 两条正在跑的请求共享一个 system-prompt 节点，树正好在它们的问题开始处分开.
+caption: 从根往下读。节点上的数字是第 1 组两条请求在跑时的锁计数。机制来自 v0.5.22 的 RadixCache，token 数来自我们共享前缀基准的设置。
 ```
 
 ## 在 v0.5.22 你拿到哪棵树 {#s-radixcache-which-tree-you-get-at-v0-5-22}
@@ -125,10 +125,10 @@ caption: Read from the root down. Numbers on nodes are lock counts while two req
 旧博客和 issue 里的类名是 `RadixCache`。在 v0.5.22 默认是 `UnifiedRadixCache`，一棵也处理 sliding-window 和 Mamba 状态的树 {{code}}。从 v0.5.21 起，树的行走默认在 Rust 核心里跑。我们 Mac 上的日志展示了例外。
 
 ```listing
-title: the tree on the capture Mac
+title: capture 那台 Mac 上的树
 source: capture/out/server-default.log
 lang: text
-note: Three lines from the startup log of the default configuration.
+note: 默认配置的启动日志里的三行。
 ---
 [2026-10-16 13:58:06] Using the Python TreeCore: the Rust TreeCore supports Linux only
 [2026-10-16 13:58:06] Init Unified Radix Cache. Components: (<ComponentType.FULL: 0>,). Tree Core: UnifiedTreeCore

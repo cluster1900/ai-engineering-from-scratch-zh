@@ -13,10 +13,10 @@ reward 在前几步里上下波动，很容易对某一步过度解读。日志�
 每一步把它的数字写在两行上：样本的 `rollout N` 行，以及训练更新的 `step N` 行。用 `cd ~/miles-lab/runs` 进入[第 1.1 节](#s-run-grpo-on-one-gpu)中日志所在的文件夹。然后用 `grep` 读取某个数字在各步中的值：
 
 ```listing
-title: two numbers over the first ten steps
+title: 前十步里的两个数字
 source: capture/gpu/out-gb10/read-steps.txt
 lang: text
-note: The reward and the log probability gap from our 12-step run. One line is one step.
+note: 我们 12 步运行的 reward 和 log probability 差距。一行是一步。
 ---
 $ grep -o "'rollout/raw_reward': [0-9.]*" plain.log | head -10
 'rollout/raw_reward': 0.62890625
@@ -57,17 +57,17 @@ $ grep -o "'train/train_rollout_logprob_abs_diff': [0-9.]*" plain.log | head -10
 ```figure
 id: fig-1-3
 kind: chart
-title: Reward over 48 steps, three seeds
-claim: The reward of one step jumps around, and the trend over 48 steps goes up for every seed.
-caption: Mean reward per step for three seeds of the same run.
+title: 48 步上的 reward，三个种子
+claim: 单步的 reward 上下跳动，而 48 步上的趋势对每个种子都在上升.
+caption: 同一次运行中三个种子的每步平均 reward。
 ```
 
 ```figure
 id: fig-1-3b
 kind: chart
-title: Answers get shorter as the model learns
-claim: The mean answer length falls from about 720 to about 460 tokens, so fewer answers hit the 1,024-token cap.
-caption: Mean answer length per step for the same three seeds.
+title: 随着模型学习，回答变短
+claim: 平均回答长度从大约 720 token 降到大约 460 token，因此碰到 1,024 token 上限的回答更少.
+caption: 同样三个种子的每步平均回答长度。
 ```
 
 ## 认出训练出问题的迹象 {#s-read-your-first-ten-steps-know-the-signs-of-a-broken-run}

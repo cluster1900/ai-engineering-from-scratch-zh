@@ -9,9 +9,9 @@ planner 的最后一次委派给了 `deployer`，它是 kit 中唯一保护自�
 ```figure
 id: fig-credential-path
 kind: flow
-title: one credential, from the card to an in-task approval
-claim: The card names the scheme, HTTP rejects a request without the token before A2A runs, and a running task can still stop for an approval.
-caption: Read top to bottom, in five steps. From step 2 on, the left box is what the planner sends and the right box is what deployer answers. Grey boxes sit outside A2A. The task id is shortened to 8 characters. From capture/out/01-agent-cards.http, 18-extended-card.http, and 07-auth-required.http.
+title: 一份凭据，从 card 到任务内批准
+claim: card 写出方案名称，HTTP 在 A2A 运行之前拒绝没有 token 的请求，而运行中的任务仍然可以停下来等待批准.
+caption: 分五步从上到下读。从第 2 步起，左框是 planner 发送的内容，右框是 deployer 的回答。灰色框位于 A2A 之外。任务 id 缩短为 8 个字符。来自 capture/out/01-agent-cards.http、18-extended-card.http 和 07-auth-required.http。
 ```
 
 ## card 声明了什么 {#s-security-schemes-and-in-task-authorization-what-the-card-declares}
@@ -19,10 +19,10 @@ caption: Read top to bottom, in five steps. From step 2 on, the left box is what
 只有 deployer 的 card 带有安全字段，所以 `test-runner` 和 `code-reviewer` 接受任何调用者。
 
 ```listing
-title: the security fields on the deployer card
+title: deployer card 上的安全字段
 source: capture/out/01-agent-cards.http
 lang: json
-note: Cut from the deployer card. The two fields sit between capabilities and defaultInputModes.
+note: 从 deployer 的 card 中截取。这两个字段位于 capabilities 和 defaultInputModes 之间。
 ---
   "securitySchemes": {
     "bearer": {

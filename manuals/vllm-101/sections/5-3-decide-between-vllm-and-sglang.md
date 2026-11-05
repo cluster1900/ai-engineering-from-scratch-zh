@@ -44,17 +44,17 @@
 ```figure
 id: fig-5-3
 kind: chart
-title: throughput on the L4
-claim: On our L4 with Qwen3-8B, vLLM and SGLang wrote the same output within 3 percent up to 32 users.
-caption: Both servers had the same KV pool. Bands span three runs. From capture/gpu/summary/l4.json.
+title: L4 上的吞吐
+claim: 在我们的 L4 上用 Qwen3-8B，32 个用户以内 vLLM 和 SGLang 的输出相差不超过 3%.
+caption: 两台服务器的 KV 池相同。色带覆盖三次运行。来自 capture/gpu/summary/l4.json。
 ```
 
 ```figure
 id: fig-5-3b
 kind: chart
-title: the worst token gap on the GB10
-claim: On our DGX Spark, the 99th percentile token gap of vLLM was more than twice that of SGLang at 32 users.
-caption: A higher line is a choppier stream. Bands span three runs. From capture/gpu/summary/gb10.json.
+title: GB10 上最差的 token 间隔
+claim: 在我们的 DGX Spark 上，32 个用户时 vLLM 的第 99 百分位 token 间隔是 SGLang 的两倍多.
+caption: 线越高，流式输出越不平稳。色带覆盖三次运行。来自 capture/gpu/summary/gb10.json。
 ```
 
 ## 做出决定 {#s-decide-between-vllm-and-sglang-decide}

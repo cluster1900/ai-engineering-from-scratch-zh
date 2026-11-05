@@ -11,10 +11,10 @@
 MCP 工具接受一个 `path` 与一个 `overwrite` 标志。它以路径、字节数，以及记录与未知事项计数作答。
 
 ```listing
-title: export_evidence_bundle after eight calls on ledger-arm64-O1
+title: 在 ledger-arm64-O1 上八次调用之后的 export_evidence_bundle
 source: capture/out/10-mcp-14-export-evidence-bundle-O1.json
 lang: json
-note: The request and the text copy of the result are cut.
+note: 请求与结果的文本副本已裁。
 ---
 "structuredContent": {
   "result": {
@@ -31,10 +31,10 @@ note: The request and the text copy of the result are cut.
 抓取把服务器写的文件复制到 `11-bundle-O1.json`，抓取目录被掩码，并加上一个换行。其七个数组持有一个工件、一个 provider、无环境、无场景、无抓取、无未知事项，以及八份记录。
 
 ```listing
-title: the two bundle files of the capture
+title: 抓取的两个包文件
 source: capture/out/11-bundles.txt
 lang: text
-note: Nothing is cut.
+note: 没有裁剪。
 ---
 94fca3db…  178398  11-bundle-O1.json (the bytes export_evidence_bundle wrote, with the capture path masked and a newline added)
 6130b135…  286433  11-bundle-O2.json (the bytes export_evidence_bundle wrote, with the capture path masked and a newline added)
@@ -45,10 +45,10 @@ note: Nothing is cut.
 你不需要 rea 的引擎，也不需要一次会话，就能读一个包。`rea inspect-evidence-bundle` 接受带 `path`、`detail` 以及可选 `filters` 的一个 JSON 参数，并在没有载荷的情况下为每份记录打印一行。MCP 工具 `get_evidence_bundle` 为一次活动会话的记录共享该投影。
 
 ```listing
-title: the summary of bundle O1, the first row and the first dossier row
+title: 包 O1 的摘要，第一行与第一份 dossier 行
 source: capture/out/11-inspect-evidence-bundle-O1.json
 lang: json
-note: The subject and provider of each row, the second row, and the last five rows are cut.
+note: 每一行的 subject 与 provider、第二行，以及最后五行已裁。
 ---
 {
   "kind": "evidence-bundle-summary",
@@ -94,10 +94,10 @@ note: The subject and provider of each row, the second row, and the last five ro
 `rea evidence-export SOURCE OUTPUT` 读一个包、验证它，并以规范形式再写一遍。答案是路径、字节数与记录计数。抓取把 `11-bundle-O1.json` 导出到一个工作文件并比较了摘要。
 
 ```listing
-title: the MCP export and the CLI export of the same records
+title: 同一批记录的 MCP 导出与 CLI 导出
 source: capture/out/12-evidence-export.txt
 lang: text
-note: Nothing is cut.
+note: 没有裁剪。
 ---
 94fca3db…  178398  export_evidence_bundle over MCP, out/11-bundle-O1.json
 47160c2d…  178397  evidence-export over the CLI, $WORK/canonical-O1.json
@@ -114,10 +114,10 @@ same JSON content as the MCP export: yes
 在 MCP 里，同一个动词合并进连接的账本。处理器读并验证文件，调用 `importEvidenceBundle`，并以加入的记录、加入的未知事项修订，以及新的总数作答。账本加入它未持有的每一份记录，并保留它已持有的记录。它拒绝其 id 已持有但内容不同的记录："Conflicting evidence record"。
 
 ```listing
-title: bundle O1 imported into the session that analysed O2
+title: 包 O1 导入分析过 O2 的会话
 source: capture/out/10-mcp-23-import-evidence-bundle-O1.json
 lang: json
-note: The request and the text copy of the result are cut.
+note: 请求与结果的文本副本已裁。
 ---
 "result": {
   "imported": 6,
@@ -143,9 +143,9 @@ note: The request and the text copy of the result are cut.
 ```figure
 id: fig-5-5
 kind: flow
-title: one bundle from the MCP session to four readers
-claim: One canonical file leaves the session, and the CLI summary, the CLI export, the CLI import, and a second MCP session all read it without Ghidra.
-caption: Read left to right. Solid teal is a durable write, solid ink a call. From capture/out/10-mcp-14-export-evidence-bundle-O1.json, 11-bundles.txt, 11-inspect-evidence-bundle-O1.json, 12-evidence-export.txt, 13-evidence-import.json, and 10-mcp-23-import-evidence-bundle-O1.json.
+title: 一个包，从 MCP 会话到四个读取器
+claim: 一份规范 JSON 文件离开会话，CLI 摘要、CLI 导出、CLI 导入与第二次 MCP 会话都在没有 Ghidra 的情况下读它.
+caption: 从左到右读。实线青色是一次持久写入，实线墨色是一次调用。 From `capture/out/10-mcp-14-export-evidence-bundle-O1.json`, `11-bundles.txt`, `11-inspect-evidence-bundle-O1.json`, `12-evidence-export.txt`, `13-evidence-import.json`, `10-mcp-23-import-evidence-bundle-O1.json`。
 ```
 
 ## 来自更早版本的包 {#s-evidence-bundles-export-and-import-a-bundle-from-an-earlier-release}
@@ -153,10 +153,10 @@ caption: Read left to right. Solid teal is a durable write, solid ink a call. Fr
 读包的发行版用自己的哈希规则检查每一个 id。套件保留了 rea 6.5.0 为本手册写的 O1 包，并在 6.7.0 把它交给 `rea evidence-import`。导入以退出码 1 停下。
 
 ```listing
-title: rea 6.7.0 refuses the O1 bundle of rea 6.5.0
+title: rea 6.7.0 拒绝 rea 6.5.0 的 O1 包
 source: capture/out/13-evidence-import-rea-6.5.0.json
 lang: json
-note: The remediation and the details are cut.
+note: remediation 与 details 已裁。
 ---
 {
   "error": "Analysis failed",

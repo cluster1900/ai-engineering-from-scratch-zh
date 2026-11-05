@@ -29,9 +29,9 @@ vLLM 设计文档给出了进程数的公式。把 API 服务器、data-parallel
 ```figure
 id: fig-8-1
 kind: tree
-title: six processes for four GPUs
-claim: A server with tensor parallel size 4 runs six processes: one API server, one engine core, and four GPU workers.
-caption: Read from the top down. Each worker owns one GPU. From the vLLM design documents at v0.31.0.
+title: 四块 GPU 的六个进程
+claim: tensor parallel 大小为 4 的服务器运行六个进程：一个 API 服务器、一个 engine core 和四个 GPU worker.
+caption: 从上往下读。每个 worker 拥有一块 GPU。来自 vLLM 0.31.0 的设计文档。
 ```
 
 ## 为什么不用线程 {#s-why-vllm-runs-three-kinds-of-process-why-not-threads}

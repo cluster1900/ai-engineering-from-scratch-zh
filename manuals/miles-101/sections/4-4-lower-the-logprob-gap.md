@@ -17,10 +17,10 @@ top-p 保留概率之和至少达到 top-p 值的最小 token 集合。然后引
 2026-10-23，我们在 Miles 之外，用一块 L4 GPU 检查了这个公式。我们用了 BF16 的 `Qwen/Qwen3-0.6B`、16 个 48 token 的 prompt、温度 1 和 top-p 0.9。参考值来自一次在完整词表上的 float32 Transformers 前向。这块 GPU 是共享的，没有锁频，这不会改变这些数值。
 
 ```listing
-title: returned logprob minus the full-vocabulary reference
+title: 返回的 logprob 减去完整词表参考值
 source: capture/gpu/out-l4/logprobs-top-p.txt
 lang: text
-note: Three rows of the summary. The second SGLang row, with the variable set to 1, gave the same value.
+note: 汇总的三行。第二行 SGLang 把变量设为 1，得到的值相同。
 ---
 engine and mode                                  returned minus reference, median   median absolute
 vLLM --logprobs-mode raw_logprobs                0.0000                             0.005
@@ -51,10 +51,10 @@ SGLang return_logprob, ORIGINAL_LOGPROB=0        0.0000                         
 每一步都读 `train/train_rollout_logprob_abs_diff`。它是训练器与引擎的 log 概率之间的平均绝对差。
 
 ```listing
-title: the engine settings of the two runs
+title: 两次运行的引擎设置
 source: capture/gpu/out-gb10/engine-settings.txt
 lang: text
-note: Both runs used the same attention backend and sampler. Only the top-p and top-k flags differ.
+note: 两次运行用了相同的 attention backend 和采样器。只有 top-p 和 top-k 参数不同。
 ---
 run                    attention_backend  enable_deterministic_inference  sampling_backend  --rollout-top-p  --rollout-top-k
 e6a-base               flashinfer         False                           flashinfer        not set          not set
@@ -73,9 +73,9 @@ e11-topp-topk          flashinfer         False                           flashi
 ```figure
 id: fig-4-4
 kind: chart
-title: Replaying the sampled tokens lowers the gap
-claim: With top-p and top-k replay, the gap was lower at every one of the 12 steps.
-caption: The logprob gap per step for two 12-step runs with seed 1.
+title: 重放被采样的 token 会降低差距
+claim: 使用 top-p 和 top-k 重放时，12 步里的每一步差距都更低.
+caption: 两次种子为 1 的 12 步运行里，每一步的 log 概率差距。
 ```
 
 ## 重放解决不了什么 {#s-lower-the-logprob-gap-what-replay-does-not-fix}

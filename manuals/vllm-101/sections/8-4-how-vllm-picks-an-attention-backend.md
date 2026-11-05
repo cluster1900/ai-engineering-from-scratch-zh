@@ -18,10 +18,10 @@ vLLM 0.31.0 有 30 多个 attention backend。在 CUDA GPU 上，它遍历一张
 FlashAttention 本身也有版本。vLLM 在 Hopper GPU 上使用版本 3，在支持的 Blackwell 数据中心 GPU 上使用版本 4。其他所有 GPU 都用版本 2，所以我们的 L4 和 GB10 运行的都是 FlashAttention 2。我们的 GB10 日志写出了这个选择和列表：
 
 ```listing
-title: the backend line from a GB10 start
+title: 一次 GB10 启动里的 backend 行
 source: capture/gpu/out-gb10/server-load-vllm.log
 lang: text
-note: vLLM took the first entry of the list.
+note: vLLM 取了列表里的第一项。
 ---
 (EngineCore pid=143) INFO 10-21 10:53:17 [cuda.py:526] Using FLASH_ATTN attention backend out of potential backends: ['FLASH_ATTN', 'FLASHINFER', 'TRITON_ATTN', 'FLEX_ATTENTION'].
 ```

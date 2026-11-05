@@ -76,16 +76,27 @@ is paragraph text and judged. An opener whose info is not ``[a-z0-9-]+``
 (``Rule``) is reported as FENCE_BAD_INFO and an unclosed fence as
 FENCE_UNCLOSED: the site build fails on both.
 
-Fenced blocks the site renders as prose are judged too (#141 r10):
+Fenced blocks the site renders as prose are judged too (#141 r10, bot-hub#124):
   ``rule``      -- the ``label:`` value (RULE_LABEL, with continuation lines)
                    and the body after ``---`` joined (RULE); without ``---``
                    the whole block is the body; ``source:`` is a citation key
                    and is not judged (site/build-manuals.js splitHeader).
   ``takeaways`` -- each ``- item`` with its continuation lines (TAKEAWAY).
-Other fenced blocks (code, ``figure``, ``listing``, ...) are skipped.
-
-Out of scope (same as main, tracked in bot-hub#124): ``title:``/``caption:``/
-``claim:``/``note:`` lines inside fenced ``figure`` / ``listing`` blocks.
+  ``figure``    -- ``title:`` (FIGURE_TITLE), ``claim:`` (FIGURE_CLAIM), and
+                   ``caption:`` (FIGURE_CAPTION). Keys are parsed like
+                   site/build-manuals.js keyValues and the rule head: a
+                   ``key:`` line (FENCE_KEY) plus continuation lines
+                   (FENCE_CONT, 2+ leading spaces), joined and reported at
+                   the key's first line. ``id:`` and ``kind:`` are not judged.
+  ``listing``   -- the head before ``---`` only, split on FENCE_RULE_SEP
+                   (``^---\s*$``) the same way as ``rule``. ``title:``
+                   (LISTING_TITLE) and ``note:`` (LISTING_NOTE) are judged.
+                   ``source:`` and ``lang:`` are not judged. The code body
+                   after ``---`` is not judged; without ``---`` the whole
+                   block is that body.
+Other fenced blocks (code, and empty palette / parts / index fences) are
+skipped. A paragraph starting with ``Sources:`` is still the citation block
+and is skipped.
 
 As a safety net the frozen main checker (check_manual_residual_en_main_89cbf1a.py)
 still runs. Every main hit is re-judged with the rule above on its FULL,
@@ -552,12 +563,14 @@ def scan_file(path: Path) -> tuple[list[tuple[int, str, str]], int]:
             covered.add(lineno)
 
     def scan_fence(info: str, body: list[tuple[int, str]]) -> None:
-        # Mirrors fenceBlock() in site/build-manuals.js for the two prose
-        # fences. figure / listing title, claim, caption, note are out of
-        # scope (bot-hub#124); code fences are code.
-        if info == "rule":
-            sep = next((k for k, (_ln, t) in enumerate(body) if FENCE_RULE_SEP.match(t)), None)
-            head, rest = (body[:sep], body[sep + 1:]) if sep is not None else ([], body)
+        # Mirrors fenceBlock() / keyValues() in site/build-manuals.js.
+        # rule, takeaways, figure title/claim/caption, and listing title/note
+        # are prose. id/kind/source/lang and the listing code body are not
+        # judged. Sources paragraphs are skipped by flush(). Other fences
+        # are code.
+        def head_keys(
+            head: list[tuple[int, str]], stray_kind: str | None,
+        ) -> dict[str, list[tuple[int, str]]]:
             key = None
             values: dict[str, list[tuple[int, str]]] = {}
             for ln, t in head:
@@ -569,14 +582,39 @@ def scan_file(path: Path) -> tuple[list[tuple[int, str, str]], int]:
                     values.setdefault(key, []).append((ln, km.group(2).strip()))
                 elif key is not None and FENCE_CONT.match(t):
                     values[key].append((ln, t.strip()))
-                else:  # not a header line: judge it like the body
-                    judge(ln, "RULE", t.strip())
-            for key, parts in values.items():
+                elif stray_kind is not None:  # not a header line: judge it like the body
+                    judge(ln, stray_kind, t.strip())
+            return values
+
+        def judge_keys(values: dict[str, list[tuple[int, str]]], selected: dict[str, str]) -> None:
+            for key, kind in selected.items():
+                parts = values.get(key)
+                if parts:
+                    judge(parts[0][0], kind, " ".join(t for _ln, t in parts))
+
+        if info == "rule":
+            sep = next((k for k, (_ln, t) in enumerate(body) if FENCE_RULE_SEP.match(t)), None)
+            head, rest = (body[:sep], body[sep + 1:]) if sep is not None else ([], body)
+            for key, parts in head_keys(head, "RULE").items():
                 if key != "source":  # source is a citation key into research/
                     judge(parts[0][0], "RULE_" + key.upper(), " ".join(t for _l, t in parts))
             text = [(ln, t.strip()) for ln, t in rest if t.strip()]
             if text:
                 judge(text[0][0], "RULE", " ".join(t for _l, t in text))
+        elif info == "figure":
+            judge_keys(head_keys(body, None), {
+                "title": "FIGURE_TITLE",
+                "claim": "FIGURE_CLAIM",
+                "caption": "FIGURE_CAPTION",
+            })
+        elif info == "listing":
+            sep = next((k for k, (_ln, t) in enumerate(body) if FENCE_RULE_SEP.match(t)), None)
+            # Same split as rule: no "---" means the whole block is body.
+            head = body[:sep] if sep is not None else []
+            judge_keys(head_keys(head, None), {
+                "title": "LISTING_TITLE",
+                "note": "LISTING_NOTE",
+            })
         elif info == "takeaways":
             items: list[list] = []
             for ln, t in body:

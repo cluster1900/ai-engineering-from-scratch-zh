@@ -9,10 +9,10 @@
 `compare_functions` 把两份完整的 Evidence 记录作为 `left` 与 `right` 接受。每一份用 `parseEvidence` 解析，所以带被篡改 id 的记录被拒绝。每一份必须是谓词类型为 `rea.analysis` 的 `analyze_function` 记录，否则工具回答 "Expected analyze_function Evidence"。抓取传入了它几轮调用之前收到的 dossier。
 
 ```listing
-title: the request for _percent_change across the two builds
+title: 对两个构建请求 _percent_change
 source: capture/out/10-mcp-20-compare-functions-percent-change.json
 lang: json
-note: The kit kept each evidence_id and replaced the complete dossier with a marker that names the file holding it.
+note: 套件保留每个 `evidence_id`，并用一个点名所持文件的标记替换完整 dossier。
 ---
 "name": "compare_functions",
 "arguments": {
@@ -30,10 +30,10 @@ note: The kit kept each evidence_id and replaced the complete dossier with a mar
 答案是来自 provider `rea-function-comparison` 版本 `1` 的一份新 Evidence 记录。其谓词类型是 `rea.function-comparison`，置信度 `derived`，权威 `analyst-inference`。两个输入 id 作为参数与作为 `evidence_links` 出现。该记录没有主体，所以它带着关于工件身份的自动限制（[Evidence 记录](#s-the-evidence-record)）。在它被记录之前，两个输入被记录进会话账本，这就是为什么后来的[导入](#s-evidence-bundles-export-and-import)发现两份 O1 记录已经在那里。
 
 ```listing
-title: the head of the _percent_change comparison
+title: _percent_change 比较的开头
 source: capture/out/10-mcp-20-compare-functions-percent-change.json
 lang: json
-note: The dimensions, the changes, and the limitations are cut.
+note: 维度、变更与 limitation 已裁。
 ---
 "normalized_result": {
   "status": "unknown",
@@ -76,10 +76,10 @@ note: The dimensions, the changes, and the limitations are cut.
 `_percent_change` 比较有七个 `unchanged` 维度与一个 `unknown`，所以整份记录是 `unknown`。未知维度是 `references`。两侧有三个引用与同样的具名端点。每一份 dossier 的一个入站引用是没有源过程的 `DATA` 引用，所以那个端点没有名字。
 
 ```listing
-title: the references dimension of the _percent_change comparison
+title: _percent_change 比较的 references 维度
 source: capture/out/10-mcp-20-compare-functions-percent-change.json
 lang: json
-note: Nothing inside the dimension is cut.
+note: 该维度内部没有裁剪。
 ---
 {
   "dimension": "references",
@@ -115,9 +115,9 @@ note: Nothing inside the dimension is cut.
 ```figure
 id: fig-5-6
 kind: comparison
-title: compare_functions on two functions across the -O1 and -O2 builds
-claim: The compiler left _percent_change the same on seven dimensions with references unknown, changed _total on five, and rea reports counts without saying why.
-caption: Read each table top to bottom. Amber rows are changed dimensions, and the dashed row is unknown. From capture/out/10-mcp-20-compare-functions-percent-change.json and 10-mcp-21-compare-functions-total.json.
+title: 对 -O1 与 -O2 构建上两个函数的 compare_functions
+claim: 编译器让 `_percent_change` 在七个维度上保持不变且引用为未知，在五个维度上改变了 `_total`，rea 只报告计数而不说为什么.
+caption: 每张表从上到下读。琥珀色行是已改变的维度，虚线行是未知。 From `capture/out/10-mcp-20-compare-functions-percent-change.json`, `10-mcp-21-compare-functions-total.json`。
 ```
 
 ## 汇编的限制 {#s-compare-and-compare-functions-the-assembly-limit}
@@ -125,10 +125,10 @@ caption: Read each table top to bottom. Amber rows are changed dimensions, and t
 每一个汇编维度都带着两条限制，不论其状态是 `unchanged` 还是 `changed`。
 
 ```listing
-title: the assembly dimension of the _total comparison
+title: _total 比较的 assembly 维度
 source: capture/out/10-mcp-21-compare-functions-total.json
 lang: json
-note: Nothing inside the dimension is cut.
+note: 该维度内部没有裁剪。
 ---
 {
   "dimension": "assembly",
@@ -163,10 +163,10 @@ rea 在任何 diff 跑之前附上这些字符串。dossier 的汇编是 Ghidra 
 `rea compare LEFT RIGHT`，也写作 `rea compare-bundles`，在没有会话的情况下比较两个包文件。它按 `evidence_id` 工作：两个包里都有的记录被比较，只在一个包里的记录是未解决分支。整体状态在一次变更未解决时立刻是 `unknown`。
 
 ```listing
-title: rea compare on the O1 and O2 bundles
+title: 对 O1 与 O2 包的 rea compare
 source: capture/out/14-compare-bundles.json
 lang: json
-note: Nine of the ten changes are cut, and so are the closing limitations.
+note: 十条变更里的九条已裁，结尾的 limitation 也已裁。
 ---
 {
   "status": "unknown",

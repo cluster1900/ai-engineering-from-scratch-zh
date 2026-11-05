@@ -17,10 +17,10 @@
 在流上，artifact 放在 `artifactUpdate` 事件中传输。每个 `TaskArtifactUpdateEvent` 都带有 `taskId`、`contextId` 和 `artifact`，全部是 REQUIRED，另有两个可选标志 {{proto TaskArtifactUpdateEvent}}。`append` 为 true 时，内容属于之前到达的同一 id 的 artifact 的末尾。`lastChunk` 为 true 时，事件带有该 artifact 的最后一个分块 {{proto TaskArtifactUpdateEvent}}。
 
 ```listing
-title: four of the six artifact frames
+title: 六帧 artifact 中的四帧
 source: capture/out/05-streaming.http
 lang: sse
-note: Frames 3, 4, 7, and 8 of the stream. Each frame loses its JSON-RPC envelope, taskId, and contextId. Frames 5 and 6 are cut whole, and so is the failure list in summary.json.
+note: 流的第 3、4、7、8 帧。每一帧都去掉了 JSON-RPC 信封、taskId 和 contextId。第 5、6 帧整帧删节，summary.json 中的失败列表也已删节。
 ---
 data: {…"artifactUpdate": {…"artifact": {"artifactId": "test-log", "name": "test-log.txt", "parts": [{"text": "collected 12 items\n"}]}}}}
 
@@ -38,9 +38,9 @@ data: {…"artifactUpdate": {…"artifact": {"artifactId": "summary", "name": "s
 ```figure
 id: fig-artifact-chunks
 kind: structure
-title: five chunks become one stored artifact
-claim: The five chunks of `test-log.txt` become five parts of one stored artifact in frame order, and `lastChunk` ends that artifact while the stream continues.
-caption: Top, the nine frames of the streaming capture on the kit clock. Frames 1, 2, and 9 sit at their timestamps, and frames 3 to 8 are spaced evenly between. Middle, what frames 3 to 8 carry and what each does to the stored task. Bottom, the stored test-log.txt as GetTask returns it in the polling capture. Parts 1 and 2 are the progress lines of the two test files, given in full in the capture.
+title: 五个分块合成一个已存储的 artifact
+claim: `test-log.txt` 的五个分块按帧序成为同一个已存储 artifact 的五个 part，`lastChunk` 结束该 artifact，而流仍继续.
+caption: 上方是流式 capture 的九帧，时间取 kit 的时钟。第 1、2、9 帧落在各自的时间戳上，第 3 到第 8 帧在其间均匀分布。中间是第 3 到第 8 帧携带的内容，以及每一帧对已存储任务做了什么。下方是轮询 capture 中 GetTask 返回的已存储 test-log.txt。第 1、2 个 part 是两个测试文件的进度行，capture 中给了全文。
 ```
 
 `lastChunk` 只结束一个 artifact，不结束别的：在这个流上，它之后还有两帧。artifact 事件没有时间戳字段，所以分块之间唯一的顺序就是流的顺序，每种绑定都必须保持这个顺序 {{spec §3.5.2}}。

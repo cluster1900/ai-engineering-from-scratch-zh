@@ -25,10 +25,10 @@ vLLM 0.31.0 默认开启 prefix caching。我们在 L4 上用 `Qwen/Qwen3-8B` �
 服务器日志每隔几秒报告一次命中率：
 
 ```listing
-title: the prefix cache in the middle of a shared-prefix run
+title: 一次共享前缀运行中途的 prefix cache
 source: capture/gpu/out-l4/server-h2h-prefix-vllm.log
 lang: text
-note: 87 percent of the prompt tokens came from the cache.
+note: 87% 的 prompt token 来自 cache。
 ---
 INFO 10-18 00:43:16 [loggers.py:320] Engine 000: Avg prompt throughput: 231.0 tokens/s, Avg generation throughput: 93.6 tokens/s, Running: 8 reqs, Waiting: 0 reqs, GPU KV cache usage: 77.2%, Prefix cache hit rate: 87.2%
 ```
@@ -36,9 +36,9 @@ INFO 10-18 00:43:16 [loggers.py:320] Engine 000: Avg prompt throughput: 231.0 to
 ```figure
 id: fig-3-2b
 kind: chart
-title: the cache on and off
-claim: With the prefix cache on, the first token stayed near 400 ms at every shared length on our L4.
-caption: Read the log scale with care: each grid line is about three times the one below. Bands span three runs. From capture/gpu/summary/l4.json.
+title: cache 开启和关闭
+claim: 在我们的 L4 上，prefix cache 开启时，每种共享长度下的首 token 都停在 400 ms 附近.
+caption: 读对数刻度时要小心：每条网格线大约是下面一条的三倍。色带覆盖三次运行。来自 capture/gpu/summary/l4.json。
 ```
 
 ## 把共享部分放在最前面 {#s-make-repeated-prompts-hit-the-prefix-cache-put-the-shared-part-first}
@@ -56,9 +56,9 @@ vLLM 只缓存完整的 block。20 个 token 的共享部分只会得到一个 1
 ```figure
 id: fig-3-2
 kind: structure
-title: a prefix hit
-claim: A new request reuses cached blocks from the start of its prompt and stops at the first block that differs.
-caption: Read the top row first, then the bottom row. Dashed blocks are computed again. From the vLLM source at v0.31.0.
+title: 一次前缀命中
+claim: 新请求从 prompt 开头复用已缓存的 block，并在第一个不同的 block 处停止.
+caption: 先读上面一行，再读下面一行。虚线 block 会重新计算。来自 vLLM 0.31.0 的源码。
 ```
 
 ## 隔离租户 {#s-make-repeated-prompts-hit-the-prefix-cache-keep-tenants-apart}

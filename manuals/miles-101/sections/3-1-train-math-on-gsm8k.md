@@ -37,9 +37,9 @@
 ```figure
 id: fig-3-1
 kind: chart
-title: More answers per prompt, same learning in 24 steps
-claim: The reward gain with 4 and with 16 answers per prompt fell inside the range of three seeds with 8.
-caption: Reward gain over the first 24 steps for each run. The three green bars are the same recipe with three seeds.
+title: 每个 prompt 的回答更多，24 步里学到的一样多
+claim: 每个 prompt 4 个回答和 16 个回答的奖励提升，都落在 8 个回答、三个种子的范围之内.
+caption: 每次运行前 24 步的奖励提升。三根绿色柱是同一配方的三个种子。
 ```
 
 **我们测得** 在 24 步内，组大小对奖励没有明显影响。16 个回答的运行提升了 +0.097，而 8 个回答的三个种子之一提升了 +0.098。8 个回答时种子之间的差距是 0.038 到 0.098，覆盖了所有运行。

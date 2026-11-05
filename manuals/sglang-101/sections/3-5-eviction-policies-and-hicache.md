@@ -37,10 +37,10 @@ SGLang 文档给了同样的建议：从 `lru` 开始，只对照测到的命中
 我们在 2026-10-23 用 `Qwen/Qwen3-0.6B` 跑了 24 个聊天会话的轨迹。每个会话有自己的 system prompt 和 6 轮 ShareGPT 问题，回答 64 个 token。会话在并发 8 下轮流，每轮再发整段历史。命中率是缓存的 prompt token 除以 prompt token。这是在我们 L4 节点的第二块 GPU 上，主人共享它，没有锁时钟。时钟不改变命中率，所以读命中率，不要读时间。
 
 ```listing
-title: hit rate by pool size and policy, over the whole trace and per turn
+title: 按 pool 大小和策略的命中率，整条轨迹和每一轮
 source: capture/gpu/out-l4/eviction-multiturn.txt
 lang: text
-note: Four rows of the summary. The run with CUDA graphs off, the 16,384-token LFU run, and the default pool are cut.
+note: 摘要里的四行。关掉 CUDA graph 的那次跑、16,384 token 的 LFU 跑，以及默认 pool，已截去。
 ---
 pool, policy                 whole trace   hit rate per turn 1 to 6                        median SM clock
 8,192 tokens, lru            0.19, 0.19    0.11, 0.31, 0.58, 0.39, 0.016, 0.013            615 MHz
@@ -71,9 +71,9 @@ pool, policy                 whole trace   hit rate per turn 1 to 6             
 ```figure
 id: fig-3-5
 kind: flow
-title: one prefix through the three HiCache tiers
-claim: Under write_through, a prefix gets a host copy on its first hit, so GPU eviction no longer forces a full prefill.
-caption: Read left to right for writes and right to left for load-back. Thresholds and defaults from UnifiedRadixCache at v0.5.22.
+title: 一条前缀穿过 HiCache 的三层
+claim: 在 write_through 下，前缀第一次命中就得到一份 host 副本，所以 GPU 逐出不再迫使整段 prefill.
+caption: 写的方向从左到右读，加载回来从右到左读。阈值和默认值来自 v0.5.22 的 UnifiedRadixCache。
 ```
 
 ## 决定它是否有用的设置 {#s-eviction-policies-and-hicache-the-settings-that-decide-whether-it-helps}
@@ -100,10 +100,10 @@ L3 预取有自己的规则。存储命中短于 256 个 token 时，SGLang 跳�
 GPU pool 持有 24,094 个 token，大约 11 段 system prompt。所以在 16 组或更多时，默认服务器必须逐出它还会再需要的 prompt。
 
 ```listing
-title: the host tier on the L4
+title: L4 上的 host 层
 source: capture/gpu/out-l4/server-working-set-hicache.log
 lang: text
-note: The host pool at startup, then two prefill lines from the 64-group run.
+note: 启动时的 host pool，然后 64 组那次跑里的两行 prefill。
 ---
 [2026-10-17 17:35:15] Allocating kv hierarchical KV host pool: 96377 tokens, 14.21 GB host memory.
 [2026-10-17 18:19:03] Prefill batch, #new-seq: 4, #new-token: 4096, #cached-token: 2196, token usage: 0.65, #running-req: 2, #queue-req: 0, #pending-token: 5234, cuda graph: True, input throughput (token/s): 1431.87
@@ -111,10 +111,10 @@ note: The host pool at startup, then two prefill lines from the 64-group run.
 ```
 
 ```listing
-title: the same workload with the GPU pool only
+title: 同样的负载，只有 GPU pool
 source: capture/gpu/out-l4/server-working-set-default.log
 lang: text
-note: Two prefill lines from the 64-group run of the default server.
+note: 默认服务器 64 组那次跑里的两行 prefill。
 ---
 [2026-10-17 17:34:02] Prefill batch, #new-seq: 3, #new-token: 4096, #cached-token: 0, token usage: 0.65, #running-req: 5, #queue-req: 0, #pending-token: 1138, cuda graph: True, input throughput (token/s): 1573.58
 [2026-10-17 17:34:03] Prefill batch, #new-seq: 1, #new-token: 1138, #cached-token: 0, token usage: 0.65, #running-req: 7, #queue-req: 0, #pending-token: 0, cuda graph: True, input throughput (token/s): 1347.58
@@ -123,9 +123,9 @@ note: Two prefill lines from the 64-group run of the default server.
 ```figure
 id: fig-3-5c
 kind: chart
-title: HiCache held the prompts that the GPU pool evicted
-claim: At 32 distinct system prompts on the L4, HiCache cut the median TTFT from 5,449 to 817 ms.
-caption: Median TTFT against the number of distinct system prompts, three seeds per point, on a log scale. Rose is the GPU pool only and green adds the host tier. From capture/gpu/summary/l4.json.
+title: HiCache 留住了 GPU pool 逐出的 prompt
+claim: 在 L4 上有 32 条不同的 system prompt 时，HiCache 把中位 TTFT 从 5,449 ms 降到 817 ms.
+caption: 中位 TTFT 对上不同 system prompt 的条数，每个点三个种子，对数刻度。玫瑰色只有 GPU pool，绿色加上 host 层。来自 capture/gpu/summary/l4.json。
 ```
 
 | 组数 | 要保留的提示 token | 中位 TTFT，仅 GPU / HiCache | 输出 tok/s，仅 GPU / HiCache | 中位 SM 时钟，仅 GPU / HiCache |
@@ -144,10 +144,10 @@ caption: Median TTFT against the number of distinct system prompts, three seeds 
 GB10 用不同模型 `Qwen/Qwen3-30B-A3B-Instruct-2507`、不开 HiCache 跑了同一工作负载作对照。我们在那里关掉主机层。GB10 的 CPU 和 GPU 共用一块内存，主机拷贝会从和 pool 同一个地方拿内存。
 
 ```listing
-title: the GB10 pool and two prefill lines from the 64-group run
+title: GB10 的 pool，以及 64 组那次跑里的两行 prefill
 source: capture/gpu/out-gb10/server-working-set-default.log
 lang: text
-note: The pool at startup, then two consecutive prefill lines. Long lines are cut.
+note: 启动时的 pool，然后连续两行 prefill。过长的行已截去。
 ---
 [2026-10-17 19:33:31] KV Cache is allocated. dtype: torch.bfloat16, #tokens: 260013, K size: 11.90 GB, V size: 11.90 GB
 [2026-10-17 19:52:36] Prefill batch, #new-seq: 1, #new-token: 67, #cached-token: 2196, token usage: 0.01, #running-req: 0, #queue-req: 0, #pending-token: 0, cuda graph: True, input throughput (token/s): 29.36

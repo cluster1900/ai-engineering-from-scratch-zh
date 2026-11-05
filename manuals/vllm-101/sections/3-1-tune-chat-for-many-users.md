@@ -30,10 +30,10 @@
 这次扫描在所有用户数下都使用同一个服务器，并且在不同用户数之间没有重置 prefix cache。每个 seed 在每个用户数下都发送相同的前几个 prompt，所以很多请求在 cache 里找到了自己的 prompt，跳过了 prefill。2026-10-23 我们在同一块 L4 上重新跑了这次扫描，每次运行前都做重置，时钟锁定在 900 MHz。我们把它和同一会话中一次未清空 cache 的运行做了比较：
 
 ```listing
-title: median TTFT with and without a cache flush, Qwen3-8B on our L4 at 900 MHz
+title: 有无清空 cache 时的 TTFT 中位数，我们 L4 上的 Qwen3-8B，900 MHz
 source: capture/gpu/out-l4/load-flushed-vs-unflushed.txt
 lang: text
-note: The median TTFT rows. The share that met the target and the P99 ITL lines are cut.
+note: TTFT 中位数那几行。达到目标的比例和 P99 ITL 那几行已略去。
 ---
 median TTFT, flushed against unflushed
 users   vLLM                                   SGLang
@@ -55,9 +55,9 @@ users   vLLM                                   SGLang
 ```figure
 id: fig-3-1
 kind: chart
-title: a cap of 16 sequences as users grow
-claim: A cap of 16 sequences matched the default up to 16 users, and at 32 users it cut output from 275 to 172 tokens per second.
-caption: Each point is the median of three seeds, and the bands span them. The time to the first token uses a log scale. From capture/gpu/summary/l4.json.
+title: 用户变多时，16 个序列的上限
+claim: 16 个序列的上限在 16 个用户以内与默认一致，到 32 个用户时把输出从每秒 275 个 token 降到 172 个.
+caption: 每个点是三个种子的中位数，色带覆盖这三个种子的范围。首 token 时间用对数刻度。来自 capture/gpu/summary/l4.json。
 ```
 
 | 用户数，L4 满频会话 | 配置 | 输出 tok/s | TTFT 中位数 | ITL 中位数 | P99 ITL | SM 时钟中位数 |
@@ -74,10 +74,10 @@ caption: Each point is the median of three seeds, and the bands span them. The t
 在 64 个用户时，我们 L4 上 vLLM 的 P99 ITL 超过一秒，而 SGLang 大约是 150 ms。2026-10-23 我们尝试用上限来缩小这个差距。时钟锁定在 900 MHz，每次运行跑两个 seed 并重置 cache。`--max-num-active-seqs` 是 0.31.0 中的第二个上限，作用于一步中运行的请求。
 
 ```listing
-title: caps at 64 users on our L4, vLLM 0.31.0 against SGLang 0.5.22
+title: 我们 L4 上 64 个用户时的上限，vLLM 0.31.0 对比 SGLang 0.5.22
 source: capture/gpu/out-l4/admission-cap-64-users.txt
 lang: text
-note: Rows from the evidence file. The rows that ran far below the lock are cut.
+note: 证据文件里的几行。时钟远低于锁定值的几行已略去。
 ---
 config                        median SM clock (s1/s2)   median TTFT       P99 ITL               output tok/s
 SGLang default                900 / 900                 19.4 s            143 to 153 ms         225 to 231

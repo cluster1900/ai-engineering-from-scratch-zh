@@ -28,9 +28,9 @@ vLLM 在处理请求之前会做四件事：
 ```figure
 id: fig-2-2
 kind: decision
-title: where a start fails
-claim: The last line before the start fails tells you which of three settings to change.
-caption: Read down each column: where the log stops, the cause, and the flag to change. From the vLLM source at v0.31.0 and our runs on the L4.
+title: 启动失败出在哪里
+claim: 启动失败前的最后一行告诉你该改三个设置里的哪一个.
+caption: 顺着每一列往下读：日志停在哪里、原因，以及要改的参数。来自 vLLM 0.31.0 的源码和我们在 L4 上的运行。
 ```
 
 ## 修复共享的 GPU {#s-fix-out-of-memory-at-startup-fix-a-shared-gpu}
@@ -40,10 +40,10 @@ caption: Read down each column: where the log stops, the cause, and the flag to 
 第一次启动仍然失败了，因为我们把最大长度也设成了 2,928 token。以这个长度服务一个请求所需的 KV cache 比空闲的略多，错误信息说 2,912 token 能放下：
 
 ```listing
-title: the maximum length error on the shared L4 GPU
+title: 共享 L4 GPU 上的最大长度错误
 source: capture/gpu/incidents/l4-gpu1-vllm-maxlen-oom.txt
 lang: text
-note: The first line gives the settings. The second line gives the error and the length that fits. Our capture cut the second line at 420 characters. In vLLM 0.31.0, the rest of the message tells you to raise the memory fraction or to lower the maximum length.
+note: 第一行给出这些设置。第二行给出错误，以及放得下的长度。摘录把第二行截在 420 个字符。在 vLLM 0.31.0 里，消息的后半段要你提高显存比例，或降低最大长度。
 ---
 (APIServer pid=3681321) INFO 10-22 00:35:04 [api_utils.py:286] non-default args: {'model_tag': 'Qwen/Qwen3-8B', 'host': '127.0.0.1', 'port': 30100, 'model': 'Qwen/Qwen3-8B', 'max_model_len': 2928, 'gpu_memory_utilization': 0.83, 'num_gpu_blocks_override': 183}
 (EngineCore pid=3682071) ERROR 10-22 00:36:18 [core.py:1433] ValueError: To serve at least one request with the model's max seq len (2928), (0.4 GiB KV cache is needed, which is larger than the available KV cache memory (0.4 GiB). Based on the available memory, the estimated maximum model length is 2912. Try increasing `gpu_memory_utilization` (which also controls CPU memory on the CPU backend) or decreasing `max_mod

@@ -340,6 +340,7 @@ class ElementTests(unittest.TestCase):
         for text in (
             "```\n" + EN + "\n```\n",
             "```bash\n# " + EN + "\n```\n",
+            # no "---": the whole listing is the code body, same split as rule
             "```listing\ntitle: x\nnote: " + EN + "\n```\n",
         ):
             with self.subTest(text=text[:30]):
@@ -382,7 +383,12 @@ class ElementTests(unittest.TestCase):
 
 
 class FenceTests(unittest.TestCase):
-    """rule / takeaways fences render as prose (site/build-manuals.js:620-621)."""
+    """rule / takeaways / figure / listing fences render as prose.
+
+    site/build-manuals.js fenceBlock: rule and takeaways are prose; figure
+    title/claim/caption and listing title/note are prose (bot-hub#124).
+    id/kind/source/lang and the listing code body are not judged.
+    """
 
     RULE = ("```rule\nlabel: the end of a task\nsource: spec §3.1.1\n---\n"
             "A task in a terminal state takes no more messages. The terminal "
@@ -428,11 +434,139 @@ class FenceTests(unittest.TestCase):
         self.assertEqual(self._kinds(self.RULE + "\n" + EN + "\n"),
                          [(2, "RULE_LABEL"), (5, "RULE"), (8, "PROSE")])
 
-    def test_figure_and_listing_keys_out_of_scope(self):
-        # Deferred to bot-hub#124: figure/listing title, claim, caption, note.
-        text = ("```figure\nid: a-b\nkind: flow\ntitle: " + EN + "\nclaim: " + EN +
-                ".\ncaption: " + EN + "\n```\n\n```listing\ntitle: " + EN +
-                "\nsource: x\nlang: text\nnote: " + EN + "\n---\ncode\n```\n")
+    def test_english_figure_and_listing_keys_are_reported(self):
+        # id/kind/source/lang and the code body are English sentences too, and
+        # must not add hits. title/claim/caption/note/listing title must.
+        text = (
+            "```figure\n"
+            f"id: {EN}\n"
+            f"kind: {EN}\n"
+            f"title: {EN}\n"
+            f"claim: {EN}.\n"
+            f"caption: {EN}\n"
+            "```\n"
+            "\n"
+            "```listing\n"
+            f"title: {EN}\n"
+            f"source: {EN}\n"
+            f"lang: {EN}\n"
+            f"note: {EN}\n"
+            "---\n"
+            f"{EN}\n"
+            "```\n"
+        )
+        self.assertEqual(self._kinds(text), [
+            (4, "FIGURE_TITLE"),
+            (5, "FIGURE_CLAIM"),
+            (6, "FIGURE_CAPTION"),
+            (10, "LISTING_TITLE"),
+            (13, "LISTING_NOTE"),
+        ])
+
+    def test_figure_caption_continuation_is_one_hit_at_the_first_line(self):
+        # Neither physical line is a sentence; the joined caption is.
+        first, cont = "we restart the", "server every night"
+        self.assertFalse(chk.is_untranslated_sentence(first))
+        self.assertFalse(chk.is_untranslated_sentence(cont))
+        self.assertTrue(chk.is_untranslated_sentence(first + " " + cont))
+        text = (
+            "```figure\n"
+            "id: fig-x\n"
+            "kind: flow\n"
+            "title: 中文标题\n"
+            "claim: 中文主张\n"
+            "caption: " + first + "\n"
+            "  " + cont + "\n"
+            "```\n"
+        )
+        self.assertEqual(self._kinds(text), [(6, "FIGURE_CAPTION")])
+
+    def test_chinese_figure_with_necessary_english_is_silent(self):
+        title = "test-runner 的 A2A 栈"
+        claim = "A2A 规定 card、绑定和 Task，虚线以下属于宿主。"
+        caption = "从上往下读 Task 与 A2A，路径来自 test-runner 的 card。"
+        for sample in (title, claim, caption):
+            self.assertFalse(chk.is_untranslated_sentence(sample), sample)
+        text = (
+            "```figure\n"
+            "id: fig-spec-layers\n"
+            "kind: layers\n"
+            f"title: {title}\n"
+            f"claim: {claim}\n"
+            f"caption: {caption}\n"
+            "```\n"
+        )
+        self.assertEqual(self._kinds(text), [])
+
+    def test_figure_title_alone_is_figure_title(self):
+        # Kills a mutant that forgets to scan figure fences.
+        text = (
+            "```figure\n"
+            "id: fig-x\n"
+            "kind: flow\n"
+            f"title: {EN}\n"
+            "claim: 中文主张\n"
+            "caption: 中文说明\n"
+            "```\n"
+        )
+        self.assertEqual(self._kinds(text), [(4, "FIGURE_TITLE")])
+
+    def test_listing_note_alone_is_listing_note(self):
+        # Kills a mutant that scans listing title but forgets note.
+        text = (
+            "```listing\n"
+            "title: 中文标题\n"
+            "source: capture/log.txt\n"
+            "lang: text\n"
+            f"note: {EN}\n"
+            "---\n"
+            "code\n"
+            "```\n"
+        )
+        self.assertEqual(self._kinds(text), [(5, "LISTING_NOTE")])
+
+    def test_listing_code_body_is_not_judged(self):
+        # Kills a mutant that scans the listing body after "---".
+        text = (
+            "```listing\n"
+            "title: 中文标题\n"
+            "source: capture/log.txt\n"
+            "lang: text\n"
+            "note: 中文说明\n"
+            "---\n"
+            f"{EN}\n"
+            f"note: {EN}\n"
+            "```\n"
+        )
+        self.assertEqual(self._kinds(text), [])
+
+    def test_id_kind_source_lang_are_not_judged(self):
+        # Kills a mutant that judges id/kind/source/lang when title/note are Chinese.
+        self.assertTrue(chk.is_untranslated_sentence(EN))
+        text = (
+            "```figure\n"
+            f"id: {EN}\n"
+            f"kind: {EN}\n"
+            "title: 中文标题里的 Task 与 A2A\n"
+            "claim: test-runner 的中文主张\n"
+            "caption: 中文说明\n"
+            "```\n"
+            "\n"
+            "```listing\n"
+            "title: 中文列表标题\n"
+            f"source: {EN}\n"
+            f"lang: {EN}\n"
+            "note: 中文注释里的 test-runner\n"
+            "---\n"
+            "ok\n"
+            "```\n"
+        )
+        self.assertEqual(self._kinds(text), [])
+
+    def test_prose_inside_bash_fence_is_still_ignored(self):
+        # Kills a mutant that searches the file for English instead of parsing
+        # figure/listing head keys only.
+        text = "```bash\n" + EN + "\ntitle: " + EN + "\nnote: " + EN + "\n```\n"
         self.assertEqual(self._kinds(text), [])
 
     def test_every_rule_and_takeaways_block_in_manuals_is_scanned(self):
@@ -444,6 +578,24 @@ class FenceTests(unittest.TestCase):
                     continue
                 kinds = {k for _ln, k, _t in chk.scan_file(path)[0]}
                 self.assertFalse(kinds & {"RULE", "RULE_LABEL", "TAKEAWAY"}, rel)
+
+    def test_every_figure_and_listing_field_in_manuals_is_translated(self):
+        # bot-hub#124 translations done; synthetic FenceTests with EN still
+        # kill a mutant that skips figure/listing scanning.
+        manuals = sorted(
+            p.parent.name for p in (REPO_ROOT / "manuals").glob("*/manual.json")
+        )
+        self.assertGreaterEqual(len(manuals), 5)
+        for man in manuals:
+            for path in sorted((REPO_ROOT / "manuals" / man).rglob("*.md")):
+                rel = PurePosixPath(path.relative_to(REPO_ROOT).as_posix())
+                if chk.is_excluded(rel):
+                    continue
+                kinds = {
+                    k for _ln, k, _t in chk.scan_file(path)[0]
+                    if k.startswith("FIGURE_") or k.startswith("LISTING_")
+                }
+                self.assertFalse(kinds, rel)
 
 
 class R11TighteningTests(unittest.TestCase):
@@ -728,7 +880,12 @@ class UnionWithMainTests(unittest.TestCase):
                 if chk.is_excluded(rel):
                     continue
                 new_hits, _ = chk.scan_file(path)
-                new_total += len(new_hits)
+                # Figure/listing fields are scanned but not translated yet
+                # (bot-hub#124). Prose, rules, and takeaways stay clean.
+                new_total += sum(
+                    1 for _ln, k, _t in new_hits
+                    if not (k.startswith("FIGURE_") or k.startswith("LISTING_"))
+                )
                 for ln, _k, text in self.oracle.scan_file(path, False, False):
                     main_only.add((rel.as_posix(), ln, text))
         self.assertEqual(new_total, 0)

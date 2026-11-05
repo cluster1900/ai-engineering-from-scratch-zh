@@ -23,9 +23,9 @@ GRPO 假设引擎给一个 token 的概率，就是训练器为它算出的概�
 ```figure
 id: fig-8-3
 kind: comparison
-title: Two fixes for two different halves
-claim: Deterministic inference fixes the engine half, and only the true on-policy contract makes both halves the same.
-caption: The trainer is on the left and the engine on the right.
+title: 两种修复，对应两个不同的半边
+claim: 确定性推理修复的是引擎那一半，只有真正同策略契约才能让两边相同.
+caption: 训练器在左，引擎在右。
 ```
 
 ## 契约锁定了什么 {#s-why-true-on-policy-is-a-contract-what-the-contract-pins}
@@ -56,10 +56,10 @@ caption: The trainer is on the left and the engine on the right.
 2026-10-23，我们在 Miles 之外、在我们 L4 节点的第二块 GPU 上验证了精度这一说法。SGLang 0.5.22 以 BF16 或 FP16 服务 `Qwen/Qwen3-0.6B`。它以 top-p 1 为 32 个提示各采样最多 64 个 token，所以没有采样掩码。比较覆盖了来自 32 个提示的 1,961 个采样 token，因为有 3 个回答在 64 个 token 之前就遇到了结束 token。对同样的 token 做一次 Transformers 前向传播，扮演训练器。
 
 ```listing
-title: median absolute logprob gap per token, engine against trainer
+title: 每个 token 的中位绝对 logprob 差距，引擎对训练器
 source: capture/gpu/out-l4/logprob-gap-by-dtype.txt
 lang: text
-note: The full table. The engine dtype comes first, then the trainer dtype.
+note: 完整的表。先是引擎的 dtype，然后是训练器的 dtype。
 ---
 engine   trainer   median    p90      mean     max
 BF16     BF16      0.0073    0.087    0.027    0.355

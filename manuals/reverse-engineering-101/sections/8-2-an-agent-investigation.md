@@ -9,10 +9,10 @@
 agent 用 `open_binary` 打开文件，并在任何 Ghidra 导入之前得到其格式、种类、SHA-256 与体系结构（[捕获](manuals/reverse-engineering-101/capture/out/10-mcp-03-open-binary-O1.json)）。`list_procedures` 是启动引擎的第一次调用，它返回 13 个条目。它们是 `ledger.c` 的四个函数、`entry`、四个 thunk，以及它们在 `libSystem.B.dylib` 里到达的四个外部函数。
 
 ```listing
-title: one of 13 procedures
+title: 13 个过程里的一个
 source: capture/out/10-mcp-05-list-procedures.json
 lang: json
-note: One entry of the normalized_result array. The other twelve are cut.
+note: `normalized_result` 数组的一条。其余十二条已裁。
 ---
           {
             "address": "0x100000518",
@@ -28,10 +28,10 @@ note: One entry of the normalized_result array. The other twelve are cut.
 字母一定来自一个字符串，所以 `list_strings` 是下一次调用。它返回 39 个已定义字符串，其中有五个单字母标签以及打印它们的格式字符串：
 
 ```listing
-title: two of 39 strings
+title: 39 个字符串里的两个
 source: capture/out/10-mcp-08-list-strings.json
 lang: json
-note: Two entries of the array. The three letters between F and A, the usage text, and the library paths are cut.
+note: 数组的两条。F 与 A 之间的三个字母、用法文本与库路径已裁。
 ---
           {
             "address": "0x100000770",
@@ -61,10 +61,10 @@ note: Two entries of the array. The three letters between F and A, the usage tex
 对 `_grade` 的 `analyze_function` 返回 dossier `ev_41e8ca1c`。其汇编是要先读的地方（[第 4.3 节](#s-procedure-assembly)）：
 
 ```listing
-title: the 15 instructions of _grade
+title: _grade 的 15 条指令
 source: capture/out/10-mcp-10-analyze-function-grade-O1.json
 lang: json
-note: The assembly array of the dossier, complete.
+note: dossier 的 assembly 数组，完整。
 ---
             "assembly": [
               "0x100000518: mov w8, #0x6667",
@@ -92,10 +92,10 @@ note: The assembly array of the dossier, complete.
 该 dossier 也回答谁使用 `_grade`，而答案对匆忙的读者是一个陷阱：
 
 ```listing
-title: no caller, one data reference
+title: 没有调用者，一条数据引用
 source: capture/out/10-mcp-10-analyze-function-grade-O1.json
 lang: json
-note: Three fields of the dossier. The target_procedure object and the rest of the kind object are cut.
+note: dossier 的三个字段。`target_procedure` 对象与 `kind` 对象的其余部分已裁。
 ---
             "callers": [],
             "callees": [],
@@ -116,10 +116,10 @@ note: Three fields of the dossier. The target_procedure object and the rest of t
 对 `_grade_label` 的 `analyze_function` 返回 `ev_b201cfd0`。其伪代码内联了同样的除法，并以 `return (&_labels)[lVar2];` 结束，第二张表在 `0x1000007e8`，每条 8 字节。其引用的字符串与名字把两个问题连起来：
 
 ```listing
-title: what _grade_label references
+title: _grade_label 引用什么
 source: capture/out/10-mcp-12-analyze-function-grade-label-O1.json
 lang: json
-note: Two arrays of the dossier. Two local label names are cut.
+note: dossier 的两个数组。两个局部标签名已裁。
 ---
             "referenced_strings": [
               {
@@ -153,9 +153,9 @@ note: Two arrays of the dossier. Two local label names are cut.
 ```figure
 id: fig-8-3
 kind: flow
-title: from one question to a ledger
-claim: Four tool calls produced four Evidence records, and the ledger built from them answers the question only up to the two tables nobody read.
-caption: Read top down. Plum is the agent's question, indigo boxes are the MCP calls, and teal boxes are the Evidence records with their ids cut to eight digits. The amber box is the ledger with its rows by kind. From capture/out/10-mcp-05 to 10-mcp-12.
+title: 从一个问题到一份账本
+claim: 四次工具调用产生四份 Evidence 记录，由它们建成的账本只回答到没人读过的两张表为止.
+caption: 从上往下读。梅色是 agent 的问题，靛蓝框是 MCP 调用，青色框是 Evidence 记录，其 id 裁到八位。琥珀色框是按种类分行的账本。 From `capture/out/10-mcp-05` 到 `10-mcp-12`。
 ```
 
 ## 账本 {#s-an-agent-investigation-the-ledger}
@@ -182,9 +182,9 @@ caption: Read top down. Plum is the agent's question, indigo boxes are the MCP c
 ```figure
 id: fig-8-4
 kind: comparison
-title: what the session observed, and what stays unknown
-claim: Five claims rest on recorded Evidence ids, and four stay unknown until read_bytes or analyze_function runs on the addresses the dossiers already name.
-caption: Left, each observed claim with the record and the field that holds it. Right, dashed rose boxes are the open rows of the ledger, each with the call that would close it. From capture/out/10-mcp-05 to 10-mcp-12.
+title: 会话观察到什么，什么仍是未知
+claim: 五条主张靠已录制的 Evidence id 成立，四条保持未知，直到对 dossier 已经点名的地址跑 `read_bytes` 或 `analyze_function`.
+caption: 左边，每条观察到的主张，带着持有它的记录与字段。右边，虚线玫瑰色框是账本里仍打开的行，各自带着能关闭它的调用。 From `capture/out/10-mcp-05` 到 `10-mcp-12`。
 ```
 
 ## 目标文本是数据 {#s-an-agent-investigation-target-text-is-data}

@@ -11,10 +11,10 @@
 **TaskPushNotificationConfig：** 告诉 agent 把某个任务的更新发到哪里以及如何认证它们的对象 {{proto TaskPushNotificationConfig}}。只有 `url` 是 REQUIRED。可选的 `token` 对该任务或会话是唯一的 {{proto TaskPushNotificationConfig}}，可选的 `authentication` 包含一个 `scheme`（例如 `Bearer`）及其 `credentials` {{proto AuthenticationInfo}}。服务器分配配置的 `id`。正文把这个对象称为 `PushNotificationConfig`，而 proto 并未定义这个类型，所以使用 proto 的名称 {{spec §4.3.1}}（[冲突 D4](#s-ref-sources)）。
 
 ```listing
-title: a webhook registered inside SendMessage
+title: 在 SendMessage 内部注册的 webhook
 source: capture/out/15-push.http
 lang: http
-note: The headers and the message parts are cut. The configuration carries no task id, because the task does not exist yet.
+note: 请求头和消息的 part 已删节。这份配置不带任务 id，因为任务尚不存在。
 ---
 POST /a2a/jsonrpc HTTP/1.1
 …
@@ -45,16 +45,16 @@ agent SHOULD 验证 `url` {{spec §13.2}}，[安全要求](#s-security-requireme
 ```figure
 id: fig-push-webhook
 kind: sequence
-title: one test run reported through a webhook
-claim: With a webhook registered, test-runner posts eight StreamResponse bodies to the planner's receiver after the SendMessage call has already returned.
-caption: Read top to bottom in the order the kit ran the steps. The capture file prints the eight deliveries last, but they arrived before the config calls. From capture/out/15-push.http, ids shortened to 8 characters.
+title: 一次通过 webhook 报告的测试运行
+claim: 注册 webhook 之后，test-runner 在 SendMessage 调用已经返回之后，向 planner 的接收方 POST 八个 StreamResponse 正文.
+caption: 按 kit 执行步骤的顺序从上到下读。capture 文件把八次交付印在最后，但它们在配置调用之前就已经到达。来自 capture/out/15-push.http，id 缩短为 8 个字符。
 ```
 
 ```listing
-title: the first notification, as the receiver saw it
+title: 第一条通知，接收方看到的样子
 source: capture/out/15-push.http
 lang: http
-note: The status message is cut. The kit's receiver records only these three headers.
+note: 状态消息已删节。kit 的接收方只记录这三个请求头。
 ---
 POST /a2a-events HTTP/1.1
 Content-Type: application/a2a+json

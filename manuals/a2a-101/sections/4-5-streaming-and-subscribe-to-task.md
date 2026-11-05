@@ -13,10 +13,10 @@ planner 请 `test-runner` 在 commit `9f3c2e1` 上运行 `payments-api` 的完�
 有两个操作会打开流：`SendStreamingMessage` 发送一条消息并观看它启动的工作，`SubscribeToTask` 观看一个已经存在的任务 {{spec §3.5.1}}。
 
 ```listing
-title: the first stream, closed by the client after four frames
+title: 第一条流，客户端在四帧之后关闭
 source: capture/out/14-resubscribe.http
 lang: sse
-note: Each frame is cut inside its line. The last line is the kit's own note in the transcript, written when the client drops the connection.
+note: 每一帧都在行内删节。最后一行是记录中 kit 自己的注释，写于客户端断开连接时。
 ---
 HTTP/1.1 200 OK
 Content-Type: text/event-stream
@@ -56,9 +56,9 @@ source: spec §3.5.2
 ```figure
 id: fig-stream-resubscribe
 kind: sequence
-title: a stream dropped after four frames and picked back up
-claim: A dropped stream loses the frames sent while it was closed, and SubscribeToTask resumes with a Task snapshot that already holds their content.
-caption: Read top to bottom. Steps 1 to 5 are the first stream, and only the writes nobody saw are drawn to the task store. Frame numbers count per stream. From capture/out/14-resubscribe.http, ids shortened to 8 characters.
+title: 一条流在四帧后断开，然后重新接上
+claim: 断开的流失去关闭期间发出的帧，SubscribeToTask 以一份已经包含这些内容的 Task 快照恢复.
+caption: 从上到下读。第 1 到第 5 步是第一条流，只有无人看到的写入才画到任务存储上。帧号按每条流分别计数。来自 capture/out/14-resubscribe.http，id 缩短为 8 个字符。
 ```
 
 在第 4 帧之后，agent 把分块 03 和 04 追加到 `test-log.txt`，没有打开的连接承载它们的 `artifactUpdate` 事件，如[图](#fig-stream-resubscribe)所示。这些事件丢失了，而存储的任务持有这两个分块。
@@ -66,10 +66,10 @@ caption: Read top to bottom. Steps 1 to 5 are the first stream, and only the wri
 **SubscribeToTask：** 给定任务的 `id`，在现有任务上打开新流的操作 {{proto SubscribeToTaskRequest}}。它的第一帧是一个快照：流的第一个事件必须是一个 `Task` 对象 {{spec §3.1.6}}。
 
 ```listing
-title: the first frame after SubscribeToTask, a full Task snapshot
+title: SubscribeToTask 之后的第一帧，一份完整的 Task 快照
 source: capture/out/14-resubscribe.events.json
 lang: json
-note: The status message and the history are cut, and so are parts 02 and 03 of the log.
+note: 状态消息和 history 已删节，日志的 part 02 和 03 也已删节。
 ---
 {
   "jsonrpc": "2.0",

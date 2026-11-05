@@ -15,9 +15,9 @@ planner 给 `code-reviewer` 发送一个 diff 请它审查。审查方问要对�
 ```figure
 id: fig-message-fields
 kind: structure
-title: who sets each field of a message
-claim: A message carries an id its sender mints, while its `contextId` and `taskId` come from the server and the client echoes them to continue.
-caption: Columns are three messages from the input-required capture, in the order they were sent. The right column names who sets each field. Ids shortened to 8 characters.
+title: 消息的每个字段由谁设置
+claim: 消息携带发送方生成的 id，而它的 `contextId` 和 `taskId` 来自服务器，客户端回显这两个 id 以便延续.
+caption: 各列是 input-required capture 中的三条消息，按发送顺序排列。右列标出每个字段由谁设置。id 缩短为 8 个字符。
 ```
 
 消息的发送方创建 `messageId` {{proto Message}}。kit 会拒绝没有 `messageId` 的消息，[错误](#s-errors)一节展示了这一点。§11.2 和 §6.3 的规范示例省略了 `messageId` {{spec §11.2}} {{spec §6.3}}，所以绝不要照搬示例（[冲突 D23](#s-ref-sources)）。
@@ -31,10 +31,10 @@ caption: Columns are three messages from the input-required capture, in the orde
 两个 id 都没有的客户端消息开启新的内容。之后服务器的消息带有它生成的 `contextId`，以及它创建的任何任务的 `taskId` {{proto Message}}。`02-message-reply.http` 中的直接回复带有 `contextId` 而没有 `taskId`，因为审查方没有创建任务就作了回答：
 
 ```listing
-title: a server message with a context and no task
+title: 带 context、没有任务的服务器消息
 source: capture/out/02-message-reply.http
 lang: json
-note: The result of the only exchange in the file, complete.
+note: 文件中唯一一次交换的 result，完整保留。
 ---
   "result": {
     "message": {
@@ -53,10 +53,10 @@ note: The result of the only exchange in the file, complete.
 要延续一个任务，客户端把两个 id 都从任务复制到它的下一条消息中，planner 的回答就是这样做的：
 
 ```listing
-title: the planner's answer, with both ids copied from the task
+title: planner 的回答，两个 id 都从任务复制而来
 source: capture/out/06-input-required.http
 lang: json
-note: The message of exchange 2, complete.
+note: 第 2 次交换的 message，完整保留。
 ---
     "message": {
       "messageId": "096d3737-42f9-4039-8320-a4737c2b3abe",

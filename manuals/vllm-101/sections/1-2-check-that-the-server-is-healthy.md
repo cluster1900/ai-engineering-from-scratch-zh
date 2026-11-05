@@ -15,10 +15,10 @@ curl -i http://localhost:8000/health
 你会看到 `HTTP/1.1 200 OK` 和一个空的响应体。服务器日志里会显示同一个请求。
 
 ```listing
-title: the first health check and model list, from a DGX Spark
+title: 第一次健康检查和模型列表，来自 DGX Spark
 source: capture/gpu/out-gb10/server-load-vllm.log
 lang: text
-note: Three lines from the end of startup.
+note: 启动末尾的三行。
 ---
 INFO:     Application startup complete.
 INFO:     127.0.0.1:35152 - "GET /health HTTP/1.1" 200 OK
@@ -44,10 +44,10 @@ curl http://localhost:8000/v1/models
 回到启动日志，找到以 `GPU KV cache size` 开头的那一行。在我们的 DGX Spark 上，它是：
 
 ```listing
-title: the KV cache line, from a DGX Spark
+title: KV cache 那一行，来自 DGX Spark
 source: capture/gpu/out-gb10/server-load-vllm.log
 lang: text
-note: One line from the startup log.
+note: 启动日志里的一行。
 ---
 (EngineCore pid=143) INFO 10-21 10:59:46 [kv_cache_utils.py:2464] GPU KV cache size: 234,960 tokens, Maximum concurrency for 8,192 tokens per request: 28.68x
 ```

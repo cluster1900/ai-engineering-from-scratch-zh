@@ -9,9 +9,9 @@ planner 读取来自 `code-reviewer` 的 `review.json` 和来自 `test-runner` �
 ```figure
 id: fig-trust-boundaries
 kind: layers
-title: trust boundaries in the kit, with a threat and a check at each
-claim: Data crosses six boundaries in the kit's system, and each needs a check of its own, because A2A labels nothing it carries as safe.
-caption: Read each row left to right: where data crosses, what can go wrong, and the check the specification asks for. Rows appear in the order the planner meets them. Violet checks belong to the planner and blue checks to the remote agent. From capture/out/15-push.http, 06-input-required.http, 11-errors.http, and 17-signed-card.txt.
+title: kit 中的信任边界，每条边界上的威胁与检查
+claim: 数据在 kit 的系统中跨越六条边界，每一条都需要自己的检查，因为 A2A 不会把所承载的任何内容标为安全.
+caption: 每一行从左到右读：数据在哪里跨越、可能出什么错，以及规范要求的检查。各行按 planner 遇到它们的顺序排列。紫色检查属于 planner，蓝色检查属于远程 agent。来自 capture/out/15-push.http、06-input-required.http、11-errors.http 和 17-signed-card.txt。
 ```
 
 ## 要求，以及谁满足了它们 {#s-security-requirements-the-requirements-and-who-meets-them}
@@ -62,10 +62,10 @@ kit 的 `code-reviewer` 拒绝媒体类型为 `image/png` 的 `url` part，因�
 读取存储的配置会以明文返回它的密钥：
 
 ```listing
-title: the configuration read back with its secret in clear
+title: 读回的配置，密钥以明文出现
 source: capture/out/15-push.http
 lang: json
-note: The ListTaskPushNotificationConfigs reply, cut to one configuration.
+note: ListTaskPushNotificationConfigs 的回复，删节到一份配置。
 ---
     "configs": [
       {

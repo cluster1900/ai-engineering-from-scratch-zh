@@ -21,9 +21,9 @@ vLLM 起源于一篇关于一个想法的论文：像操作系统用页来存放
 ```figure
 id: fig-8-3
 kind: structure
-title: the block pool
-claim: The KV cache is one pool of 16-token blocks that requests take in any order, mapped by a block table for each request.
-caption: Coloured blocks belong to the request of the same colour. Dashed blocks are free. From the vLLM source at v0.31.0.
+title: block 池
+claim: KV cache 是一个由 16-token block 组成的池，请求按任意顺序领取，每个请求用一张 block table 做映射.
+caption: 彩色 block 属于同色的请求。虚线 block 是空闲的。来自 vLLM 0.31.0 的源码。
 ```
 
 ## 淘汰 {#s-how-the-block-pool-manages-kv-memory-eviction}

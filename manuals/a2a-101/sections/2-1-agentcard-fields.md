@@ -19,9 +19,9 @@ proto message `AgentCard` 有 14 个字段，其中八个是 REQUIRED：`name`�
 ```figure
 id: fig-agent-card-fields
 kind: structure
-title: the test-runner agent card, field by field
-claim: One `GET` returns what a client needs before its first message: who the agent is, where to reach it, what it demands, and what it offers.
-caption: Each row is one field of the card, grouped by the question it answers. A dot marks a field the proto makes REQUIRED, and dashed rows are optional fields this card leaves out. From capture/out/01-agent-cards.http.
+title: test-runner 的 agent card，逐个字段
+claim: 一次 `GET` 返回客户端在第一条消息之前需要的一切：这个 agent 是谁、在哪里访问它、它要求什么、它提供什么.
+caption: 每一行是 card 的一个字段，按它所回答的问题分组。圆点标出 proto 定为 REQUIRED 的字段，虚线行是这张 card 省略的可选字段。来自 capture/out/01-agent-cards.http。
 ```
 
 ## 它提供什么：skill 和 mode {#s-agentcard-fields-what-it-offers-skills-and-modes}
@@ -29,10 +29,10 @@ caption: Each row is one field of the card, grouped by the question it answers. 
 **Skill：** `skills` 中的一个条目，是 agent 声称自己能做的一个工作单元。每个 skill 都需要一个 `id`、一个 `name`、一个 `description`，以及 `tags` 中至少一个条目 {{spec §5.7}}。可选的 `examples` 存放示例 prompt，一个 skill 还可以带有自己的 mode 和 `securityRequirements` {{proto AgentSkill}}。
 
 ```listing
-title: the one skill on the test-runner card
+title: test-runner card 上的唯一 skill
 source: capture/out/01-agent-cards.http
 lang: json
-note: The skills array of the first card in the file, complete.
+note: 文件中第一张 card 的 skills 数组，完整保留。
 ---
   "skills": [
     {
@@ -59,10 +59,10 @@ note: The skills array of the first card in the file, complete.
 **Interface：** `supportedInterfaces` 中的一个条目，是一个 URL，以及在那里使用的绑定和协议版本。它的字段 `url`、`protocolBinding` 和 `protocolVersion` 是 REQUIRED，`tenant` 是可选的 {{proto AgentInterface}}。顺序很重要：这个列表是有序的，第一个条目是首选的 {{proto AgentCard}}。
 
 ```listing
-title: the two interfaces of test-runner, JSON-RPC first
+title: test-runner 的两个 interface，JSON-RPC 在前
 source: capture/out/01-agent-cards.http
 lang: json
-note: The supportedInterfaces array of the first card in the file, complete.
+note: 文件中第一张 card 的 supportedInterfaces 数组，完整保留。
 ---
   "supportedInterfaces": [
     {

@@ -18,10 +18,10 @@
 内容旁边有三个可选字段：`mediaType`、`filename` 和 `metadata`，`mediaType` 适用于每种 part {{proto Part}}。kit 的审查请求在一条消息中发送了两种 part：
 
 ```listing
-title: one message, two kinds of part
+title: 一条消息，两种 part
 source: capture/out/06-input-required.http
 lang: json
-note: The parts array of the planner's first message to code-reviewer. The base64 value of raw is cut after 36 of its 236 characters.
+note: planner 发给 code-reviewer 的第一条消息的 parts 数组。raw 的 base64 值在 236 个字符中只保留前 36 个，其余已删节。
 ---
       "parts": [
         {
@@ -48,9 +48,9 @@ base64 会增加体积：`payments/refunds.py` 的 175 字节 diff 在 JSON body
 ```figure
 id: fig-four-parts
 kind: structure
-title: four kinds of part from the kit
-claim: The kit's captures use all four kinds of part, and only the `image/png` part fails, because `code-reviewer` does not accept that media type.
-caption: The top row is the shape of every part. Each row below is one captured part, in the order the captures sent them. Its content member is on the left, its media type in green, and its sender underneath. The review.json artifact holds a text part for a person and a data part for code. From capture/out/06-input-required.http and capture/out/11-errors.http.
+title: kit 中的四种 part
+claim: kit 的 capture 用到了全部四种 part，只有 `image/png` 这一种失败，因为 `code-reviewer` 不接受该媒体类型.
+caption: 最上面一行是每种 part 的形状。下面每一行是一个已捕获的 part，按 capture 发送它们的顺序排列。内容成员在左侧，媒体类型为绿色，发送方在下方。review.json 这个 artifact 放一个给人读的 text part，和一个给代码用的 data part。来自 capture/out/06-input-required.http 和 capture/out/11-errors.http。
 ```
 
 ## 谁声明媒体类型 {#s-part-who-declares-media-types}
@@ -74,10 +74,10 @@ caption: The top row is the shape of every part. Each row below is one captured 
 在 kit 中，planner 把一张截图作为标为 `image/png` 的 `url` part 发给 `code-reviewer`，agent 在创建任务之前就拒绝了：
 
 ```listing
-title: a media type the agent does not accept
+title: agent 不接受的媒体类型
 source: capture/out/11-errors.http
 lang: json
-note: Exchange 5, cut to the part that was sent and the error that came back inside an HTTP 200 response.
+note: 第 5 次交换，删节到发出的 part 和随 HTTP 200 响应返回的错误。
 ---
       "parts": [
         {

@@ -57,9 +57,9 @@ curl -s http://127.0.0.1:30000/generate -H 'Content-Type: application/json' \
 ```figure
 id: fig-0-1
 kind: sequence
-title: reading a sequence figure in this manual
-claim: Each arrow style marks one kind of exchange, and every label is a real name, message, or number from our recorded runs.
-caption: Read each numbered row from the tail of the arrow to its head, and the note under each label names the style. From capture/out/cache-experiment.txt, server-default.log, and the out-of-memory run in section 3.2.
+title: 怎么读本手册里的时序图
+claim: 每种箭头样式标记一种交换，每个标签都是我们录下的运行里的真实名称、消息或数字.
+caption: 按编号从箭头尾读到箭头头，标签下的注释点明样式。来自 capture/out/cache-experiment.txt、server-default.log，以及第 3.2 节的内存不足运行。
 ```
 
 Sources: manual.json; capture/gpu/out-l4/server-default.command.txt, capture/gpu/out-l4/generate.txt; capture/out/serve-help.txt, cache-experiment.txt, server-default.log; docs/docs/get-started/install.mdx at v0.5.22.

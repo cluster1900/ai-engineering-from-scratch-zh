@@ -15,10 +15,10 @@ Capture kit 发送一段 2,999 token 的 system prompt 和一个短问题，三�
 - **ID 在结尾：** 同一个随机 ID 放在 system prompt 末尾。
 
 ```listing
-title: the summary of the cache experiment
+title: 缓存实验的摘要
 source: capture/out/cache-experiment.txt
 lang: json
-note: The three summary lines. The fifteen per-request lines above them are cut. The stable case drops its first round, which filled the cache.
+note: 三行摘要。上面十五条按请求的行已截去。稳定那种丢掉第一轮，那一轮填满了缓存。
 ---
 …
 {"summary": "stable-system-prompt", "median_ttft_ms": 45.1, "min_ttft_ms": 34.0, "max_ttft_ms": 62.5, "median_cached_tokens": 2998.0, "prompt_tokens": 2999}
@@ -35,9 +35,9 @@ note: The three summary lines. The fifteen per-request lines above them are cut.
 ```figure
 id: fig-3-4
 kind: comparison
-title: the same tokens in three orders
-claim: A random ID at the start of the prompt made about 3,027 tokens miss the cache, and the same ID at the end cost about 45 tokens.
-caption: Read each ribbon left to right as the prompt's tokens. Green is reused from the cache, and plum is computed in prefill. From capture/out/cache-experiment.txt.
+title: 同样的 token，三种顺序
+claim: 随机 ID 放在 prompt 开头让大约 3,027 个 token 未命中缓存，同一个 ID 放在末尾大约只花 45 个 token.
+caption: 每条带子从左到右读，就是 prompt 的 token。绿色是从缓存复用的，梅红色是 prefill 里算的。来自 capture/out/cache-experiment.txt。
 ```
 
 ## 为什么顺序重要 {#s-prefix-friendly-prompts-why-the-order-matters}
@@ -79,10 +79,10 @@ Issue #35129 就是本节开头的故事 {{issue #35129}}。报告者发现三�
 3. **在指标里。** `/metrics` 导出 `sglang:cache_hit_rate`，一个近期 prefill batch 的 gauge。[第 3.3 节](#s-radixcache) 的共享前缀基准之后，我们的服务器报告 0.94。带着 `--disable-radix-cache` 的服务器报告 0.0。
 
 ```listing
-title: the scheduler's view of the three prompt forms
+title: 调度器看到的三种 prompt 形态
 source: capture/out/server-default.log
 lang: text
-note: One line for each form, in the order the kit sent them. The other twelve lines are cut.
+note: 每种形态一行，按 kit 发送的顺序。其余十二行已截去。
 ---
 [2026-10-16 13:58:12] Prefill batch, #new-seq: 1, #new-token: 1, #cached-token: 2998, token usage: 0.02, #running-req: 0, #queue-req: 0, #pending-token: 0, cuda graph: False, input throughput (token/s): 7.09
 …

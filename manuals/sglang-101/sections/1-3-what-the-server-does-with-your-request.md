@@ -17,10 +17,10 @@
 我们在一台 Mac 上用 0.6B 模型测过这个差别。一段 512 token 的 prompt，中位首 token 时间是 163 ms。之后每个新 token 平均要 4.38 ms。
 
 ```listing
-title: one request at a time, 512 tokens in and 128 tokens out
+title: 一次一条请求，512 token 进、128 token 出
 source: capture/out/bench-random-c1.txt
 lang: text
-note: Cut from the benchmark summary. The latency percentiles other than the median and the inter-token block are cut.
+note: 从基准摘要里截出。中位数以外的延迟百分位，以及 token 间隔那一块，已截去。
 ---
 Max request concurrency:                 1         
 Successful requests:                     16        
@@ -35,9 +35,9 @@ Mean TPOT (ms):                          4.38
 ```figure
 id: fig-1-1
 kind: comparison
-title: prefill against decode on the capture Mac
-claim: The median TTFT divided by the prompt length is about 0.32 ms per prompt token, and one output token costs 4.38 ms in decode.
-caption: Read left to right. Both columns come from one benchmark run with one request at a time. From capture/out/bench-random-c1.txt.
+title: capture 那台 Mac 上的 prefill 对上 decode
+claim: 中位 TTFT 除以 prompt 长度大约是每个 prompt token 0.32 ms，一个输出 token 在 decode 里要 4.38 ms.
+caption: 从左到右读。两列来自同一次基准，一次一条请求。来自 capture/out/bench-random-c1.txt。
 ```
 
 ## 四个数字 {#s-what-the-server-does-with-your-request-the-four-numbers}
@@ -60,9 +60,9 @@ SGLang 管的是从请求到 token 之间的时间。它决定算哪些 prompt t
 ```figure
 id: fig-1-2
 kind: layers
-title: what SGLang owns
-claim: SGLang owns tokenizing, scheduling, the KV cache, and the forward pass, while the model and the operator own quality, memory, and routing.
-caption: Read top to bottom, from the client to the weights. Grey layers are outside SGLang. From the v0.5.22 source and capture/out/server-default.log.
+title: SGLang 管什么
+claim: SGLang 管分词、调度、KV cache 和前向，模型和运维管质量、内存和路由.
+caption: 从上往下读，从客户端到权重。灰色层在 SGLang 之外。来自 v0.5.22 源码和 capture/out/server-default.log。
 ```
 
 有三样东西在外面。模型决定答案说什么。在我们的 Mac 上，一个 0.6B 模型被要求说出一颗行星，回答是 "Ardens"，那不是行星。SGLang 正确且快速地送出了那个答案，没有任何服务引擎能让模型变对。
@@ -76,10 +76,10 @@ caption: Read top to bottom, from the client to the weights. Grey layers are out
 调度器在一行里记下了它那一侧的请求：
 
 ```listing
-title: the scheduler's view of the request on our L4
+title: 我们 L4 上调度器看到的这条请求
 source: capture/gpu/out-l4/server-default.log
 lang: text
-note: The prefill line and the response line of the /generate request from section 1.1.
+note: 第 1.1 节那条 /generate 请求的 prefill 行和响应行。
 ---
 [2026-10-17 14:43:41] Prefill batch, #new-seq: 1, #new-token: 3, #cached-token: 2, token usage: 0.00, #running-req: 0, #queue-req: 0, #pending-token: 0, cuda graph: True, input throughput (token/s): 2.82
 [2026-10-17 14:43:41] INFO:     127.0.0.1:58314 - "POST /generate HTTP/1.1" 200 OK
@@ -90,9 +90,9 @@ note: The prefill line and the response line of the /generate request from secti
 ```figure
 id: fig-1-3
 kind: sequence
-title: one /generate request through the three processes
-claim: The tokenizer manager, the scheduler, and the detokenizer each touched the request once, and the prefill computed 3 of 5 tokens.
-caption: Read top to bottom. Numbers are from our L4 request in section 1.1. From capture/gpu/out-l4/generate.txt and capture/gpu/out-l4/server-default.log.
+title: 一条 /generate 请求穿过三个进程
+claim: tokenizer manager、scheduler 和 detokenizer 各碰了这条请求一次，prefill 算了 5 个 token 里的 3 个.
+caption: 从上往下读。数字来自第 1.1 节我们的 L4 请求。来自 capture/gpu/out-l4/generate.txt 和 capture/gpu/out-l4/server-default.log。
 ```
 
 ## 我们的立场 {#s-what-the-server-does-with-your-request-our-position}

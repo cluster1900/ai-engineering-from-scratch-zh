@@ -51,9 +51,9 @@ vllm serve Qwen/Qwen3-8B --port 8200 \
 ```figure
 id: fig-6-3
 kind: flow
-title: prefill and decode on two servers
-claim: A prefill server computes the prompt, and a KV connector copies its cache to a decode server that writes the tokens.
-caption: Teal arrows move the KV cache. The dotted arrow is the token stream. From the vLLM documentation at v0.31.0.
+title: 两台服务器上的 prefill 和 decode
+claim: prefill 服务器计算 prompt，KV connector 把它的 cache 复制到写出 token 的 decode 服务器.
+caption: 青色箭头搬运 KV cache。点线箭头是 token 流。来自 vLLM 0.31.0 的文档。
 ```
 
 ## 确定两边的规模 {#s-split-prefill-and-decode-size-the-two-sides}

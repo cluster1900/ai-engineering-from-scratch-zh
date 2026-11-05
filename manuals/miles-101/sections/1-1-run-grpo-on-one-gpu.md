@@ -11,9 +11,9 @@
 ```figure
 id: fig-1-1
 kind: flow
-title: One GRPO step on one GPU
-claim: Each step runs rollout, scoring, log probabilities, training, and a weight update, in that order, on one GPU.
-caption: Medians of our 48-step run, made before we added the heat guard, so no pause could occur. Qwen3-0.6B on one GB10. The numbers follow the order of the arrows.
+title: 一块 GPU 上的一个 GRPO 步
+claim: 每一步在一块 GPU 上依次完成 rollout、打分、log probability、训练和权重更新.
+caption: 我们 48 步运行的中位数，这次运行是在加上温度保护之前做的，所以不可能出现暂停。Qwen3-0.6B，一块 GB10。数字按箭头的顺序排列。
 ```
 
 ## 检查你需要什么 {#s-run-grpo-on-one-gpu-check-what-you-need}
@@ -27,10 +27,10 @@ docker run --rm --gpus all radixark/miles:latest nvidia-smi --query-gpu=name,mem
 你应该能看到 GPU 名称。如果 Docker 提示无法选择设备驱动，安装 NVIDIA container toolkit 并重启 Docker。
 
 ```listing
-title: the GPU check on our machine
+title: 我们这台机器上的 GPU 检查
 source: capture/gpu/out-gb10/gpu-check.txt
 lang: text
-note: The GB10 shares one memory pool between the CPU and the GPU, so it reports no separate GPU memory.
+note: GB10 的 CPU 和 GPU 共用一个内存池，所以它不报告单独的 GPU 显存。
 ---
 name, memory.total [MiB]
 NVIDIA GB10, [N/A]
@@ -50,10 +50,10 @@ docker run --rm --entrypoint /opt/sglang/bin/python3 radixark/miles:latest -c "i
 ```
 
 ```listing
-title: the image we ran
+title: 我们运行的镜像
 source: capture/gpu/out-gb10/image-identity.txt
 lang: text
-note: The digest, the CPU architecture, the Miles commit, and the SGLang version inside the image.
+note: 镜像里的 digest、CPU 架构、Miles commit 和 SGLang 版本。
 ---
 radixark/miles@sha256:c64fa344e3a86715f03c0a1b6a422c474e0035355591a2f6da87bf52a74c52da arm64
 08752a1283 2026-10-15 fix(ci): keep host networks out of the builder disk cleanup (#4130)
@@ -141,10 +141,10 @@ docker stop miles-plain
 在另一个终端里用 `tail -f runs/plain.log` 打开日志。训练先启动 Ray，然后是 rollout 引擎，然后是训练器。下面这些行告诉你每个部分都已启动：
 
 ```listing
-title: the startup of a colocated run
+title: 一次共置运行的启动
 source: capture/gpu/out-gb10/plain-first-step.log
 lang: text
-note: Three lines from our 12-step run. The middle of each long line is cut.
+note: 来自我们 12 步运行的三行。每行过长处的中间已截去。
 ---
 [2026-10-17 15:53:16.726 launcher] common.py:290 - EXEC: export PYTHONUNBUFFERED=1 && ray start --head --node-ip-address 127.0.0.1 --num-gpus 1 …
 (CommandActor pid=2546) [2026-10-17 15:54:38] Load weight end. elapsed=5.85 s, type=Qwen3ForCausalLM, avail mem=94.82 GB, mem usage=1.40 GB.
@@ -166,10 +166,10 @@ grep -c " - step [0-9]*: {" runs/plain.log
 这个计数就是已完成的步数。我们的第一步记录了这些行：
 
 ```listing
-title: the first step, from rollout to timers
+title: 第一步，从 rollout 到计时
 source: capture/gpu/out-gb10/plain-first-step.log
 lang: text
-note: Each line is cut to the fields that this section uses.
+note: 每一行都只保留本节用到的字段。
 ---
 (FSDPTrainRayActor pid=2551) [2026-10-17 15:56:48.271 actor_cell00000_rank00000] log_utils.py:125 - rollout 0: {'rollout/response_lengths': 739.92578125, … 'rollout/raw_reward': 0.62890625, …
 (FSDPTrainRayActor pid=2551) [2026-10-17 15:58:15.687 actor_cell00000_rank00000] log_utils.py:554 - step 0: { … 'train/train_rollout_logprob_abs_diff': 0.015336457639932632, …
@@ -184,9 +184,9 @@ note: Each line is cut to the fields that this section uses.
 ```figure
 id: fig-1-1b
 kind: chart
-title: Where the time of one step goes
-claim: Training and rollout take almost all of a step, and the hand-offs take about 2 s.
-caption: Median seconds per phase over our 48-step run, made before we added the heat guard. The log-probability pass and the gradient step together make the training phase.
+title: 一步的时间花在哪里
+claim: 训练和 rollout 占了一步的几乎全部时间，交接大约用 2 s.
+caption: 我们 48 步运行各阶段的中位秒数，这次运行是在加上温度保护之前做的。计算 log probability 和梯度步合在一起，构成训练阶段。
 ```
 
 

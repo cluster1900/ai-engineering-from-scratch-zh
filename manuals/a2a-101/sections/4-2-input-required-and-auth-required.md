@@ -17,10 +17,10 @@ planner 把 `payments-api` 的一个 diff 发给 `code-reviewer` 请求审查。
 审查者为 planner 的 diff 创建任务 `e5c95b09`，然后停下，阻塞调用返回带着问题的任务：
 
 ```listing
-title: the first reply: a task that asks a question
+title: 第一次回复：一个提问的任务
 source: capture/out/06-input-required.http
 lang: json
-note: The envelope above the task, the ids inside the status message, and the history are cut. The history holds only the planner's first message.
+note: 任务上方的信封、状态消息内部的 id 和 history 已删节。history 里只有 planner 的第一条消息。
 ---
     "task": {
       "id": "e5c95b09-6d4b-4b3b-8693-91e81472d12f",
@@ -46,9 +46,9 @@ note: The envelope above the task, the ids inside the status message, and the hi
 ```figure
 id: fig-input-required
 kind: sequence
-title: the review question and its answer
-claim: The question arrives as the status message of a paused task, and the answer is a new message that carries the same task and context ids.
-caption: Read top to bottom. Steps 1 to 3 are the first `SendMessage` and its reply, and steps 4 to 9 answer the question on the same task. Ids are shortened to 8 characters. From capture/out/06-input-required.http.
+title: 审查提出的问题及其回答
+claim: 问题作为暂停任务的状态消息到达，回答是一条携带相同任务 id 和 context id 的新消息.
+caption: 从上到下读。第 1 到第 3 步是第一次 `SendMessage` 及其回复，第 4 到第 9 步在同一个任务上回答这个问题。id 缩短为 8 个字符。来自 capture/out/06-input-required.http。
 ```
 
 ## 在 A2A 之外到达的授权 {#s-input-required-and-auth-required-authorization-that-arrives-outside-a2a}
@@ -65,10 +65,10 @@ agent 必须通过 A2A 之外的通道获取凭据。例外是双方在 A2A 之�
 deployer 的第三个流帧指出了操作员进行批准的地方：
 
 ```listing
-title: frame 3: the deploy asks for approval
+title: 第 3 帧：部署请求批准
 source: capture/out/07-auth-required.events.json
 lang: json
-note: The JSON-RPC envelope and the ids inside the status message are cut.
+note: JSON-RPC 信封和状态消息内部的 id 已删节。
 ---
           "statusUpdate": {
             "taskId": "ecf2dcb6-79c8-48f8-8868-24a0541781f4",
@@ -96,9 +96,9 @@ note: The JSON-RPC envelope and the ids inside the status message are cut.
 ```figure
 id: fig-auth-required
 kind: sequence
-title: a deploy that waits for an operator
-claim: The deploy waits in `TASK_STATE_AUTH_REQUIRED` while the stream stays open, and the operator's approval travels outside A2A before the same stream carries the result.
-caption: Read top to bottom. Steps 2 to 4 and 7 to 9 are the six frames of one stream. Steps 5 and 6 are plain HTTP outside A2A. Ids are shortened to 8 characters. From capture/out/07-auth-required.http.
+title: 一次等待操作员的部署
+claim: 部署在 `TASK_STATE_AUTH_REQUIRED` 中等待，流保持打开，操作员的批准在 A2A 之外传递，然后同一条流载回结果.
+caption: 从上到下读。第 2 到第 4 步和第 7 到第 9 步是同一条流的六帧。第 5、6 步是 A2A 之外的普通 HTTP。id 缩短为 8 个字符。来自 capture/out/07-auth-required.http。
 ```
 
 ## 流何时关闭 {#s-input-required-and-auth-required-when-the-stream-closes}

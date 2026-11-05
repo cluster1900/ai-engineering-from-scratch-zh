@@ -11,10 +11,10 @@
 `compare_functions` 在八个维度比较两份 `analyze_function` 记录：`identity`、`pseudocode`、`assembly`、`comments`、`calls`、`references`、`strings_names` 与 `cfg`（[捕获](manuals/reverse-engineering-101/capture/out/10-mcp-20-compare-functions-percent-change.json)）。伪代码与汇编维度是两段字符串的有界行 diff。当 diff 超过 100 ms 或超过 10,000 次编辑时，状态是 `unknown`。汇编维度带着两个固定限制：
 
 ```listing
-title: the assembly dimension of the percent_change comparison
+title: percent_change 比较的 assembly 维度
 source: capture/out/10-mcp-20-compare-functions-percent-change.json
 lang: json
-note: One of the eight dimension objects. The counts are characters of provider text. The digests and the text delta are cut.
+note: 八个维度对象里的一个。计数是 provider 文本的字符数。digest 与文本差值已裁。
 ---
               "dimension": "assembly",
               "left_count": 161,
@@ -39,10 +39,10 @@ rea 6.7.0 没有编译器回放，也没有感知重定位的字节比较。下�
 **输入网格：** harness 喂给原件与重建的输入单元列表。每一类单元代表 listing 显示的一种危害。本课的 `input_grid()` 取十个 `before` 值与七个 `after` 值的每一对给 `percent_change`，以及 22 个分数给 `grade`，一共 92 个单元。每一个单元有一个类，该类说明它为何存在。
 
 ```listing
-title: the 92 cells by hazard class
+title: 按危害类分的 92 个单元
 source: capture/out/17-harness-grid.json
 lang: json
-note: The input values and the ten naive cases are cut.
+note: 输入值与十个朴素案例已裁。
 ---
 {
   "cells": 92,
@@ -77,10 +77,10 @@ int percent_change(int before, int after) {
 ```
 
 ```listing
-title: the plausible pair over the grid
+title: 网格上看似成立的一对
 source: capture/out/17-harness-execute-plausible.json
 lang: json
-note: 26 of the 28 mismatch rows are cut, and the 92 result rows are cut.
+note: 28 行不匹配里的 26 行已裁，92 行结果也已裁。
 ---
   "candidates": {
     "percent_change": "phases/13-tools-and-protocols/36-rebuild-and-prove-equal/code/fixtures/candidates/percent_change_wide.c",
@@ -124,10 +124,10 @@ note: 26 of the 28 mismatch rows are cut, and the 92 result rows are cut.
 相等的一对是 `percent_change_mul_first.c`，也就是 `100 * (after - before) / before`，配上原件源码 `grade_switch.c`。它在全部 92 个单元上一致，且 listing 的模型与观察到的原件在任何一处都不分歧（[捕获](manuals/reverse-engineering-101/capture/out/17-harness-execute-equal.json)）。那个文件的一行值得一看：
 
 ```listing
-title: the trap cell on an arm64 host
+title: arm64 主机上的陷阱单元
 source: capture/out/17-harness-execute-equal.json
 lang: json
-note: One of the 92 rows.
+note: 92 行里的一行。
 ---
     {
       "function": "percent_change",
@@ -149,10 +149,10 @@ note: One of the 92 rows.
 **重定位掩码：** 在比较两个函数之前，把每一个重定位字段的字节置零。随后的两步按偏移、类型与目标节比较重定位记录，然后读每一个重定位指向的字节。本课的 `ElfObject` 用 `struct.unpack_from` 读 ELF64 对象，而 `mask_relocations()`、`prove_bytes()` 与 `read_table()` 做这三步。没有第一步，普通字节比较会拒绝表坐在另一个偏移处的正确重建。没有第三步，它会接受错误的那个。
 
 ```listing
-title: grade in the original object
+title: 原件目标文件里的 grade
 source: capture/out/17-harness-bytes.json
 lang: json
-note: One of the four function entries. The start is the offset inside .text.
+note: 四个函数条目里的一个。start 是 `.text` 内部的偏移。
 ---
       "grade": {
         "section": ".text",
@@ -173,10 +173,10 @@ note: One of the four function entries. The start is the offset inside .text.
 `grade` 是 46 字节，带一个在偏移 38 处的 `R_X86_64_PC32` 重定位，那是加载表地址的 `lea` 的位移。在 RELA 对象里加数活在记录里，四个字段字节是零。上面的十六进制在 `8b0481c3` 之前把它们显示为 `00000000`。目标是 `.rodata+0x10`，且因为该字段结束其指令，CPU 加 4，所以表从 `.rodata+0x14` 开始。每一个候选都用 `clang -target x86_64-unknown-linux-gnu -O1 -fno-asynchronous-unwind-tables -c` 编译，也就是 fixture 命令，并与这个条目比较。
 
 ```listing
-title: a wrong constant passes the masked compare
+title: 一个错误常量通过掩码比较
 source: capture/out/17-harness-bytes.json
 lang: json
-note: One of the eight candidate entries. The source path, the differing offsets, the masked ranges, and the two tables are cut, and the reasons line prints both tables.
+note: 八个候选条目里的一个。源路径、不同的偏移、掩去的范围与两张表已裁，reasons 行把两张表都打印出来。
 ---
       "candidate": "grade_case10_wrong",
       …
@@ -223,17 +223,17 @@ note: One of the eight candidate entries. The source path, the differing offsets
 ```figure
 id: fig-7-2
 kind: flow
-title: two legs of one proof
-claim: Leg one runs the original and the candidate over 92 cells, and leg two compares 46 masked bytes, one relocation record, and five table entries.
-caption: Read each column top down. Grey boxes are the harness and the compiler, which run outside rea, and green boxes are the fixture bytes. Teal is a passed check and rose is a failed one. From capture/out/17-harness-execute-plausible.json, 17-harness-execute-equal.json, and 17-harness-bytes.json.
+title: 一次证明的两条腿
+claim: 第一腿在 92 个单元上跑原件与候选，第二腿比较 46 个掩去的字节、一条重定位记录与五个表条目.
+caption: 每列从上到下读。灰色框是 harness 与编译器，它们在 rea 之外运行，绿色框是 fixture 字节。青色是通过的检查，玫瑰色是失败的检查。 From `capture/out/17-harness-execute-plausible.json`, `17-harness-execute-equal.json`, `17-harness-bytes.json`。
 ```
 
 ```figure
 id: fig-7-3
 kind: decision
-title: where each of the eight candidates stops
-claim: Three candidates stop at the size check, one passes every byte check and fails on the table it points at, and four reach pass.
-caption: Read top down. Each grey box is one check of leg two. The dashed rose boxes to its right are the candidates that fail there, with the reason the report prints. The teal boxes at the bottom passed every check. From capture/out/17-harness-bytes.json.
+title: 八个候选各自停在哪里
+claim: 三个候选停在大小检查，一个通过每一项字节检查并在它指向的表上失败，四个到达 pass.
+caption: 从上往下读。每个灰色框是第二腿的一项检查。它右边的虚线玫瑰色框是在那里失败的候选，带着报告打印的原因。底部的青色框通过了每一项检查。 From `capture/out/17-harness-bytes.json`。
 ```
 
 ## 2026 年测量补充了什么 {#s-a-proof-harness-outside-rea-what-the-2026-measurements-add}
