@@ -17,7 +17,7 @@ id: fig-6-2
 kind: flow
 title: 一个 token 穿过一个 MoE 层
 claim: 分发和合并在每个 MoE 层把每个 token 跨 GPU 搬两次，夹在中间的分组矩阵乘法是唯一的专家计算.
-caption: 从左到右读。靛蓝色箭头是 GPU 之间的 token 流量。标签点名 SGLang 阶段和挑选实现的旗标。来自 v0.5.22 的 MoE 层代码和专家并行文档。 From the MoE layer code and the expert parallelism docs at v0.5.22.
+caption: 从左到右读。靛蓝色箭头是 GPU 之间的 token 流量。标签点名 SGLang 阶段和挑选实现的旗标。 From the MoE layer code and the expert parallelism docs at v0.5.22.
 ```
 
 三个标志挑选实现 {{code}}：

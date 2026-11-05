@@ -47,7 +47,7 @@ id: fig-7-2b
 kind: timeline
 title: 一步共置 RL 里的 GPU 内存
 claim: 在这种模式下 SGLang 和训练器从不同时占着 GPU，SGLang 只在新权重到达之后才拿回 KV cache.
-caption: 从左到右读，train.py 的每个阶段一列。填了色的格子表示这块内存在 GPU 上。来自 Miles v0.1.2 的 train.py 和 inference_controller.py。 From train.py and inference_controller.py in Miles at v0.1.2.
+caption: 从左到右读，train.py 的每个阶段一列。填了色的格子表示这块内存在 GPU 上。 From train.py and inference_controller.py in Miles at v0.1.2.
 ```
 
 ## 库存 SGLang 给训练器什么 {#s-sglang-as-an-rl-rollout-engine-what-stock-sglang-gives-the-trainer}
@@ -65,7 +65,7 @@ id: fig-7-2
 kind: sequence
 title: Miles 和 SGLang 之间的一次权重更新
 claim: 一次权重更新是一个会话：暂停、开始、送出每一个 bucket、用一次 repack 结束、设上版本，然后恢复.
-caption: 从上往下读。第 3 行和第 4 行对默认 NCCL broadcast 传输的每个 bucket 重复一次。来自 Miles v0.1.2 的 weight_update/session.py 和 protocols/broadcast.py，以及 v0.5.22 的 http_server.py 里的端点。 From weight_update/session.py and protocols/broadcast.py in Miles at v0.1.2 and the endpoints in http_server.py at v0.5.22.
+caption: 从上往下读。第 3 行和第 4 行对默认 NCCL broadcast 传输的每个 bucket 重复一次。 From weight_update/session.py and protocols/broadcast.py in Miles at v0.1.2 and the endpoints in http_server.py at v0.5.22.
 ```
 
 ## 移动权重的四种方式 {#s-sglang-as-an-rl-rollout-engine-four-ways-to-move-the-weights}

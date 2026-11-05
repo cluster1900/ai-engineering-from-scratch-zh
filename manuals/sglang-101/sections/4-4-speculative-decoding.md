@@ -21,7 +21,7 @@ id: fig-4-6
 kind: sequence
 title: 一步 EAGLE，steps 3、topk 1、4 个 draft token
 claim: 一步 EAGLE 起草一串 token，用一次目标前向验证它们，并提交接受的前缀再加一个奖励 token.
-caption: 从上往下读。数字跟的是 v0.5.22 对多数模型的默认 (3, 1, 4)。绿色 token 被接受，玫瑰色 token 被拒绝。来自 v0.5.22 的 EAGLEWorkerV2.forward_batch_generation。 From EAGLEWorkerV2.forward_batch_generation at v0.5.22.
+caption: 从上往下读。数字跟的是 v0.5.22 对多数模型的默认 (3, 1, 4)。绿色 token 被接受，玫瑰色 token 被拒绝。 From EAGLEWorkerV2.forward_batch_generation at v0.5.22.
 ```
 
 1. **Draft.** draft 模型跑 `--speculative-num-steps` 次。`--speculative-eagle-topk` 大于 1 时，每一步为每个节点保留几个候选，并长成一棵树。树构建器保留最好的 `--speculative-num-draft-tokens` 个节点，并建树掩码。

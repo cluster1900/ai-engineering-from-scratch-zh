@@ -19,7 +19,7 @@ id: fig-1-3
 kind: flow
 title: 一个请求穿过三个进程
 claim: 一个请求穿过三个进程：API 服务器对它做 tokenize，engine core 调度它，GPU worker 运行模型.
-caption: 实线箭头把请求向前送，虚线箭头把 token id 送回来，点线箭头是文本流。来自 vLLM 0.31.0 的源码。 From the vLLM source at v0.31.0.
+caption: 实线箭头把请求向前送，虚线箭头把 token id 送回来，点线箭头是文本流。 From the vLLM source at v0.31.0.
 ```
 
 ## 四个数字 {#s-understand-what-happens-to-your-request-four-numbers}

@@ -23,7 +23,7 @@ id: fig-6-1
 kind: decision
 title: 三个问题
 claim: 三个问题选定布局，在一台机器内部则由 GPU 之间的链路和能否均匀拆分来选定 tensor parallelism 或 pipeline parallelism.
-caption: 从最上面开始，顺着答案往下走。来自 vLLM 0.31.0 的文档。 From the vLLM documentation at v0.31.0.
+caption: 从最上面开始，顺着答案往下走。 From the vLLM documentation at v0.31.0.
 ```
 
 ## 了解每种布局的代价 {#s-choose-tensor-pipeline-or-data-parallelism-know-what-each-layout-costs}

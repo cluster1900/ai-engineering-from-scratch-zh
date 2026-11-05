@@ -25,7 +25,7 @@ id: fig-5-3
 kind: decision
 title: 问一份公开 SGLang 基准的六个问题
 claim: 过不了版本或负载那一问的结果，不管数字多大，都说明不了你的服务器.
-caption: 从上往下读。每个问题要么进到下一问，要么停在玫瑰色里，也就是这个结果还能告诉你什么。来自本节引用的现场报告。 From the field reports cited in this section.
+caption: 从上往下读。每个问题要么进到下一问，要么停在玫瑰色里，也就是这个结果还能告诉你什么。 From the field reports cited in this section.
 ```
 
 1. **SGLang 版本写明了吗？** 没有的话，结果描述的是未知构建。
@@ -57,7 +57,7 @@ id: fig-5-3b
 kind: structure
 title: 六条发现，以及每条背后的机制
 claim: 本节每一条独立结果都追到一个你可以在自己服务器上测的机制.
-caption: 每一行从左到右读，从负载到报告的结果，再到 SGLang 的机制。橄榄色是客户端一侧，紫罗兰色是内核，绿色是缓存。来自本节引用的现场报告。 From the field reports cited in this section.
+caption: 每一行从左到右读，从负载到报告的结果，再到 SGLang 的机制。橄榄色是客户端一侧，紫罗兰色是内核，绿色是缓存。 From the field reports cited in this section.
 ```
 
 ## 在新硬件上很脆弱 {#s-reading-other-peoples-benchmarks-fragile-on-new-hardware}

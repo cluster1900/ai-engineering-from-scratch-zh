@@ -43,7 +43,7 @@ id: fig-4-3
 kind: decision
 title: v0.5.22 的默认 attention 后端
 claim: SGLang 按 GPU 代际和模型的 attention 类型选 attention 后端，每条分支记下一个测过的上限.
-caption: 从上往下读。MHA 模型走左边，MLA 模型走右边。Hopper 指 CUDA 12.3 或更新。来自 v0.5.22 的 get_default_attn_backend。 From get_default_attn_backend at v0.5.22.
+caption: 从上往下读。MHA 模型走左边，MLA 模型走右边。Hopper 指 CUDA 12.3 或更新。 From get_default_attn_backend at v0.5.22.
 ```
 
 对 MHA 模型，例如 Llama 和 Qwen，顺序是这样：

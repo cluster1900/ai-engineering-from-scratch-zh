@@ -56,6 +56,8 @@ jobs:
       - name: Residual English gate
         run: |
           set -euo pipefail
+          # So From-tail tests can compare against main (#149 r2 / bot-hub#124).
+          git fetch --no-tags --depth=1 origin main
           python3 scripts/test_check_manual_residual_en.py
           for m in manuals/*/manual.json; do
             python3 scripts/check_manual_residual_en.py "$(basename "$(dirname "$m")")"

@@ -7,6 +7,8 @@ pinned from both sides: KEEP cases must stay silent, BLOCK cases must fail.
 from __future__ import annotations
 
 import hashlib
+import json
+import re
 import importlib.util
 import subprocess
 import sys
@@ -1162,15 +1164,40 @@ class ReaderCaptionFromTailTests(unittest.TestCase):
             self.assertEqual(leaks, [("section.md", "fig-x")])
         self.assertEqual(chk.figure_caption_capture_leaks(REPO_ROOT), [])
 
-    def test_head_keeps_a_stripable_from_tail_when_main_had_one(self):
-        # E. A figure present on origin/main and HEAD must not lose a
-        # stripable English From-tail, and the reader view stays free of
-        # capture/.
-        head_by_file: dict[str, dict[str, str]] = {}
-        for rel, fig_id, caption in chk.figure_captions(REPO_ROOT):
-            head_by_file.setdefault(rel, {})[fig_id] = caption
-        checked = 0
-        for rel, heads in sorted(head_by_file.items()):
+    @staticmethod
+    def _last_sentence(text: str) -> str:
+        parts = [p for p in re.split(r"(?<=[。！？.!?])\s*", text.strip()) if p.strip()]
+        return parts[-1].strip() if parts else ""
+
+    @staticmethod
+    def _from_tail(caption: str) -> str | None:
+        body = chk.reader_caption(caption)
+        if body == caption.strip():
+            return None
+        m = re.search(r"(?:^|\s)(From (?!step\b)\S[\s\S]*)$", caption.strip())
+        return m.group(1).strip() if m else None
+
+    @staticmethod
+    def _main_from_tails() -> dict[tuple[str, str], str]:
+        """Stripable From-tails from origin/main, with a committed baseline fallback.
+
+        Prefer live ``git show origin/main`` (after an optional fetch) so the
+        check tracks main; if that is unavailable in CI, load
+        scripts/fixtures/figure_caption_from_tails_main.json.
+        """
+        baseline_path = (
+            Path(__file__).resolve().parent / "fixtures" / "figure_caption_from_tails_main.json"
+        )
+        # Try to make origin/main available (no-op when already fetched).
+        subprocess.run(
+            ["git", "fetch", "--no-tags", "--depth=1", "origin", "main"],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            check=False,
+        )
+        live: dict[tuple[str, str], str] = {}
+        head_rels = sorted({rel for rel, _fid, _c in chk.figure_captions(REPO_ROOT)})
+        for rel in head_rels:
             proc = subprocess.run(
                 ["git", "show", f"origin/main:{rel}"],
                 cwd=REPO_ROOT,
@@ -1178,27 +1205,66 @@ class ReaderCaptionFromTailTests(unittest.TestCase):
                 check=False,
             )
             if proc.returncode != 0:
-                continue
-            main_caps = dict(chk.figure_captions_in_text(proc.stdout.decode("utf-8")))
-            for fig_id, main_caption in main_caps.items():
-                if fig_id not in heads:
-                    continue
-                if chk.reader_caption(main_caption) == main_caption.strip():
-                    continue
-                checked += 1
-                head_caption = heads[fig_id]
-                self.assertNotEqual(
-                    chk.reader_caption(head_caption),
-                    head_caption.strip(),
-                    f"{rel} {fig_id}",
-                )
-                self.assertNotIn(
-                    "capture/", chk.reader_caption(head_caption), f"{rel} {fig_id}",
-                )
-        if checked == 0:
-            # CI checkouts often lack origin/main; C+D already cover leaks.
-            self.skipTest("origin/main not available or has no stripable From-tails")
-        # Reachable when origin/main is fetched (local / full clone).
+                live = {}
+                break
+            for fig_id, caption in chk.figure_captions_in_text(proc.stdout.decode("utf-8")):
+                tail = ReaderCaptionFromTailTests._from_tail(caption)
+                if tail is not None:
+                    live[(rel, fig_id)] = tail
+        if live:
+            return live
+        data = json.loads(baseline_path.read_text(encoding="utf-8"))
+        return {(row["rel"], row["id"]): row["main_tail"] for row in data}
+
+    def test_stripable_from_tails_match_main_and_reader_has_no_lai_sentence(self):
+        # E. For every main-stripable figure: head's stripped From-tail matches
+        # main byte-for-byte; reader_caption(head) does not end with a sentence
+        # that starts with 「来自」; no capture/ leak. Uses live origin/main or
+        # the committed baseline so CI cannot skip this check (#149 r2).
+        main_tails = self._main_from_tails()
+        self.assertGreaterEqual(len(main_tails), 100)
+        head = {(rel, fig_id): caption for rel, fig_id, caption in chk.figure_captions(REPO_ROOT)}
+        for (rel, fig_id), main_tail in sorted(main_tails.items()):
+            self.assertIn((rel, fig_id), head, f"missing on head: {rel} {fig_id}")
+            caption = head[(rel, fig_id)]
+            shown = chk.reader_caption(caption)
+            self.assertNotEqual(shown, caption.strip(), f"{rel} {fig_id}")
+            self.assertEqual(self._from_tail(caption), main_tail, f"{rel} {fig_id}")
+            self.assertNotIn("capture/", shown, f"{rel} {fig_id}")
+            self.assertFalse(
+                self._last_sentence(shown).startswith("来自"),
+                f"{rel} {fig_id} reader ends with 来自-sentence: {self._last_sentence(shown)!r}",
+            )
+
+    def test_duplicate_chinese_lai_before_from_mutation_is_caught(self):
+        # Mutation for #149 r2: Chinese 「来自 …。」 left in front of an English
+        # From-tail survives capture/-only checks but fails the 来自-sentence rule.
+        real = next(
+            (
+                (rel, fig_id, caption)
+                for rel, fig_id, caption in chk.figure_captions(REPO_ROOT)
+                if self._from_tail(caption) is not None
+                and "capture/" not in chk.reader_caption(caption)
+            ),
+            None,
+        )
+        self.assertIsNotNone(real)
+        rel, fig_id, caption = real
+        shown = chk.reader_caption(caption)
+        self.assertFalse(self._last_sentence(shown).startswith("来自"), f"{rel} {fig_id}")
+        mutant = shown + "来自 某来源说明。" + " " + self._from_tail(caption)
+        mutant_shown = chk.reader_caption(mutant)
+        self.assertTrue(
+            self._last_sentence(mutant_shown).startswith("来自"),
+            f"mutant should leave a 来自-sentence visible: {mutant_shown!r}",
+        )
+        # Real tree must not contain that adjacent duplicate form.
+        dup = [
+            f"{r} {i}"
+            for r, i, c in chk.figure_captions(REPO_ROOT)
+            if re.search(r"(?<=[。！？])来自[^。！？]*。[ \t]*From (?!step\b)", c)
+        ]
+        self.assertEqual(dup, [])
 
 
 if __name__ == "__main__":

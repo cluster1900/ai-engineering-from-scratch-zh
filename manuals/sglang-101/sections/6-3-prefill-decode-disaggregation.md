@@ -23,7 +23,7 @@ id: fig-6-3
 kind: sequence
 title: 一次拆开的请求
 claim: decode 服务器预订 KV 槽并公布地址，然后 prefill 服务器把 KV 页直接写入 decode 内存.
-caption: 从上往下读。实线箭头是请求，青色箭头是内存写入，点线箭头是到客户端的 token 流。来自 v0.5.22 的网关 PD 路由器、prefill 与 decode 调度器，以及 Mooncake 连接代码。 From the gateway PD router, the prefill and decode schedulers, and the Mooncake connection code at v0.5.22.
+caption: 从上往下读。实线箭头是请求，青色箭头是内存写入，点线箭头是到客户端的 token 流。 From the gateway PD router, the prefill and decode schedulers, and the Mooncake connection code at v0.5.22.
 ```
 
 1. Decode 服务器创建一个接收端，经 bootstrap 服务器找到 prefill rank，并为提示预订 KV 槽。
@@ -40,7 +40,7 @@ id: fig-6-3b
 kind: state
 title: 一次传输的 KVPoll 状态
 claim: 每次传输都向前经过 Bootstrapping、WaitingForInput 和 Transferring 到达 Success，任一阶段都可以以 Failed 结束.
-caption: 从左到右读。数字是 KVPoll 类的取值。琥珀色箭头是状态变化，玫瑰色箭头是失败。来自 v0.5.22 的基础连接代码。 From the base connection code at v0.5.22.
+caption: 从左到右读。数字是 KVPoll 类的取值。琥珀色箭头是状态变化，玫瑰色箭头是失败。 From the base connection code at v0.5.22.
 ```
 
 ## 要紧的设置 {#s-prefill-decode-disaggregation-settings-that-matter}

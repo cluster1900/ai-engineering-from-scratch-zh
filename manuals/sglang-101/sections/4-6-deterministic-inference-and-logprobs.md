@@ -30,7 +30,7 @@ id: fig-4-9
 kind: comparison
 title: 一行在两个 batch 里做归约
 claim: 默认内核在两个 batch 里把同一行切得不一样，批不变内核对每个 batch 用同一种切法.
-caption: 每一列从上往下读。这一行是一条请求，小块是部分和。来自 v0.5.22 的批不变算子覆盖。 From the batch-invariant operator overrides at v0.5.22.
+caption: 每一列从上往下读。这一行是一条请求，小块是部分和。 From the batch-invariant operator overrides at v0.5.22.
 ```
 
 第五点对服务器最要紧。用 `flashinfer` 时，确定性模式关掉前缀缓存。每个重复前缀再付一整次 prefill。[第 3.3 节](#s-radixcache) 解释那个缓存省了什么。

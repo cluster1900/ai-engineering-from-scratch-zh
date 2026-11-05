@@ -25,7 +25,7 @@ id: fig-2-4
 kind: chart
 title: 1 GiB 里的 KV token 数
 claim: 对 Qwen3-8B 来说，1 GiB 的 KV cache 在 BF16 下大约容纳 7,300 个 token，在 FP8 下大约容纳 14,600 个 token.
-caption: 这些数字来自每 token 的字节数，不是来自一次运行。来自 Qwen/Qwen3-8B 的模型配置。 From the model config of Qwen/Qwen3-8B.
+caption: 这些数字来自每 token 的字节数，不是来自一次运行。 From the model config of Qwen/Qwen3-8B.
 ```
 
 同样的显存能容纳两倍的 token。所以在相同长度下能容纳两倍的用户，或者每个用户的上下文可以长一倍。

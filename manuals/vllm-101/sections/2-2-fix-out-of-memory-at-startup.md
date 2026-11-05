@@ -30,7 +30,7 @@ id: fig-2-2
 kind: decision
 title: 启动失败出在哪里
 claim: 启动失败前的最后一行告诉你该改三个设置里的哪一个.
-caption: 顺着每一列往下读：日志停在哪里、原因，以及要改的参数。来自 vLLM 0.31.0 的源码和我们在 L4 上的运行。 From the vLLM source at v0.31.0 and our runs on the L4.
+caption: 顺着每一列往下读：日志停在哪里、原因，以及要改的参数。 From the vLLM source at v0.31.0 and our runs on the L4.
 ```
 
 ## 修复共享的 GPU {#s-fix-out-of-memory-at-startup-fix-a-shared-gpu}

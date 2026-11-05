@@ -58,7 +58,7 @@ id: fig-3-2
 kind: structure
 title: 一次前缀命中
 claim: 新请求从 prompt 开头复用已缓存的 block，并在第一个不同的 block 处停止.
-caption: 先读上面一行，再读下面一行。虚线 block 会重新计算。来自 vLLM 0.31.0 的源码。 From the vLLM source at v0.31.0.
+caption: 先读上面一行，再读下面一行。虚线 block 会重新计算。 From the vLLM source at v0.31.0.
 ```
 
 ## 隔离租户 {#s-make-repeated-prompts-hit-the-prefix-cache-keep-tenants-apart}

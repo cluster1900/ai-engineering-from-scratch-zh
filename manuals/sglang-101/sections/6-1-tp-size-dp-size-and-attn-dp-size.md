@@ -21,7 +21,7 @@ id: fig-6-1
 kind: layers
 title: 八块 GPU 的一个 TP 组，三种切法
 claim: --tp-size 8、--attn-dp-size 4 和 --ep-size 8 下，同样八块 GPU 组成一个 TP 组、四个注意力组和一个专家组.
-caption: 每一行是一种层。每个方块是一块 GPU。注意力组是连续的 rank 区间，等于 TP 组的专家组直接复用它。来自 v0.5.22 的组构造代码。 From the group construction code at v0.5.22.
+caption: 每一行是一种层。每个方块是一块 GPU。注意力组是连续的 rank 区间，等于 TP 组的专家组直接复用它。 From the group construction code at v0.5.22.
 ```
 
 这些标志每一个的默认都是 1 {{code}}。所以一条普通的 `sglang serve` 用一块 GPU、一个调度器与一份模型。
@@ -35,7 +35,7 @@ id: fig-6-1b
 kind: tree
 title: 一个控制器后面的两份数据并行副本
 claim: 轮询把请求交替送到两份不共享 KV cache 的 world，所以重复前缀可能在另一份 world 里未命中.
-caption: 从上往下读。控制器是默认的 round_robin 方法。每个 world 是四块 GPU 的一个 TP 组，各自有缓存。来自 v0.5.22 的数据并行控制器和 serving hook 代码。 From the data parallel controller and serving hook code at v0.5.22.
+caption: 从上往下读。控制器是默认的 round_robin 方法。每个 world 是四块 GPU 的一个 TP 组，各自有缓存。 From the data parallel controller and serving hook code at v0.5.22.
 ```
 
 **注意力数据并行：** 在同一个 TP 组里，注意力层跑数据并行，而前馈或专家层仍跨全部 GPU 拆分。每个注意力组有自己的调度器、自己的请求与自己的 KV 缓存。`--attn-dp-size 4` 配 `--tp-size 8` 给出四个各两块 GPU 的注意力组。

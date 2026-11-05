@@ -29,7 +29,7 @@ id: fig-4-4
 kind: flow
 title: SGLang 如何决定权重格式
 claim: 检查点自己点名量化方法，--quantization 旗标只在与该方法或一种已知升级相符时才有用.
-caption: 每一行从左到右读。玫瑰色箭头停在启动错误。最后一行是 v0.5.22 的 CUDA 路径。来自 v0.5.22 的 _verify_quantization 和 GPTQ Marlin 覆盖。 From _verify_quantization and the GPTQ Marlin override at v0.5.22.
+caption: 每一行从左到右读。玫瑰色箭头停在启动错误。最后一行是 v0.5.22 的 CUDA 路径。 From _verify_quantization and the GPTQ Marlin override at v0.5.22.
 ```
 
 旗标也可以挡住一次升级。不带旗标加载的 GPTQ 检查点被检测、在运行时转换，并由 Marlin 内核服务。升级代码只在你没传方法或传了 `gptq_marlin` 时接受那种转换。

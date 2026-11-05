@@ -20,7 +20,7 @@ id: fig-8-2
 kind: timeline
 title: 一份 token 预算
 claim: 每个 step 花掉 2,048 个 token：运行中的请求先拿到一个 decode token，新的 prompt 再按 chunk 填上其余部分.
-caption: 每一行是一个 scheduler step。prompt chunk 按比例绘制，decode block 加宽以便能看见。虚线空白是没用掉的预算。来自 vLLM 0.31.0 的源码。 From the vLLM source at v0.31.0.
+caption: 每一行是一个 scheduler step。prompt chunk 按比例绘制，decode block 加宽以便能看见。虚线空白是没用掉的预算。 From the vLLM source at v0.31.0.
 ```
 
 ## 为什么 decode 优先 {#s-why-one-token-budget-replaces-a-prefill-phase-why-decode-goes-first}
