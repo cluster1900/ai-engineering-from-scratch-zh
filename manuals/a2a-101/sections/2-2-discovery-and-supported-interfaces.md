@@ -53,10 +53,10 @@ caption: Read top to bottom. The planner finds the code-reviewer card through co
 规范为客户端处理 `supportedInterfaces` 给出了四条规则，全部是 MUST {{spec §8.3.2}}。第一条决定端点：
 
 ```rule
-label: the first rule of interface selection
+label: 接口选择的第一条规则
 source: spec §8.3.2
 ---
-Read `supportedInterfaces` when the card has it, and select the first transport that you support.
+卡片带有 `supportedInterfaces` 时读取它，并选择列表中第一个你支持的传输。
 ```
 
 支持是指客户端实现了的绑定和版本。一个 JSON-RPC 1.0 客户端会跳过 `GRPC` 条目和版本为 `0.3` 的 `JSONRPC` 条目，因为一张 card 可以以多个版本列出同一种绑定 {{spec §3.6.2}}。
@@ -66,10 +66,10 @@ Read `supportedInterfaces` when the card has it, and select the first transport 
 ## 调用前检查 capability {#s-discovery-and-supported-interfaces-checking-capabilities-before-a-call}
 
 ```rule
-label: read the card before an optional call
+label: 调用可选能力前先读卡片
 source: spec §3.3.4
 ---
-A client should read the Agent Card to confirm that a capability is supported before it calls an operation that needs an optional capability.
+客户端在调用需要某项可选能力的操作之前，应当先读取 Agent Card，确认该能力受支持。
 ```
 
 在服务器端，这条规则是 MUST：card 排除的调用会以固定的错误失败 {{spec §3.3.4}}。下表给出每个错误及其 JSON-RPC 代码 {{spec §5.4}}。

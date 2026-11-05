@@ -41,10 +41,10 @@ caption: Read each row left to right: where data crosses, what can go wrong, and
 **提示注入：** 作为数据到达、却被接收方的模型当作指令遵循的文本。part 中没有任何字段说明它的内容可信到什么程度 {{proto Part}}，而 `review.json` 是根据别人写的 diff 构建的。
 
 ```rule
-label: input is checked before it is read
+label: 先校验输入，再读取
 source: spec §14.1.1
 ---
-The server must validate content against the A2A protocol schema before it processes the content.
+服务器在处理内容之前，必须先按 A2A 协议 schema 校验内容。
 ```
 
 kit 的 planner 根据数据 part 做决定。它从 `summary.json` 读取 `failed`，从 `review.json` 的每个发现中读取 `severity`，并忽略它们旁边的自由文本。它唯一一次使用远程文本，是对审查者的问题做子串测试。基于模型构建的 planner 会读取多得多的内容。所以只根据你检查过的有类型字段行动。把副作用放在由人或策略控制的批准之后，就像 deployer 那样。

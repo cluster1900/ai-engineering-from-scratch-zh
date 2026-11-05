@@ -33,7 +33,7 @@
 
 | 项目 | NVIDIA L4 | DGX Spark |
 |---|---|---|
-| GPU | NVIDIA L4，compute capability 8.9，24 GB | NVIDIA GB10，compute capability 12.1，128 GB 统一内存 |
+| GPU | NVIDIA L4，计算能力 8.9，24 GB | NVIDIA GB10，计算能力 12.1，128 GB 统一内存 |
 | CPU 架构 | x86_64 | aarch64 |
 | 驱动 | 615.71.09 | 580.159.03 |
 | vLLM 的运行方式 | 虚拟环境中的 pip wheel | 镜像 `vllm/vllm-openai:v0.31.0` |

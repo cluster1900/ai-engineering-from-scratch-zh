@@ -58,10 +58,10 @@ note: The request arguments, three items cut from the 39, and the two string lim
 桥遍历程序里每一个已定义的数据项，并留下带字符串值的那些。对每一项它记下字符集、所需终止符是否缺失，以及字节长度。每一项都是 Ghidra 的加载器或分析器创建的 `Data` 对象。一串可打印字节如果没有任何分析器把它变成 `Data`，就不在列表里。第一条限制固定在 rea 里，文档说的一样：
 
 ```rule
-label: what an empty result proves
+label: 空结果能证明什么
 source: ghidra §Admitted inventory semantics
 ---
-Packed or undefined literals, Rust strings among them, can be missing from the list. An empty result does not prove that the text is not in the file.
+打包的或未定义的字面量（包括 Rust 字符串）可能不在列表中。空结果并不能证明文件里没有这段文本。
 ```
 
 `termination` 有两个值。`missing` 表示需要空字节的字符串类型却没有。`present_or_not_required` 覆盖其余一切，因为 Ghidra 分不清存在的终止符与不需要终止符的布局。`byte_length` 把终止符也算进去：`F` 是两个字节。

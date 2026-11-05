@@ -56,10 +56,10 @@ caption: Read top to bottom. Steps 1 to 3 are the first `SendMessage` and its re
 agent 可能在任务进行到一半时需要许可，例如在执行破坏性操作之前需要人工批准 {{spec §7.6}}。这样的 agent 必须把任务移到 `TASK_STATE_AUTH_REQUIRED` {{spec §7.6.1}}。凭据走的是另一条路：
 
 ```rule
-label: where the credential travels
+label: 凭据走哪条通道
 source: spec §7.6.1
 ---
-An agent must get credentials through a channel outside A2A. The exception is an in-band mechanism that the two sides agreed on outside A2A or through an extension.
+agent 必须通过 A2A 之外的通道获取凭据。例外是双方在 A2A 之外或通过扩展约定好的带内机制。
 ```
 
 deployer 的第三个流帧指出了操作员进行批准的地方：

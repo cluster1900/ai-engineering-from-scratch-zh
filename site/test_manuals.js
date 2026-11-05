@@ -197,6 +197,72 @@ test('evidence is linked to the repository, never printed', { skip: !fs.existsSy
   assert.match(manuals.evidenceUrl(path.join(__dirname, '..', 'manuals', 'sglang-101', 'capture', 'gpu'), 'doc.md:1'), /\/tree\/(?:[0-9a-f]{40}|main)\/manuals\/sglang-101\/capture\/gpu$/);
 });
 
+function htmlFiles(dir) {
+  const names = fs.readdirSync(dir, { recursive: true }).filter(name => String(name).endsWith('.html'));
+  return names.map(name => fs.readFileSync(path.join(dir, name), 'utf8')).join('\n');
+}
+
+function researchAnchorTexts(html) {
+  const texts = [];
+  const tag = /<a\b([^>]*)>([\s\S]*?)<\/a>/gi;
+  let match;
+  while ((match = tag.exec(html))) {
+    const href = /\bhref="([^"]*)"/.exec(match[1]);
+    if (!href || !/\/manuals\/[^/]+\/research(?:\/|$)/.test(href[1].replace(/&amp;/g, '&'))) continue;
+    texts.push(match[2].replace(/<[^>]+>/g, ''));
+  }
+  return texts;
+}
+
+test('rendered links into research/ are labeled as English originals', () => {
+  const loaded = manuals.loadAll();
+  const webDir = tempDir('manuals-research-web-');
+  const printDir = tempDir('manuals-research-print-');
+  manuals.writeWeb(loaded, webDir);
+  manuals.writePrint(loaded, printDir);
+  const webLinks = researchAnchorTexts(htmlFiles(webDir));
+  const printLinks = researchAnchorTexts(htmlFiles(printDir));
+  assert.equal(webLinks.length, 24);
+  assert.equal(printLinks.length, 12);
+  for (const text of webLinks) assert.ok(text.endsWith(manuals.RESEARCH_LINK_LABEL), text);
+  for (const text of printLinks) assert.ok(text.endsWith(manuals.RESEARCH_LINK_LABEL), text);
+});
+
+test('an unlabeled markdown link into research/ fails the build', () => {
+  const front = '# How to read this manual\n\n> This manual maps one protocol at one version.\n\nSee [仓库中](manuals/a2a-101/research/sources).\n\n```parts\n```\n\n```palette\n```\n\nSources: manual.json\n';
+  assert.throws(() => manuals.loadManual(fixture({ 'front.md': front }).dir), /research link must end with/);
+  const labeled = front.replace('[仓库中]', '[仓库中（英文原文）]');
+  assert.doesNotThrow(() => manuals.loadManual(fixture({ 'front.md': labeled }).dir));
+});
+
+test('an unlabeled relative research link in a section fails the build', () => {
+  const intro = SECTION.replace(
+    'Your test needs a manual.',
+    'See [x](../research/brief-spec.md). Your test needs a manual.',
+  );
+  assert.throws(
+    () => manuals.loadManual(fixture({ 'sections/1-1-intro.md': intro }).dir),
+    /research link must end with/,
+  );
+});
+
+test('a listing whose source is under research/ labels the full-log link', () => {
+  const { dir } = fixture({
+    'sections/1-1-intro.md': SECTION.replace('source: capture/out/task.json', 'source: research/sources/spec.md'),
+  });
+  manuals.loadManual(dir);
+  assert.ok(manuals.isResearchPath('research/sources/spec.md'));
+  assert.ok(manuals.isResearchPath('manuals/a2a-101/research/tck-summary.txt'));
+  assert.ok(manuals.isResearchPath('manuals/a2a-101/sections/../research/brief-spec.md'));
+  assert.ok(manuals.isResearchPath('sections/../research/x'));
+  assert.ok(manuals.isResearchPath('../research/brief-spec.md'));
+  assert.ok(manuals.isResearchPath('manuals\\a2a-101\\research\\brief-spec.md'));
+  assert.ok(manuals.isResearchPath('sections\\..\\research\\brief-spec.md'));
+  assert.ok(!manuals.isResearchPath('manuals/a2a-101/capture/out/task.json'));
+  const html = manuals.printPage(manuals.loadManual(path.join(__dirname, '..', 'manuals', 'a2a-101')));
+  assert.match(html, /<a class="m-evidence"[^>]*>Full log（英文原文）<\/a>/);
+});
+
 test('numbers figures per part and renders the print edition', () => {
   const { dir } = fixture();
   const manual = manuals.loadManual(dir);

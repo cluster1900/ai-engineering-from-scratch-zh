@@ -56,10 +56,10 @@ note: Cut from the deployer card. The two fields sit between capabilities and de
 没有凭据时，`deployer` 在任何 A2A 方法运行之前就以 HTTP 401 和一个 `WWW-Authenticate` 质询回答，如[扩展 card 与签名](#s-extended-cards-and-signatures)一节所示。
 
 ```rule
-label: every request, checked against the card
+label: 每个请求都按卡片检查
 source: spec §7.4
 ---
-The server must authenticate every incoming request with the credentials that it receives and the authentication requirements that it declares.
+服务器必须依据收到的凭据和自己声明的认证要求，对每个传入请求进行认证。
 ```
 
 ## 授权范围：你看不到的任务就不存在 {#s-security-schemes-and-in-task-authorization-authorization-scope-a-task-you-cannot-see-does-not-exist}

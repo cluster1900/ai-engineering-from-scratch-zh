@@ -41,10 +41,10 @@ caption: Read from the planner down. Above the dashed line sit the three layers 
 **终止的任务不再改变：** 任何消息都不能再推动它，[CancelTask 与终止状态](#s-cancel-task-and-terminal-states)一节展示了这一点。
 
 ```rule
-label: the end of a task
+label: 任务的终点
 source: spec §3.1.1
 ---
-A task in a terminal state takes no more messages. The terminal states are `TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED`, and `TASK_STATE_REJECTED`.
+处于终止状态的任务不再接受消息。终止状态是 `TASK_STATE_COMPLETED`、`TASK_STATE_FAILED`、`TASK_STATE_CANCELED` 和 `TASK_STATE_REJECTED`。
 ```
 
 **结果由 artifact 承载：** 消息不应承载任务的输出 {{spec §3.7}}，所以 planner 从 `summary.json` 读取测试数量。

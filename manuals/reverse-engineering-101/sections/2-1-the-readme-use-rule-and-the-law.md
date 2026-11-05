@@ -9,10 +9,10 @@
 ## 钉住标签上的使用规则 {#s-the-readme-use-rule-and-the-law-the-use-rule-at-the-tag}
 
 ```rule
-label: the use rule
+label: 使用规则
 source: readme DISCLAIMER.md, Responsible use
 ---
-You must get any permission that you need, and you must follow the law, the license agreement, and the terms of service. Your jurisdiction or the license of the software can limit reverse engineering.
+你必须取得所需的一切许可，并遵守法律、许可协议和服务条款。你所在的司法辖区或软件的许可证都可能限制逆向工程。
 ```
 
 这条规则是标签上 `DISCLAIMER.md` 里 `Responsible use` 标题下的一段。README 有一个 `Disclaimer` 标题，把你引向那个文件。它把 REA 限制在合法研究、教育、互操作、软件保存，以及对你拥有或获准检查的软件的分析 {{readme Disclaimer}}。它还写明这一立场覆盖所有 REA 版本与分发渠道。
