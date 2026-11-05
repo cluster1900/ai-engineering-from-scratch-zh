@@ -1,4 +1,9 @@
-"""Unit tests for scripts/check_manual_residual_en.py."""
+"""Unit tests for scripts/check_manual_residual_en.py (relaxed rule, #141 r9).
+
+The rule (see the checker docstring): necessary English is kept; only whole
+untranslated English sentences / paragraphs are reported. Every boundary is
+pinned from both sides: KEEP cases must stay silent, BLOCK cases must fail.
+"""
 from __future__ import annotations
 
 import hashlib
@@ -14,164 +19,20 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import check_manual_residual_en as chk
 
-# Frozen origin/main (89cbf1a) checker used as the "never looser than main" oracle.
+# Frozen origin/main (89cbf1a) checker, still run as a safety net (union).
 ORACLE_PATH = (
     Path(__file__).resolve().parent
     / "check_manual_residual_en_main_89cbf1a.py"
 )
 ORACLE_SHA256 = "685dec0330c2b3616e15396bb54eddfa399acf02fdd681c24d72fa0f803d9b4d"
 REPO_ROOT = Path(__file__).resolve().parent.parent
-
-COUNTER_TITLE_CASE_COMMA = "Run The Server，Then Check The Logs"
-COUNTER_TITLE_CASE_DUNHAO = "Start The Engine、Wait For Warmup"
-COUNTER_TITLE_CASE_NO_PRODUCT = "Restart Engine，Check Logs Again"
-COUNTER_ENGLISH_PREFIX_LINK = (
-    "This is a whole English sentence about serving，[link](https://example.com/post)"
-)
-COUNTER_ARXIV_LIST_SENTENCE = (
-    "This is a whole English sentence about serving，arXiv 2510.15152。"
-)
-COUNTER_ARXIV_LIST_POLICY = (
-    "We use this paper for the cache policy，arXiv 2510.11370。"
-)
-COUNTER_ARXIV_CELL_SENTENCE = (
-    "This is a whole English sentence about serving, "
-    "[arXiv 2510.15152](https://arxiv.org/abs/2510.15152)"
-)
-COUNTER_ARXIV_CELL_POLICY = (
-    "the tail-optimized policy that the code names, "
-    "[arXiv 2510.15152](https://arxiv.org/abs/2510.15152)"
-)
-COUNTER_ARXIV_LIST_TITLECASE_WE = (
-    "- We Use This For Everything In The Code，arXiv 2510.15152。"
-)
-COUNTER_ARXIV_CELL_TITLECASE_WE = (
-    "| a | We Use This For Everything In The Code, "
-    "[arXiv 2510.15152](https://arxiv.org/abs/2510.15152) |"
-)
-COUNTER_ARXIV_CELL_TITLECASE_THIS = (
-    "| a | This Is The Paper We Use, "
-    "[arXiv 2510.15152](https://arxiv.org/abs/2510.15152) |"
-)
-COUNTER_ARXIV_LIST_TITLECASE_THIS = (
-    "- This Is The Paper We Use，arXiv 2510.15152。"
-)
-L1_CELL = (
-    "We Use This For Everything In The Code, "
-    "[arXiv 2501.00001](https://arxiv.org/abs/2501.00001)"
-)
-L1_LIST = "We Use This For Everything In The Code，arXiv 2501.00001。"
-N6_CELL = (
-    "We Ran It on GPU and saw KV hit, "
-    "[arXiv 2501.00001](https://arxiv.org/abs/2501.00001)"
-)
-N5C_HYPHEN = "We-always-restart-the-server-first-because-it-leaks"
-D1C_HYPHEN = "We-restart-2-servers-because-it-leaks-every-night."
-D1E_CELL = (
-    "We-restart-2-servers-because-it-leaks, "
-    "[arXiv 2501.00001](https://arxiv.org/abs/2501.00001)"
-)
-D1E_NIGHTLY = (
-    "Restart-the-2-servers-nightly, "
-    "[arXiv 2501.00001](https://arxiv.org/abs/2501.00001)"
-)
-D_VERSIONS = "Run-it-v2 then-v3 with-v4 after-v5 now."
-D_SLASH_CELL = (
-    "Restart-the/servers-nightly, "
-    "[arXiv 2501.00001](https://arxiv.org/abs/2501.00001)"
-)
 A = "[arXiv 2501.00001](https://arxiv.org/abs/2501.00001)"
-B5_SENT = "Engineers restart a2a-server nightly because memory leaks."
-B5_SENT_PINNED = (
-    "Engineers restart a2a-server-lf-v0.5.1 nightly because memory leaks badly."
-)
-B5_CHAIN = (
-    "a2a-server-crashed-nightly-leaking-memory-everywhere-today-sadly-again-forever"
-)
-B5_RESTARTS_CELL = "a2a-server-restarts-nightly-because-memory-leaks, " + A
-B5_SERVERX4_CELL = "a2a-server-server-server-server, " + A
-WHITELIST_PLUS_EN = " We restart the server every night because it leaks."
-WHITELIST_MILES_26 = "Rollout Routing Replay，arXiv 2510.11370。"
-WHITELIST_MILES_27 = (
-    "Score Centering Stabilizes Off-policy Reinforcement Learning，"
-    "arXiv 2609.20807。"
-)
-WHITELIST_SGLANG_60 = (
-    "Patodiya，Same Request, Different Answer: Quantization Amplifies "
-    "Cache-Induced Divergence in LLM Serving, "
-    "[arXiv 2609.04748](https://arxiv.org/abs/2609.04748)"
-)
-WHITELIST_FILES = (
-    ("manuals/miles-101/sections/r-4-sources.md", WHITELIST_MILES_26),
-    ("manuals/miles-101/sections/r-4-sources.md", WHITELIST_MILES_27),
-    ("manuals/sglang-101/sections/r-5-sources.md", WHITELIST_SGLANG_60),
-)
+EN = "we restart the server every night because it leaks memory"
 
-ENGLISH_CORPUS = [
-    COUNTER_TITLE_CASE_COMMA,
-    COUNTER_TITLE_CASE_DUNHAO,
-    COUNTER_ENGLISH_PREFIX_LINK,
-    # origin/main r-3-incident-index col0 (line 13 Process-group SIGTERM is
-    # identifier-only and main does not flag it).
-    "Out of memory at concurrency 32 ([log](manuals/sglang-101/capture/out/oom-exploratory.log))",
-    "`--disable-overlap-schedule` on MLX ([log](manuals/sglang-101/capture/out/server-no-overlap.log))",
-    "Memory guard on a GB10 ([record](manuals/sglang-101/capture/gpu/incidents/gb10-memory-guard-pauses.txt))",
-    "Driver `NV_ERR_NO_MEMORY` on a GB10 ([record](manuals/sglang-101/capture/gpu/incidents/gb10-driver-no-memory.txt))",
-    "pip install on an L4 host with no CUDA toolkit ([record](manuals/sglang-101/capture/gpu/incidents/l4-toolchain-failures.txt))",
-    "Benchmark with `HF_HUB_OFFLINE=1`, log not kept",
-    "`--chunked-prefill-size 8192` on an L4 ([record](manuals/sglang-101/capture/gpu/incidents/l4-chunk-8192-prefill-graph-oom.txt))",
-    "`--tp-size 2` with a shared second L4 ([record](manuals/sglang-101/capture/gpu/incidents/l4-tp-unbalanced-memory.txt))",
-    "Prefill and decode on two L4s over TCP ([record](manuals/sglang-101/capture/gpu/incidents/l4-pd-mooncake-tcp-queue.txt), [summary lines](manuals/sglang-101/capture/gpu/incidents/l4-pd-summary-lines.txt))",
-    "vLLM FlashInfer sampler on the L4 ([record](manuals/sglang-101/capture/gpu/incidents/l4-vllm-flashinfer-jit.txt))",
-    "Miles with `--attn-implementation triton` ([log](manuals/sglang-101/capture/gpu/out-miles/true-on-policy-error.log))",
-    "Miles true on-policy on a GB10 ([log](manuals/sglang-101/capture/gpu/out-miles/true-on-policy-fa3-error.log))",
-    "GB10 shutdowns under Miles load ([record](manuals/sglang-101/capture/gpu/incidents/gb10-boot-list.txt))",
-    "EAGLE-3 draft for Qwen3-30B-A3B",
-    "Thermal throttle in an L4 sweep ([record](manuals/sglang-101/capture/gpu/incidents/l4-thermal-throttle.txt))",
-    "Temperature 0 on a default server ([log](manuals/sglang-101/capture/gpu/out-gb10/determinism.txt))",
-    # A2 author cells (vLLM community is a bare org phrase; main does not flag it).
-    "Alibaba Cloud, RBG and Mooncake teams",
-    "basbunarhasan on the NVIDIA developer forum",
-    "InferenceX by SemiAnalysis",
-    "The vLLM team",
-    "The Mooncake team on the LMSYS blog",
-    "Modal with Decagon",
-    "LMSYS and RadixArk",
-    "The Miles team",
-    "Read The Paper；Write The Notes",
-    "Follow The Guide，Then Apply The Patch",
-    "This leftover English list item must still be translated.",
-    "The remaining English heading still needs work",
-    "This is leftover English and must be translated.",
-    "A complete English sentence followed by a citation，[paper](https://example.com/x)",
-    COUNTER_ARXIV_LIST_SENTENCE,
-    COUNTER_ARXIV_LIST_POLICY,
-    COUNTER_ARXIV_CELL_SENTENCE,
-    COUNTER_ARXIV_CELL_POLICY,
-    COUNTER_TITLE_CASE_NO_PRODUCT,
-    COUNTER_ARXIV_LIST_TITLECASE_WE,
-    COUNTER_ARXIV_CELL_TITLECASE_WE,
-    COUNTER_ARXIV_CELL_TITLECASE_THIS,
-    COUNTER_ARXIV_LIST_TITLECASE_THIS,
-    L1_CELL,
-    L1_LIST,
-    N6_CELL,
-    N5C_HYPHEN,
-    D1C_HYPHEN,
-    D1E_CELL,
-    D1E_NIGHTLY,
-    D_VERSIONS,
-    D_SLASH_CELL,
-    B5_SENT,
-    B5_SENT_PINNED,
-    B5_CHAIN,
-    B5_RESTARTS_CELL,
-    B5_SERVERX4_CELL,
-]
-
-# Main-only hits on the current manuals. Each entry is (relpath, lineno, text)
-# as scan_file reports it (text truncated to 120). Reviewed: none is leftover
-# English prose that the new checker should still fail.
+# Hits of the frozen main checker on the current manuals, as main reports them
+# (text truncated to 120). Reviewed: all are necessary English (identifiers,
+# tip citations, product lists, whitelisted Sources titles); the union drops
+# them. If this set changes, re-review the new entries.
 EXPECTED_MAIN_ONLY = {
     # identifier word (server inside a2a-server*)
     ("manuals/a2a-101/sections/2-3-extended-cards-and-signatures.md", 61, "Rust a2a-server-lf-v0.5.1"),
@@ -212,6 +73,103 @@ EXPECTED_MAIN_ONLY = {
 }
 
 
+
+# ---------------------------------------------------------------------------
+# KEEP: necessary English. Must be silent in prose, list, table cell, heading.
+# ---------------------------------------------------------------------------
+KEEP_CASES = [
+    # bare URL whose query reads like a sentence once split at "?"
+    "日志见 https://example.com/log?we-restart-the-server-every-night-because-it-leaks 。",
+    # paper title with identifiers (GRPO / arXiv) right after a full-width comma
+    "Scaling Laws for Collapse in Asynchronous GRPO，arXiv 2607.01083，2026 年 7 月。",
+    # terms / product names inside Chinese
+    "用 FlashAttention 3 跑 prefill，再用 CUDA graph 跑 decode。",
+    "FlashInfer、FlashAttention、Triton、FlexAttention、TurboQuant",
+    "L4（SM 8.9）、H100（SM 9.0）、DGX Spark（SM 12.1）",
+    "NVIDIA L4，compute capability 8.9，24 GB",
+    "这个 prefix cache 命中率在 time to first token 上体现得最明显。",
+    "分析配置（Analysis profile）",
+    # code, commands, flags, API / field / file names
+    "运行 `python -m sglang.launch_server --model-path Qwen/Qwen3-8B --port 30000` 即可。",
+    "--disable-overlap-schedule --chunked-prefill-size 8192 --tp-size 2",
+    "看 capture/gpu/out-l4/server-default.log 和 python/sglang/srt/managers/scheduler.py。",
+    "`SendMessage` 返回 `TASK_STATE_INPUT_REQUIRED` 时，客户端在同一个 `taskId` 上回答。",
+    "GET /v1/models 与 POST /v1/chat/completions",
+    "a2a-rs a2a-server-lf-v0.5.1",
+    "Rust a2a-server-lf-v0.5.1",
+    # proper nouns, paper and product titles (Title Case)
+    "Attention Is All You Need",
+    "SGLang: Efficient Execution of Structured Language Model Programs",
+    "Zheng 等，SGLang: Efficient Execution of Structured Language Model Programs，arXiv 2312.07104。",
+    "From Tokens to Layers: Redefining Stall-Free Scheduling for MoE Serving with Layered Prefill",
+    "Identifying and Mitigating Systemic Measurement Bias in Production LLM Inference Benchmarks",
+    "Score Centering Stabilizes Off-policy Reinforcement Learning，arXiv 2609.20807。",
+    "The Mooncake 团队在 LMSYS 博客上",
+    # short English labels / fragments (< 5 words or < 2 function words)
+    "Process-group SIGTERM",
+    "EAGLE-3 draft for Qwen3-30B-A3B",
+    "Temperature 0 on GB10",
+    "Out of memory",
+    "true on-policy",
+    # external link text = title of an external work
+    "见 [The State of FP8 KV-Cache and Attention Quantization in vLLM](https://blog.vllm.ai/2026/04/fp8)。",
+    "[A production inference platform with SGLang RBG and Mooncake](https://lmsys.org/blog/x)",
+    # quotation embedded in a Chinese sentence = verbatim citation
+    "状态消息是 \"Checking out 9f3c2e1 and starting the suite\"。",
+    "规范要求 agent “MUST transition the TaskState to `TASK_STATE_AUTH_REQUIRED`”。",
+    "日志说这个旗标「is deprecated and will be removed in a future release」。",
+    # tip citations are stripped from rendered HTML by site/build-manuals.js
+    "终止的任务永远不会再改变 {{docs life-of-a-task}}。",
+    "每个 SDK 都满足 {{install Limit REA to one project or agent profile}}。",
+    "a2a-go {{sdk-go a2asrv/push/sender.go at v2.6.0}}",
+    # code span hides a sentence: code is code
+    "报错原文是 `the server restarts every night because it leaks memory`。",
+    # bare URL
+    "https://docs.sglang.ai/advanced_features/server_arguments.html#the-server-is-on-a-node",
+]
+
+# ---------------------------------------------------------------------------
+# BLOCK: whole untranslated English sentence / paragraph. Must fail in prose,
+# list, table cell and heading.
+# ---------------------------------------------------------------------------
+BLOCK_CASES = [
+    # full-width comma (NFKC "," with no space) must not glue words together
+    "Run The Server，Then Check The Logs",
+    # a sentence appended to a long Title Case title is not outvoted by it
+    "Same Request, Different Answer: Inference Nondeterminism In Serving Engines we restart the server every night because it leaks memory",
+    "This sentence is deliberately left in English to prove that the residual English gate fails the pull request.",
+    "We restart the server every night because it leaks memory.",
+    "runs a test suite and streams the log",
+    "a question answered with a message and no task",
+    "reviews a diff against a base branch",
+    "basbunarhasan on the NVIDIA developer forum",
+    "The tail-optimized LRU policy that the code names, " + A,
+    # sentence next to Chinese is still a sentence
+    "注意：the server restarts every night because it leaks memory。",
+    "This is a whole English sentence about serving，[link](https://example.com/post)",
+    "This is a whole English sentence about serving，arXiv 2510.15152。",
+    # Title Case sentences with enough function words
+    "We Use This For Everything In The Code",
+    "Follow The Guide，Then Apply The Patch",
+    "We Ran It on GPU and saw KV hit, " + A,
+    # hyphen chains of 3+ parts are split into words
+    "We-always-restart-the-server-first-because-it-leaks",
+    "We-restart-2-servers-because-it-leaks-every-night.",
+    "Engineers restart a2a-server nightly because it leaks memory.",
+    # internal link text is rendered prose and is judged
+    "详见[the server restarts every night because it leaks](#s-ops)。",
+    # quotation with no Chinese outside it is judged as is
+    "\"We restart the server every night because it leaks memory.\"",
+    # English outside a tip span is still judged
+    "a2a-go {{sdk-go a2asrv/push/sender.go at v2.6.0}} " + EN,
+    # normalisation: fullwidth letters, zero-width characters
+    "Ｗｅ ｒｅｓｔａｒｔ ｔｈｅ ｓｅｒｖｅｒ ｅｖｅｒｙ ｎｉｇｈｔ ｂｅｃａｕｓｅ ｉｔ ｌｅａｋｓ。",
+    "We re\u200bstart the ser\u200cver every night be\u200dcause it leaks\ufeff memory.",
+    "We\u00a0restart\u00a0the\u00a0server\u00a0every\u00a0night\u00a0because\u00a0it\u00a0leaks.",
+    "WE RESTART THE SERVER EVERY NIGHT BECAUSE IT LEAKS MEMORY",
+]
+
+
 def _scan(name: str, text: str) -> tuple[list[tuple[int, str, str]], int]:
     with tempfile.TemporaryDirectory() as tmp:
         path = Path(tmp) / name
@@ -219,336 +177,242 @@ def _scan(name: str, text: str) -> tuple[list[tuple[int, str, str]], int]:
         return chk.scan_file(path)
 
 
-def _body(s: str) -> tuple[str, str]:
+def _body(s):
     return "3-1-intro.md", f"{s}\n"
 
 
-def _list(s: str) -> tuple[str, str]:
+def _list(s):
     return "3-1-intro.md", f"- {s}\n"
 
 
-def _cell(s: str) -> tuple[str, str]:
+def _ordered(s):
+    return "3-1-intro.md", f"1. {s}\n"
+
+
+def _cell(s):
     return "3-1-intro.md", f"| a | b |\n|---|---|\n| {s} | x |\n"
 
 
-def _heading(s: str) -> tuple[str, str]:
-    return "3-1-intro.md", f"## {s}\n"
-
-
-def _srccell(s: str) -> tuple[str, str]:
-    return "r-5-sources.md", f"| a | b |\n|---|---|\n| {s}, {A} | x |\n"
-
-
-def _srccell_raw(s: str) -> tuple[str, str]:
-    return "r-5-sources.md", f"| a | b |\n|---|---|\n| {s} | x |\n"
-
-
-def _srclist(s: str) -> tuple[str, str]:
-    return "r-5-sources.md", f"- {s}, {A}\n"
-
-
-def _h4(s: str) -> tuple[str, str]:
-    return "3-1-intro.md", f"#### {s}\n"
-
-
-def _cell2(s: str) -> tuple[str, str]:
+def _cell2(s):
     return "3-1-intro.md", f"| a | b |\n|---|---|\n| x | {s} |\n"
 
 
-def _ordered(s: str) -> tuple[str, str]:
-    return "3-1-intro.md", f"1. {s}\n"
+def _heading(s):
+    return "3-1-intro.md", f"## {s}\n"
+
+
+def _quote(s):
+    return "3-1-intro.md", f"> {s}\n"
+
+
+def _srclist(s):
+    return "r-5-sources.md", f"- {s}\n"
+
+
+def _srccell(s):
+    return "r-5-sources.md", f"| a | b |\n|---|---|\n| {s} | x |\n"
+
+
+CONTEXTS = (_body, _list, _ordered, _cell, _cell2, _heading, _quote,
+            _srclist, _srccell)
 
 
 def _load_main_oracle():
     spec = importlib.util.spec_from_file_location(
-        "check_manual_residual_en_main_89cbf1a",
-        ORACLE_PATH,
+        "check_manual_residual_en_main_89cbf1a", ORACLE_PATH,
     )
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
 
 
-class ProductNameListTests(unittest.TestCase):
-    def test_cjk_joined_product_names_are_allowed(self):
-        self.assertFalse(
-            chk.looks_english_prose(
-                "FlashAttention、FlashInfer、Triton、FlexAttention、TurboQuant"
-            )
+class KeepBlockBoundaryTests(unittest.TestCase):
+    def test_keep_cases_are_silent_in_every_context(self):
+        self.assertGreaterEqual(len(KEEP_CASES), 30)
+        for sample in KEEP_CASES:
+            self.assertFalse(chk.is_untranslated_sentence(sample), sample)
+            for ctx in CONTEXTS:
+                with self.subTest(sample=sample[:60], ctx=ctx.__name__):
+                    hits, _ = _scan(*ctx(sample))
+                    self.assertEqual(hits, [])
+
+    def test_block_cases_fail_in_every_context(self):
+        self.assertGreaterEqual(len(BLOCK_CASES), 20)
+        for sample in BLOCK_CASES:
+            self.assertTrue(chk.is_untranslated_sentence(sample), sample)
+            for ctx in CONTEXTS:
+                with self.subTest(sample=sample[:60], ctx=ctx.__name__):
+                    hits, explained = _scan(*ctx(sample))
+                    self.assertTrue(hits)
+                    self.assertEqual(explained, 0)
+
+
+class RuleThresholdTests(unittest.TestCase):
+    """Each numeric bound of is_sentence_run, from both sides."""
+
+    def test_min_words(self):
+        # 4 words, 2 function words: kept (known limit: very short sentences)
+        self.assertFalse(chk.is_untranslated_sentence("it is the end"))
+        # 5 words: blocked
+        self.assertTrue(chk.is_untranslated_sentence("it is the end now"))
+
+    def test_min_function_words(self):
+        # one function word: a noun phrase, kept
+        self.assertFalse(chk.is_untranslated_sentence("Prefill and decode benchmark results summary"))
+        self.assertFalse(chk.is_untranslated_sentence("prefill decode benchmark results summary table"))
+        # two function words, lowercase: blocked
+        self.assertTrue(chk.is_untranslated_sentence("prefill and decode on benchmark results"))
+
+    def test_title_case_short_run_is_kept_long_run_with_func_words_blocked(self):
+        # 6 Title Case words, 2/6 function words: a title, kept
+        self.assertFalse(chk.is_untranslated_sentence("Start The Engine、Wait For Warmup"))
+        # half function words blocks regardless of case (6 words, 3 fw)
+        self.assertTrue(chk.is_untranslated_sentence("This Is The Paper We Use"))
+        # 7 words, 3 fw (43%) Title Case: blocked by the 40% bound
+        self.assertTrue(chk.is_untranslated_sentence("Restart The Engine And Wait For Warmup"))
+        # 7 words, 2 fw (29%) Title Case: kept
+        self.assertFalse(chk.is_untranslated_sentence("Restart Engine Quickly And Wait For Warmup"))
+
+    def test_hyphen_chain_bound(self):
+        # two-part compounds stay one word
+        self.assertEqual(chk.run_words("on-policy Cache-Induced"), ["on-policy", "Cache-Induced"])
+        # three or more parts are split
+        self.assertEqual(chk.run_words("state-of-the-art"), ["state", "of", "the", "art"])
+        self.assertEqual(chk.run_words("a2a-server-lf-v0.5.1"), ["server", "lf"])
+
+    def test_identifiers_are_not_words(self):
+        self.assertEqual(
+            chk.run_words("v0.31.0 GB10 vllm/utils/mem_utils.py HF_HUB_OFFLINE=1 --tp-size 2"),
+            [],
         )
-        self.assertFalse(
-            chk.looks_english_prose(
-                "L4（SM 8.9）、H100（SM 9.0）、DGX Spark（SM 12.1）"
-            )
-        )
+        self.assertEqual(chk.run_words("FP8 KV cache"), ["KV", "cache"])
 
-    def test_lowercase_prose_in_cjk_list_is_flagged(self):
-        self.assertTrue(
-            chk.looks_english_prose("NVIDIA L4，compute capability 8.9")
-        )
-
-    def test_title_case_func_word_lists_are_flagged(self):
-        self.assertTrue(chk.looks_english_prose(COUNTER_TITLE_CASE_COMMA))
-        self.assertTrue(chk.looks_english_prose(COUNTER_TITLE_CASE_DUNHAO))
-        hits, explained = _scan("page.md", COUNTER_TITLE_CASE_COMMA + "\n")
-        self.assertEqual([kind for _lineno, kind, _text in hits], ["PROSE"])
-        self.assertEqual(explained, 0)
-        hits, explained = _scan(
-            "page.md", f"- {COUNTER_TITLE_CASE_DUNHAO}\n"
-        )
-        self.assertEqual([kind for _lineno, kind, _text in hits], ["LIST"])
-        self.assertEqual(explained, 0)
-
-    def test_title_case_cjk_list_without_product_token_is_list_hit(self):
-        hits, explained = _scan(
-            "page.md", "- Restart Engine，Check Logs Again\n"
-        )
-        self.assertEqual([kind for _lineno, kind, _text in hits], ["LIST"])
-        self.assertEqual(explained, 0)
+    def test_case_rule(self):
+        # mostly lowercase after the first word: sentence case
+        self.assertTrue(chk.is_untranslated_sentence("Memory guard pauses on a record GPU"))
+        # mostly Title Case: a title
+        self.assertFalse(chk.is_untranslated_sentence("Memory Guard Pauses on a Record GPU"))
 
 
-class SdkIdentifierTests(unittest.TestCase):
-    def test_sdk_cells_with_tip_cites_are_allowed(self):
-        samples = (
-            "a2a-python 1.2.2 {{sdk src/a2a/server/routes/rest_routes.py}}",
-            "a2a-go {{sdk-go a2asrv/rest.go at v2.6.0}}",
-            "Rust a2a-server-lf-v0.5.1",
-            "a2a-rs, a2a-server 0.5.1",
-        )
-        for sample in samples:
-            with self.subTest(sample=sample):
-                self.assertFalse(chk.looks_english_prose(sample))
+class ElementTests(unittest.TestCase):
+    def test_paragraph_wrapped_over_lines_is_one_paragraph(self):
+        text = "We restart the\nserver every night\nbecause it leaks.\n"
+        hits, _ = _scan("3-1-intro.md", text)
+        self.assertEqual([(ln, k) for ln, k, _t in hits], [(1, "PROSE")])
+        # each line alone is too short to be a sentence
+        for line in text.splitlines():
+            self.assertFalse(chk.is_untranslated_sentence(line))
+
+    def test_blank_line_separates_paragraphs(self):
+        hits, _ = _scan("3-1-intro.md", "中文一段。\n\nWe restart the server every night because it leaks.\n")
+        self.assertEqual([(ln, k) for ln, k, _t in hits], [(3, "PROSE")])
+
+    def test_blockquote_is_judged(self):
+        hits, _ = _scan("3-1-intro.md", "> We restart the server\n> every night because it leaks.\n")
+        self.assertEqual([(ln, k) for ln, k, _t in hits], [(1, "PROSE")])
+
+    def test_code_fences_are_skipped(self):
+        for text in (
+            "```\n" + EN + "\n```\n",
+            "```bash\n# " + EN + "\n```\n",
+            "```listing\ntitle: x\nnote: " + EN + "\n```\n",
+        ):
+            with self.subTest(text=text[:30]):
+                hits, _ = _scan("3-1-intro.md", text)
+                self.assertEqual(hits, [])
+
+    def test_text_after_a_fence_is_judged(self):
+        hits, _ = _scan("3-1-intro.md", "```\nx\n```\n" + EN + "\n")
+        self.assertEqual([ln for ln, _k, _t in hits], [4])
+
+    def test_comments_and_key_lines_outside_fences_are_judged(self):
+        # site/build-manuals.js renders these lines as text in a section.
+        for text in ("<!-- " + EN + " -->\n", "<!--\n" + EN + "\n-->\n",
+                     "title: " + EN + "\n", "note: " + EN + "\n"):
+            with self.subTest(text=text[:30]):
+                hits, _ = _scan("3-1-intro.md", text)
+                self.assertTrue(hits)
+
+    def test_sources_paragraph_is_citation_block(self):
+        # "Sources: ..." is parsed by site/build-manuals.js as the citation block
+        hits, _ = _scan("3-1-intro.md", "Sources: the vLLM source at v0.31.0 (vllm/utils/mem_utils.py), the v0.31.0 release notes\n")
+        self.assertEqual(hits, [])
+        # only at paragraph start; elsewhere the word is ordinary text
+        hits, _ = _scan("3-1-intro.md", "Our Sources: " + EN + "\n")
+        self.assertTrue(hits)
+
+    def test_quotation_only_exempt_with_chinese_outside(self):
+        self.assertFalse(chk.is_untranslated_sentence("日志写着 \"" + EN + "\"。"))
+        self.assertTrue(chk.is_untranslated_sentence("\"" + EN + "\""))
+        self.assertTrue(chk.is_untranslated_sentence("“" + EN + "”"))
+
+    def test_external_vs_internal_link_text(self):
+        self.assertFalse(chk.is_untranslated_sentence("见[" + EN + "](https://example.com/a)。"))
+        for target in ("#s-ops", "manuals/a2a-101/sections/x.md", "../x.md"):
+            self.assertTrue(chk.is_untranslated_sentence("见[" + EN + "](" + target + ")。"), target)
+
+    def test_known_limit_homoglyphs_not_folded(self):
+        # Cyrillic е/о are not ASCII letters, so these tokens are not words.
+        self.assertFalse(chk.is_untranslated_sentence("Wе rеstart thе sеrvеr еvеry night bеcausе it lеaks"))
 
 
-class ResidualEnglishTests(unittest.TestCase):
-    def test_plain_english_prose_is_flagged(self):
-        self.assertTrue(
-            chk.looks_english_prose(
-                "This sentence is leftover English and must be translated."
-            )
-        )
+class MainDemoAndHistoryTests(unittest.TestCase):
+    def test_gate_demo_sentence_still_fails(self):
+        # the sentence commit 79ee1c0e added on purpose to prove the gate fails
+        hits, _ = _scan("1-1-install.md", "\nThis sentence is deliberately left in English to prove that the residual English gate fails the pull request.\n")
+        self.assertTrue(hits)
 
-    def test_sentence_final_function_word_is_still_prose(self):
-        self.assertTrue(chk.func_word_in_prose("Then run this."))
-        self.assertFalse(chk.func_word_in_prose("a2a-server-lf-v0.5.1"))
-        self.assertTrue(chk.func_word_in_prose(N5C_HYPHEN))
-        # Hyphen-chained prose and non-pinned identifiers stay flagged.
-        self.assertTrue(chk.func_word_in_prose("a2a-server-we-restart-the-server"))
-        self.assertTrue(chk.func_word_in_prose("foo-server-v2"))
-
-    def test_english_heading_is_flagged(self):
-        hits, _explained = _scan(
-            "page.md",
-            "# The remaining English heading still needs work\n\n已翻译的正文。\n",
-        )
-        kinds = [kind for _lineno, kind, _text in hits]
-        self.assertIn("HEADING", kinds)
+    def test_pre_141_untranslated_lines_still_fail(self):
+        # verbatim from origin/main 89cbf1a, translated by #141
+        samples = [
+            ("README.md", "Every request, response, and stream frame in A2A 101 comes from this kit. It runs three remote agents and a recording client on your machine, with the Python standard library only. It needs no network and no keys.\n"),
+            ("README.md", "## How this kit differs from the reference SDK\n"),
+            ("README.md", "| `08-rejected.http` | a production deploy the agent refuses |\n"),
+            ("r-3-incident-index.md", "| Thermal throttle in an L4 sweep ([record](manuals/sglang-101/capture/gpu/incidents/l4-thermal-throttle.txt)) | x |\n"),
+            ("r-5-sources.md", "| The Mooncake team on the LMSYS blog | x |\n"),
+        ]
+        for name, text in samples:
+            with self.subTest(text=text[:50]):
+                hits, _ = _scan(name, text)
+                self.assertTrue(hits)
 
 
 class SourcesWhitelistTests(unittest.TestCase):
-    LINE = f"- {WHITELIST_MILES_26}\n"
+    """B-9 / r3: exact 3-title whitelist, strip-then-equality only."""
 
     def test_whitelist_has_exactly_three_verbatim_manual_entries(self):
         self.assertEqual(len(chk.SOURCES_TITLE_WHITELIST), 3)
-        self.assertEqual(
-            chk.SOURCES_TITLE_WHITELIST,
-            frozenset(text for _rel, text in WHITELIST_FILES),
-        )
-        for rel, text in WHITELIST_FILES:
-            body = (REPO_ROOT / rel).read_text(encoding="utf-8")
-            self.assertIn(text, body)
+        files = {
+            "manuals/miles-101/sections/r-4-sources.md",
+            "manuals/sglang-101/sections/r-5-sources.md",
+        }
+        corpus = "".join((REPO_ROOT / f).read_text(encoding="utf-8") for f in files)
+        for title in chk.SOURCES_TITLE_WHITELIST:
+            self.assertIn(title, corpus)
 
-    def test_whitelisted_miles_list_items_are_explained(self):
-        hits, explained = _scan("r-4-sources.md", self.LINE)
-        self.assertEqual(hits, [])
-        self.assertEqual(explained, 1)
-        hits, explained = _scan("r-4-sources.md", f"- {WHITELIST_MILES_27}\n")
-        self.assertEqual(hits, [])
-        self.assertEqual(explained, 1)
-
-    def test_whitelisted_sglang_cell_is_explained(self):
-        hits, explained = _scan(
-            "r-5-sources.md",
-            f"| {WHITELIST_SGLANG_60} | [4.6](#s) |\n",
-        )
-        self.assertEqual(hits, [])
-        self.assertEqual(explained, 1)
-
-    def test_non_whitelisted_arxiv_cell_is_not_explained(self):
-        paper = (
-            "SGLang: Efficient Execution of Structured Language "
-            "Model Programs, [arXiv 2312.07104](https://arxiv.org/abs/2312.07104)"
-        )
-        hits, explained = _scan("r-5-sources.md", f"| {paper} | [2.2](#s) |\n")
-        self.assertTrue(any(kind.startswith("TABLE_CELL") for _n, kind, _t in hits))
-        self.assertEqual(explained, 0)
-
-    def test_sources_rule_does_not_allow_plain_list_prose(self):
-        hits, _explained = _scan(
-            "r-4-sources.md",
-            "- This leftover English list item must still be translated.\n",
-        )
-        self.assertEqual([kind for _lineno, kind, _text in hits], ["LIST"])
-
-    def test_english_prefix_before_link_is_flagged_in_sources(self):
-        self.assertTrue(chk.looks_english_prose(COUNTER_ENGLISH_PREFIX_LINK))
-        hits, explained = _scan(
-            "r-5-sources.md",
-            f"- {COUNTER_ENGLISH_PREFIX_LINK}\n"
-            f"| {COUNTER_ENGLISH_PREFIX_LINK} | 用于 |\n",
-        )
-        kinds = [kind for _lineno, kind, _text in hits]
-        self.assertIn("LIST", kinds)
-        self.assertIn("TABLE_CELL[0]", kinds)
-        self.assertEqual(explained, 0)
-
-    def test_sentence_plus_arxiv_is_hit_not_explained_in_sources(self):
-        for sample in (
-            COUNTER_ARXIV_LIST_SENTENCE,
-            COUNTER_ARXIV_LIST_POLICY,
-            COUNTER_ARXIV_CELL_SENTENCE,
-            COUNTER_ARXIV_CELL_POLICY,
-        ):
-            with self.subTest(sample=sample[:60]):
-                self.assertTrue(chk.looks_english_prose(sample))
-                self.assertFalse(
-                    chk.is_whitelisted_sources_title("r-5-sources.md", sample)
-                )
-        hits, explained = _scan(
-            "r-5-sources.md",
-            f"- {COUNTER_ARXIV_LIST_SENTENCE}\n"
-            f"- {COUNTER_ARXIV_LIST_POLICY}\n"
-            f"| {COUNTER_ARXIV_CELL_SENTENCE} | 用于 |\n"
-            f"| {COUNTER_ARXIV_CELL_POLICY} | 用于 |\n",
-        )
-        kinds = [kind for _lineno, kind, _text in hits]
-        self.assertGreaterEqual(kinds.count("LIST"), 2)
-        self.assertGreaterEqual(
-            sum(1 for kind in kinds if kind.startswith("TABLE_CELL")), 2
-        )
-        self.assertEqual(explained, 0)
-
-    def test_title_case_sentence_plus_arxiv_is_hit_not_explained(self):
-        samples = (
-            (COUNTER_ARXIV_LIST_TITLECASE_WE, "LIST"),
-            (COUNTER_ARXIV_CELL_TITLECASE_WE, "TABLE_CELL"),
-            (COUNTER_ARXIV_CELL_TITLECASE_THIS, "TABLE_CELL"),
-            (COUNTER_ARXIV_LIST_TITLECASE_THIS, "LIST"),
-        )
-        oracle = _load_main_oracle()
-        for line, kind_prefix in samples:
-            with self.subTest(line=line[:70]):
-                hits, explained = _scan("r-5-sources.md", line + "\n")
-                kinds = [kind for _lineno, kind, _text in hits]
-                if kind_prefix == "LIST":
-                    self.assertIn("LIST", kinds, hits)
-                else:
-                    self.assertTrue(
-                        any(kind.startswith("TABLE_CELL") for kind in kinds),
-                        hits,
-                    )
-                self.assertEqual(explained, 0)
-                with tempfile.TemporaryDirectory() as tmp:
-                    path = Path(tmp) / "r-5-sources.md"
-                    path.write_text(line + "\n", encoding="utf-8")
-                    oracle_hits = oracle.scan_file(path, False, False)
-                    self.assertTrue(
-                        oracle_hits,
-                        f"oracle (main) must also flag: {line[:70]}",
-                    )
-
-    def test_l1_n6_n11_are_hits_not_explained(self):
-        oracle = _load_main_oracle()
-        cases = (
-            ("r-5-sources.md", f"| {L1_CELL} | x |\n", "TABLE_CELL"),
-            ("r-5-sources.md", f"- {L1_LIST}\n", "LIST"),
-            ("r-5-sources.md", f"| {N6_CELL} | x |\n", "TABLE_CELL"),
-            ("r-9-sources-notes.md", f"| {L1_CELL} | x |\n", "TABLE_CELL"),
-        )
-        for name, text, kind_prefix in cases:
-            with self.subTest(name=name, kind=kind_prefix, text=text[:70]):
-                hits, explained = _scan(name, text)
-                kinds = [kind for _lineno, kind, _text in hits]
-                if kind_prefix == "LIST":
-                    self.assertIn("LIST", kinds, hits)
-                else:
-                    self.assertTrue(
-                        any(kind.startswith("TABLE_CELL") for kind in kinds),
-                        hits,
-                    )
-                self.assertEqual(explained, 0)
-                with tempfile.TemporaryDirectory() as tmp:
-                    path = Path(tmp) / name
-                    path.write_text(text, encoding="utf-8")
-                    oracle_hits = oracle.scan_file(path, False, False)
-                    self.assertTrue(
-                        oracle_hits,
-                        f"oracle (main) must also flag: {text[:70]}",
-                    )
-
-    def test_hyphen_chained_sentence_is_list_hit(self):
-        oracle = _load_main_oracle()
-        line = f"- {N5C_HYPHEN}\n"
-        hits, explained = _scan("page.md", line)
-        self.assertEqual([kind for _lineno, kind, _text in hits], ["LIST"])
-        self.assertEqual(explained, 0)
-        with tempfile.TemporaryDirectory() as tmp:
-            path = Path(tmp) / "page.md"
-            path.write_text(line, encoding="utf-8")
-            oracle_hits = oracle.scan_file(path, False, False)
-            self.assertTrue(oracle_hits, "oracle (main) must also flag N5c")
-
-    def test_digit_slash_hyphen_chained_sentences_are_hits(self):
-        oracle = _load_main_oracle()
-        prose = (D1C_HYPHEN, D_VERSIONS)
-        cells = (D1E_CELL, D1E_NIGHTLY, D_SLASH_CELL)
-        for sample in prose:
-            with self.subTest(kind="PROSE", sample=sample[:70]):
-                hits, explained = _scan("page.md", sample + "\n")
-                self.assertEqual(
-                    [kind for _lineno, kind, _text in hits], ["PROSE"], hits
-                )
-                self.assertEqual(explained, 0)
-                with tempfile.TemporaryDirectory() as tmp:
-                    path = Path(tmp) / "page.md"
-                    path.write_text(sample + "\n", encoding="utf-8")
-                    oracle_hits = oracle.scan_file(path, False, False)
-                    self.assertTrue(
-                        oracle_hits, f"oracle (main) must also flag: {sample[:70]}"
-                    )
-        for sample in cells:
-            with self.subTest(kind="TABLE_CELL", sample=sample[:70]):
-                text = f"| {sample} | x |\n"
-                hits, explained = _scan("r-5-sources.md", text)
-                kinds = [kind for _lineno, kind, _text in hits]
-                self.assertTrue(
-                    any(kind.startswith("TABLE_CELL") for kind in kinds), hits
-                )
-                self.assertEqual(explained, 0)
-                with tempfile.TemporaryDirectory() as tmp:
-                    path = Path(tmp) / "r-5-sources.md"
-                    path.write_text(text, encoding="utf-8")
-                    oracle_hits = oracle.scan_file(path, False, False)
-                    self.assertTrue(
-                        oracle_hits, f"oracle (main) must also flag: {sample[:70]}"
-                    )
+    def test_whitelisted_titles_are_explained_in_sources_files_only(self):
+        for title in chk.SOURCES_TITLE_WHITELIST:
+            for ctx in (_srclist, _srccell):
+                hits, explained = _scan(*ctx(title))
+                self.assertEqual((hits, explained), ([], 1), title[:40])
+            hits, explained = _scan(*_list(title))
+            self.assertEqual((hits, explained), ([], 0), title[:40])
 
     def test_whitelisted_title_plus_appended_english_is_hit(self):
-        list_line = f"- {WHITELIST_MILES_26}{WHITELIST_PLUS_EN}\n"
-        hits, explained = _scan("r-5-sources.md", list_line)
-        self.assertIn("LIST", [kind for _lineno, kind, _text in hits], hits)
-        self.assertEqual(explained, 0)
-        cell_text = f"| {WHITELIST_SGLANG_60}{WHITELIST_PLUS_EN} | x |\n"
-        hits, explained = _scan("r-5-sources.md", cell_text)
-        self.assertTrue(
-            any(kind.startswith("TABLE_CELL") for _n, kind, _t in hits), hits
-        )
-        self.assertEqual(explained, 0)
+        for title in chk.SOURCES_TITLE_WHITELIST:
+            for ctx in (_srclist, _srccell):
+                hits, explained = _scan(*ctx(title + " " + EN + "."))
+                self.assertTrue(hits, title[:40])
+                self.assertEqual(explained, 0)
 
-    def test_sources_rule_stays_off_outside_sources_files(self):
-        hits, explained = _scan("page.md", self.LINE)
-        self.assertEqual([kind for _lineno, kind, _text in hits], ["LIST"])
-        self.assertEqual(explained, 0)
+    def test_manual_explained_counts(self):
+        counts = {}
+        for m in ("miles-101", "sglang-101"):
+            n = 0
+            for p in sorted((REPO_ROOT / "manuals" / m).rglob("*.md")):
+                n += chk.scan_file(p)[1]
+            counts[m] = n
+        self.assertEqual(counts, {"miles-101": 2, "sglang-101": 1})
 
 
 class ExcludedDirTests(unittest.TestCase):
@@ -601,7 +465,10 @@ class ExcludedDirTests(unittest.TestCase):
             self.assertNotIn("manuals/a2a-101/research/x.md", proc.stdout)
 
 
-class NeverLooserThanMainTests(unittest.TestCase):
+
+class UnionWithMainTests(unittest.TestCase):
+    """The frozen main checker still runs; its hits are re-judged (B-9 kept)."""
+
     @classmethod
     def setUpClass(cls):
         cls.oracle = _load_main_oracle()
@@ -610,416 +477,78 @@ class NeverLooserThanMainTests(unittest.TestCase):
         digest = hashlib.sha256(ORACLE_PATH.read_bytes()).hexdigest()
         self.assertEqual(digest, ORACLE_SHA256)
 
-    def test_english_corpus_flagged_by_main_and_new(self):
-        self.assertGreaterEqual(len(ENGLISH_CORPUS), 25)
-        for sample in ENGLISH_CORPUS:
-            with self.subTest(sample=sample[:80]):
-                self.assertTrue(self.oracle.looks_english_prose(sample))
-                self.assertTrue(chk.looks_english_prose(sample))
-
-    def test_whole_manual_differential_is_reviewed(self):
-        main_only: set[tuple[str, int, str]] = set()
+    def test_whole_manual_main_only_hits_are_reviewed(self):
+        main_only = set()
+        new_total = 0
         for manual_json in sorted((REPO_ROOT / "manuals").glob("*/manual.json")):
             for path in sorted(manual_json.parent.rglob("*.md")):
                 rel = PurePosixPath(path.relative_to(REPO_ROOT).as_posix())
                 if chk.is_excluded(rel):
                     continue
-                main_hits = self.oracle.scan_file(path, False, False)
-                new_hits, _explained = chk.scan_file(path)
-                main_set = {
-                    (rel.as_posix(), lineno, text)
-                    for lineno, _kind, text in main_hits
-                }
-                new_set = {
-                    (rel.as_posix(), lineno, text)
-                    for lineno, _kind, text in new_hits
-                }
-                main_only.update(main_set - new_set)
+                new_hits, _ = chk.scan_file(path)
+                new_total += len(new_hits)
+                for ln, _k, text in self.oracle.scan_file(path, False, False):
+                    main_only.add((rel.as_posix(), ln, text))
+        self.assertEqual(new_total, 0)
         self.assertEqual(main_only, EXPECTED_MAIN_ONLY)
 
+    def test_expected_main_only_are_necessary_english(self):
+        lines_cache = {}
+        for rel, ln, text in EXPECTED_MAIN_ONLY:
+            lines = lines_cache.setdefault(
+                rel, (REPO_ROOT / rel).read_text(encoding="utf-8").splitlines())
+            self.assertIn(text[:40], lines[ln - 1])
+            if len(text) < 120:
+                self.assertFalse(chk.is_untranslated_sentence(text), text)
 
-class PinnedIdentifierContextTests(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.oracle = _load_main_oracle()
-
-    def _assert_both_flag(self, name, text):
-        hits, explained = _scan(name, text)
-        self.assertTrue(hits, f"new checker must flag: {text[:80]!r}")
-        self.assertEqual(explained, 0)
-        with tempfile.TemporaryDirectory() as tmp:
-            path = Path(tmp) / name
-            path.write_text(text, encoding="utf-8")
-            oracle_hits = self.oracle.scan_file(path, False, False)
-            self.assertTrue(
-                oracle_hits, f"oracle (main) must also flag: {text[:80]!r}"
-            )
-
-    def test_b5_sentences_flagged_in_every_listed_context(self):
-        cases = []
-        for sample in (B5_SENT, B5_SENT_PINNED):
-            for ctx in (_body, _list, _cell, _heading, _srccell):
-                cases.append((sample, ctx))
-        for ctx in (_body, _list, _cell, _srccell):
-            cases.append((B5_CHAIN, ctx))
-        for sample in (
-            "a2a-server-restarts-nightly-because-memory-leaks",
-            "a2a-server-server-server-server",
-        ):
-            cases.append((sample, _srccell))
-        for sample, ctx in cases:
-            with self.subTest(sample=sample[:70], ctx=ctx.__name__):
-                name, text = ctx(sample)
-                self._assert_both_flag(name, text)
-
-    def test_b4_digit_slash_hyphen_flagged_in_every_listed_context(self):
-        cases = []
-        for ctx in (_body, _list, _cell, _srccell):
-            cases.append((D1C_HYPHEN, ctx))
-        for sample in (D1E_CELL, D1E_NIGHTLY, D_SLASH_CELL, D_VERSIONS):
-            for ctx in (_body, _list, _cell, _heading, _srccell_raw):
-                cases.append((sample, ctx))
-        for sample, ctx in cases:
-            with self.subTest(sample=sample[:70], ctx=ctx.__name__):
-                name, text = ctx(sample)
-                self._assert_both_flag(name, text)
-
-    def test_x1_pinned_id_match_is_case_sensitive(self):
-        for sample in ("Rust A2A-SERVER-lf-v0.5.1", "Rust A2A-Server"):
-            for ctx in (_body, _list, _cell):
-                with self.subTest(sample=sample, ctx=ctx.__name__):
-                    name, text = ctx(sample)
-                    self._assert_both_flag(name, text)
-
-    def test_x2_prefix_only_a2a_is_not_exempt(self):
-        for sample in ("Rust a2a-common", "Rust a2a-common-lf-v0.5.1"):
-            for ctx in (_body, _list, _cell):
-                with self.subTest(sample=sample, ctx=ctx.__name__):
-                    name, text = ctx(sample)
-                    self._assert_both_flag(name, text)
-
-    def test_x3_token_must_fullmatch_not_search(self):
-        for sample in ("Rust a2a-server.", "Rust a2a-server-lf-v0.5.1."):
-            for ctx in (_body, _list, _cell):
-                with self.subTest(sample=sample, ctx=ctx.__name__):
-                    name, text = ctx(sample)
-                    self._assert_both_flag(name, text)
-
-    def test_x9b_extra_non_function_word_is_not_exempt(self):
-        for sample in ("Rust restart a2a-server", "Restart a2a-server"):
-            for ctx in (_body, _list, _cell):
-                with self.subTest(sample=sample, ctx=ctx.__name__):
-                    name, text = ctx(sample)
-                    self._assert_both_flag(name, text)
-
-    def test_only_pinned_id_context_helper(self):
-        self.assertFalse(chk._only_pinned_id_context("Rust x.a2a-server"))
-        self.assertFalse(chk._only_pinned_id_context("Rust a2a-server/x x"))
-        self.assertFalse(chk._only_pinned_id_context("Rust the a2a-server"))
-        self.assertTrue(chk._only_pinned_id_context("Rust a2a-server-lf-v0.5.1"))
-        self.assertTrue(chk._only_pinned_id_context("a2a-rs, a2a-server 0.5.1"))
-
-    def test_x10_func_word_in_prose_rust_rs_without_lowering_token(self):
-        self.assertFalse(chk.func_word_in_prose("Rust a2a-server-lf-v0.5.1"))
-        self.assertFalse(chk.func_word_in_prose("RUST a2a-server"))
-        self.assertFalse(chk.func_word_in_prose("a2a-rs, a2a-server 0.5.1"))
-
-    def test_pinned_id_exemption_is_exact_helper(self):
-        # Helper-level on purpose: under the union with main these inputs are
-        # reported by main anyway, so mutants m3/x1/x2/x3/x9b are scan-level
-        # equivalent (0 distinguishers over 1361 inputs x 7 contexts, see the
-        # PR body). These assertions pin the exemption to the exact id.
-        for s in (
-            "Rust a2a-server.",  # token is not a fullmatch (m3, x3)
-            "Rust A2A-SERVER",  # case-sensitive id (x1)
-            "RUST A2A-Server-lf-v0.5.1",  # case-sensitive id (x1)
-            "Rust a2a-for",  # only a2a-server, not any a2a-* (x2)
-            "Rust a2a-with",  # only a2a-server, not any a2a-* (x2)
-            "Restart a2a-server",  # context words are only rust/rs (x9b)
-        ):
-            self.assertTrue(chk.func_word_in_prose(s), s)
-        self.assertFalse(chk.func_word_in_prose("Rust a2a-server"))
-
-
-class ScanLevelMustReportTests(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.oracle = _load_main_oracle()
-
-    def _assert_both_flag(self, name, text):
-        hits, explained = _scan(name, text)
-        self.assertTrue(hits, f"new checker must flag: {text[:80]!r}")
-        self.assertEqual(explained, 0)
-        with tempfile.TemporaryDirectory() as tmp:
-            path = Path(tmp) / name
-            path.write_text(text, encoding="utf-8")
-            oracle_hits = self.oracle.scan_file(path, False, False)
-            self.assertTrue(
-                oracle_hits, f"oracle (main) must also flag: {text[:80]!r}"
-            )
-
-    def test_union_allowed_texts_are_exactly_expected_main_only_texts(self):
+    def test_allowed_text_sets_are_exact(self):
         self.assertEqual(
-            chk.MAIN_ONLY_ALLOWED_TEXTS,
-            {t for _rel, _ln, t in EXPECTED_MAIN_ONLY},
-        )
+            chk.MAIN_ONLY_ALLOWED_TEXTS, {t for _r, _l, t in EXPECTED_MAIN_ONLY})
         self.assertEqual(len(chk.MAIN_ONLY_ALLOWED_TEXTS), 26)
-        self.assertEqual(len(EXPECTED_MAIN_ONLY), 30)
-
-    def test_truncated_allowed_text_plus_appended_english_is_reported(self):
-        # main truncates hit text at 120 chars; a reviewed 120-char prefix must
-        # not exempt a cell that continues with English (inside or after {{}}).
-        en = "we restart the server every night because it leaks memory"
+        self.assertEqual(len(chk.MAIN_ONLY_ALLOWED_FULL_CELLS), 4)
         truncated = sorted(t for t in chk.MAIN_ONLY_ALLOWED_TEXTS if len(t) >= 120)
-        self.assertEqual(len(truncated), 4)
-        self.assertEqual(
-            sorted(f[:120] for f in chk.MAIN_ONLY_ALLOWED_FULL_CELLS), truncated
-        )
+        self.assertEqual(sorted(f[:120] for f in chk.MAIN_ONLY_ALLOWED_FULL_CELLS), truncated)
+
+    def test_b9_truncated_prefix_plus_english_is_reported(self):
+        # main truncates at 120 chars; a reviewed prefix must not exempt a
+        # cell that continues with English outside the tip span.
         for full in chk.MAIN_ONLY_ALLOWED_FULL_CELLS:
-            self.assertIn(full[:120], chk.MAIN_ONLY_ALLOWED_TEXTS)
-            stem = full[:-2] if full.endswith("}}") else full
-            close = "}}" if full.endswith("}}") else ""
             for name in ("4-5-streaming.md", "r-5-sources.md"):
                 for tpl in ("| {s} | x |\n", "- {s}\n", "{s}\n", "## {s}\n"):
-                    for cell in (stem + " and " + en + close, full + " " + en):
-                        self._assert_both_flag(name, tpl.format(s=cell))
-        # the reviewed cells themselves stay silent
+                    text = tpl.format(s=full + " " + EN)
+                    with self.subTest(full=full[:30], name=name, tpl=tpl[:3]):
+                        hits, explained = _scan(name, text)
+                        self.assertTrue(hits)
+                        self.assertEqual(explained, 0)
+
+    def test_b9_reviewed_full_cells_stay_silent(self):
         for full in chk.MAIN_ONLY_ALLOWED_FULL_CELLS:
             name = "r-5-sources.md" if full.startswith("Patodiya") else "4-5-streaming.md"
             hits, _ = _scan(name, "| " + full + " | `POST` |\n")
             self.assertEqual(hits, [], full[:60])
-        # whitelisted Sources titles >120 chars stay explained in list form too
-        for title in chk.SOURCES_TITLE_WHITELIST:
-            hits, _ = _scan("r-5-sources.md", "- " + title + "\n")
-            self.assertEqual(hits, [], title[:60])
 
-    def test_truncated_allowed_prefix_in_link_text_fails_closed(self):
-        # main's LINK_TEXT is truncated at 120 too. The PR cannot recover the
-        # full link text from the line, so this must fail closed (review r7
-        # B-9, the 5th form).
-        en = "we restart the server every night because it leaks memory"
-        prefixes = sorted(
-            t
-            for t in chk.MAIN_ONLY_ALLOWED_TEXTS
-            if len(t) >= 120 and t.startswith("a2a-java {{")
-        )
-        self.assertEqual(len(prefixes), 3)
-        for prefix in prefixes:
-            for name in ("4-5-streaming.md", "r-5-sources.md"):
-                inside = f"中文说明见[{prefix} and {en}}}}}](https://x.org/a)。\n"
-                after = f"中文说明见[{prefix}}}}} {en}](https://x.org/a)。\n"
-                for text in (inside, after):
-                    self._assert_both_flag(name, text)
+    def test_main_hit_with_sentence_is_reported_by_union(self):
+        # _union_with_main alone (no PR hits, nothing covered) reports main's
+        # hit when its full text is a sentence ...
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp) / "x.md"
+            p.write_text("| " + EN + " | x |\n", encoding="utf-8")
+            hits = chk._union_with_main(p, [], set())
+            self.assertEqual([(ln, k) for ln, k, _t in hits], [(1, "MAIN_TABLE_CELL[0]")])
+            # ... and drops it when it is necessary English.
+            p.write_text("| FlashInfer、Triton、FlexAttention、TurboQuant | x |\n", encoding="utf-8")
+            self.assertTrue(self.oracle.scan_file(p, False, False))
+            self.assertEqual(chk._union_with_main(p, [], set()), [])
 
-    def test_sdk_rust_rest_citation_after_rust_is_reported(self):
-        # review r7 item 7: "Rust" in front of a reviewed sdk-rust citation is
-        # residual English in every context main checks (blockquotes are a
-        # main-inherited gap, see test_note_span_then_rust_is_known_gap).
-        sample = "Rust {{sdk-rust a2a-server/src/rest.rs at a2a-server-lf-v0.5.1}}"
-        for ctx in (_body, _list, _cell, _cell2, _heading, _h4, _ordered,
-                    _srccell, _srccell_raw, _srclist):
-            self._assert_both_flag(*ctx(sample))
-
-    def test_note_span_then_rust_is_known_gap(self):
-        # KNOWN GAP, inherited from main (89cbf1a): main skips any cell/line
-        # that starts with "{{" (ALLOWED_PREFIXES), so "{{note ...}} Rust" is
-        # silent in both checkers. Tracked in the #141 follow-up issue; if this
-        # starts failing because the PR now reports it, update the issue.
-        samples = (
-            "{{note …}} Rust",
-            "{{note the server restarts nightly}} Rust",
-        )
-        ctxs = (_body, _list, _cell, _cell2, _heading, _h4, _ordered,
-                _srccell, _srccell_raw, _srclist,
-                lambda s: ("3-1-intro.md", f"> {s}\n"))
-        for sample in samples:
-            for ctx in ctxs:
-                name, text = ctx(sample)
-                hits, explained = _scan(name, text)
-                with tempfile.TemporaryDirectory() as tmp:
-                    path = Path(tmp) / name
-                    path.write_text(text, encoding="utf-8")
-                    oracle_hits = self.oracle.scan_file(path, False, False)
-                self.assertEqual(oracle_hits, [], f"main now reports {text!r}")
-                self.assertEqual((hits, explained), ([], 0), f"PR now reports {text!r}")
-
-    def test_x7_lookaround_distinguishers_reported_at_scan_level(self):
-        samples = (
-            "1_a2a-server1 a2a-server",
-            "1_a2a-serverx a2a-server",
-            "rsa2a-server1 a2a-server",
-        )
-        for sample in samples:
-            for ctx in (_body, _list, _cell, _heading):
-                with self.subTest(sample=sample, ctx=ctx.__name__):
-                    name, text = ctx(sample)
-                    self._assert_both_flag(name, text)
-
-    def test_x9_context_word_distinguishers_reported_at_scan_level(self):
-        samples = (
-            "the1 a2a-server",
-            "the_ a2a-server",
-            "1_ a2a-server the_",
-        )
-        for sample in samples:
-            for ctx in (_body, _list, _cell, _heading):
-                with self.subTest(sample=sample, ctx=ctx.__name__):
-                    name, text = ctx(sample)
-                    self._assert_both_flag(name, text)
-
-    def test_adv_r6_a_rust_rs_identifier_combos(self):
-        samples = (
-            "Rust a2a-server",
-            "RS a2a-server",
-            "Rust Rust a2a-server",
-            "Rust a2a-server a2a-server",
-            "Rust a2a-server-lf-v0.5.1 a2a-server-lf-v0.4.0",
-            "Rust a2a-server rust rust rust rust rust rust",
-            "rUsT a2a-server",
-            "rust rs rust a2a-server",
-        )
-        contexts = (_body, _list, _cell, _heading, _srccell, _srclist)
-        # Dropped _srccell/_srclist for samples where, after stripping the
-        # appended arXiv markdown link, main's Sources-title heuristic
-        # (LATIN_WORD count < 4) treats the cell/list as allowed.
-        drop_src = {
-            "Rust a2a-server",
-            "RS a2a-server",
-            "Rust Rust a2a-server",
-            "Rust a2a-server a2a-server",
-            "rUsT a2a-server",
-        }
-        for sample in samples:
-            for ctx in contexts:
-                if ctx in (_srccell, _srclist) and sample in drop_src:
-                    continue
-                with self.subTest(sample=sample[:70], ctx=ctx.__name__):
-                    name, text = ctx(sample)
-                    self._assert_both_flag(name, text)
-
-    def test_adv_r6_b_zero_width_and_bom(self):
-        samples = (
-            "Rust\u200ba2a-server",
-            "Rust a2a-server\u200b",
-            "Rust a2a-server\u2060",
-            "\ufeffRust a2a-server",
-        )
-        # Dropped _srccell/_srclist for every sample: after stripping the
-        # arXiv link, main sees only ~2 LATIN_WORD tokens and allows it.
-        for sample in samples:
-            for ctx in (_body, _list, _cell, _heading):
-                with self.subTest(sample=sample, ctx=ctx.__name__):
-                    name, text = ctx(sample)
-                    self._assert_both_flag(name, text)
-
-    def test_adv_r6_c_fullwidth_cjk_punctuation(self):
-        samples = (
-            "Rust，a2a-server",
-            "Rust（a2a-server）",
-            "Rust：a2a-server",
-            "Rust a2a-server。",
-            "Rust「a2a-server」",
-            "Rust a2a-server！",
-            "Rust a2a-server、a2a-server",
-        )
-        # Dropped _srccell/_srclist for every sample: CJK punctuation does
-        # not add LATIN_WORD tokens, so main's Sources-title heuristic
-        # allows the linked cell/list.
-        for sample in samples:
-            for ctx in (_body, _list, _cell, _heading):
-                with self.subTest(sample=sample, ctx=ctx.__name__):
-                    name, text = ctx(sample)
-                    self._assert_both_flag(name, text)
-
-    def test_adv_r6_d_single_letters(self):
-        samples = (
-            "Rust x a2a-server",
-            "Rust I a2a-server",
-            "Rust a2a-server s e r v e r",
-        )
-        # Dropped _srccell/_srclist for every sample: single letters are
-        # not LATIN_WORD ([A-Za-z]{2,}), so the linked Sources cell/list
-        # stays under main's 4-word Sources-title threshold.
-        for sample in samples:
-            for ctx in (_body, _list, _cell, _heading):
-                with self.subTest(sample=sample, ctx=ctx.__name__):
-                    name, text = ctx(sample)
-                    self._assert_both_flag(name, text)
-
-    def test_adv_r6_e_english_hidden_in_code_or_tip(self):
-        samples = (
-            "Rust a2a-server `the server restarts nightly`",
-            "Rust a2a-server {{note the server restarts nightly}}",
-        )
-        contexts = (_body, _list, _cell, _heading, _srccell, _srclist)
-        # Dropped _srccell/_srclist for the inline-code sample only: main
-        # strips `...` before the Sources-title word count, leaving
-        # "Rust a2a-server" (< 4 LATIN_WORD). The {{note ...}} sample is
-        # kept because main does not strip tip spans.
-        drop_src = {"Rust a2a-server `the server restarts nightly`"}
-        for sample in samples:
-            for ctx in contexts:
-                if ctx in (_srccell, _srclist) and sample in drop_src:
-                    continue
-                with self.subTest(sample=sample[:70], ctx=ctx.__name__):
-                    name, text = ctx(sample)
-                    self._assert_both_flag(name, text)
-
-    def test_b8_tip_span_english_lines_reported(self):
-        samples = (
-            "See {{note the server restarts nightly because it leaks}}",
-            "Paper {{note we restart the server every night because it leaks memory}}",
-            "Zheng et al. {{note the server restarts nightly}}",
-            "Rust {{note the server restarts nightly}}",
-        )
-        contexts = (
-            _body,
-            _list,
-            _cell,
-            _heading,
-            _h4,
-            _cell2,
-            _ordered,
-            _srccell,
-            _srccell_raw,
-            _srclist,
-        )
-        for sample in samples:
-            for ctx in contexts:
-                with self.subTest(sample=sample[:70], ctx=ctx.__name__):
-                    name, text = ctx(sample)
-                    self._assert_both_flag(name, text)
-
-    def test_sources_list_context_reported(self):
-        samples = (
-            "a2a-server-restarts-nightly-because-memory-leaks",
-            "a2a-server-server-server-server",
-            B5_SENT,
-            B5_SENT_PINNED,
-        )
-        for sample in samples:
-            with self.subTest(sample=sample[:70], ctx="_srclist"):
-                name, text = _srclist(sample)
-                self._assert_both_flag(name, text)
-
-    def test_reviewed_main_only_texts_stay_silent(self):
-        sample = "Rust a2a-server-lf-v0.5.1"
-        for ctx in (_body, _cell):
-            with self.subTest(ctx=ctx.__name__):
-                name, text = ctx(sample)
-                hits, explained = _scan(name, text)
-                self.assertEqual(
-                    hits, [], f"new checker must stay silent: {text[:80]!r}"
-                )
-                self.assertEqual(explained, 0)
-                with tempfile.TemporaryDirectory() as tmp:
-                    path = Path(tmp) / name
-                    path.write_text(text, encoding="utf-8")
-                    oracle_hits = self.oracle.scan_file(path, False, False)
-                    self.assertTrue(
-                        oracle_hits,
-                        f"oracle (main) must still flag: {text[:80]!r}",
-                    )
+    def test_main_link_text_hit_external_is_kept_internal_is_judged(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp) / "x.md"
+            p.write_text("见[" + EN + "](https://example.com/a)。\n", encoding="utf-8")
+            self.assertTrue(self.oracle.scan_file(p, False, False))
+            self.assertEqual(chk._union_with_main(p, [], set()), [])
+            p.write_text("见[" + EN + "](#s-ops)。\n", encoding="utf-8")
+            self.assertTrue(chk._union_with_main(p, [], set()))
+            self.assertTrue(chk.scan_file(p)[0])
 
 
 class CliFailClosedTests(unittest.TestCase):
