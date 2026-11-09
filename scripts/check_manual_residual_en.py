@@ -73,9 +73,15 @@ them: a column-0 line matching ``^(`{3,}|~{3,})\s*([A-Za-z0-9_-]*)\s*$``
 opens, and inside a fence only a column-0 run of the same character at least
 as long as the opener, with nothing after it, closes (bot-hub#125). So
 ```` ```text ```` inside a fence is fence body, and so is a bare ```` ``` ````
-inside a ```` ````text ```` fence; an indented ```` ``` ```` or
-```` ```bash x ```` is paragraph text and judged (the site build rejects a
-column-0 ```` ```bash x ```` line with "unrecognised block line"). An opener whose info is not ``[a-z0-9-]+``
+inside a ```` ````text ```` fence. A fence line indented by any number of
+spaces (1-3 or 4+) never opens or closes a fence: outside a fence it is
+paragraph text and judged, inside one it is body. A column-0 line that starts
+a block but that the builder cannot place (```` ```bash x ````,
+```` ~~~bash x ````, a ``|`` row with no ``|---|`` rule under it that does not
+continue a table, an empty ``## ``) is not judged: the site build stops on it
+with "unrecognised block line", and so does this gate, at once, with
+file:line and exit status 2 (``UnrecognisedBlockLine``, bot-hub#125
+follow-up). An opener whose info is not ``[a-z0-9-]+``
 (``Rule``) is reported as FENCE_BAD_INFO and an unclosed fence as
 FENCE_UNCLOSED: the site build fails on both.
 
@@ -167,6 +173,48 @@ def _fence_closes(line: str, marker: str) -> bool:
     m = FENCE_CLOSE.match(line)
     return bool(m) and m.group(1)[0] == marker[0] and len(m.group(1)) >= len(marker)
 FENCE_INFO_OK = re.compile(r"^[a-z0-9-]+$")
+# site/build-manuals.js parseDocument() block dispatch, copied so a line the
+# builder cannot place fails here too (bot-hub#125 follow-up). BUILD_* are the
+# builder's BLOCK_START, sub-heading, FORBIDDEN, TABLE_RULE and list patterns.
+BUILD_BLOCK_START = (
+    re.compile(r"^(```|~~~)"),
+    re.compile(r"^#{1,6}\s"),
+    re.compile(r"^([-*]|[0-9]+\.)\s+"),
+    re.compile(r"^\|"),
+    re.compile(r"^>"),
+)
+BUILD_SUB_HEADING = re.compile(r"^(#{2,3})\s+(.+?)(?:\s+\{#([a-z0-9-]+)\})?\s*$")
+BUILD_FORBIDDEN = (
+    re.compile(r"^#\s"),
+    re.compile(r"^#{4,}\s"),
+    re.compile(r"^\s*(-{3,}|\*{3,}|_{3,})\s*$"),
+    re.compile(r"^>"),
+    re.compile(r"^\s*<[a-zA-Z!/]"),
+)
+BUILD_TABLE_RULE = re.compile(r"^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)*\|?\s*$")
+BUILD_LIST_START = re.compile(r"^([-*]|[0-9]+\.)\s+")
+
+
+class UnrecognisedBlockLine(ValueError):
+    """A column-0 block-start line site/build-manuals.js rejects."""
+
+
+def builder_rejects(line: str, next_line: str, in_table: bool) -> bool:
+    """True when parseDocument() would stop at *line* with "unrecognised
+    block line": it starts a block (BUILD_BLOCK_START) outside a fence, but is
+    not a fence opener, a ##/### heading with text, a FORBIDDEN line (the
+    builder fails those with their own message), a table row (a header needs a
+    BUILD_TABLE_RULE line under it; later rows follow without a blank line),
+    or a list item."""
+    if not any(p.match(line) for p in BUILD_BLOCK_START):
+        return False
+    if FENCE_OPEN.match(line) or BUILD_SUB_HEADING.match(line):
+        return False
+    if any(p.match(line) for p in BUILD_FORBIDDEN):
+        return False
+    if line.startswith("|") and (in_table or BUILD_TABLE_RULE.match(next_line)):
+        return False
+    return not BUILD_LIST_START.match(line)
 FENCE_KEY = re.compile(r"^([a-z][a-z-]*):\s*(.*)$")
 FENCE_CONT = re.compile(r"^\s{2,}\S")
 FENCE_RULE_SEP = re.compile(r"^---\s*$")
@@ -758,9 +806,21 @@ def scan_file(path: Path) -> tuple[list[tuple[int, str, str]], int]:
     fence_marker = "```"
     fence_body: list[tuple[int, str]] = []
     fence_line = 0
+    in_table = False
     for i, line in enumerate(lines):
         lineno = i + 1
         stripped = line.strip()
+        if fence_info is None:
+            # Mirrors the builder's table loop: rows continue while lines
+            # start with "|"; a header row needs a rule line under it.
+            if builder_rejects(line, lines[i + 1] if i + 1 < len(lines) else "", in_table):
+                raise UnrecognisedBlockLine(
+                    f'{path}:{lineno}: unrecognised block line "{stripped}" '
+                    "(the site build fails here too: a fence opener takes only "
+                    "a language tag; a table needs a |---| rule line; a heading "
+                    "needs text)"
+                )
+            in_table = line.startswith("|")
         if fence_info is not None:
             if _fence_closes(line, fence_marker):
                 scan_fence(fence_info, fence_body)
@@ -860,7 +920,13 @@ def main() -> int:
             excluded_files += 1
             continue
         files += 1
-        file_hits, file_explained = scan_file(path)
+        try:
+            file_hits, file_explained = scan_file(path)
+        except UnrecognisedBlockLine as error:
+            # Fail at once, like site/build-manuals.js, instead of judging the
+            # line as prose (bot-hub#125 follow-up).
+            print(f"check_manual_residual_en: {error}", file=sys.stderr)
+            return 2
         explained += file_explained
         for lineno, kind, text in file_hits:
             all_hits.append((str(rel), lineno, kind, text))

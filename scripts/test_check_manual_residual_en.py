@@ -9,6 +9,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import shutil
 import importlib.util
 import subprocess
 import sys
@@ -629,9 +630,12 @@ class R11TighteningTests(unittest.TestCase):
         self.assertEqual(self._kinds(self.HEAD + "```bash\necho hi\n"), [(5, "FENCE_UNCLOSED")])
 
     def test_fence_with_extra_words_is_not_a_fence(self):
+        # Not a fence, and site/build-manuals.js stops on it with
+        # "unrecognised block line"; so does this gate (bot-hub#125
+        # follow-up), instead of judging it as prose.
         text = self.HEAD + "```bash extra\n" + self.S + "\n"
-        kinds = {k for _ln, k in self._kinds(text)}
-        self.assertEqual(kinds, {"PROSE"})
+        with self.assertRaisesRegex(chk.UnrecognisedBlockLine, r'3-1-intro\.md:5: unrecognised block line "```bash extra"'):
+            self._kinds(text)
 
     def test_indented_backticks_inside_fence_do_not_close(self):
         text = self.HEAD + "```bash\n  ```\n" + self.S + "\n```\n"
@@ -739,6 +743,108 @@ class VariableFenceTests(unittest.TestCase):
         self.assertEqual(chk.figure_captions_in_text(text), [("fig-1", "real")])
 
 
+class BuilderBlockParityTests(unittest.TestCase):
+    """bot-hub#125 follow-up: indented fence lines and block-start lines the
+    builder cannot place are handled exactly as site/build-manuals.js
+    parseDocument() handles them."""
+
+    S = "We restart the server every night because it leaks memory and nobody knows why it happens."
+    HEAD = "# 标题\n\n中文段落。\n\n"
+    # (text after HEAD, line the builder rejects with "unrecognised block
+    # line" or None). HEAD is 4 lines, so the first body line is line 5.
+    CASES = [
+        ("```bash extra\necho\n```\n", 5),
+        ("~~~bash extra\necho\n~~~\n", 5),
+        ("````bash extra\n", 5),
+        ("~~~~text more\n", 5),
+        ("中文。\n\n| a | b |\n", 7),
+        ("| h |\n|---|\n| r |\n\n| r2 |\n", 9),
+        ("|---|\n", 5),
+        ("## \n", 5),
+        ("### \n", 5),
+        ("| h | x |\n|---|---|\n| r | y |\n", None),
+        ("##  x\n", None),
+        ("- a\n- b\n", None),
+        ("~~~text\nx\n~~~\n", None),
+    ] + [
+        (f"{pad}{marker}bash extra\necho\n{pad}{marker}\n", None)
+        for pad in (" ", "   ", "    ", "      ")
+        for marker in ("```", "~~~", "````")
+    ] + [
+        (f"{marker}text\n{pad}{marker}\nx\n{marker}\n", None)
+        for pad in (" ", "   ", "    ")
+        for marker in ("```", "~~~")
+    ]
+
+    def _kinds(self, text):
+        hits, _ = _scan("3-1-intro.md", text)
+        return [(ln, k) for ln, k, _t in hits]
+
+    def _gate_rejects(self, text):
+        try:
+            _scan("3-1-intro.md", text)
+        except chk.UnrecognisedBlockLine as error:
+            found = re.search(r"3-1-intro\.md:(\d+): unrecognised block line", str(error))
+            self.assertIsNotNone(found, str(error))
+            return int(found.group(1))
+        return None
+
+    def test_gate_rejects_the_lines_the_builder_rejects(self):
+        for body, line in self.CASES:
+            with self.subTest(body=body):
+                self.assertEqual(self._gate_rejects(self.HEAD + body), line)
+
+    @unittest.skipUnless(shutil.which("node"), "node is not installed")
+    def test_cases_match_site_build_manuals(self):
+        # Run the real builder on the same inputs: it must reject the same
+        # line, or accept the document.
+        builder = Path(__file__).resolve().parent.parent / "site" / "build-manuals.js"
+        script = (
+            "const m = require(process.argv[1]);"
+            "const out = JSON.parse(require('fs').readFileSync(0, 'utf8')).map(t => {"
+            " try { m.parseDocument(t, 'doc.md'); return null; }"
+            " catch (e) { const f = /^doc\\.md:(\\d+): unrecognised block line/.exec(e.message);"
+            " return f ? Number(f[1]) : 'other: ' + e.message; } });"
+            "process.stdout.write(JSON.stringify(out));"
+        )
+        texts = [self.HEAD + body for body, _line in self.CASES]
+        proc = subprocess.run(
+            ["node", "-e", script, str(builder)], input=json.dumps(texts),
+            capture_output=True, text=True, check=True, timeout=60,
+        )
+        self.assertEqual(json.loads(proc.stdout), [line for _body, line in self.CASES])
+
+    def test_indented_fence_lines_are_paragraph_text(self):
+        for pad in (" ", "   ", "    "):
+            for marker in ("```", "~~~"):
+                with self.subTest(pad=len(pad), marker=marker):
+                    # Had the indented line opened a fence, line 7 would be
+                    # skipped as code; it is a paragraph and is judged.
+                    text = self.HEAD + f"{pad}{marker}bash\n\n" + self.S + f"\n\n{pad}{marker}\n"
+                    self.assertEqual(self._kinds(text), [(7, "PROSE")])
+
+    def test_indented_tilde_closer_inside_fence_is_body(self):
+        text = self.HEAD + "~~~rule\nlabel: 中文\nsource: x\n---\n   ~~~\n" + self.S + "\n~~~\n"
+        # The indented ~~~ (line 9) does not close, so the rule body starts
+        # there. Line 10 also comes from the frozen main checker, which knows
+        # only ``` fences and reads the tilde block as prose (union).
+        self.assertEqual(self._kinds(text), [(9, "RULE"), (10, "MAIN_PROSE")])
+
+    def test_cli_exits_two_with_file_line(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            sections = Path(tmp) / "manuals" / "a2a-101" / "sections"
+            sections.mkdir(parents=True)
+            (sections / "a.md").write_text("## 小节\n\n~~~bash extra\n中文。\n~~~\n", encoding="utf-8")
+            proc = subprocess.run(
+                [sys.executable, str(Path(__file__).resolve().parent / "check_manual_residual_en.py"),
+                 "--root", tmp, "a2a-101"],
+                capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(proc.returncode, 2, proc.stdout + proc.stderr)
+            self.assertNotIn("FAIL_hits=0", proc.stdout)
+            self.assertIn('manuals/a2a-101/sections/a.md:3: unrecognised block line "~~~bash extra"', proc.stderr)
+
+
 class LengthCapAndLimitTests(unittest.TestCase):
     """B3 r9: exempt spans have a length cap; the rest are pinned known limits."""
 
@@ -800,9 +906,9 @@ class MainDemoAndHistoryTests(unittest.TestCase):
         samples = [
             ("README.md", "Every request, response, and stream frame in A2A 101 comes from this kit. It runs three remote agents and a recording client on your machine, with the Python standard library only. It needs no network and no keys.\n"),
             ("README.md", "## How this kit differs from the reference SDK\n"),
-            ("README.md", "| `08-rejected.http` | a production deploy the agent refuses |\n"),
-            ("r-3-incident-index.md", "| Thermal throttle in an L4 sweep ([record](manuals/sglang-101/capture/gpu/incidents/l4-thermal-throttle.txt)) | x |\n"),
-            ("r-5-sources.md", "| The Mooncake team on the LMSYS blog | x |\n"),
+            ("README.md", "| `08-rejected.http` | a production deploy the agent refuses |\n|---|---|\n"),
+            ("r-3-incident-index.md", "| Thermal throttle in an L4 sweep ([record](manuals/sglang-101/capture/gpu/incidents/l4-thermal-throttle.txt)) | x |\n|---|---|\n"),
+            ("r-5-sources.md", "| The Mooncake team on the LMSYS blog | x |\n|---|---|\n"),
         ]
         for name, text in samples:
             with self.subTest(text=text[:50]):
@@ -952,7 +1058,7 @@ class UnionWithMainTests(unittest.TestCase):
         # cell that continues with English outside the tip span.
         for full in chk.MAIN_ONLY_ALLOWED_FULL_CELLS:
             for name in ("4-5-streaming.md", "r-5-sources.md"):
-                for tpl in ("| {s} | x |\n", "- {s}\n", "{s}\n", "## {s}\n"):
+                for tpl in ("| {s} | x |\n|---|---|\n", "- {s}\n", "{s}\n", "## {s}\n"):
                     text = tpl.format(s=full + " " + EN)
                     with self.subTest(full=full[:30], name=name, tpl=tpl[:3]):
                         hits, explained = _scan(name, text)
@@ -962,7 +1068,7 @@ class UnionWithMainTests(unittest.TestCase):
     def test_b9_reviewed_full_cells_stay_silent(self):
         for full in chk.MAIN_ONLY_ALLOWED_FULL_CELLS:
             name = "r-5-sources.md" if full.startswith("Patodiya") else "4-5-streaming.md"
-            hits, _ = _scan(name, "| " + full + " | `POST` |\n")
+            hits, _ = _scan(name, "| " + full + " | `POST` |\n|---|---|\n")
             self.assertEqual(hits, [], full[:60])
 
     def test_main_hit_with_sentence_is_reported_by_union(self):
