@@ -148,6 +148,44 @@ test('rejects constructs outside the subset', () => {
   assert.throws(() => manuals.parseDocument('# T\n\n```figure\nid: f-1\nkind: plot\ntitle: t\nclaim: c.\ncaption: c\n```\n', 'x'), /kind must be one of/);
 });
 
+test('fences close on a run of the same character at least as long as the opener (bot-hub#125)', () => {
+  // A ````text fence shows a ```figure block as text instead of parsing it.
+  const four = manuals.parseDocument('# T\n\n````text\n```figure\nid: fig-1\n```\n````\n\nAfter.\n', 'x');
+  assert.deepEqual(four.blocks.map(block => block.type), ['code', 'paragraph']);
+  assert.equal(four.blocks[0].lang, 'text');
+  assert.equal(four.blocks[0].code, '```figure\nid: fig-1\n```');
+  assert.equal(four.blocks[1].line, 9);
+  // A longer closer closes; a shorter one, or the other character, is body.
+  const longer = manuals.parseDocument('# T\n\n```bash\n~~~\n``\necho hi\n`````\n', 'x');
+  assert.deepEqual(longer.blocks.map(block => [block.type, block.code]), [['code', '~~~\n``\necho hi']]);
+  const tilde = manuals.parseDocument('# T\n\n~~~text\n```\n~~\n~~~~\n\nAfter.\n', 'x');
+  assert.deepEqual(tilde.blocks.map(block => [block.type, block.code || block.text]), [['code', '```\n~~'], ['paragraph', 'After.']]);
+  // Typed blocks still parse inside tilde and longer backtick fences.
+  const figure = manuals.parseDocument('# T\n\n~~~figure\nid: fig-1\nkind: state\ntitle: t\nclaim: c.\ncaption: c\n~~~\n', 'x');
+  assert.equal(figure.blocks[0].type, 'figure');
+  // The three-backtick fences in current manuals parse as before.
+  const three = manuals.parseDocument('# T\n\n```bash\necho hi\n```\n\nAfter.\n', 'x');
+  assert.deepEqual(three.blocks.map(block => [block.type, block.code || block.text]), [['code', 'echo hi'], ['paragraph', 'After.']]);
+});
+
+test('unclosed fences and unrecognised block lines fail fast instead of exhausting memory (bot-hub#125)', () => {
+  const cases = [
+    ['# T\n\n````text\n```figure\nid: fig-1\n```\n', /x:3: this fence is never closed \(needs a line of 4\+ "`"\)/],
+    ['# T\n\n~~~text\necho\n```\n', /x:3: this fence is never closed \(needs a line of 3\+ "~"\)/],
+    ['# T\n\n```bash extra\necho\n```\n', /x:3: unrecognised block line "```bash extra"/],
+    ['# T\n\n````bash extra\n', /x:3: unrecognised block line "````bash extra"/],
+    ['# T\n\nText.\n\n| a | b |\n', /x:5: unrecognised block line "\| a \| b \|"/],
+    ['# T\n\n## \n', /x:3: unrecognised block line "##"/],
+  ];
+  for (const [source, error] of cases) {
+    const started = process.hrtime.bigint();
+    const heap = process.memoryUsage().heapUsed;
+    assert.throws(() => manuals.parseDocument(source, 'x'), error);
+    assert.ok(process.hrtime.bigint() - started < 2000000000n, `bounded time: ${JSON.stringify(source)}`);
+    assert.ok(process.memoryUsage().heapUsed - heap < 64 * 1024 * 1024, `bounded memory: ${JSON.stringify(source)}`);
+  }
+});
+
 test('inline markup escapes HTML and records cross references with their location', () => {
   const acc = manuals.newInline();
   const html = manuals.inlineHtml('**a** <b> `x < y` {{spec §2}} [s](#s-1-1)', 'doc.md:4', acc);
