@@ -1,0 +1,376 @@
+{
+  "id": "docker-sandboxes-101",
+  "title": "Docker Sandboxes and Docker Agent 101",
+  "subtitle": "面向编程智能体的隔离 microVM，以及在其中运行的智能体运行时，逐条命令",
+  "summary": "如何在你信任的文件上运行你不信任的智能体。本手册中的每一段 listing 都来自在一台 Mac 上对 sbx 和 docker-agent 的一次录制运行。",
+  "audience": "You are an engineer who runs coding agents such as Claude Code or Codex on real repositories. You know Docker, git, and YAML. You have not used Docker Sandboxes or Docker Agent.",
+  "edition": "2026.10",
+  "status": "ready",
+  "pin": {
+    "subject": "Docker Sandboxes (sbx) and Docker Agent (docker-agent)",
+    "version": "sbx 0.47.0, docker-agent 1.149.0",
+    "source": "https://github.com/docker/docker-agent",
+    "commit": "bf4169cdd31229d52385410c52c3dcc59b497858",
+    "date": "2026-10-07",
+    "verified": "2026-10-08"
+  },
+  "outcomes": [
+    "Run a coding agent inside a sandbox, give it only the files it needs, and get its commits back without giving it your credentials.",
+    "Read one line of sbx policy log and say which rule allowed or blocked the connection, and what to change.",
+    "Write an agent file that runs a team of agents over local tools and a local model, record it, and replay it from a cassette.",
+    "Serve the same agent file over the HTTP API, MCP, ACP, and A2A, and share it as a signed OCI artifact.",
+    "Map any command from the 2025 Docker Sandboxes plugin or the cagent material to its current form."
+  ],
+  "palette": [
+    {
+      "hue": "blue",
+      "meaning": "sbx、sandboxd 和沙箱 microVM"
+    },
+    {
+      "hue": "violet",
+      "meaning": "docker-agent、智能体文件和智能体循环"
+    },
+    {
+      "hue": "green",
+      "meaning": "工作区：文件、挂载、clone、kit 和模板"
+    },
+    {
+      "hue": "amber",
+      "meaning": "生命周期：沙箱状态、会话和工具调用阶段"
+    },
+    {
+      "hue": "teal",
+      "meaning": "存储的记录：session.db、策略规则、密钥存储，以及审计日志"
+    },
+    {
+      "hue": "indigo",
+      "meaning": "网络流量：代理、对外提供的端点，以及流"
+    },
+    {
+      "hue": "plum",
+      "meaning": "模型与模型调用：Docker Model Runner 和托管提供方"
+    },
+    {
+      "hue": "olive",
+      "meaning": "智能体之外的工具和效果：MCP 服务器、shell 命令和 HTTP API"
+    },
+    {
+      "hue": "rose",
+      "meaning": "故障：被阻止的连接、被拒绝的工具调用、错误"
+    },
+    {
+      "hue": "grey",
+      "meaning": "主机、操作员、Docker Hub，以及这两个产品之外的一切"
+    }
+  ],
+  "sources": [
+    {
+      "name": "Shipped help text",
+      "path": "research/sources/help-sbx.md and help-docker-agent.md (sbx 0.47.0, docker-agent 1.149.0)",
+      "usedFor": "every command, flag, default, and path; cited as help-sbx or help-agent with the command"
+    },
+    {
+      "name": "Agent file schema",
+      "path": "research/sources/agent-schema.json at v1.149.0 (bf4169c)",
+      "usedFor": "every key, type, and default of the agent file; cited as schema"
+    },
+    {
+      "name": "Sandbox Kit Spec v3",
+      "path": "research/sources/SPEC-v3-at-v3.0.0-m.8.md (tag v3.0.0-m.8, 2026-10-02)",
+      "usedFor": "the kit descriptor and each capability, quoted exactly; cited as kitspec"
+    },
+    {
+      "name": "Docker documentation (vendored)",
+      "path": "research/sources/docs-sandboxes.md, docs-docker-agent.md, docs-model-runner.md, docs-mcp.md, fetched 2026-10-08",
+      "usedFor": "rules and limits the help text does not state, quoted exactly; cited as docs-sbx, docs-agent, docs-dmr, docs-mcp"
+    },
+    {
+      "name": "Release notes",
+      "path": "research/sources/sbx-releases.md and docker-agent-CHANGELOG.md",
+      "usedFor": "when a behaviour appeared, changed, or was removed; cited as rel-sbx and rel-agent with the version"
+    },
+    {
+      "name": "Docker blog posts and talks",
+      "path": "research/conflicts-register.md and research/plan.md, with dates",
+      "usedFor": "history and positioning only, never for a rule; cited as blog or talk with the date"
+    },
+    {
+      "name": "Capture kit",
+      "path": "manuals/docker-sandboxes-101/capture/",
+      "usedFor": "every command output, file, and record shown; cited by file"
+    }
+  ],
+  "quoteSources": {
+    "help-sbx": "research/sources/help-sbx.md",
+    "help-agent": "research/sources/help-docker-agent.md",
+    "schema": "research/sources/agent-schema.json",
+    "kitspec": "research/sources/SPEC-v3-at-v3.0.0-m.8.md",
+    "kitspec-main": "research/sources/SPEC-v3.md",
+    "kitcap": "research/sources/kit-capabilities.md",
+    "docs-sbx-api": "research/sources/docs-sandboxes-api.md",
+    "docs-desktop": "research/sources/docs-desktop-release-notes.md",
+    "docs-sbx": "research/sources/docs-sandboxes.md",
+    "docs-agent": "research/sources/docs-docker-agent.md",
+    "docs-dmr": "research/sources/docs-model-runner.md",
+    "docs-mcp": "research/sources/docs-mcp.md",
+    "rel-sbx": "research/sources/sbx-releases.md",
+    "rel-agent": "research/sources/docker-agent-CHANGELOG.md",
+    "blog": null,
+    "talk": null
+  },
+  "capture": {
+    "run": [
+      "python3",
+      "capture/run.py"
+    ],
+    "check": [
+      "python3",
+      "capture/run.py",
+      "--check"
+    ],
+    "timeoutSeconds": 3600
+  },
+  "front": "front.md",
+  "plate": {
+    "figure": "plate-sandbox-run",
+    "title": "一个智能体，一个 microVM，一个代理",
+    "caption": "智能体运行在 sbx 创建的 microVM 中，它的模型调用经主机代理离开，里面的提供方密钥是占位符。从上到下读。 From capture/out/27-sandbox-run.txt, 27-inside.txt, and 27-inside-run.txt."
+  },
+  "parts": [
+    {
+      "number": 1,
+      "title": "一页讲清两个产品",
+      "thesis": "sbx 在它拥有的 microVM 里运行任意智能体，docker-agent 运行一份智能体文件，而 docker-agent run --sandbox 通过一个 kit 和代理把两者接在一起。",
+      "accent": "blue",
+      "sections": [
+        {
+          "id": "1.1",
+          "file": "sections/1-1-sbx-and-docker-agent.md"
+        },
+        {
+          "id": "1.2",
+          "file": "sections/1-2-docker-agent-run-sandbox-end-to-end.md"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "title": "sbx run",
+      "thesis": "沙箱有名称、工作区、模板，以及由七个动词和一个守护进程控制的生命周期。",
+      "accent": "violet",
+      "sections": [
+        {
+          "id": "2.1",
+          "file": "sections/2-1-sbx-run-create-stop-and-rm.md"
+        },
+        {
+          "id": "2.2",
+          "file": "sections/2-2-sbx-exec-cp-and-ports.md"
+        },
+        {
+          "id": "2.3",
+          "file": "sections/2-3-sbx-template-save-and-load.md"
+        },
+        {
+          "id": "2.4",
+          "file": "sections/2-4-sandboxd-diagnose-and-reset.md"
+        },
+        {
+          "id": "2.5",
+          "file": "sections/2-5-sbx-settings-list.md"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "title": "sbx policy、sbx secret 和 sbx mcp",
+      "thesis": "五层隔离智能体，每一层都有自己的命令：hypervisor、工作区、策略及其代理、密钥存储，以及 MCP 网关。",
+      "accent": "green",
+      "sections": [
+        {
+          "id": "3.1",
+          "file": "sections/3-1-sbx-diagnose-and-the-microvm-boundary.md"
+        },
+        {
+          "id": "3.2",
+          "file": "sections/3-2-clone-and-run-sandbox-source.md"
+        },
+        {
+          "id": "3.3",
+          "file": "sections/3-3-sbx-policy-init-allow-deny-and-check-network.md"
+        },
+        {
+          "id": "3.4",
+          "file": "sections/3-4-sbx-policy-log-and-the-proxy.md"
+        },
+        {
+          "id": "3.5",
+          "file": "sections/3-5-sbx-secret-set-import-and-set-custom.md"
+        },
+        {
+          "id": "3.6",
+          "file": "sections/3-6-sbx-mcp-add-load-and-static-mcp.md"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "title": "Kit 与 sbxenv.yaml",
+      "thesis": "kit 声明沙箱包含什么、能到达什么，环境文件则声明沙箱及其密钥，以便在任何东西运行之前加以批准。",
+      "accent": "olive",
+      "sections": [
+        {
+          "id": "4.1",
+          "file": "sections/4-1-syntax-docker-sandbox-kit-3-and-kit-yaml.md"
+        },
+        {
+          "id": "4.2",
+          "file": "sections/4-2-com-docker-sandbox-capabilities.md"
+        },
+        {
+          "id": "4.3",
+          "file": "sections/4-3-sbx-kit-pack-push-sign-and-verify.md"
+        },
+        {
+          "id": "4.4",
+          "file": "sections/4-4-sbxenv-yaml-and-sbx-env-plan.md"
+        },
+        {
+          "id": "4.5",
+          "file": "sections/4-5-sbx-skills-add-and-skills-true.md"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "title": "docker-agent run 与智能体文件",
+      "thesis": "智能体文件就是智能体、模型、toolset，以及它们之间的规则，而 docker-agent run 驱动这个循环、录制它并回放它。",
+      "accent": "plum",
+      "sections": [
+        {
+          "id": "5.1",
+          "file": "sections/5-1-docker-agent-run-new-and-doctor.md"
+        },
+        {
+          "id": "5.2",
+          "file": "sections/5-2-agents-models-and-providers.md"
+        },
+        {
+          "id": "5.3",
+          "file": "sections/5-3-toolsets-and-mcps.md"
+        },
+        {
+          "id": "5.4",
+          "file": "sections/5-4-sub-agents-transfer-task-and-background-agents.md"
+        },
+        {
+          "id": "5.5",
+          "file": "sections/5-5-permissions-safety-and-hooks.md"
+        },
+        {
+          "id": "5.6",
+          "file": "sections/5-6-session-db-sessions-diff-and-eval.md"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "title": "docker-agent serve 与 share",
+      "thesis": "一份智能体文件通过 REST 和 SSE、一个 OpenAI 兼容端点、MCP、ACP 和 A2A 应答，作为已签名的 OCI 制品传递，并在本地模型上运行。",
+      "accent": "indigo",
+      "sections": [
+        {
+          "id": "6.1",
+          "file": "sections/6-1-serve-api-and-serve-chat.md"
+        },
+        {
+          "id": "6.2",
+          "file": "sections/6-2-serve-mcp-and-serve-acp.md"
+        },
+        {
+          "id": "6.3",
+          "file": "sections/6-3-serve-a2a.md"
+        },
+        {
+          "id": "6.4",
+          "file": "sections/6-4-share-push-and-share-pull.md"
+        },
+        {
+          "id": "6.5",
+          "file": "sections/6-5-dmr-compose-models-and-the-mcp-gateway-service.md"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "title": "运维",
+      "thesis": "同一个沙箱在云上运行，组织用策略把它收窄并读取它的审计日志，旧命令映射到新命令，并且这些论断经过核对。",
+      "accent": "teal",
+      "sections": [
+        {
+          "id": "7.1",
+          "file": "sections/7-1-sbx-cloud-run-move-and-ttl.md"
+        },
+        {
+          "id": "7.2",
+          "file": "sections/7-2-org-policies-profiles-and-the-audit-log.md"
+        },
+        {
+          "id": "7.3",
+          "file": "sections/7-3-from-docker-sandbox-and-cagent-to-sbx-and-docker-agent.md"
+        },
+        {
+          "id": "7.4",
+          "file": "sections/7-4-kit-tck-diagnose-and-the-claims-this-manual-checked.md"
+        }
+      ]
+    }
+  ],
+  "reference": {
+    "title": "参考",
+    "accent": "grey",
+    "thesis": "手册中每个名称的查阅表。",
+    "summary": "每条 sbx 和 docker-agent 命令、设置键与路径、智能体文件的键、toolset、提供方、来源与冲突、术语表，以及图索引。",
+    "sections": [
+      {
+        "id": "R.1",
+        "file": "sections/r-1-sbx-commands.md"
+      },
+      {
+        "id": "R.2",
+        "file": "sections/r-2-docker-agent-commands.md"
+      },
+      {
+        "id": "R.3",
+        "file": "sections/r-3-settings-keys-environment-variables-and-paths.md"
+      },
+      {
+        "id": "R.4",
+        "file": "sections/r-4-agent-file-keys.md"
+      },
+      {
+        "id": "R.5",
+        "file": "sections/r-5-toolsets.md"
+      },
+      {
+        "id": "R.6",
+        "file": "sections/r-6-providers-and-models.md"
+      },
+      {
+        "id": "R.7",
+        "file": "sections/r-7-sources-and-the-conflicts-register.md"
+      },
+      {
+        "id": "R.8",
+        "file": "sections/r-8-glossary-and-index-of-figures.md"
+      }
+    ]
+  },
+  "related": [
+    "phases/13-tools-and-protocols/06-mcp-fundamentals",
+    "phases/13-tools-and-protocols/19-a2a-protocol",
+    "phases/14-agent-engineering/01-the-agent-loop",
+    "phases/13-tools-and-protocols/26-skill-permissions-sandboxes-and-trust",
+    "phases/19-capstone-projects/01-terminal-native-coding-agent"
+  ]
+}
