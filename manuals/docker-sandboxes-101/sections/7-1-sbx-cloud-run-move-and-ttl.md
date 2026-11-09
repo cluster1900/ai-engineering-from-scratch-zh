@@ -14,7 +14,7 @@
 title: 响应 --cloud 的动词
 source: research/sources/help-sbx-cloud.md
 lang: text
-note: 2026-10-08 的 `sbx --cloud --help` 输出，删节为两组。缺少 daemon、prune、settings 和 skills。仅此处有 attach、ttl 和 volume。
+note: 2026-10-08 的 sbx --cloud --help 输出，删节为两组。缺少 daemon、prune、settings 和 skills。仅此处有 attach、ttl 和 volume。
 ---
 Sandbox Commands:
   attach      Attach to a cloud sandbox, starting it first if it is stopped

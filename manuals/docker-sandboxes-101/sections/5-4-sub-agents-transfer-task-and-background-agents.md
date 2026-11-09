@@ -52,7 +52,7 @@ agents:
 title: 一次委派和一次会话移交，以事件呈现
 source: capture/out/19-transcript.txt
 lang: text
-note: `sub_session_completed` 行在 task 之后删节，会话移交的长工具响应对在第一句之后删节。
+note: sub_session_completed 行在 task 之后删节，会话移交的长工具响应对在第一句之后删节。
 ---
 user: Ask the writer for one sentence about microVMs.
 root -> tool_call transfer_task {"agent": "writer", "task": "Generate one sentence about microVMs", "expected_output": "A single sentence describing microVMs"}
