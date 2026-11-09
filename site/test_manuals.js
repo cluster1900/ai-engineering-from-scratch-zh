@@ -186,6 +186,68 @@ test('unclosed fences and unrecognised block lines fail fast instead of exhausti
   }
 });
 
+test('indented fence lines are paragraph text or fence body, never fences (bot-hub#125 follow-up)', () => {
+  // Fences open and close in column 0 only. 1-3 and 4+ spaces of indent are
+  // both plain text outside a fence and body inside one; the residual-EN gate
+  // (scripts/check_manual_residual_en.py) treats them the same way.
+  for (const pad of [' ', '   ', '    ', '      ']) {
+    for (const marker of ['```', '~~~', '````']) {
+      const outside = manuals.parseDocument(`# T\n\n${pad}${marker}bash\necho hi\n${pad}${marker}\n\nAfter.\n`, 'x');
+      assert.deepEqual(outside.blocks.map(block => [block.type, block.text]),
+        [['paragraph', `${marker}bash echo hi ${marker}`], ['paragraph', 'After.']], JSON.stringify([pad, marker]));
+      const inside = manuals.parseDocument(`# T\n\n${marker}text\n${pad}${marker}\nx\n${marker}\n`, 'x');
+      assert.deepEqual(inside.blocks.map(block => [block.type, block.code]), [['code', `${pad}${marker}\nx`]], JSON.stringify([pad, marker]));
+    }
+  }
+  // An indented "~~~bash extra" is paragraph text too; only column 0 is rejected.
+  const indented = manuals.parseDocument('# T\n\n  ~~~bash extra\n', 'x');
+  assert.deepEqual(indented.blocks.map(block => [block.type, block.text]), [['paragraph', '~~~bash extra']]);
+});
+
+test('a tilde fence with extra text after the info word, or a stray table row, is rejected with file:line (bot-hub#125 follow-up)', () => {
+  assert.throws(() => manuals.parseDocument('# T\n\n~~~bash extra\necho\n~~~\n', 'x'), /x:3: unrecognised block line "~~~bash extra"/);
+  assert.throws(() => manuals.parseDocument('# T\n\n~~~~text more\n', 'x'), /x:3: unrecognised block line "~~~~text more"/);
+  assert.throws(() => manuals.parseDocument('# T\n\n| h |\n|---|\n| r |\n\n| r2 |\n', 'x'), /x:7: unrecognised block line "\| r2 \|"/);
+  const table = manuals.parseDocument('# T\n\n| h | x |\n|---|---|\n| r | y |\n', 'x');
+  assert.deepEqual(table.blocks.map(block => [block.type, block.rows]), [['table', [['r', 'y']]]]);
+});
+
+test('TABLE_RULE delimiters with optional leading | parse as tables (bot-hub#125 follow-up review)', () => {
+  // Mirrors build-manuals.js TABLE_RULE: leading | on the delimiter is optional.
+  // The residual-EN gate (scripts/check_manual_residual_en.py) must accept the
+  // same forms; BuilderBlockParityTests pins both sides.
+  for (const [source, rows] of [
+    ['# T\n\n| 字段 | 含义 |\n---|---\n| name | 名称 |\n', [['name', '名称']]],
+    ['# T\n\n| h |\n:---:\n| r |\n', [['r']]],
+    ['# T\n\n| h |\n---\n| r |\n', [['r']]],
+    ['# T\n\n| h | x |\n --- | --- \n| r | y |\n', [['r', 'y']]],
+  ]) {
+    const doc = manuals.parseDocument(source, 'x');
+    assert.deepEqual(doc.blocks.map(block => [block.type, block.rows]), [['table', rows]], source);
+  }
+  // A body row without a leading | ends the table; the line is a paragraph.
+  const ended = manuals.parseDocument('# T\n\n| h | x |\n|---|---|\nr | y\n', 'x');
+  assert.deepEqual(ended.blocks.map(block => [block.type, block.rows || block.text]),
+    [['table', []], ['paragraph', 'r | y']]);
+  // Table ends at a heading after a blank line.
+  const heading = manuals.parseDocument('# T\n\n| h | x |\n|---|---|\n| r | y |\n\n## Next\n', 'x');
+  assert.deepEqual(heading.blocks.map(block => block.type), ['table', 'heading']);
+  // Fail-open: a bare TABLE_RULE after an open table ends it; the next
+  // "|...|" is unrecognised (bot-hub#125 r3). Same three shapes as the gate.
+  assert.throws(
+    () => manuals.parseDocument('# T\n\n| a | b |\n|---|---|\n| 1 | 2 |\n---|---\n| 3 | 4 |\n', 'x'),
+    /x:7: unrecognised block line "\| 3 \| 4 \|"/,
+  );
+  assert.throws(
+    () => manuals.parseDocument('# T\n\n| a | b |\n|---|---|\n---|---\n| 3 | 4 |\n', 'x'),
+    /x:6: unrecognised block line "\| 3 \| 4 \|"/,
+  );
+  assert.throws(
+    () => manuals.parseDocument('# T\n\n| a | b |\n|---|---|\n:---:\n| 3 | 4 |\n', 'x'),
+    /x:6: unrecognised block line "\| 3 \| 4 \|"/,
+  );
+});
+
 test('inline markup escapes HTML and records cross references with their location', () => {
   const acc = manuals.newInline();
   const html = manuals.inlineHtml('**a** <b> `x < y` {{spec §2}} [s](#s-1-1)', 'doc.md:4', acc);
