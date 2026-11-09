@@ -778,6 +778,12 @@ class BuilderBlockParityTests(unittest.TestCase):
         # Table ends at a blank line, then at a heading.
         ("| h | x |\n|---|---|\n| r | y |\n\n## 下一节\n", None),
         ("| h | x |\n---|---\n| r | y |\n\n中文段。\n", None),
+        # Fail-open guards (bot-hub#125 r3): once a table is open, a later
+        # bare TABLE_RULE must end it; the next "|...|" is unrecognised, not
+        # a new table. Builder rejects at the same line.
+        ("| a | b |\n|---|---|\n| 1 | 2 |\n---|---\n| 3 | 4 |\n", 9),
+        ("| a | b |\n|---|---|\n---|---\n| 3 | 4 |\n", 8),
+        ("| a | b |\n|---|---|\n:---:\n| 3 | 4 |\n", 8),
     ] + [
         (f"{pad}{marker}bash extra\necho\n{pad}{marker}\n", None)
         for pad in (" ", "   ", "    ", "      ")

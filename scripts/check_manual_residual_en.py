@@ -833,11 +833,16 @@ def scan_file(path: Path) -> tuple[list[tuple[int, str, str]], int]:
                     "a language tag; a table needs a |---| rule line; a heading "
                     "needs text)"
                 )
-            # Table state follows the builder's table loop exactly:
-            # - header (| + next matches TABLE_RULE) is accepted; delimiter opens
-            #   table state (leading | on the delimiter is optional per TABLE_RULE);
-            # - while in_table, only lines starting with "|" continue;
-            # - any other line ends the table (blank, heading, fence, prose).
+            # Table state follows the builder's table loop exactly
+            # (build-manuals.js:198-208):
+            # - A table opens only when we are not already in one: a header
+            #   line (starts with "|") whose next line matches TABLE_RULE.
+            #   The delimiter itself then opens table state (leading "|" on
+            #   that delimiter is optional per TABLE_RULE).
+            # - While in_table, only lines starting with "|" continue; the
+            #   first non-"|" line ends the table. A bare rule after a body
+            #   row, or a second rule after the delimiter, must NOT reopen
+            #   the table (that used to fail open, bot-hub#125 r3).
             if pending_table_delimiter:
                 in_table = True
                 pending_table_delimiter = False
@@ -845,8 +850,13 @@ def scan_file(path: Path) -> tuple[list[tuple[int, str, str]], int]:
                 in_table = line.startswith("|")
             else:
                 in_table = False
+            # Only a header outside an open table may schedule the delimiter.
+            # Body rows and "|---|" delimiters themselves must not set this
+            # when the next line also matches TABLE_RULE.
             pending_table_delimiter = bool(
-                line.startswith("|") and BUILD_TABLE_RULE.match(next_line)
+                (not in_table)
+                and line.startswith("|")
+                and BUILD_TABLE_RULE.match(next_line)
             )
         if fence_info is not None:
             if _fence_closes(line, fence_marker):

@@ -232,6 +232,20 @@ test('TABLE_RULE delimiters with optional leading | parse as tables (bot-hub#125
   // Table ends at a heading after a blank line.
   const heading = manuals.parseDocument('# T\n\n| h | x |\n|---|---|\n| r | y |\n\n## Next\n', 'x');
   assert.deepEqual(heading.blocks.map(block => block.type), ['table', 'heading']);
+  // Fail-open: a bare TABLE_RULE after an open table ends it; the next
+  // "|...|" is unrecognised (bot-hub#125 r3). Same three shapes as the gate.
+  assert.throws(
+    () => manuals.parseDocument('# T\n\n| a | b |\n|---|---|\n| 1 | 2 |\n---|---\n| 3 | 4 |\n', 'x'),
+    /x:7: unrecognised block line "\| 3 \| 4 \|"/,
+  );
+  assert.throws(
+    () => manuals.parseDocument('# T\n\n| a | b |\n|---|---|\n---|---\n| 3 | 4 |\n', 'x'),
+    /x:6: unrecognised block line "\| 3 \| 4 \|"/,
+  );
+  assert.throws(
+    () => manuals.parseDocument('# T\n\n| a | b |\n|---|---|\n:---:\n| 3 | 4 |\n', 'x'),
+    /x:6: unrecognised block line "\| 3 \| 4 \|"/,
+  );
 });
 
 test('inline markup escapes HTML and records cross references with their location', () => {
