@@ -273,7 +273,16 @@ SOURCES_TITLE_WHITELIST = frozenset({
 # no longer be originals. Rendered links into research/ are kept and labeled
 # 「（英文原文）」.
 # Decision: https://github.com/cluster1900/bot-hub/issues/109#issuecomment-6519284164
-EXCLUDED_DIRS = (PurePosixPath("manuals/a2a-101/research"),)
+# docker-sandboxes-101 (bot-hub#90): same rule for its research/, plus
+# capture/out (recorded command output, compared by the capture drift audit)
+# and capture/fixtures (inputs the capture kit runs on). Both are verbatim
+# machine files, not reader pages.
+EXCLUDED_DIRS = (
+    PurePosixPath("manuals/a2a-101/research"),
+    PurePosixPath("manuals/docker-sandboxes-101/research"),
+    PurePosixPath("manuals/docker-sandboxes-101/capture/out"),
+    PurePosixPath("manuals/docker-sandboxes-101/capture/fixtures"),
+)
 
 
 def is_excluded(rel: PurePosixPath) -> bool:
@@ -983,7 +992,10 @@ def main() -> int:
         f"FAIL_hits={len(all_hits)} unexplained={len(all_hits)} "
         f"explained={explained}"
     )
-    print(f"excluded_files={excluded_files} (manuals/a2a-101/research)")
+    excluded_label = ", ".join(
+        str(d) for d in EXCLUDED_DIRS if d.parts[1:2] == (args.manual,)
+    ) or "none"
+    print(f"excluded_files={excluded_files} ({excluded_label})")
     print("by_kind:", ", ".join(f"{k}={v}" for k, v in sorted(by_kind.items())) or "(none)")
     if by_file:
         print("by_file:")

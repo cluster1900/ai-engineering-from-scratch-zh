@@ -322,8 +322,9 @@ test('rendered links into research/ are labeled as English originals', () => {
   manuals.writePrint(loaded, printDir);
   const webLinks = researchAnchorTexts(htmlFiles(webDir));
   const printLinks = researchAnchorTexts(htmlFiles(printDir));
-  assert.equal(webLinks.length, 24);
-  assert.equal(printLinks.length, 12);
+  // a2a-101: 24 web / 12 print; docker-sandboxes-101 (bot-hub#90): 36 web / 18 print.
+  assert.equal(webLinks.length, 60);
+  assert.equal(printLinks.length, 30);
   for (const text of webLinks) assert.ok(text.endsWith(manuals.RESEARCH_LINK_LABEL), text);
   for (const text of printLinks) assert.ok(text.endsWith(manuals.RESEARCH_LINK_LABEL), text);
 });

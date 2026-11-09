@@ -75,6 +75,59 @@ EXPECTED_MAIN_ONLY = {
     ("manuals/vllm-101/sections/8-4-how-vllm-picks-an-attention-backend.md", 14, "FlashAttention、FlashInfer、Triton、FlexAttention、TurboQuant"),
 }
 
+# docker-sandboxes-101 (bot-hub#90): frozen-main hits on the new manual.
+# Reviewed: command synopses split at escaped `\|` by main's row splitter,
+# tool-name lists with {{docs-agent ...}} citations, product/version labels,
+# and two short verbatim quotes. None is a sentence under the relaxed rule
+# (is_untranslated_sentence is False for each), so the union drops them
+# without an allowlist entry; MAIN_ONLY_ALLOWED_TEXTS stays unchanged.
+EXPECTED_MAIN_ONLY_DOCKER_SANDBOXES = {
+    ('manuals/docker-sandboxes-101/sections/6-5-dmr-compose-models-and-the-mcp-gateway-service.md', 123, 'models gateway'),
+    ('manuals/docker-sandboxes-101/sections/7-3-from-docker-sandbox-and-cagent-to-sbx-and-docker-agent.md', 118, '"Docker Agent v2.x renamed the CLI"'),
+    ('manuals/docker-sandboxes-101/sections/7-4-kit-tck-diagnose-and-the-claims-this-manual-checked.md', 34, '`04-auto-stop.txt`："auto-stop grace period expired, stopping runtime"'),
+    ('manuals/docker-sandboxes-101/sections/r-1-sbx-commands.md', 21, 'SANDBOX_KIT [PATH...]`'),
+    ('manuals/docker-sandboxes-101/sections/r-1-sbx-commands.md', 21, 'never`（默认 `always`）、`--skills off\\'),
+    ('manuals/docker-sandboxes-101/sections/r-1-sbx-commands.md', 21, 'readwrite`（默认 `readonly`）、`--static-mcp`、`-t, --template`、`--profile`、`--kit`（实验性）、`--kit-arg`、`--kit-args-file`、`-q`'),
+    ('manuals/docker-sandboxes-101/sections/r-1-sbx-commands.md', 23, '`--allow-network`、`--image-ref`、`--on-timeout stop\\'),
+    ('manuals/docker-sandboxes-101/sections/r-1-sbx-commands.md', 26, '`--to local\\'),
+    ('manuals/docker-sandboxes-101/sections/r-1-sbx-commands.md', 26, 'cloud`、`--name`（默认为 `moved-` 加上源名称）、`--ttl`（15s 到 24h）、`--on-timeout stop\\'),
+    ('manuals/docker-sandboxes-101/sections/r-1-sbx-commands.md', 30, 'SANDBOX_KIT] [PATH...] [-- AGENT_ARGS...]`'),
+    ('manuals/docker-sandboxes-101/sections/r-1-sbx-commands.md', 45, '--command)`'),
+    ('manuals/docker-sandboxes-101/sections/r-1-sbx-commands.md', 45, '`mcp add <name> (--url \\'),
+    ('manuals/docker-sandboxes-101/sections/r-1-sbx-commands.md', 52, '`policy init <allow-all\\'),
+    ('manuals/docker-sandboxes-101/sections/r-1-sbx-commands.md', 57, '`--json`、`--limit`、`-q`、`--type all\\'),
+    ('manuals/docker-sandboxes-101/sections/r-1-sbx-commands.md', 58, '`--wide`、`--json`、`--source local\\'),
+    ('manuals/docker-sandboxes-101/sections/r-1-sbx-commands.md', 58, 'added\\'),
+    ('manuals/docker-sandboxes-101/sections/r-1-sbx-commands.md', 58, 'approval`、`--profile`、`--protocol`、`--include-inactive`'),
+    ('manuals/docker-sandboxes-101/sections/r-1-sbx-commands.md', 58, 'deny`、`--type`、`--created-via default\\'),
+    ('manuals/docker-sandboxes-101/sections/r-1-sbx-commands.md', 92, '`kit builder status\\'),
+    ('manuals/docker-sandboxes-101/sections/r-1-sbx-commands.md', 93, '`kit builder history export\\'),
+    ('manuals/docker-sandboxes-101/sections/r-2-docker-agent-commands.md', 26, '`run [<agent-file>\\'),
+    ('manuals/docker-sandboxes-101/sections/r-2-docker-agent-commands.md', 54, '`models [list\\'),
+    ('manuals/docker-sandboxes-101/sections/r-2-docker-agent-commands.md', 54, 'json`、`--models-gateway`'),
+    ('manuals/docker-sandboxes-101/sections/r-2-docker-agent-commands.md', 71, 'evaluator`（默认 `llm`）、`--agent-image`（默认钉住的 `docker/docker-agent:<version>`）、`--base-image`、`--container-runtime`（默认 `doc'),
+    ('manuals/docker-sandboxes-101/sections/r-2-docker-agent-commands.md', 73, 'status\\'),
+    ('manuals/docker-sandboxes-101/sections/r-2-docker-agent-commands.md', 75, 'rm <host>`, `sandbox list\\'),
+    ('manuals/docker-sandboxes-101/sections/r-2-docker-agent-commands.md', 86, 'stdio，Agent Client Protocol {{help-agent docker-agent serve acp}}'),
+    ('manuals/docker-sandboxes-101/sections/r-2-docker-agent-commands.md', 87, '`serve api <agent-file>\\'),
+    ('manuals/docker-sandboxes-101/sections/r-5-toolsets.md', 13, '`run_background_agent`、`list_background_agents`、`view_background_agent`、`stop_background_agent` {{docs-agent Background '),
+    ('manuals/docker-sandboxes-101/sections/r-5-toolsets.md', 18, '`read_file`、`read_multiple_files`、`write_file`、`edit_file`、`list_directory`、`directory_tree`、`create_directory`、`remove_'),
+    ('manuals/docker-sandboxes-101/sections/r-5-toolsets.md', 20, '`lsp_workspace`、`lsp_hover`、`lsp_definition`、`lsp_references`、`lsp_document_symbols`、`lsp_workspace_symbols`、`lsp_diagno'),
+    ('manuals/docker-sandboxes-101/sections/r-5-toolsets.md', 22, '`search_remote_mcp_servers`、`enable_remote_mcp_server`、`list_remote_mcp_servers`、`disable_remote_mcp_server`、`reset_remo'),
+    ('manuals/docker-sandboxes-101/sections/r-5-toolsets.md', 23, '`add_memory`、`get_memories`、`delete_memory`、`search_memories`、`update_memory` {{docs-agent Memory Tool}}'),
+    ('manuals/docker-sandboxes-101/sections/r-5-toolsets.md', 24, '`change_model`（`model` required）、`revert_model` {{docs-agent Model Picker Tool}}'),
+    ('manuals/docker-sandboxes-101/sections/r-5-toolsets.md', 27, '`write_plan`、`read_plan`、`list_plans`、`delete_plan`、`update_plan_from_file`、`export_plan_to_file`、`set_plan_status`、`get'),
+    ('manuals/docker-sandboxes-101/sections/r-5-toolsets.md', 29, '`create_schedule`（`prompt`、`when` required，`name`）、`list_schedules`、`cancel_schedule`（`id` required） {{docs-agent Schedu'),
+    ('manuals/docker-sandboxes-101/sections/r-5-toolsets.md', 31, '`list_sessions`、`read_session` {{docs-agent Session Context Tool}}'),
+    ('manuals/docker-sandboxes-101/sections/r-5-toolsets.md', 33, '`create_task`、`get_task`、`update_task`、`delete_task`、`list_tasks`、`next_task`、`add_dependency`、`remove_dependency` {{doc'),
+    ('manuals/docker-sandboxes-101/sections/r-5-toolsets.md', 35, '`create_todo`、`create_todos`、`update_todos`、`list_todos` {{docs-agent Todo Tool}}'),
+    ('manuals/docker-sandboxes-101/sections/r-5-toolsets.md', 47, '`write_session_plan`、`read_session_plan`、`exit_plan_mode` {{docs-agent Session Plan Tool}}'),
+    ('manuals/docker-sandboxes-101/sections/r-6-providers-and-models.md', 73, 'models gateway'),
+    ('manuals/docker-sandboxes-101/sections/r-7-sources-and-the-conflicts-register.md', 37, 'docker-agent v1.149.0，Commit: Homebrew'),
+    ('manuals/docker-sandboxes-101/sections/r-7-sources-and-the-conflicts-register.md', 59, 'A，sbx'),
+}
+
+
 
 
 # ---------------------------------------------------------------------------
@@ -992,6 +1045,21 @@ class ExcludedDirTests(unittest.TestCase):
             chk.is_excluded(PurePosixPath("manuals/a2a-101/sections/research.md"))
         )
 
+    def test_is_excluded_docker_sandboxes_verbatim_trees(self):
+        for rel in (
+            "manuals/docker-sandboxes-101/research/sources/x.md",
+            "manuals/docker-sandboxes-101/capture/out/README.md",
+            "manuals/docker-sandboxes-101/capture/fixtures/kits/k/HELLO.md",
+        ):
+            self.assertTrue(chk.is_excluded(PurePosixPath(rel)), rel)
+        for rel in (
+            "manuals/docker-sandboxes-101/capture/README.md",
+            "manuals/docker-sandboxes-101/sections/3-4-x.md",
+            "manuals/docker-sandboxes-101/front.md",
+            "manuals/docker-sandboxes-101/capture/output/x.md",
+        ):
+            self.assertFalse(chk.is_excluded(PurePosixPath(rel)), rel)
+
     def test_main_skips_excluded_research_dir(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -1052,11 +1120,12 @@ class UnionWithMainTests(unittest.TestCase):
                 for ln, _k, text in self.oracle.scan_file(path, False, False):
                     main_only.add((rel.as_posix(), ln, text))
         self.assertEqual(new_total, 0)
-        self.assertEqual(main_only, EXPECTED_MAIN_ONLY)
+        self.assertEqual(
+            main_only, EXPECTED_MAIN_ONLY | EXPECTED_MAIN_ONLY_DOCKER_SANDBOXES)
 
     def test_expected_main_only_are_necessary_english(self):
         lines_cache = {}
-        for rel, ln, text in EXPECTED_MAIN_ONLY:
+        for rel, ln, text in EXPECTED_MAIN_ONLY | EXPECTED_MAIN_ONLY_DOCKER_SANDBOXES:
             lines = lines_cache.setdefault(
                 rel, (REPO_ROOT / rel).read_text(encoding="utf-8").splitlines())
             self.assertIn(text[:40], lines[ln - 1])
