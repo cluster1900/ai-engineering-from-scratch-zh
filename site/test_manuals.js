@@ -212,6 +212,28 @@ test('a tilde fence with extra text after the info word, or a stray table row, i
   assert.deepEqual(table.blocks.map(block => [block.type, block.rows]), [['table', [['r', 'y']]]]);
 });
 
+test('TABLE_RULE delimiters with optional leading | parse as tables (bot-hub#125 follow-up review)', () => {
+  // Mirrors build-manuals.js TABLE_RULE: leading | on the delimiter is optional.
+  // The residual-EN gate (scripts/check_manual_residual_en.py) must accept the
+  // same forms; BuilderBlockParityTests pins both sides.
+  for (const [source, rows] of [
+    ['# T\n\n| 字段 | 含义 |\n---|---\n| name | 名称 |\n', [['name', '名称']]],
+    ['# T\n\n| h |\n:---:\n| r |\n', [['r']]],
+    ['# T\n\n| h |\n---\n| r |\n', [['r']]],
+    ['# T\n\n| h | x |\n --- | --- \n| r | y |\n', [['r', 'y']]],
+  ]) {
+    const doc = manuals.parseDocument(source, 'x');
+    assert.deepEqual(doc.blocks.map(block => [block.type, block.rows]), [['table', rows]], source);
+  }
+  // A body row without a leading | ends the table; the line is a paragraph.
+  const ended = manuals.parseDocument('# T\n\n| h | x |\n|---|---|\nr | y\n', 'x');
+  assert.deepEqual(ended.blocks.map(block => [block.type, block.rows || block.text]),
+    [['table', []], ['paragraph', 'r | y']]);
+  // Table ends at a heading after a blank line.
+  const heading = manuals.parseDocument('# T\n\n| h | x |\n|---|---|\n| r | y |\n\n## Next\n', 'x');
+  assert.deepEqual(heading.blocks.map(block => block.type), ['table', 'heading']);
+});
+
 test('inline markup escapes HTML and records cross references with their location', () => {
   const acc = manuals.newInline();
   const html = manuals.inlineHtml('**a** <b> `x < y` {{spec §2}} [s](#s-1-1)', 'doc.md:4', acc);

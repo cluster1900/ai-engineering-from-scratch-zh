@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Flag untranslated English sentences in a translated AIEFS zh manual.
+r"""Flag untranslated English sentences in a translated AIEFS zh manual.
 
 Rule (Wu, 2026-11-05 09:22 SGT, bot-hub#109: 「修复一下 CI 吧，但是没那么严格，
 有些必要的英文还是需要的」):
@@ -77,8 +77,10 @@ inside a ```` ````text ```` fence. A fence line indented by any number of
 spaces (1-3 or 4+) never opens or closes a fence: outside a fence it is
 paragraph text and judged, inside one it is body. A column-0 line that starts
 a block but that the builder cannot place (```` ```bash x ````,
-```` ~~~bash x ````, a ``|`` row with no ``|---|`` rule under it that does not
-continue a table, an empty ``## ``) is not judged: the site build stops on it
+```` ~~~bash x ````, a ``|`` header with no ``TABLE_RULE`` delimiter under it
+(leading ``|`` on the delimiter is optional: ``|---|``, ``---|---``, ``:---:``,
+a lone ``---``, `` --- | --- ``), a ``|`` body row outside an open table, or an
+empty ``## ``) is not judged: the site build stops on it
 with "unrecognised block line", and so does this gate, at once, with
 file:line and exit status 2 (``UnrecognisedBlockLine``, bot-hub#125
 follow-up). An opener whose info is not ``[a-z0-9-]+``
@@ -163,8 +165,12 @@ IMAGE = re.compile(r"!\[([^\]]*)\]\(([^)]+)\)")
 # Fences exactly as site/build-manuals.js parseDocument() sees them: an
 # opener is a column-0 line matching FENCE_OPEN (3+ backticks or 3+ tildes),
 # and only a column-0 FENCE_CLOSE run of the same character, at least as long
-# as the opener, closes it (bot-hub#125). Indented ``` lines, ```text inside a
-# fence, or "```bash extra" are not fence lines (#141 r11).
+# as the opener, closes it (bot-hub#125). Indented ``` lines and ```text
+# inside a fence are not fence lines (#141 r11). A column-0 "```bash extra"
+# or "~~~bash extra" does not match FENCE_OPEN (extra tokens after the info
+# word), so scan_file raises UnrecognisedBlockLine at that file:line with
+# exit status 2 — the same failure parseDocument() reports (bot-hub#125
+# follow-up).
 FENCE_OPEN = re.compile(r"^(`{3,}|~{3,})\s*([A-Za-z0-9_-]*)\s*$")
 FENCE_CLOSE = re.compile(r"^(`{3,}|~{3,})\s*$")
 
@@ -204,8 +210,9 @@ def builder_rejects(line: str, next_line: str, in_table: bool) -> bool:
     block line": it starts a block (BUILD_BLOCK_START) outside a fence, but is
     not a fence opener, a ##/### heading with text, a FORBIDDEN line (the
     builder fails those with their own message), a table row (a header needs a
-    BUILD_TABLE_RULE line under it; later rows follow without a blank line),
-    or a list item."""
+    BUILD_TABLE_RULE delimiter under it — leading ``|`` on that delimiter is
+    optional; later body rows start with ``|`` and follow without a blank
+    line), or a list item."""
     if not any(p.match(line) for p in BUILD_BLOCK_START):
         return False
     if FENCE_OPEN.match(line) or BUILD_SUB_HEADING.match(line):
@@ -807,20 +814,40 @@ def scan_file(path: Path) -> tuple[list[tuple[int, str, str]], int]:
     fence_body: list[tuple[int, str]] = []
     fence_line = 0
     in_table = False
+    # After a "|..." header whose next line matches BUILD_TABLE_RULE, the
+    # delimiter itself opens table state (mirrors build-manuals.js:198-208:
+    # header+delimiter are consumed together, then body rows while /^\|/).
+    pending_table_delimiter = False
     for i, line in enumerate(lines):
         lineno = i + 1
         stripped = line.strip()
         if fence_info is None:
-            # Mirrors the builder's table loop: rows continue while lines
-            # start with "|"; a header row needs a rule line under it.
-            if builder_rejects(line, lines[i + 1] if i + 1 < len(lines) else "", in_table):
+            next_line = lines[i + 1] if i + 1 < len(lines) else ""
+            # pending_table_delimiter: builder has already accepted header+rule,
+            # so the delimiter line is inside the table even before in_table flips.
+            effective_in_table = in_table or pending_table_delimiter
+            if builder_rejects(line, next_line, effective_in_table):
                 raise UnrecognisedBlockLine(
                     f'{path}:{lineno}: unrecognised block line "{stripped}" '
                     "(the site build fails here too: a fence opener takes only "
                     "a language tag; a table needs a |---| rule line; a heading "
                     "needs text)"
                 )
-            in_table = line.startswith("|")
+            # Table state follows the builder's table loop exactly:
+            # - header (| + next matches TABLE_RULE) is accepted; delimiter opens
+            #   table state (leading | on the delimiter is optional per TABLE_RULE);
+            # - while in_table, only lines starting with "|" continue;
+            # - any other line ends the table (blank, heading, fence, prose).
+            if pending_table_delimiter:
+                in_table = True
+                pending_table_delimiter = False
+            elif in_table:
+                in_table = line.startswith("|")
+            else:
+                in_table = False
+            pending_table_delimiter = bool(
+                line.startswith("|") and BUILD_TABLE_RULE.match(next_line)
+            )
         if fence_info is not None:
             if _fence_closes(line, fence_marker):
                 scan_fence(fence_info, fence_body)

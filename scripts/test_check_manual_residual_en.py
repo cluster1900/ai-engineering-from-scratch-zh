@@ -766,6 +766,18 @@ class BuilderBlockParityTests(unittest.TestCase):
         ("##  x\n", None),
         ("- a\n- b\n", None),
         ("~~~text\nx\n~~~\n", None),
+        # BUILD_TABLE_RULE / build-manuals.js TABLE_RULE: leading | on the
+        # delimiter is optional. These must parse as tables on both sides.
+        ("| 字段 | 含义 |\n---|---\n| name | 名称 |\n", None),
+        ("| h |\n:---:\n| r |\n", None),
+        ("| h |\n---\n| r |\n", None),
+        ("| h | x |\n --- | --- \n| r | y |\n", None),
+        # Body row without a leading | ends the table (builder while /^\|/);
+        # that line becomes a paragraph, not UnrecognisedBlockLine.
+        ("| h | x |\n|---|---|\nr | y\n", None),
+        # Table ends at a blank line, then at a heading.
+        ("| h | x |\n|---|---|\n| r | y |\n\n## 下一节\n", None),
+        ("| h | x |\n---|---\n| r | y |\n\n中文段。\n", None),
     ] + [
         (f"{pad}{marker}bash extra\necho\n{pad}{marker}\n", None)
         for pad in (" ", "   ", "    ", "      ")
