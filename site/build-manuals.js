@@ -133,7 +133,13 @@ function splitRow(line) {
   return cells;
 }
 
-const BLOCK_START = [/^```/, /^#{1,6}\s/, /^([-*]|\d+\.)\s+/, /^\|/, /^>/];
+// A fence opens on a column-0 run of 3+ backticks or 3+ tildes plus an
+// optional language tag, and closes on a column-0 run of the same character
+// at least as long with nothing after it (CommonMark-style), so a ````text
+// fence can show a ```figure block as content (bot-hub#125).
+const FENCE_OPEN = /^(`{3,}|~{3,})\s*([A-Za-z0-9_-]*)\s*$/;
+const FENCE_CLOSE = /^(`{3,}|~{3,})\s*$/;
+const BLOCK_START = [/^(```|~~~)/, /^#{1,6}\s/, /^([-*]|\d+\.)\s+/, /^\|/, /^>/];
 const TABLE_RULE = /^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)*\|?\s*$/;
 const FORBIDDEN = [
   [/^#\s/, 'only one "# " title per file'],
@@ -166,15 +172,20 @@ function parseDocument(source, label) {
   while (i < lines.length) {
     const line = lines[i];
     if (!line.trim()) { i += 1; continue; }
-    const fence = /^```\s*([A-Za-z0-9_-]*)\s*$/.exec(line);
+    const fence = FENCE_OPEN.exec(line);
     if (fence) {
+      const marker = fence[1];
+      const closes = text => {
+        const close = FENCE_CLOSE.exec(text);
+        return Boolean(close) && close[1][0] === marker[0] && close[1].length >= marker.length;
+      };
       const body = [];
       const start = i + 1;
       i += 1;
-      while (i < lines.length && !/^```\s*$/.test(lines[i])) { body.push(lines[i]); i += 1; }
-      ensure(i < lines.length, `${at(start)}: this fence is never closed`);
+      while (i < lines.length && !closes(lines[i])) { body.push(lines[i]); i += 1; }
+      ensure(i < lines.length, `${at(start)}: this fence is never closed (needs a line of ${marker.length}+ "${marker[0]}")`);
       i += 1;
-      blocks.push({ ...fenceBlock(fence[1], body, at(start)), line: start });
+      blocks.push({ ...fenceBlock(fence[2], body, at(start)), line: start });
       continue;
     }
     const sub = /^(#{2,3})\s+(.+?)(?:\s+\{#([a-z0-9-]+)\})?\s*$/.exec(line);
@@ -222,6 +233,12 @@ function parseDocument(source, label) {
       blocks.push({ type: 'list', ordered, items, line: start });
       continue;
     }
+    // Every branch above consumes the line it accepts. A line that starts a
+    // block (BLOCK_START) but matched none of them, such as "```bash extra",
+    // "| cell" with no table rule under it, or a bare "## ", used to make no
+    // progress here and push empty paragraphs until the heap ran out
+    // (bot-hub#125); fail with its line number instead.
+    ensure(!BLOCK_START.some(pattern => pattern.test(line)), `${at(i + 1)}: unrecognised block line "${line.trim()}" (a fence opener takes only a language tag; a table needs a |---| rule line; a heading needs text)`);
     const start = i + 1;
     const parts = [];
     while (i < lines.length && lines[i].trim() && !BLOCK_START.some(pattern => pattern.test(lines[i]))) {

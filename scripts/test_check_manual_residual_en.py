@@ -702,6 +702,43 @@ class R11TighteningTests(unittest.TestCase):
         self.assertTrue(chk.is_untranslated_sentence(links.replace("、", "、[we](https://a.example/3)、")))  # 16
 
 
+class VariableFenceTests(unittest.TestCase):
+    """bot-hub#125: fences close like site/build-manuals.js parseDocument():
+    a column-0 run of the same character, at least as long as the opener."""
+
+    S = "We restart the server every night because it leaks memory and nobody knows why it happens."
+    HEAD = "# 标题\n\n中文段落。\n\n"
+
+    def _kinds(self, text):
+        hits, _ = _scan("3-1-intro.md", text)
+        return [(ln, k) for ln, k, _t in hits]
+
+    def test_four_backtick_fence_keeps_inner_three_backtick_block_as_code(self):
+        inner = "```rule\nlabel: x\nsource: y\n---\n" + self.S + "\n```\n"
+        text = self.HEAD + "````text\n" + inner + "````\n\n" + self.S + "\n"
+        # Lines 5-12 are one text fence, skipped as code by this gate's own
+        # scan: no RULE, and line 14 is the only PROSE. Line 10 still comes
+        # from the frozen main checker (it toggles on any ``` line), via the
+        # union, like test_indented_backticks_inside_fence_do_not_close.
+        self.assertEqual(self._kinds(text), [(10, "MAIN_PROSE"), (14, "PROSE")])
+
+    def test_tilde_fence_is_a_fence_and_closes_only_on_tildes(self):
+        text = self.HEAD + "~~~rule\nlabel: 中文\nsource: x\n---\n```\n" + self.S + "\n~~~~\n"
+        # The ``` on line 9 does not close the tilde fence, so the rule body
+        # starts there and is judged as RULE.
+        self.assertEqual(self._kinds(text), [(9, "RULE")])
+
+    def test_shorter_or_other_character_does_not_close(self):
+        self.assertEqual(self._kinds(self.HEAD + "````bash\necho\n```\n~~~~\n"), [(5, "FENCE_UNCLOSED")])
+        hits, _ = _scan("3-1-intro.md", self.HEAD + "~~~text\nx\n```\n")
+        self.assertEqual([(ln, k, t) for ln, k, t in hits], [(5, "FENCE_UNCLOSED", "~~~text")])
+
+    def test_four_backtick_figure_captions_skip_quoted_figure(self):
+        text = ("````text\n```figure\nid: fig-q\ncaption: quoted\n```\n````\n\n"
+                "```figure\nid: fig-1\ncaption: real\n```\n")
+        self.assertEqual(chk.figure_captions_in_text(text), [("fig-1", "real")])
+
+
 class LengthCapAndLimitTests(unittest.TestCase):
     """B3 r9: exempt spans have a length cap; the rest are pinned known limits."""
 

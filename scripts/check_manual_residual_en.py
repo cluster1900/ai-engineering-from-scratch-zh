@@ -69,10 +69,13 @@ is skipped (Wu, 2026-11-05 10:14 SGT: Sources stays English and out of the
 gate; the builder does not render that paragraph).
 
 Fences are found exactly as site/build-manuals.js parseDocument() finds
-them: a column-0 line matching ``^```\s*([A-Za-z0-9_-]*)\s*$`` opens, and
-inside a fence only a column-0 ``^```\s*$`` line closes. ```` ```text ````
-inside a fence is fence body; an indented ```` ``` ```` or ```` ```bash x ````
-is paragraph text and judged. An opener whose info is not ``[a-z0-9-]+``
+them: a column-0 line matching ``^(`{3,}|~{3,})\s*([A-Za-z0-9_-]*)\s*$``
+opens, and inside a fence only a column-0 run of the same character at least
+as long as the opener, with nothing after it, closes (bot-hub#125). So
+```` ```text ```` inside a fence is fence body, and so is a bare ```` ``` ````
+inside a ```` ````text ```` fence; an indented ```` ``` ```` or
+```` ```bash x ```` is paragraph text and judged (the site build rejects a
+column-0 ```` ```bash x ```` line with "unrecognised block line"). An opener whose info is not ``[a-z0-9-]+``
 (``Rule``) is reported as FENCE_BAD_INFO and an unclosed fence as
 FENCE_UNCLOSED: the site build fails on both.
 
@@ -152,11 +155,17 @@ QUOTED = re.compile(r'"[^"\n]+"|“[^”\n]+”|「[^」\n]+」|『[^』\n]+』'
 SOURCES_PARA = re.compile(r"^Sources[:：]\s")
 IMAGE = re.compile(r"!\[([^\]]*)\]\(([^)]+)\)")
 # Fences exactly as site/build-manuals.js parseDocument() sees them: an
-# opener is a column-0 line matching FENCE_OPEN, and only a column-0 bare
-# ``` line closes it. Indented ``` lines, ```text inside a fence, or
-# "```bash extra" are not fence lines (#141 r11).
-FENCE_OPEN = re.compile(r"^```\s*([A-Za-z0-9_-]*)\s*$")
-FENCE_CLOSE = re.compile(r"^```\s*$")
+# opener is a column-0 line matching FENCE_OPEN (3+ backticks or 3+ tildes),
+# and only a column-0 FENCE_CLOSE run of the same character, at least as long
+# as the opener, closes it (bot-hub#125). Indented ``` lines, ```text inside a
+# fence, or "```bash extra" are not fence lines (#141 r11).
+FENCE_OPEN = re.compile(r"^(`{3,}|~{3,})\s*([A-Za-z0-9_-]*)\s*$")
+FENCE_CLOSE = re.compile(r"^(`{3,}|~{3,})\s*$")
+
+
+def _fence_closes(line: str, marker: str) -> bool:
+    m = FENCE_CLOSE.match(line)
+    return bool(m) and m.group(1)[0] == marker[0] and len(m.group(1)) >= len(marker)
 FENCE_INFO_OK = re.compile(r"^[a-z0-9-]+$")
 FENCE_KEY = re.compile(r"^([a-z][a-z-]*):\s*(.*)$")
 FENCE_CONT = re.compile(r"^\s{2,}\S")
@@ -595,13 +604,13 @@ def figure_captions_in_text(text: str) -> list[tuple[str, str]]:
         if not opened:
             index += 1
             continue
-        info = opened.group(1)
+        marker, info = opened.group(1), opened.group(2)
         index += 1
         body: list[str] = []
-        while index < len(lines) and not FENCE_CLOSE.match(lines[index]):
+        while index < len(lines) and not _fence_closes(lines[index], marker):
             body.append(lines[index])
             index += 1
-        closed = index < len(lines) and bool(FENCE_CLOSE.match(lines[index]))
+        closed = index < len(lines) and _fence_closes(lines[index], marker)
         if closed:
             index += 1
         if info != "figure" or not closed:
@@ -746,13 +755,14 @@ def scan_file(path: Path) -> tuple[list[tuple[int, str, str]], int]:
                 judge(ln, "TAKEAWAY", t)
 
     fence_info: str | None = None
+    fence_marker = "```"
     fence_body: list[tuple[int, str]] = []
     fence_line = 0
     for i, line in enumerate(lines):
         lineno = i + 1
         stripped = line.strip()
         if fence_info is not None:
-            if FENCE_CLOSE.match(line):
+            if _fence_closes(line, fence_marker):
                 scan_fence(fence_info, fence_body)
                 fence_info = None
             else:
@@ -761,7 +771,8 @@ def scan_file(path: Path) -> tuple[list[tuple[int, str, str]], int]:
         fm = FENCE_OPEN.match(line)
         if fm:
             flush()
-            fence_info, fence_body, fence_line = fm.group(1), [], lineno
+            fence_marker, fence_info = fm.group(1), fm.group(2)
+            fence_body, fence_line = [], lineno
             if fence_info and not FENCE_INFO_OK.match(fence_info):
                 # site/build-manuals.js: "every code fence needs a language tag"
                 # (a bare ``` opener fails the same build check; its body is
@@ -821,7 +832,7 @@ def scan_file(path: Path) -> tuple[list[tuple[int, str, str]], int]:
     flush()
     if fence_info is not None:
         # The site build fails on an unclosed fence; so does this gate.
-        hits.append((fence_line, "FENCE_UNCLOSED", "```" + fence_info))
+        hits.append((fence_line, "FENCE_UNCLOSED", fence_marker + fence_info))
         covered.add(fence_line)
     return _union_with_main(path, hits, covered), explained
 
